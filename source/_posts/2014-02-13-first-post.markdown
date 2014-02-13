@@ -6,6 +6,6 @@ comments: true
 categories: life
 ---
 
-## Hello World!
-
 		Get started now!
+		
+ ![logo](../images/first_post_logo.png)
