@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Jason's space]]></title>
-  <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Life | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
   <updated>2014-02-13T22:17:16+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
