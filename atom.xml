@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-13T22:17:16+08:00</updated>
+  <updated>2014-02-13T22:47:58+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,10 +18,10 @@
     <link href="http://qjpcpu.github.io/blog/2014/02/13/first-post/"/>
     <updated>2014-02-13T22:12:38+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/13/first-post</id>
-    <content type="html"><![CDATA[<h2>Hello World!</h2>
-
-<pre><code>    Get started now!
+    <content type="html"><![CDATA[<pre><code>    Get started now!
 </code></pre>
+
+<p> <img src="../images/first_post_logo.png" alt="logo" /></p>
 ]]></content>
   </entry>
   
