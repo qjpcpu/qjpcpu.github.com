@@ -1,0 +1,134 @@
+---
+layout: post
+title: "一步一步搭建mysql主从同步"
+date: 2014-02-15 00:24:49 +0800
+comments: true
+categories: linux
+---
+
+### 下载mysql数据库
+
+	$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
+	tar vzxf mysql-5.1.73.tar.gz
+
+### 编译安装
+
+最好专门创建一个用户mysql来安装数据库。
+
+	MYSQL_BASEDIR=$HOME/mysql
+	cd mysql-5.1.73
+	./configure 
+	--prefix=${MYSQL_BASEDIR} 
+	--with-charset=gbk 
+	--with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
+	--with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
+	--with-mysqld-user=mysql     #以哪个用户执行mysqld进程
+	make
+	make install
+
+### 初始化数据库
+
+复制必要的配置文件和启停脚本
+
+	cd ${MYSQL_BASEDIR}
+	mkdir etc log tmp var
+	cp share/mysql/my-medium.cnf  my.cnf
+	cp share/mysql/mysql.server  bin/
+
+### 修改配置文件
+
+	vim ./my.cnf
+
+在[mysqld]下添加配置项：
+
+	basedir= ${MYSQL_BASEDIR}   # ${MYSQL_BASEDIR}是你的mysql安装目录
+	datadir = ${MYSQL_BASEDIR}/var   # mysql数据路径
+	tmpdir = ${MYSQL_BASEDIR}/tmp   # 临时文件路径
+	slave-load-tmpdir = ${MYSQL_BASEDIR}/tmp   # 从服务器同步LOAD DATA INFILE语句时创建临时文件的目录名
+	port = 3306   # 如果修改port，[mysqld] 和 [client]下的port都要修改
+	pid-file = ${MYSQL_BASEDIR}/var/mysql.pid  # mysqld PID文件位置
+	#以下为可选
+	socket = ${MYSQL_BASEDIR}/tmp/mysql.sock  # 用于指定本地连接的Unix套接字文件位置，[mysqld] 和 [client]下的port都要修改
+	#skip-name-resolve   # 是否仅使用ip验证客户端
+	#skip-symbolic-links  #忽略MyISAM表的数据及索引文件连接到另一个目录下
+	max_connect_errors = 10000
+	max_connections = 500
+	wait-timeout = 30
+
+启动数据库
+
+	$ ./bin/mysql_install_db  #安装数据库文件
+	$ ./bin/mysql.server start    #出现下面这行说数据库启动ok了
+	Starting MySQL.                                            [  OK  ]
+
+### 配置mysql用户
+
+使用./bin目录下的mysql命令可以登录到数据库，登录后删除匿名用户并且为root设置密码：
+
+	$ mysql -u root
+	> delete from mysql.user where user='';
+	> UPDATE mysql.user SET Password = PASSWORD('password') WHERE user='root';
+
+按照以上同样的步骤再搭建一个mysql，注意，如果在同一主机搭建多个mysql实例，那么就需要将端口改成不同才行。
+
+下面开始配置主从同步。
+
+首先在主库新建专门用于同步的数据库账号mysqlsync
+
+	> GRANT REPLICATION SLAVE ON *.* TO 'mysqlsync'@'%' IDENTIFIED BY 'password';
+	
+### 主库配置
+
+所有的配置项还是在my.cnf中的[mysqld]下添加。
+
+首先server-id作为MySQL服务器的标识，具有相关联上下游同步系统需具有全局唯一性。主库我们将server-id配置为1。其他主库需要添加的配置有：
+
+	server-id=1
+	# 同步过程中需要忽略的表，支持正则表达式。全库同步时，必须屏蔽mysql系统库和test测试库。
+	replicate-wild-ignore-table = mysql.%
+	replicate-wild-ignore-table = test.%
+	# 需要同步的表，多个表需多次指定，这里我们使用全库同步,方便点
+	# replicate-do-table = database.table
+	log-bin = mysql-bin  #二进制日志，强制开启
+	log-bin-index = mysql-bin.index  # 记录二进制日志索引文件
+	relay-log-index = relay-log.index # 记录中继日志索引文件
+
+### 从库配置
+
+	server-id=2
+	read-only # 在从库开启该选项，避免在从库上进行写操作，导致主从数据不一致（不过对super权限无效哦）
+	skip-slave-start # 在从库开启该选项，启动数据库后，需手动开启同步进程
+	relay-log = mysql-relay #中继日志，从库开启
+	relay-log-index = relay-log.index
+	log-bin = mysql-bin
+	log-bin-index = mysql-bin.index
+	replicate-wild-ignore-table = mysql.%
+	replicate-wild-ignore-table = test.%
+
+### 同步设置
+
+启动主数据库，并查看主库状态：
+
+	$ ./bin/mysql.server start
+	$ mysql -u root -p
+	mysql> show master status;
+
+![image](../images/20140108190001984.jpeg)
+
+记下来log文件名和位置，这里是“mysql-bin.000005"和”106“。
+
+然后启动从库，
+
+	$ ./bin/mysql.server start
+	$ mysql -u root -p
+	mysql> change master to master_host='your_host',master_port=3307,master_user='mysqlsync',master_password='pasword',master_log_file='mysql-bin.000005',master_log_pos=106;
+	mysql> startslave;  #启动从库
+	mysql> show slave status\G;
+
+最后一条sql命令得到如图结果：
+
+![image](../images/20140108190137578.jpeg)
+
+其中Slave_IO_Running和Slave_SQL_Running是yes就对了。
+
+最后，可以验证一下，在主库修改记录，从库可以看到同步过来的变化。

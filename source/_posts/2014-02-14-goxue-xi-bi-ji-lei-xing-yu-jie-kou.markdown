@@ -1,0 +1,161 @@
+---
+layout: post
+title: "Go学习笔记-类型与接口"
+date: 2014-02-14 18:27:36 +0800
+comments: true
+categories: go
+---
+
+如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。
+
+### 结构类型
+
+这里，还是和C语言很像的，定义结构：
+
+	type Man struct {
+	     name string
+	     age int
+	}
+
+声明结构变量及初始化：
+
+	var m Man   //声明Man变量
+	m := new(Man)  //声明一个Man指针
+	m := Man{name:"jack",age:12} //声明并初始化 
+	m := Man{"jack",12}  //声明并初始化
+
+### 方法
+
+go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。
+
+	func (m *Man) Introduce() bool {
+	    fmt.Println("name: ",m.name)
+	    return true
+	}
+
+调用方法使用了"."符号：
+
+	m := Man{"Jack",12}
+	ok := m.Introduce()
+
+利用结构的方法，我们甚至还能像ruby一样，为系统中预定类型打个猴子补丁，添加新的方法，只不过手段稍微曲线了一点，比如，下面代码为字符串(不是string类型)添加一个chomp方法来去掉字符串最后一个换行符：
+
+	package main
+	import (
+		"fmt"
+		"strings"
+	)
+	
+	type MyString string
+	func (str MyString) chomp() string {
+		return strings.TrimRight(string(str),"\n")
+	}
+	func main() {
+		str := "Hello world!\n"
+		ms := MyString(str)
+		fmt.Println(ms.chomp())   //输出 Hello world!
+	}
+
+
+### 方法代理
+
+其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：
+
+	package main
+	import "fmt"
+	func main() {
+		n := new(Neo)
+		n.Fly()  //输出：The One can fly!
+	}
+	
+	type Neo struct{
+		TheOne
+	}
+	type TheOne struct{}
+	
+	func (o *TheOne) Fly(){
+		fmt.Println("The One can fly!")
+	}
+
+在ruby语言中，有许多做这种方法代理的代码，而go语言的嵌入类型的表征和该特性竟是如此神似，嘿嘿
+
+另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。
+
+### go style duck-type 
+
+go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。
+
+接口定义：
+
+	type Duck interface {
+	     run()
+	     height() int
+	     gaga(word string)
+	}
+
+Duck接口中仅包含了一系列的方法声明。
+
+然后在方法参数中我们可以这样使用：
+
+	func DuckRun(d Duck){
+	    d.run()
+	}
+
+那么是不是我们需要去完成多个Duck接口的实现呢？NO。那样岂不是和java一样了。go语言的interface的唯一用处其实是为了满足编译器（唉，多少有点无奈），这样编译器在DuckRun函数入口会检查传递进来的对象是否含有Duck接口所包含的三个方法，如果符合定义，则通过编译。这样不就是鸭子类型吗？仅检查是否包含这些方法，而不管是否是某种类型，所以说go style的鸭子类型是很了不起的。
+
+举个例子，人是有say说话的方法的，但其实对于某个需要say方法的函数中，我们可以给它传递一个地球对象，尽管地球什么话也不会说：
+
+	package main
+	import "fmt"
+	func main() {
+	     m := Man{name:"Jack"}
+		 m.say()
+		 e := new(Earch)
+		 SaySth(e)
+		 SaySth(&m)  //say()方法的接收者是一个指针变量，所以这里要用&取地址
+	}
+	func SaySth(obj Object){
+		obj.say()
+	}
+	type Object interface{
+		say()
+	}
+	type Man struct{
+		name string
+	}
+	type Earch struct{}
+	
+	func (m *Man) say(){
+		fmt.Println("Man says: I'm ",m.name)
+	}
+	
+	func (e *Earch) say(){
+		//do nothing
+	}
+
+### 空接口及类型
+
+空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
+类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。
+
+	// 定义a为空接口
+	var a interface{}
+	var i int = 5
+	s := "Hello world"
+	// a可以存储任意类型的数值 a=i,a=s
+
+
+一个函数把interface{}作为参数,那么他可以接受任意类型的值作为参数,如果一个函数返回interface{},那么也 就可以返回任意类型的值。
+
+我们知道interface的变量里面可以存储任意类型的数值(该类型实现了interface)。那么我们怎么反向知道这个变量 里面实际保存了的是哪个类型的对象呢?可以使用Comma-ok断言
+
+	value, ok = element.(T)
+
+这里value就是变 量的值,ok是一个bool类型,element是interface变量,T是断言的类型。
+
+如果element里面确实存储了T类型的数值,那么ok返回true,否则返回false。
+
+此外，关于go语言中类型处理的要求更多时，就需要使用反射。Go语言实现了反射,所谓反射就是动态运行时的状态。我们一般用到的包是reflect包。使用reflect一般分成三步,下面简要的讲解一下:要去反射是一个类型的值(这些值都实现了空interface),首先需 要把它转化成reflect对象(reflect.Type或者reflect.Value,根据不同的情况调用不同的函数)。这两种获取方式如 下:
+
+	t := reflect.TypeOf(i) //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
+	v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面的值,还可以去改变值

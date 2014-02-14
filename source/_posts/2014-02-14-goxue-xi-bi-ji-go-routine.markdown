@@ -1,0 +1,118 @@
+---
+layout: post
+title: "Go学习笔记-go routine"
+date: 2014-02-14 18:23:38 +0800
+comments: true
+categories: go
+---
+
+## Go routine indeed
+
+> 本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。
+
+Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：
+
+(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c
+
+(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行
+
+(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine
+
+(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU
+
+(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因
+
+(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。
+
+(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。
+
+(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。
+
+### 启动一个go routine
+
+go关键字+函数名即可启动一个go routine:
+
+	package main
+	import (
+		"fmt"
+		"time"
+	)
+	func p() {
+	     for i := 0; i < 100; i++ {
+	           fmt.Println(i)
+			   time.Sleep(time.Second * 1)
+		   } 
+	}
+	func main() {
+	     go p()
+	     var input string
+	     fmt.Scanln(&input)
+		 fmt.Println("End")
+	}
+
+### goroutine通信：Channel
+
+go routine使用channel来进行routine间的通信：
+
+	package main
+	import (
+		"fmt"
+		"time"
+		"math/rand"
+	)
+	func sell(c chan int) {
+		for {
+		num := <- c
+		fmt.Println("Sell ",num," bread")
+	}
+	}
+	func produce(c chan int){
+		for {
+		num := rand.Intn(10)
+		t := time.Duration(num)
+		fmt.Println("Product ",num," bread")
+		c <- num
+		time.Sleep(time.Second* t)
+		}
+	}
+	func main() {
+		var c chan int = make(chan int)
+	     go sell(c)
+		 go produce(c)
+	     var input string
+	     fmt.Scanln(&input)
+		 fmt.Println("End")
+	}
+	//输出结果：
+	Product  1  bread
+	Sell  1  bread
+	Product  7  bread
+	Sell  7  bread
+	Product  7  bread
+	Sell  7  bread
+	Product  9  bread
+	Sell  9  bread
+
+默认channel是双向的，在函数入口也可以定义为单向：
+
+	func sell(c <-chan int)  //只能从通道取出
+	func produce(c chan<- int) //通道只能放入
+
+select语句用于在多个channel中选择已经ready的通道，如：
+
+	select {
+	case msg1 := <- c1:
+	     fmt.Println("Message 1", msg1)
+	case msg2 := <- c2:
+	     fmt.Println("Message 2", msg2)
+	case <- time.After(time.Second):
+	     fmt.Println("timeout")
+	default:
+	     fmt.Println("nothing ready")
+	}
+
+time.After会在指定时间后创建一个匿名通道，用来进行等待超时。如果所有channel都没有准备妥当，则立即执行default块。
+
+在make channel时指定第二个参数可以创建一个缓冲通道，类似其他高级语言中的定长队列：
+
+	c := make(chan int, 1)

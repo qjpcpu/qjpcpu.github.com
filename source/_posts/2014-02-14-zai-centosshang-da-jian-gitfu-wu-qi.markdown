@@ -1,0 +1,148 @@
+---
+layout: post
+title: "在CentOS上搭建git服务器"
+date: 2014-02-14 15:01:55 +0800
+comments: true
+categories: git
+---
+
+###0.定义
+
+这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。
+  
+localhost即git服务器上有两个账户test和git，test是用来搭建git服务器的已存在账户，
+git是为git服务器创建的专有账户。
+
+ubuntu是git服务器管理员的workstation，该管理员在自己的这台workstation上的账户是user。
+
+linux是jason的workstation。
+
+* git server:                 [test@localhost]     [git@localhost]
+* git administrator:      [user@ubuntu]
+* git user:                    [jason@linux]
+
+文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。
+
+###1.安装git
+
+	[test@localhost ~]$ sudo yum install git
+	#检查git是否安装正确
+	[test@localhost ~]$ git --version
+	git version 1.7.1
+
+###2.为git服务器创建专有用户
+
+通常将该用户取名git
+
+	[test@localhost ~]$ sudo useradd git -d /home/git
+	#最后切换到git用户
+	[test@localhost ~]$ su - git
+	
+###3.安装gitolite
+
+gitolite是一款git服务管理工具，通过公钥对用户进行认证，并能够利用配置文件进行repo的精细授权管理。由于它采用ssh公钥认证，所以先要安装ssh。
+
+	[test@localhost ~]$ sudo yum install ssh
+	[test@localhost ~]$ sudo service sshd start
+	[test@localhost ~]$ sudo chkconfig sshd on
+
+然后准备安装gitolite，git服务器的管理员需要先准备自己的密钥对。所以，假设这个管理员在自己的workstation（另一台linux主机，这里只是为了得到管理员自己的密钥，并非一定要在另一台linux机器上）上，他需要创建自己的密钥对（方便起见，不要输入passphrase）：
+
+	[user@ubuntu ~]$  ssh-keygen -f ~/.ssh/admin
+	
+该命令在~/.ssh目录下创建密钥对admin和admin.pub。
+
+现在回到git服务器主机，将刚创建的admin.pub复制到git用户的家目录下，即/home/git/下，并且chown为git账户。另外，在安装前须保证不存在文件~/.ssh/authorized_keys或该文件为空。
+
+安装gitolite：
+	
+	[git@localhost ~]$ git clone git://github.com/sitaramc/gitolite
+	[git@localhost ~]$ mkdir -p ~/bin
+	[git@localhost ~]$ gitolite/install -to ~/bin
+	[git@localhost ~]$ gitolite setup -pk admin.pub
+
+如果在执行第三条命令时出现错误：
+
+	Can't locate Time/HiRes.pm in @INC (@INC contains: /home/git/gitolite/src/lib /usr/local/lib/perl5 /usr/local/share/perl5 /usr/lib/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib/perl5 /usr/share/perl5 .) at /home/git/gitolite/src/lib/Gitolite/Common.pm line 76.
+	BEGIN failed--compilation aborted at /home/git/gitolite/src/lib/Gitolite/Common.pm line 76.
+	Compilation failed in require at gitolite/install line 15.
+	BEGIN failed--compilation aborted at gitolite/install line 15.
+    
+说明缺少perl需要的软件Time::HiRes，安装该软件包后，重新执行上面的命令：
+
+	[test@localhost ~]$ sudo yum install perl-Time-HiRes
+
+###4.添加用户
+
+现在，假设team里有个成员叫jason，他将自己的公钥jason.pub邮件给管理员，要求为他创建一个名为foo的repo，他要求该repo仅自己可以修改，其他人不能修改但可以查看。首先管理员在自己的workstation上先要获取gitolite的管理repo，the_git_host是管理员刚搭建的git服务器地址：
+
+	[user@ubuntu ~]$  git clone git@the_git_host:gitolite-admin
+   
+注意，执行该命令时，如果被要求输入密码，说明前面某些配置出错了，需要重新查证后再继续。
+
+克隆完成后，在./gitolite-admin目录下需要关注两个子目录：conf和keydir。conf是gitolite的权限配置文件夹，keydir用于放置所有用户的公钥。所以，现在可以将jason的公钥jason.pub放入文件夹keydir。然后编辑conf/gitolite.conf文件，在文件末尾添加新的repo：
+
+	repo foo
+           RW+         =   jason
+           R           =   @all
+
+提交更改，完成用户及其库的添加：
+
+	[user@ubuntu ~]$  git add conf
+	[user@ubuntu ~]$  git add keydir
+	[user@ubuntu ~]$  git commit -m 'added foo, gave access to jason'
+	[user@ubuntu ~]$   git push
+
+###5.用户执行git版本管理
+
+	[jason@linux ~]$   git clone git@the_git_host:foo
+
+命令执行完成，创建一个空库foo，现在jason就可以进行版本管理，在需要的时候进行提交。
+
+如果用户想要查询自己有权访问的所有repo，可以使用下面命令查询：
+
+	[jason@linux ~]$ ssh git@the_git_host  info
+
+注意：从第3步开始，任何地方使用ssh或git登录到git服务器需要输入密码，都说明配置git服务器出现错误，需要重新安装gitolite，重新安装前先清除之前的文件：
+
+	[git@localhost ~]$ ls -a | grep gitolite | xargs rm -fr
+	[git@localhost ~]$ rm -fr ~/repositories ~/bin  ~/projects.list ~/.ssh/authorized_keys
+
+###6.配置gitweb
+
+如果想要能够在网页上访问git库，就可以利用gitweb。
+
+	[test@localhost ~]$ sudo yum install gitweb
+
+打开/etc/gitweb.conf文件，按照注释的格式添加projectroot变量，指向git库：
+
+	our $projectroot = "/home/git/repositories";
+	our @git_base_url_list = qw(git://git.the_git_host
+                            ssh://git.the_git_host/var/lib/git);
+
+最后编辑apache服务器配置文件/etc/httpd/conf/httpd.conf，在文末添加：
+
+	<VirtualHost *:80>
+	    ServerName the_git_host
+	    DocumentRoot /var/www/git
+	    <Directory /var/www/git>
+	        Options ExecCGI +FollowSymLinks +SymLinksIfOwnerMatch
+	        AllowOverride All
+	        order allow,deny
+	        Allow from all
+	        AddHandler cgi-script cgi
+	        DirectoryIndex gitweb.cgi
+	    </Directory>
+	</VirtualHost>
+
+最后修改git库的权限，否则会出现404 no projects found错误，最后重启Apache服务器：
+
+	[test@localhost ~]$ sudo chmod 775 /home/git/repositories
+	[test@localhost ~]$ sudo chmod 775 /home/git
+	[test@localhost ~]$ sudo apachectl restart
+
+最后在浏览器里键入http://the_git_host就可以看到git库了，我在本机测试，使用的是http://localhost来访问服务器。
+
+*注：*如果在完成上述操作后，仍然显示404 no project found，那很可能又是SELinux惹的麻烦，尝试更改selinux的状态为permissive后再刷新页面试试：
+
+	[test@localhost ~]$ sudo setenforce 0

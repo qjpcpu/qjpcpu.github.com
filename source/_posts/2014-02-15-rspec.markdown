@@ -1,0 +1,29 @@
+---
+layout: post
+title: "rspec"
+date: 2014-02-15 00:14:29 +0800
+comments: true
+categories: ruby
+---
+
+## RSpec断言规则
+
+RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：
+
+	[].should be_empty => [].empty? #passes
+	[].should_not be_empty => [].empty? #fails
+
+除了用"be\_"来前缀断言方法，也可以用"be_a\_"和"be_an_"前缀，使得代码读起来更加自然：
+
+	"a string".should be_an_instance_of(String) =>"a string".instance_of?(String)#passes
+	3.should be_a_kind_of(Fixnum) => 3.kind_of?(Numeric) #passes
+	3.should be_a_kind_of(Numeric) => 3.kind_of?(Numeric) #passes
+	3.should be_an_instance_of(Fixnum) => 3.instance_of?(Fixnum) #passes 
+	3.should_not be_instance_of(Numeric) => 3.instance_of?(Numeric) #fails
+
+Rspec也会为诸如“has_key?”之类的断言创建匹配器，要使用该特性，在断言对象上使用 should have_key(:key) 就可以了，rspec会自动在对象上调用has_key?(:key)。如：
+
+	{:a => "A"}.should have_key(:a) => {:a => "A"}.has_key?(:a) #passes
+	{:a => "A"}.should have_key(:b) => {:a => "A"}.has_key?(:b) #fails
+
+还有一些常见的断言方法如： be  be_close  change  eql  have  be_true  be_false be_nil include raise_error respond_to throw_symbol   等等
