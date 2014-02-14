@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>初识jruby之在tomcat上部署jruby-on-rails - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="1. prerequesite 假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">初识jruby之在tomcat上部署jruby-on-rails</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:58:44+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>1. prerequesite</h3>
+
+<p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
+
+<h3>2. 安装配置Apache Tomcat</h3>
+
+<p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
+
+<p><img src="../images/20130731113711703.jpeg" alt="image" /></p>
+
+<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82">http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82</a></p>
+
+<p><img src="../images/20130731114036640.jpeg" alt="image" /></p>
+
+<h3>3. 下载安装jruby</h3>
+
+<p>安装jruby在前一篇博文讲解较细，这里不再赘述。</p>
+
+<p>安装必要的JDBC。</p>
+
+<pre><code>jruby -S gem install activerecord-jdbcmysql-adapter -v 1.3.0.beta2
+</code></pre>
+
+<p>如果要将jruby on rails工程打包为war发布到tomcat上，就必须要用到warbler Gem：</p>
+
+<pre><code>jruby -S gem install warbler
+</code></pre>
+
+<h3>4. 打包jruby on rails工程</h3>
+
+<p>首先确认database.yml文件production环境配置正确：</p>
+
+<pre><code>production:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: demo_production
+  username: user
+  password: password
+  host: localhost
+  port: 3306
+</code></pre>
+
+<p>配置正确的production数据库，及其用户密码。</p>
+
+<p>在数据库中创建production数据库demo_production，并且赋予用户user对该数据库的完全权限。</p>
+
+<p>然后开始打包工程，在rails app根目录下执行：</p>
+
+<pre><code>jruby -S warble
+</code></pre>
+
+<p>该命令会在工程根目录下生成一个war文件，如demo.war，该war会将必要的gem打包进去，使得我们能够像普通java工程war文件那样部署到tomcat中。</p>
+
+<h3>5. 部署war</h3>
+
+<p>将该war复制到tomcat的webapps目录下，等待大约几秒钟，tomcat会自动释放文件完成部署。</p>
+
+<p>最后一步，进入tomcat释放的文件夹demo中，生成数据库schema：</p>
+
+<pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
+</code></pre>
+
+<p>现在可以访问<a href="http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails">http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails</a> app的首页了。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:58:44+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jruby/'>jruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/" title="Previous Post: 初识jruby之安装配置jrubyonrails">&laquo; 初识jruby之安装配置jrubyonrails</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/15/rake-based-application/" title="Next Post: rake based application">rake based application &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

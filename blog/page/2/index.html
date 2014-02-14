@@ -1,0 +1,1308 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="lambda{ shared=10 Kernel.send :define_method, :counter do shared+=1 end Kernel.send :define_method, :show do shared end
+}.call show #=&gt;10
+3.times{ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/page/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/zai-%5B%3F%5D-zu-fang-fa-zhong-gong-xiang-bian-liang/">在一组方法中共享变量</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:46:19+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>lambda{
+    shared=10
+    Kernel.send :define_method, :counter do
+        shared+=1
+    end
+    Kernel.send :define_method, :show do
+        shared
+    end
+}.call
+
+show #=&gt;10
+3.times{counter}
+show #=&gt;13
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/">Rails 在javascript中使用ruby对象</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:40:15+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1.在javascript中使用ruby简单对象</h3>
+
+<p>如，需要将ruby对象转换成javascript的简单变量：</p>
+
+<pre><code>&lt;%= javascript_tag do %&gt;
+  url = '&lt;%= j products_url %&gt;';
+&lt;% end %&gt;
+</code></pre>
+
+<p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
+
+<h3>2.在javascript中使用ruby复杂对象</h3>
+
+<p>公共桥梁显然是json，但要正确地转义json就需要raw方法：</p>
+
+<pre><code>&lt;%= javascript_tag do %&gt;
+  products = &lt;%= raw Product.limit(10).to_json %&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>此时&lt;%= %>无引号包裹。</p>
+
+<h3>3.Gon gem</h3>
+
+<p>如果有大量的ruby对象需要在javascript中使用，这种方法就不好了。Gon就是为了解决这个问题。</p>
+
+<p>首先在gemfile中添加gon：</p>
+
+<pre><code>gem 'gon'
+</code></pre>
+
+<p>然后在/app/views/layouts/application.html.erb文件中包含gon：</p>
+
+<pre><code>&lt;head&gt;
+  &lt;title&gt;Store&lt;/title&gt;
+  &lt;%= include_gon %&gt;
+  &lt;%= stylesheet_link_tag    "application", media: "all" %&gt;
+  &lt;%= javascript_include_tag "application" %&gt;
+  &lt;%= csrf_meta_tag %&gt;
+&lt;/head&gt;
+</code></pre>
+
+<p>然后在controller中就可以以这种形式为javascript对象赋值：</p>
+
+<pre><code>gon.variable_name = variable_value
+# or new syntax
+gon.push({
+  :user_id =&gt; 1,
+  :user_role =&gt; "admin"
+})
+gon.push(any_object) # any_object with respond_to? :each_pair
+</code></pre>
+
+<p>例如：</p>
+
+<pre><code>class ProductsController &lt; ApplicationController
+    def index
+        gon.products = Product.limit(10)
+    end
+end
+</code></pre>
+
+<p>在js中获取变量的方法：</p>
+
+<pre><code>gon.variable_name
+</code></pre>
+
+<p>即：</p>
+
+<pre><code>go.products
+</code></pre>
+
+<h3>参考文献</h3>
+
+<ul>
+<li><a href="https://github.com/gazay/gon">gon</a></li>
+<li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-urllu-you/">Rails URL路由</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:26:35+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>rails URL路由的最权威文档当然是其官方站点Rails routing from the outside in，我这里只提几个文档中常用的要点。</p>
+
+<h3>1.CRUB</h3>
+
+<p>由resources建立的资源，是rails中最常见的路由方式，不用多说。</p>
+
+<pre><code>resources :photos
+</code></pre>
+
+<h3>2.单例资源</h3>
+
+<p>单例资源也比较常用，官方文档上举的例子很形象也很常见，用户user需要拥有一个profile资源，而每个用户必然只有一个profile，所以如果生成类似/profiles/:id的URL显然是不美观的，此时就需要单例资源，单例资源的生成使用的是单数形式方法resource：</p>
+
+<pre><code>resource :profile
+</code></pre>
+
+<p>该语句生成的路由如下：</p>
+
+<p><img src="../images/20130707221605953.jpeg" alt="image" /></p>
+
+<h3>3.嵌入的路由</h3>
+
+<p>适用于某种资源必须依赖于另一种资源才有意义，比如某些comment必然在针对的event下存在，所以comment就必须依赖于event。</p>
+
+<pre><code>resources :events do
+    resources :comments
+end
+</code></pre>
+
+<p><img src="../images/20130707222229703.jpeg" alt="image" /></p>
+
+<p>对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。</p>
+
+<h3>4.namespace和scope路由</h3>
+
+<p>以下规则同时适用于resources和controller。</p>
+
+<p>比如，如果想要在特定的命名空间(admin)下访问某个资源(post)，这时就可以利用namespace。</p>
+
+<pre><code>namespace :admin do
+  resources :posts
+end
+</code></pre>
+
+<p>此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：</p>
+
+<p><img src="../images/20130707224653531.jpeg" alt="image" /></p>
+
+<p>一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。</p>
+
+<p>如果需要让资源路由没有前缀，而又希望该路由url被某个模块下的controller受理，那么就需要使用
+scope。</p>
+
+<pre><code>scope module: 'admin' do
+  resources :posts
+end
+</code></pre>
+
+<p><img src="../images/20130707225527953.jpeg" alt="image" /></p>
+
+<p>由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。</p>
+
+<p>一言以蔽之，带module的scope产生的资源路由，路由url无“前缀”，controller以module指定模块为“前缀”。</p>
+
+<p>反过来，如果希望给资源附加一个前缀，而由普通controller受理该url，则需要另一种形式的scope：</p>
+
+<pre><code>scope '/admin' do
+  resources :posts
+end
+</code></pre>
+
+<p><img src="../images/20130707230019750.jpeg" alt="image" /></p>
+
+<p>此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。</p>
+
+<p>一言以蔽之，这种形式的scope产生的资源路由，路由url有“前缀”，controller无“前缀”。</p>
+
+<p>另外，这种形式的路由还有一种简写：</p>
+
+<pre><code>resources :posts, path: '/admin/posts'
+</code></pre>
+
+<p>该简写和使用scope产生的结果完全一样。不过，path还有另外的用途，如果保持controller及url helper不变，仅仅希望为url路由中的资源改个名称，这时path就派上用场了：</p>
+
+<pre><code>resources :posts, path: '/articles'
+</code></pre>
+
+<p><img src="../images/20130707230525468.jpeg" alt="image" /></p>
+
+<h3>5.新增RESTful动词</h3>
+
+<p>以下规则同样适用于resources和controller。</p>
+
+<pre><code>resources :photos do
+  get 'preview', on: :member
+end
+</code></pre>
+
+<p>该语句为某个特定photo新增了一个preview动作，该动作是一个get请求，默认photos_controller中存在一个preview方法处理该动作。</p>
+
+<p>类似的，如果需要为photos集合新增一个动词，只需要将语句中member改成collection即可。</p>
+
+<p>如果，需要为特定photo增加多个动词preview1和preview2，改成下面的形式即可，甚至可以指定
+controller中处理该请求的方法，以及自定义url helper：</p>
+
+<pre><code>resources :photos do
+  member do
+    get 'preview1'=&gt;:pre1, as:"p1"
+    get 'preview2'=&gt;:pre2, as:"p2"
+  end
+end
+</code></pre>
+
+<p><img src="../images/20130707231956765.jpeg" alt="image" /></p>
+
+<h3>6.非resourceful路由</h3>
+
+<h4>使用参数：</h4>
+
+<pre><code>controller :photos do
+  get 'check/:id',:to=&gt;:check
+end
+</code></pre>
+
+<p>产生的路由输出如下：</p>
+
+<pre><code>GET /check/:id(.:format) photos#check
+</code></pre>
+
+<p>在执行该get请求如/check/23，后photos_controller的check方法受理该请求，并在params中将参数设置为23。</p>
+
+<h4>限制参数格式：</h4>
+
+<pre><code>get 'photos/:id', to: 'photos#show', constraints: { id: /[A-Z]\d{5}/ }
+</code></pre>
+
+<p>该路由规则能接受/photos/A12345却不能接受/photos/893。</p>
+
+<h4>指定请求的默认类型：</h4>
+
+<pre><code>get 'articles/:id', to: 'articles#show', defaults: { format: 'xml' }
+</code></pre>
+
+<p>若get请求/articles/2，该路由规则会自动将params的params[:format]置为&#8221;xml&#8221;。</p>
+
+<p>该方法仅仅是在请求未指定format时指定默认类型，如果需要某个controller仅接受某些格式的请求如xml和json，则可以在该controller类定义中添加如下代码，这在书写api时常常用到：</p>
+
+<pre><code>respond_to :json, :xml
+</code></pre>
+
+<h4>更换资源的controller：</h4>
+
+<p>如果不希望为某个资源使用默认的controller，则：</p>
+
+<pre><code>resources :photos, controller: 'images'
+</code></pre>
+
+<p>此时photos资源的所有请求都由images_controller受理，而photos的路由url和url helper都不变。</p>
+
+<h4>限制资源的默认动作：</h4>
+
+<p>如果仅希望使用资源的部分动作，如仅使用资源photos的index和show动作：</p>
+
+<pre><code>resources :photos, only: [:index, :show]
+</code></pre>
+
+<p>或者使用除了destroy动作外的所有默认动作：</p>
+
+<pre><code>resources :photos, except: :destroy
+</code></pre>
+
+<p>还可以使用:all（所有默认动作），:none（没有默认动作）：</p>
+
+<pre><code>resources :photos, :only=&gt;:none
+</code></pre>
+
+<h4>为new和edit的url路由改名：</h4>
+
+<pre><code>resources :photos, path_names: { new: 'make', edit: 'change' }
+</code></pre>
+
+<p>产生的新路由为：</p>
+
+<pre><code>/photos/make
+/photos/1/change
+</code></pre>
+
+<p>而此时受理该路由的方法仍为new和edit，即controller中的方法并未改名。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/">Rails 填充数据库初始数据</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:21:46+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
+
+<blockquote><p>seeds.rb</p></blockquote>
+
+<pre><code>5.times do |i|
+    Product.create(name:"Product ##{i}",description:"A product")
+end
+</code></pre>
+
+<p>使用rake命令填充数据：</p>
+
+<pre><code>rake db:seed
+</code></pre>
+
+<p>或者从头调用所有migration创建空的数据库并自动seed填充数据库：</p>
+
+<pre><code>rake db:setup
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/">Rails 配置使用jquery-file-upload Step by Step</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:11:06+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>一步步安装使用jquery-file-upload</p>
+
+<h3>1.安装Gem</h3>
+
+<p>在gemfile中添加jquery-fileupload-rails和paperclip的gem：</p>
+
+<pre><code>gem "jquery-fileupload-rails"
+gem 'paperclip'
+</code></pre>
+
+<h3>2.在app/assets/application.js添加</h3>
+
+<pre><code>//= require jquery-fileupload
+</code></pre>
+
+<h3>3.在app/assets/stylesheets/application.css添加</h3>
+
+<pre><code>*= require jquery.fileupload-ui
+</code></pre>
+
+<h3>4.创建Picture数据表</h3>
+
+<pre><code>rails g model Picture avatar:attachment
+rake db:migrate
+</code></pre>
+
+<p>pictures表的avatar属性代表上传的文件对象。</p>
+
+<p>修改picture.rb的内容：</p>
+
+<pre><code>class Picture &lt; ActiveRecord::Base
+    has_attached_file :avatar
+
+    include Rails.application.routes.url_helpers
+
+    def to_json_picture
+        {
+            'name'=&gt;read_attribute(:avatar_file_name),
+            'size'=&gt;read_attribute(:avatar_file_size),
+            'url'=&gt;avatar.url(:original),
+            'delete_url'=&gt;picture_path(self),
+            'delete_type'=&gt;'DELETE'
+        }
+    end
+end
+</code></pre>
+
+<p>在model中，使用类方法has_attached_file指明文件对象是avatar，并且定义了to_json_picture方法，该方法将picture对象转换成一个hash，在jquery-fileupload和server的交互中被转变为json数据。</p>
+
+<h3>5.创建view</h3>
+
+<p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
+
+<p><a href="../images/rails-jquery-attach.txt">file</a></p>
+
+<h3>6.创建controller</h3>
+
+<pre><code>rails g controller pictures index create destroy
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>class PicturesController &lt; ApplicationController
+  def index
+    @pictures = Picture.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @pictures.map{|picuture| picuture.to_json_picture } }
+    end
+  end
+
+  # POST /picture
+  # POST /picture.json
+  def create
+    @picture = Picture.new(params[:picture])
+
+    respond_to do |format|
+      if @picture.save
+        format.html {
+          render :json =&gt; [@picture.to_json_picture].to_json,
+          :content_type =&gt; 'text/html',
+          :layout =&gt; false
+        }
+        format.json { render json: {files: [@picture.to_json_picture]}, status: :created, location: @picture }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @picture.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /picture/1
+  # DELETE /picture/1.json
+  def destroy
+    @picture = Picture.find(params[:id])
+    @picture.destroy
+
+    respond_to do |format|
+      format.html { redirect_to picture_url }
+      format.json { head :no_content }
+    end
+  end
+end
+</code></pre>
+
+<h3>7.效果图</h3>
+
+<p><img src="../images/20130622184225625.jpeg" alt="image" /></p>
+
+<p>这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。</p>
+
+<p><img src="../images/20130622184920031.jpeg" alt="image" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-eagerloading/">Rails Eagerloading</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:05:33+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>若存在如下Post model：</p>
+
+<pre><code>class Post &lt; ActiveRecord::Base
+    belongs_to :author
+    has_many :comments
+end
+</code></pre>
+
+<p>使用下面的循环加载数据时产生了N+1查询问题：</p>
+
+<pre><code>Post.all.each do |post|
+  puts "Post:            " + post.title
+  puts "Written by:      " + post.author.name
+  puts "Last comment on: " + post.comments.first.created_on
+end
+</code></pre>
+
+<p>首先，解决author获取问题：</p>
+
+<pre><code>Post.includes(:author).each do |post|
+</code></pre>
+
+<p>然后解决comments加载：</p>
+
+<pre><code>Post.includes(:author, :comments).each do |post|
+</code></pre>
+
+<p>带条件的eager loading：</p>
+
+<pre><code>Post.includes([:author, :comments]).where(['comments.approved = ?', true]).all
+</code></pre>
+
+<p>多态关系的eager laoding</p>
+
+<pre><code>class Address &lt; ActiveRecord::Base
+    belongs_to :addressable, :polymorphic=&gt;true
+end
+Address.includes(:addressable)
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/">Rails 创建数据库索引</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以经典的customer-order为例</p>
+
+<ol>
+<li>在创建数据表时直接创建索引</li>
+</ol>
+
+
+<p><img src="../images/20130622094250171.jpeg" alt="image" /></p>
+
+<p>查看order的migration文件，rails自动为我们添加了index：</p>
+
+<p><img src="../images/20130622094517109.jpeg" alt="image" /></p>
+
+<ol>
+<li>手动附加索引</li>
+</ol>
+
+
+<p>此时创建数据表是以普通字段创建的外键</p>
+
+<p><img src="../images/20130622094719421.jpeg" alt="image" /></p>
+
+<p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
+
+<p><img src="../images/20130622095445515.png" alt="image" /></p>
+
+<p>修改migration文件，手动添加index</p>
+
+<p><img src="../images/20130622095549781.jpeg" alt="image" /></p>
+
+<ol>
+<li>many-to-many关系中添加index</li>
+</ol>
+
+
+<p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
+
+<p><img src="../images/20130622101142750.jpeg" alt="image" /></p>
+
+<ol>
+<li>建议</li>
+</ol>
+
+
+<p>所有的外键最好都添加索引。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/">Rails使用devise验证用户</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:46:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>安装配置devise</h3>
+
+<p>在gemfile中添加一行：</p>
+
+<pre><code>gem 'devise'
+</code></pre>
+
+<p>执行bundle install后，需要安装devise到工程：</p>
+
+<pre><code>rails generate devise:install
+</code></pre>
+
+<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
+
+<pre><code>rails generate devise user
+rake db:migrate
+</code></pre>
+
+<p>查看models文件夹下devise创建了user.rb文件：</p>
+
+<p><img src="../images/20130618141054171.png" alt="image" /></p>
+
+<p>devise方法来自Devise gem，其中默认启用了database_authenticatable,registerable等模块，注释部分列出了其他模块默认未启用，根据devise文档按需要使能。</p>
+
+<p>attr_accessible定义的属性可以被create, update_attributes使用，未在这里定义的属性会引发这两个方法的 mass-assignment异常。</p>
+
+<p>查看路由文件 routes.rb，devise gem在创建model时在路由文件中添加了： <code>devise_for :users</code></p>
+
+<p>执行rake routes可以看到devise创建的url：</p>
+
+<p><img src="../images/20130618141818062.png" alt="image" /></p>
+
+<p>注意devise gem提供的账户注销和用户退出登陆都是默认使用的DELETE方法，该url设计常导致编码出错，但它确是遵循了RESTful规范，留意下即可。</p>
+
+<p>在需要的页面上添加注册、登陆的代码（我添加在application.html.erb中yield语句上方）：</p>
+
+<p><img src="../images/20130618142335171.png" alt="image" /></p>
+
+<p>rails server启动服务器，即可查看注册登陆页面：</p>
+
+<p><img src="../images/20130618142534640.png" alt="image" /></p>
+
+<h3>devise提供的常用method</h3>
+
+<pre><code>* authenticate_user!，验证用户是否登陆，常用于before_filter: `before_filter :authenticate_user!`. 另，如果你创建的devise model叫admin，那么该方法就是authenticate_admin!，以下方法同理。这又是ruby玩的一个小把戏了。
+* user_signed_in?，当前是否有登陆用户
+* current_user， 获取当前登陆用户
+* user_session, 用户session，类似于session，也是一个hash表，可以用来保存用户特有的数据
+* after_sign_in_path_for和after_sign_out_path_for方法指定用户登入/登出后的跳转url.
+</code></pre>
+
+<h3>自定义views</h3>
+
+<p>devise gem提供了足够功能的用户验证，但是由上图可见，其自带的view未免太过简单。如果需要自定义视图，就需要将devise默认的view拷贝到rails工程：</p>
+
+<pre><code>rails generate devise:views
+</code></pre>
+
+<p><img src="../images/20130618145150890.png" alt="image" /></p>
+
+<p>该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。</p>
+
+<h3>自定义controller</h3>
+
+<ul>
+<li><p>如果需要自定义controller，如Devise::SessionController：</p>
+
+<pre><code>  class Admins::SessionsController &lt; Devise::SessionsController
+  end
+</code></pre></li>
+<li><p>在路由文件routes.rb中更新配置，告诉devise使用新的controller</p>
+
+<pre><code>  devise_for :users, :controllers =&gt; { :sessions =&gt; "admins/sessions" }
+</code></pre></li>
+<li><p>更新了controller后，在app/views/devise/sessions下的views不会再被使用，所以，还需要将这部分views复制到app/views/admins/sessions下，或者在该目录下建立新的views。</p></li>
+</ul>
+
+
+<h3>邮件确认</h3>
+
+<p>如果需要更安全一点的注册验证，可以使用邮件确认方式。</p>
+
+<p>首先，修改user.rb文件，启用devise的confirmable模块：</p>
+
+<p><img src="../images/20130618153122203.png" alt="image" /></p>
+
+<p>在数据表users中新加字段：</p>
+
+<pre><code>rails g migration add_confirmable_fields_to_users
+</code></pre>
+
+<p><img src="../images/20130618153359328.png" alt="image" /></p>
+
+<p>新用户是以邮件的方式确认，所以，需要更改rails的环境配置。rails的环境配置位于config/environments/xxx.rb文件，xx代表develepment/test/production，三个文件的配置选项都十分类似，下面以production环境为例，打开config/environments/production.rb，在最后的end前添加：</p>
+
+<p><img src="../images/20130618154736625.png" alt="image" /></p>
+
+<p>配置邮件帐户，在production时rails建议使用邮件服务如Mandrill，这里为了简单，使用gmail帐户示例。</p>
+
+<p>在改文件中继续添加smtp配置，新添加的内容最终如下：</p>
+
+<p><img src="../images/20130618161158218.png" alt="image" /></p>
+
+<p>最后，修改devise.rb文件</p>
+
+<pre><code>config.mailer_sender = "replyme@126.com" 
+</code></pre>
+
+<p>现在，当新用户new@test.com注册后，它会收到一封确认邮件，邮件from: your_gmail_username@gmail.com, to: new@test.com, reply_to: replyme@126.com，邮件包含一个链接，指向用户激活地址。用户点击该链接激活帐户后才能登陆网站。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rubyxian-cheng/">Ruby线程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:35:53+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ol>
+<li>创建线程</li>
+</ol>
+
+
+<p><img src="../images/20130615125249265.png" alt="image" /></p>
+
+<p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
+
+<p><img src="../images/20130615132410906.png" alt="image" /></p>
+
+<p>新线程中保存num的副本，在线程中更改num并不影响外部num值，而新线程对book的修改会直接影响外部book，在新线程中也可打破作用域直接访问外部count并作出修改。</p>
+
+<p>常用方法</p>
+
+<p><img src="../images/20130615132410906.png" alt="image" /></p>
+
+<p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
+
+<p><img src="../images/20130615143555750.png" alt="image" /></p>
+
+<ol>
+<li>Mutex</li>
+</ol>
+
+
+<p>来自ruby-doc的例子</p>
+
+<p><img src="../images/20130615140140578.png" alt="image" /></p>
+
+<ol>
+<li>Condition Variables</li>
+</ol>
+
+
+<p>来自ruby-doc</p>
+
+<p><img src="../images/20130615134503984.png" alt="image" /></p>
+
+<p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
+
+<ol>
+<li>Queue</li>
+</ol>
+
+
+<p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
+
+<p><img src="../images/20130615140140578.png" alt="image" /></p>
+
+<p>ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/">Rails ActiveRecord数据库关系1:n</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:05:20+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。
+</code></pre>
+
+<p><img src="../images/RailsActiveRecord%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%B3%E7%B3%BB1vn-1.png" alt="1:n" /></p>
+
+<ol>
+<li><p>建立数据表</p>
+
+<pre><code> $ rails g model customer name:string
+ $ rails g model order customer_id:integer order_date:datetime
+ $ rails g model rake db:migrate
+</code></pre></li>
+<li><p>修改model，添加关系</p></li>
+</ol>
+
+
+<p>在这个1:n关系中，orders拥有外键customer_id，所以需要在order.rb中添加belongs_to关系，相对应在customer.rb中添加has_many关系。注意rails的约定，用rails g命令创建model时使用单数形式（首字母大小写无所谓），得到的数据库的表名是小写的复数形式，model的类名是驼峰形式的单数形式，model文件名是小写单数形式。</p>
+
+<p>类似1:1关系，同样添加inverse_of和dependent选项。此处dependent选项的多了一个delete_all，即:dependent=>:delete_all，表示移除customer时会删除其order的所有数据库记录，但不调用这些order的destroy方法销毁对象。</p>
+
+<blockquote><p>customer.rb</p></blockquote>
+
+<pre><code>class Customer &lt; ActiveRecord::Base
+    has_many :orders, :dependent =&gt; :destory, :inverse_of =&gt; :customer
+end
+</code></pre>
+
+<blockquote><p>order.rb</p></blockquote>
+
+<pre><code>class Order &lt; ActiveRecord::Base
+    belongs_to :customer, :inverse_of =&gt; :orders
+end
+</code></pre>
+
+<ol>
+<li>操作关系</li>
+</ol>
+
+
+<p>1：n关系中，在belongs_to关系端添加的方法和1：1中类似，不再赘述。在has_many端添加了如下方法：</p>
+
+<pre><code>collection(force_reload=false)
+collection&lt;&lt;(object, ...)
+collection.delete(object,...)
+collection = objects
+collection_singular_ids
+collection_singular_ids = ids
+collection.clear
+collection.empty?
+collection.size
+collection.find(...)
+collection.where(...)
+collection.exists?(...)
+collection.build(attributes={},...)
+collection.create(attributes={})
+</code></pre>
+
+<p>使用举例：</p>
+
+<pre><code>c = Customer.first
+order_list = c.orders #获取customer c的所有orders
+c.orders.delete order_list.first #解除关系
+c.orders.clear #清空当前customer的所有order
+ar = c.order_ids # =&gt; [1,2,3,4,9,12]
+c.orders &lt;&lt; Order.create( order_date:DateTime.now ) #自动保存关系到数据库
+c.orders.create(order_date:DateTime.now) #和上一行等同
+c.orders.build(order_date:DateTime.now) #需要手动保存该order对象
+c.orders.size #获取orders的数量
+c.orders.find 6 # 找到customer的orders中id为6的order
+c.orders.where :order_date=&gt;DateTime.now
+c.orders.where("id &gt; ?",6)
+c.orders.empty?
+</code></pre>
+
+<ol>
+<li>特殊的1：n关系——自引用关联</li>
+</ol>
+
+
+<p>如，一个Employee拥有多个下属，同时也拥有一个主管，这就是一个自引用关系表。</p>
+
+<pre><code>$ rails g model employee name:string manager_id:integer
+$ rake db:migrate
+</code></pre>
+
+<blockquote><p>employee.rb</p></blockquote>
+
+<pre><code>class Employee &lt; ActiveRecord::Base
+    has_many :subordinates, :class_name=&gt;'Employee', :forgeign_key=&gt;'manager_id'
+    belongs_to :manager, :class_name=&gt;'Employee'
+end
+</code></pre>
+
+<p>建立好model后，和普通1：n关系使用方法并无二致：</p>
+
+<pre><code>manger = Emloyee.where(manager_id:nil).first
+manager.subordinates.each do |s|
+    puts s.name
+end
+</code></pre>
+
+<ol>
+<li>特殊的1：n关系——多态关系</li>
+</ol>
+
+
+<p>多态关系(polymorphic)可以看作是一种特殊的1：n关系。考虑一种情况，Emplyee和Picture是1：n的关系，Product和Picture也是1：n的关系，Company和Picture也是1：n的关系，这样，在Picture的model中就需要添加许多的belongs_to关系，这些belongs_to的功能是非常类似的，多态关系就是为了解决这类重复。</p>
+
+<p>以Picture,Employee,Product为例，首先创建数据表。</p>
+
+<pre><code>$ rails g model picture name:string owner_id:integer owner_type:string
+$ rails g model employee
+$ rails g model product
+</code></pre>
+
+<p>注意在创建pictures时，将所有拥有Picture的model称为owner（也可以取别的名称，如RailsGuide上取名为imageable，个人觉得称为owner更形象），并创建了owner_id和owner_type两个字段，分别表示拥有者model的id和类型。</p>
+
+<p>修改model：</p>
+
+<blockquote><p>product.rb</p></blockquote>
+
+<pre><code>class Product &lt; ActiveRecord::Base
+    has_many :picture, :as=&gt;:owner
+end
+</code></pre>
+
+<blockquote><p>employee.rb</p></blockquote>
+
+<pre><code>class Employee &lt; ActiveRecord::Base
+    has_many :pictures, :as=&gt;:owner
+end
+</code></pre>
+
+<blockquote><p>picture.rb</p></blockquote>
+
+<pre><code>class Picture &lt; ActiveRecord:Base
+    belongs_to :owner, :polymorphic =&gt; true
+end
+</code></pre>
+
+<p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:owner，而picture的model中belongs_to关系添加了:polymorphic=>true选项。这样，如果以后还有新的model和picture是1:n的关系，那么在其中写入has_many :pictures,:as=>:owner即可，不必修改Picture的model及其数据表。</p>
+
+<p>关系的使用：</p>
+
+<pre><code>p1=Picture.create name:'picture-1'
+p2=Picture.create name:'picture-2'
+e=Employee.create
+pro=Product.create
+e.pictures&lt;&lt;p1
+pro.pictures&lt;&lt;p2
+
+p1.owner.class.name # =&gt; 'Employee'
+p2.owner.class.naem # =&gt; 'Product'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

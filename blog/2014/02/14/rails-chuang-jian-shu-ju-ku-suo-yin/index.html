@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails 创建数据库索引 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="以经典的customer-order为例 在创建数据表时直接创建索引 查看order的migration文件，rails自动为我们添加了index： 手动附加索引 此时创建数据表是以普通字段创建的外键 如果需要创建索引，就需要手动新建一个migration来添加索引： 修改migration文件， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails 创建数据库索引</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>以经典的customer-order为例</p>
+
+<ol>
+<li>在创建数据表时直接创建索引</li>
+</ol>
+
+
+<p><img src="../images/20130622094250171.jpeg" alt="image" /></p>
+
+<p>查看order的migration文件，rails自动为我们添加了index：</p>
+
+<p><img src="../images/20130622094517109.jpeg" alt="image" /></p>
+
+<ol>
+<li>手动附加索引</li>
+</ol>
+
+
+<p>此时创建数据表是以普通字段创建的外键</p>
+
+<p><img src="../images/20130622094719421.jpeg" alt="image" /></p>
+
+<p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
+
+<p><img src="../images/20130622095445515.png" alt="image" /></p>
+
+<p>修改migration文件，手动添加index</p>
+
+<p><img src="../images/20130622095549781.jpeg" alt="image" /></p>
+
+<ol>
+<li>many-to-many关系中添加index</li>
+</ol>
+
+
+<p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
+
+<p><img src="../images/20130622101142750.jpeg" alt="image" /></p>
+
+<ol>
+<li>建议</li>
+</ol>
+
+
+<p>所有的外键最好都添加索引。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/" title="Previous Post: rails使用devise验证用户">&laquo; rails使用devise验证用户</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/rails-eagerloading/" title="Next Post: rails Eagerloading">rails Eagerloading &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

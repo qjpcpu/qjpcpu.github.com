@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>在rails外单独使用ActiveRecord - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="单独使用ActiveRecord 需要在应用根目录demo/下的app.rb文件中写入： require 'active_record' require 'sqlite3' ActiveRecord::Base.establish_connection( :adapter=&gt;'sqlite3 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">在rails外单独使用ActiveRecord</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:20:50+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>单独使用ActiveRecord</h3>
+
+<p>需要在应用根目录demo/下的app.rb文件中写入：</p>
+
+<pre><code>require 'active_record'  
+require 'sqlite3'  
+
+ActiveRecord::Base.establish_connection(  
+    :adapter=&gt;'sqlite3',  
+    :database=&gt;'data.sqlite3',  
+    :pool=&gt;5,  
+    :timeout=&gt;5000  
+    )  
+
+class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+
+CreateUsers.new.change
+
+class User &lt; ActiveRecord::Base  
+end  
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<p>首先，使用ActiveRecord::Base.establish_connection建立连接，然后定义数据表迁移，再使迁移生效建立数据表，最后就可以像在rails中一样定义model，然后正常使用ActiveRecord了。</p>
+
+<p>代码可以正常工作了，但可以做的工作还有很多，因为这段代码实在是不美观。</p>
+
+<h3>像样的结构</h3>
+
+<p>大杂烩式的代码文件总是不美的，上面代码中包含了数据库连接，表创建，model定义和实际的应用代码四部分，这么多功能各异的部件还是分开好。首先创建demo/db目录，在这个目录下放置所有数据库连接的定义；创建demo/models目录，在下面放置model定义文件。demo/app.rb文件位置不变。</p>
+
+<h3>model定义</h3>
+
+<p>model定义文件demo/user.rb的内容就是将上面的user类定义复制过来即可。</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+end
+</code></pre>
+
+<h3>ActiveRecord配置</h3>
+
+<p>新建demo/db/connection.rb文件，该文件里设置数据库连接：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+
+dbconfig = YAML::load(File.open('db/database.yml'))
+ActiveRecord::Base.establish_connection(dbconfig)
+</code></pre>
+
+<p>这里模仿rails使用了yaml来配置连接，该文件也在demo/db目录下，内容为：</p>
+
+<pre><code>adapter: sqlite3
+database: data.sqlite3
+pool: 5
+timeout: 5000
+</code></pre>
+
+<p>现在的demo/app.rb清爽多了：</p>
+
+<pre><code>require File.expand_path('../db/connection',__FILE__)
+Dir[File.expand_path('../models',__FILE__)+'/*.rb'].each{|f| require f }
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<h3>数据表迁移</h3>
+
+<p>现在还有一个问题，我也想像rails中那样利用rake来迁移数据表定义。参考我前一篇博客Rake就可以轻松写出数据迁移的rakefile。在demo/根目录下创建rakefile文件：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+require 'logger'
+
+task :default =&gt; :migrate
+
+task :migrate =&gt; :environment do
+  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
+end
+
+task :environment do
+  ActiveRecord::Base.establish_connection(YAML::load(File.open('db/database.yml')))
+  ActiveRecord::Base.logger = Logger.new(File.open('db/database.log', 'a'))
+end
+</code></pre>
+
+<p>只要在终端中执行rake命令就可能完成数据迁移：</p>
+
+<pre><code>$ rake
+==  CreateUsers: migrating ====================================================
+-- create_table(:users)
+   -&gt; 0.0020s
+==  CreateUsers: migrated (0.0040s) ===========================================
+</code></pre>
+
+<p>实际上现在还无法得出这样的输出，因为还没有编写迁移代码文件。那么迁移文件写在哪儿呢？在demo/db/migrate/目录中专门用来放置数据迁移代码，比如现在我们在该目录下新建一个迁移文件001_create_users.rb，写入迁移代码：</p>
+
+<pre><code>class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+</code></pre>
+
+<p>现在执行rake命令才能得出上面给出的正确输出。</p>
+
+<p>最后给出示例应用的最终目录结构：</p>
+
+<p><img src="../images/20131203203056312.png" alt="image" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:20:50+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/15/rspec/" title="Previous Post: rspec">&laquo; rspec</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/" title="Next Post: 一步一步搭建mysql主从同步">一步一步搭建mysql主从同步 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

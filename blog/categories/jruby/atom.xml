@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jruby | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/jruby/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2014-02-15T01:07:18+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[初识jruby之在tomcat上部署jruby-on-rails]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/"/>
+    <updated>2014-02-14T23:58:44+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails</id>
+    <content type="html"><![CDATA[<h3>1. prerequesite</h3>
+
+<p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
+
+<h3>2. 安装配置Apache Tomcat</h3>
+
+<p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
+
+<p><img src="../images/20130731113711703.jpeg" alt="image" /></p>
+
+<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82">http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82</a></p>
+
+<p><img src="../images/20130731114036640.jpeg" alt="image" /></p>
+
+<h3>3. 下载安装jruby</h3>
+
+<p>安装jruby在前一篇博文讲解较细，这里不再赘述。</p>
+
+<p>安装必要的JDBC。</p>
+
+<pre><code>jruby -S gem install activerecord-jdbcmysql-adapter -v 1.3.0.beta2
+</code></pre>
+
+<p>如果要将jruby on rails工程打包为war发布到tomcat上，就必须要用到warbler Gem：</p>
+
+<pre><code>jruby -S gem install warbler
+</code></pre>
+
+<h3>4. 打包jruby on rails工程</h3>
+
+<p>首先确认database.yml文件production环境配置正确：</p>
+
+<pre><code>production:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: demo_production
+  username: user
+  password: password
+  host: localhost
+  port: 3306
+</code></pre>
+
+<p>配置正确的production数据库，及其用户密码。</p>
+
+<p>在数据库中创建production数据库demo_production，并且赋予用户user对该数据库的完全权限。</p>
+
+<p>然后开始打包工程，在rails app根目录下执行：</p>
+
+<pre><code>jruby -S warble
+</code></pre>
+
+<p>该命令会在工程根目录下生成一个war文件，如demo.war，该war会将必要的gem打包进去，使得我们能够像普通java工程war文件那样部署到tomcat中。</p>
+
+<h3>5. 部署war</h3>
+
+<p>将该war复制到tomcat的webapps目录下，等待大约几秒钟，tomcat会自动释放文件完成部署。</p>
+
+<p>最后一步，进入tomcat释放的文件夹demo中，生成数据库schema：</p>
+
+<pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
+</code></pre>
+
+<p>现在可以访问<a href="http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails">http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails</a> app的首页了。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[初识jruby之安装配置jrubyonrails]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/"/>
+    <updated>2014-02-14T23:49:23+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails</id>
+    <content type="html"><![CDATA[<h3>1. prerequesite</h3>
+
+<p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
+
+<h3>2. 安装rails</h3>
+
+<p>安装rails4.0.0：</p>
+
+<pre><code>C:\&gt;jruby -S gem install rails -V
+</code></pre>
+
+<p>查看安装的rails版本：</p>
+
+<pre><code>C:\&gt;jruby -S rails -v
+Rails 4.0.0
+</code></pre>
+
+<h3>3. 新建一个rails Apps</h3>
+
+<pre><code>C:\&gt;jruby -S rails new demo
+</code></pre>
+
+<p>并且取消bundle install，因为使用默认安装的ActiveRecord-JDBC-adapter的master分支版本目前，会导致执行rake db:migrate命令时发生wrong number of arguments calling exec_insert (5 for 3) error错误，所以，修改gemfile使用它的1.3.0.beta2版本（这个步骤是现在的权宜之计，以后肯定不必这么麻烦了。后注：此问题目前已修复)：</p>
+
+<p>如果使用的是sqlite数据库，则将：</p>
+
+<pre><code>gem 'activerecord-jdbcsqlite3-adapter'
+</code></pre>
+
+<p>改为：</p>
+
+<pre><code>gem 'activerecord-jdbcsqlite3-adapter', '1.3.0.beta2'
+</code></pre>
+
+<p>如果使用的mysql数据库，则将：</p>
+
+<pre><code>gem 'activerecord-jdbcmysql-adapter'
+</code></pre>
+
+<p>改为：</p>
+
+<pre><code>gem 'activerecord-jdbcmysql-adapter','1.3.0.beta2'
+</code></pre>
+
+<p>然后再进行 jruby -S bundle install 安装gem。</p>
+
+<p>如果使用sqlite数据库，默认配置即可，如果使用mysql数据库，则修改database.yml，以development
+环境为例，这里的username，password，host，port按照具体情况进行具体配置：</p>
+
+<pre><code>development:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: demo_development
+  username: user
+  password: user_password
+  host: localhost
+  port: 3306
+</code></pre>
+
+<p>最后，启动rails app：</p>
+
+<pre><code>C:\DEMO&gt;jruby -S rails s
+</code></pre>
+
+<p>然而此时又出错了：</p>
+
+<pre><code>OpenSSL::Cipher::CipherError: Illegal key size: possibly you need to install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for your JRE
+</code></pre>
+
+<p>要求安装JCE，到Oracle 官网上下载一个UnlimitedJCEPolicyJDK7.zip文件，解压缩后包含两个jar文件：local_policy.jar和US_export_policy.jar。将这两个文件替换$JAVA_HOME/jre/lib/security目录下两个同名文件，如，在我的电脑是就是替换C:\Program Files\Java\jdk1.7.0_25\jre\lib\security目录下两个文件。替换后，重启电脑。</p>
+
+<p>此时，再jruby -S rails s启动app则可以正确运行了。</p>
+
+<h3>4. 配置java类路径</h3>
+
+<p>如果需要在rails中使用java外部类，则需要配置一下$CLASSPATH，首先，假设我们将需要的java类都放在rails_root/lib/java文件夹下。那么就在environment.rb文件中require File.expand_path(&lsquo;../
+application&rsquo;, __FILE__)后添加代码：</p>
+
+<pre><code>require 'java'
+$CLASSPATH &lt;&lt; File.join(Rails.root, 'lib','java')
+</code></pre>
+
+<p>这样，如果在该目录下有一个编译好的java类example.MyClass在rails中就可以像这样使用该类：</p>
+
+<pre><code>mc=Java::example.MyClass.new
+</code></pre>
+
+<p>如果还使用了外部jar，则还要添加引用jar的代码，同样在environment.rb文件中添加：</p>
+
+<pre><code>Dir.glob(File.join(Rails.root, 'lib','java',"**","*.jar")).each do |jar| 
+    $CLASSPATH &lt;&lt; jar
+end
+</code></pre>
+
+<p>所以最终environment.rb文件看起来是这样的：</p>
+
+<blockquote><p>environment.rb</p></blockquote>
+
+<pre><code># Load the rails application
+require File.expand_path('../application',__FILE__)
+requrie 'java'
+$CLASSPATH&lt;&lt;File.join(Rails.root,'lib','java')
+Dir.glob(File.join(Rails.root,'lib','java','**','*.jar)).each do |jar|
+    $CLASSPATH &lt;&lt; jar
+end
+
+Demo::Application.initialize!
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[初识jruby之入门]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/"/>
+    <updated>2014-02-14T17:24:21+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men</id>
+    <content type="html"><![CDATA[<p>首先，Jruby的官方站点是<a href="http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82">http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82</a></p>
+
+<h3>1. 下载安装</h3>
+
+<p>首先在官方下载页下载安装最新的jruby，这部分内容还是老老实实去下载页照着做，话说配置开发环境不是每个程序员的必修课吗？不过放心，jruby安装起来很方便的，安装完成后，查看jruby版本，验证是否正确安装：</p>
+
+<pre><code>C:\&gt;jruby --version
+jruby 1.7.4 (1.9.3p392) 2013-05-16 2390d3b on Java HotSpot(TM) 64-Bit Server VM 1.6.0_38-b05 [Windows 7-amd64]
+</code></pre>
+
+<h3>2. 在jruby中使用rake,gem等</h3>
+
+<p>在jruby下使用这些命令需要前缀一个jruby -S命令，如：</p>
+
+<pre><code>jruby -S gem list --local
+jruby -S gem install rails mongrel jdbc-mysql activerecord-jdbcmysql-adapter
+jruby -S rails new blog 
+cd blog
+jruby -S rake -T
+jruby -S rake db:create
+jruby -S rake db:migrate
+</code></pre>
+
+<p>另外，jruby的控制台进入命令时jirb而不是irb：</p>
+
+<pre><code>C:\&gt;jirb
+irb(main):001:0&gt;
+</code></pre>
+
+<h3>3. 在jruby中调用java类</h3>
+
+<p>例如，在C:\DEMO文件夹下有一个java类文件JavaMan.java：</p>
+
+<pre><code>package example;
+
+public class JavaMan {
+
+  public JavaMan() {
+  }
+
+  public void hello() {
+      System.out.println("Hello, I am a Java man!");
+  }
+  public void hello(String name){
+     System.out.println("Hello "+name+", I am a Java man!");
+  }
+
+}
+</code></pre>
+
+<p>然后在命令行中编译该java类文件：</p>
+
+<pre><code>C:\DEMO&gt;javac JavaMan.java -d .
+</code></pre>
+
+<p>在C:\DEMO下建立ruby文件demo.rb：</p>
+
+<pre><code>require 'java'
+java_import "example.JavaMan" #导入java类JavaMan
+j=JavaMan.new
+j.hello
+j.hello "Jason"
+</code></pre>
+
+<p>在命令行中执行该ruby脚本使用jruby命令：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+Hello, I am a Java man!
+Hello Jason, I am a Java man!
+</code></pre>
+
+<p>也可以直接在jirb中调试ruby程序：</p>
+
+<pre><code>C:\DEMO&gt;jirb
+irb(main):001:0&gt; java_import 'example.JavaMan'
+=&gt; [Java::Example::JavaMan]
+irb(main):002:0&gt; JavaMan.new.hello "Jason"
+Hello Jason, I am a Java man!
+=&gt; nil
+</code></pre>
+
+<h3>4. 在jruby中实现java接口</h3>
+
+<p>若有一个java接口类：</p>
+
+<pre><code>package example;
+public interface JavaDog{
+    public void runs();
+}
+</code></pre>
+
+<p>那么可以在ruby代码中实现该接口：</p>
+
+<pre><code>require 'java'
+java_import "example.JavaDog" #导入java接口
+
+class FastDog
+    include JavaDog
+    def runs
+        puts "I am running fast!"
+    end
+end
+
+FastDog.new.runs
+</code></pre>
+
+<p>运行结果：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+I am running fast!
+</code></pre>
+
+<h3>5. 在jruby中调用jar中的类</h3>
+
+<p>若在C:\DEMO\some.jar中包含了一个java bean， example.Person，该类包含了四个属性name,age,sex,country，除了country外其他三个属性都有setter和getter，另外该Person bean还有一个方法getProfile()获取简历。</p>
+
+<pre><code>require 'java'
+require 'some.jar'
+java_import "example.Person"
+
+p=Person.new
+p.name="Jason"
+p.age=10
+p.sex="Male"
+begin
+    p.country="China"
+rescue NoMethodError =&gt; e
+    puts "No country setter in Person bean"
+end
+puts p.getProfile
+</code></pre>
+
+<p>运行结果：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+No country setter in Person bean
+Name:Jason Sex:Male Age:10
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

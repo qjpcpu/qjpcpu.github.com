@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails 在javascript中使用ruby对象 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="1.在javascript中使用ruby简单对象 如，需要将ruby对象转换成javascript的简单变量： &lt;%= javascript_tag do %&gt; url = '&lt;%= j products_url %&gt;';
+&lt;% end %&gt; 此时的&lt &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails 在javascript中使用ruby对象</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:40:15+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>1.在javascript中使用ruby简单对象</h3>
+
+<p>如，需要将ruby对象转换成javascript的简单变量：</p>
+
+<pre><code>&lt;%= javascript_tag do %&gt;
+  url = '&lt;%= j products_url %&gt;';
+&lt;% end %&gt;
+</code></pre>
+
+<p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
+
+<h3>2.在javascript中使用ruby复杂对象</h3>
+
+<p>公共桥梁显然是json，但要正确地转义json就需要raw方法：</p>
+
+<pre><code>&lt;%= javascript_tag do %&gt;
+  products = &lt;%= raw Product.limit(10).to_json %&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>此时&lt;%= %>无引号包裹。</p>
+
+<h3>3.Gon gem</h3>
+
+<p>如果有大量的ruby对象需要在javascript中使用，这种方法就不好了。Gon就是为了解决这个问题。</p>
+
+<p>首先在gemfile中添加gon：</p>
+
+<pre><code>gem 'gon'
+</code></pre>
+
+<p>然后在/app/views/layouts/application.html.erb文件中包含gon：</p>
+
+<pre><code>&lt;head&gt;
+  &lt;title&gt;Store&lt;/title&gt;
+  &lt;%= include_gon %&gt;
+  &lt;%= stylesheet_link_tag    "application", media: "all" %&gt;
+  &lt;%= javascript_include_tag "application" %&gt;
+  &lt;%= csrf_meta_tag %&gt;
+&lt;/head&gt;
+</code></pre>
+
+<p>然后在controller中就可以以这种形式为javascript对象赋值：</p>
+
+<pre><code>gon.variable_name = variable_value
+# or new syntax
+gon.push({
+  :user_id =&gt; 1,
+  :user_role =&gt; "admin"
+})
+gon.push(any_object) # any_object with respond_to? :each_pair
+</code></pre>
+
+<p>例如：</p>
+
+<pre><code>class ProductsController &lt; ApplicationController
+    def index
+        gon.products = Product.limit(10)
+    end
+end
+</code></pre>
+
+<p>在js中获取变量的方法：</p>
+
+<pre><code>gon.variable_name
+</code></pre>
+
+<p>即：</p>
+
+<pre><code>go.products
+</code></pre>
+
+<h3>参考文献</h3>
+
+<ul>
+<li><a href="https://github.com/gazay/gon">gon</a></li>
+<li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:40:15+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/rails-urllu-you/" title="Previous Post: rails URL路由">&laquo; rails URL路由</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/zai-%5B%3F%5D-zu-fang-fa-zhong-gong-xiang-bian-liang/" title="Next Post: 在一组方法中共享变量">在一组方法中共享变量 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

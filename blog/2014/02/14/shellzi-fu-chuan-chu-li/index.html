@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Shell字符串处理 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="1.获取字符串长度 ${#string} &ndash; [jason@localhost ~]$ str="hello,world"
+[jason@localhost ~]$ echo ${#str}
+11 2.获取子串 ${string:position}
+${string:position: &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Shell字符串处理</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:10:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>1.获取字符串长度</h3>
+
+<pre><code>${#string}
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="hello,world"
+[jason@localhost ~]$ echo ${#str}
+11
+</code></pre>
+
+<h3>2.获取子串</h3>
+
+<pre><code>${string:position}
+${string:position:length}
+$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str=ABCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1}
+BCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1:2}
+BC
+[jason@localhost ~]$ echo ${str:(-2)}
+MN
+</code></pre>
+
+<h3>3.子串切除</h3>
+
+<pre><code>${string#substring} 从左向右切除最短匹配的子串
+${stirng##substring} 从左向右切除最长匹配的子串
+${string%substring} 从右向左切除最短匹配的子串
+${stirng%%substring} 
+</code></pre>
+
+<h3>4.字符串正则提取</h3>
+
+<pre><code>echo $string | grep -oE "regexpression”
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I am 12 years old"
+[jason@localhost ~]$ echo $str | grep -Eo '[0-9]+'
+12
+</code></pre>
+
+<h3>5.字符串正则替换</h3>
+
+<pre><code>echo $string | sed -r 's/regexpr/replacement'
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I am 12 years old" 
+[jason@localhost ~]$ echo $str | sed -r  "s/ am/'m/"
+I'm 12 years old
+</code></pre>
+
+<h3>6.分割字符串</h3>
+
+<pre><code>awk
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
+[jason@localhost ~]$ echo $str | awk -F '_' '{print $3}'
+12
+[jason@localhost ~]$ echo $str | awk  '{split($1,a,"_");print a[3]}'
+12
+</code></pre>
+
+<h3>7. 获取索引</h3>
+
+<pre><code>awk '{print match($0,"substring")}'
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
+[jason@localhost ~]$ echo $str | awk '{print match($0,"[0-9]+")}'
+6
+</code></pre>
+
+<p>注意这个索引是从1开始的</p>
+
+<h3>8.sed分组</h3>
+
+<p>sed的分组是很好玩的，在替换模式中，“&amp;”代表前面匹配的全部字符串，而反斜杠加数字表示分组。</p>
+
+<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
+[jason@localhost ~]$ echo $str | sed -r 's/name:[^;]+/[&amp;]/'
+[name:jack];age:12
+[jason@localhost ~]$ echo $str | sed -r 's/name:([^;]+)/--\1--/'
+--jack--;age:12
+</code></pre>
+
+<h3>9.awk常用字符串处理函数</h3>
+
+<pre><code>sub(reg,replacement,string)
+gsub(reg,replacement,string)
+</code></pre>
+
+<p>将string中匹配正则表达式reg的字符串（全部）替换为replacement</p>
+
+<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
+[jason@localhost ~]$ echo $str | awk '{gsub(/a/,"A",$0);print $0}'      
+nAme:jAck;Age:12
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>index(substring,string) #返回子字符串substring在字符串string中的位置
+length(string) #获取字符串的长度
+match(string,reg) #获取匹配reg得到的子串在字符串中的位置
+split(string,array,separator) #将字符串按分隔符separator分割到array数组中
+sprintf("format",expression) #和c语言的sprintf类似
+substr(string,position,length)  #获取子字符串
+tolower(string)
+toupper(string)
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:10:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/shell/'>shell</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/code-snippets/" title="Previous Post: code snippets">&laquo; code snippets</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/" title="Next Post: Go学习笔记-函数和包">Go学习笔记-函数和包 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

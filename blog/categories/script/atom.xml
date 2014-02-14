@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Script | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/script/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2014-02-15T01:07:18+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Code Snippets]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/code-snippets/"/>
+    <updated>2014-02-14T18:08:28+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/code-snippets</id>
+    <content type="html"><![CDATA[<h3>ruby文件utf-8编码</h3>
+
+<pre><code># -*- coding: UTF-8 -*-
+</code></pre>
+
+<h3>退出ssh登录后继续执行命令</h3>
+
+<p>如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：</p>
+
+<pre><code>nohup long_run_cmd &amp;
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Go学习笔记-类型与接口 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。 结构类型 这里，还是和C语言很像的，定义结构： type Man struct { name string age int
+} &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Go学习笔记-类型与接口</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:27:36+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
+
+<h3>结构类型</h3>
+
+<p>这里，还是和C语言很像的，定义结构：</p>
+
+<pre><code>type Man struct {
+     name string
+     age int
+}
+</code></pre>
+
+<p>声明结构变量及初始化：</p>
+
+<pre><code>var m Man   //声明Man变量
+m := new(Man)  //声明一个Man指针
+m := Man{name:"jack",age:12} //声明并初始化 
+m := Man{"jack",12}  //声明并初始化
+</code></pre>
+
+<h3>方法</h3>
+
+<p>go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。</p>
+
+<pre><code>func (m *Man) Introduce() bool {
+    fmt.Println("name: ",m.name)
+    return true
+}
+</code></pre>
+
+<p>调用方法使用了&#8221;.&ldquo;符号：</p>
+
+<pre><code>m := Man{"Jack",12}
+ok := m.Introduce()
+</code></pre>
+
+<p>利用结构的方法，我们甚至还能像ruby一样，为系统中预定类型打个猴子补丁，添加新的方法，只不过手段稍微曲线了一点，比如，下面代码为字符串(不是string类型)添加一个chomp方法来去掉字符串最后一个换行符：</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "strings"
+)
+
+type MyString string
+func (str MyString) chomp() string {
+    return strings.TrimRight(string(str),"\n")
+}
+func main() {
+    str := "Hello world!\n"
+    ms := MyString(str)
+    fmt.Println(ms.chomp())   //输出 Hello world!
+}
+</code></pre>
+
+<h3>方法代理</h3>
+
+<p>其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+    n := new(Neo)
+    n.Fly()  //输出：The One can fly!
+}
+
+type Neo struct{
+    TheOne
+}
+type TheOne struct{}
+
+func (o *TheOne) Fly(){
+    fmt.Println("The One can fly!")
+}
+</code></pre>
+
+<p>在ruby语言中，有许多做这种方法代理的代码，而go语言的嵌入类型的表征和该特性竟是如此神似，嘿嘿</p>
+
+<p>另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。</p>
+
+<h3>go style duck-type</h3>
+
+<p>go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。</p>
+
+<p>接口定义：</p>
+
+<pre><code>type Duck interface {
+     run()
+     height() int
+     gaga(word string)
+}
+</code></pre>
+
+<p>Duck接口中仅包含了一系列的方法声明。</p>
+
+<p>然后在方法参数中我们可以这样使用：</p>
+
+<pre><code>func DuckRun(d Duck){
+    d.run()
+}
+</code></pre>
+
+<p>那么是不是我们需要去完成多个Duck接口的实现呢？NO。那样岂不是和java一样了。go语言的interface的唯一用处其实是为了满足编译器（唉，多少有点无奈），这样编译器在DuckRun函数入口会检查传递进来的对象是否含有Duck接口所包含的三个方法，如果符合定义，则通过编译。这样不就是鸭子类型吗？仅检查是否包含这些方法，而不管是否是某种类型，所以说go style的鸭子类型是很了不起的。</p>
+
+<p>举个例子，人是有say说话的方法的，但其实对于某个需要say方法的函数中，我们可以给它传递一个地球对象，尽管地球什么话也不会说：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+     m := Man{name:"Jack"}
+     m.say()
+     e := new(Earch)
+     SaySth(e)
+     SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
+}
+func SaySth(obj Object){
+    obj.say()
+}
+type Object interface{
+    say()
+}
+type Man struct{
+    name string
+}
+type Earch struct{}
+
+func (m *Man) say(){
+    fmt.Println("Man says: I'm ",m.name)
+}
+
+func (e *Earch) say(){
+    //do nothing
+}
+</code></pre>
+
+<h3>空接口及类型</h3>
+
+<p>空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
+类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。</p>
+
+<pre><code>// 定义a为空接口
+var a interface{}
+var i int = 5
+s := "Hello world"
+// a可以存储任意类型的数值 a=i,a=s
+</code></pre>
+
+<p>一个函数把interface{}作为参数,那么他可以接受任意类型的值作为参数,如果一个函数返回interface{},那么也 就可以返回任意类型的值。</p>
+
+<p>我们知道interface的变量里面可以存储任意类型的数值(该类型实现了interface)。那么我们怎么反向知道这个变量 里面实际保存了的是哪个类型的对象呢?可以使用Comma-ok断言</p>
+
+<pre><code>value, ok = element.(T)
+</code></pre>
+
+<p>这里value就是变 量的值,ok是一个bool类型,element是interface变量,T是断言的类型。</p>
+
+<p>如果element里面确实存储了T类型的数值,那么ok返回true,否则返回false。</p>
+
+<p>此外，关于go语言中类型处理的要求更多时，就需要使用反射。Go语言实现了反射,所谓反射就是动态运行时的状态。我们一般用到的包是reflect包。使用reflect一般分成三步,下面简要的讲解一下:要去反射是一个类型的值(这些值都实现了空interface),首先需 要把它转化成reflect对象(reflect.Type或者reflect.Value,根据不同的情况调用不同的函数)。这两种获取方式如 下:</p>
+
+<pre><code>t := reflect.TypeOf(i) //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
+v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面的值,还可以去改变值
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:27:36+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/go/'>go</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/" title="Previous Post: Go学习笔记-go routine">&laquo; Go学习笔记-go routine</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/" title="Next Post: rails ActiveRecord数据库关系1:1">rails ActiveRecord数据库关系1:1 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1779 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。 1.建立数据表 由于n:n的关系是以中间表的形式表达的，所以需要创建图示中的三张表assemlies, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/page/3">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n/">Rails ActiveRecord数据库关系n:n</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T21:50:54+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。</p>
+
+<p><img src="../images/RailsActiveRecord%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%B3%E7%B3%BBnvn-1.png" alt="n-n" /></p>
+
+<p>1.建立数据表</p>
+
+<p>由于n:n的关系是以中间表的形式表达的，所以需要创建图示中的三张表assemlies, parts和中间表assemlies_part。</p>
+
+<pre><code>$ rails g model assembly name:string
+$ rails g model part part_number:string
+$ rails g migration CreateAssembliesAndParts 
+</code></pre>
+
+<p>编辑db/migrate/目录下新建的xxxx_create_assemblies_and_parts.rb文件，在该文件中定义中间表：</p>
+
+<blockquote><p>20130609063804_create_assemblies_and_parts.rb</p></blockquote>
+
+<pre><code>class CreateAssembliesAndParts &lt; ActiveRecord::Migration
+    def change
+        create_table :assemblies_parts, :id=&gt;false do |t|
+            t.integer :assembly_id
+            t.integer :part_id
+        end
+    end
+end
+</code></pre>
+
+<p> 注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=>false。</p>
+
+<p>另外，该中间表的表名是“assemblies_part“，以中间的下划线连接两张表，并且按照字母顺序小在前字母顺序大的在后排列，如果创建”part_assemlies“表，则rails可能找不到该中间表。</p>
+
+<p>实际上，rails是以string的”&lt;“操作来比较单词的，所以，如果不确定哪个表在前哪个在后，可以使用该操作符确定一下再创建表。比如有两张表”devil_x“和&#8221;devilx&#8221;（为什么会有人取这么奇怪的表名呢），那就需要自己来确认一下中间表的表名：</p>
+
+<pre><code>irb(main):002:0&gt; 'devil_x'&lt;'devilx'
+=&gt; true
+</code></pre>
+
+<p>所以，中间表的表名应该是“devil_x_devilx”。</p>
+
+<p>最后，确认创建数据表：</p>
+
+<pre><code>$ rake db:migrate
+</code></pre>
+
+<ol>
+<li>修改model，添加关系</li>
+</ol>
+
+
+<p>在关系的两端都需要添加has_and_belongs_to_many。</p>
+
+<blockquote><p>assembly.rb</p></blockquote>
+
+<pre><code>class Assembly &lt;ActiveRecord::Base
+    has_and_belongs_to_many :parts
+end
+</code></pre>
+
+<blockquote><p>part.rb</p></blockquote>
+
+<pre><code>class Part &lt; ActiveRecord::Base
+    has_and_belongs_to_many :assemblies
+end
+</code></pre>
+
+<ol>
+<li>操作关系</li>
+</ol>
+
+
+<p>在n:n关系的两端都添加了如下方法：</p>
+
+<pre><code>collection(force_reload=false)
+collection&lt;&lt;(object, ...)
+collection.delete(object, ...)
+collection = objects
+collection_singular_ids
+collection_singular_ids = ids
+collection.clear
+collection.empty?
+collection.size
+collection.find(...)
+collection.where(...)
+collection.exists?(...)
+collection.build(attributes = {})
+collection.create(attributes = {})
+</code></pre>
+
+<p>可以看到，添加的方法和has_many关系添加的方法相同，所以就不再重复介绍使用方法。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/">Rails ActiveRecord数据库关系1:1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T21:25:17+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如图所示，在demo数据库中有suppliers和accounts两张表。一个supplier有一个account，一个account属于一个supplier，是一个1:1关系。</p>
+
+<p><img src="../images/RailsActiveRecord%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%B3%E7%B3%BB1v1-1.png" alt="1-1" /></p>
+
+<ol>
+<li><p>建立数据表</p>
+
+<pre><code>  $ rails g model supplier name:string
+  $ rails g model account supplier_id:integer account_number:string
+  $ rake db:migrate
+</code></pre></li>
+<li><p>修改model，添加关系</p></li>
+</ol>
+
+
+<p>在这个1:1关系中，accounts拥有外键supplier_id，所以需要在account.rb中添加belongs_to关系，相对应在supplier.rb中添加has_one关系。注意rails的约定，用rails g命令创建model时使用单数形式（首字母大小写无所谓），得到的数据库的表名是小写的复数形式，model的类名是驼峰形式的单数形式，model文件名是小写单数形式。</p>
+
+<blockquote><p>account.rb</p></blockquote>
+
+<pre><code>class Account &lt; ActiveRecord::Base
+  belongs_to :supplier
+end
+</code></pre>
+
+<blockquote><p>supplier.rb</p></blockquote>
+
+<pre><code>class Supplier &lt; ActiveRecord::Base
+    has_one :account
+end
+</code></pre>
+
+<p>对于1:1关系，有几个常用的可选项：</p>
+
+<p>:dependent: 对于has_one关系的一方（supplier)，可以添加:dependent选项为destroy, delete,nullify，destroy表示删除supplier会同时删除它拥有的account(包括内存对象和数据库记录)，delete表示删除supplier会删除拥有account的数据库记录但不调用其destroy销毁内存对象，nullify表示删除supplier会解除和account的关系，即仅将其拥有account中的外键置为NULL。</p>
+
+<p>:inverse_of: 该选项成对出现，保证一对关系中的数据同步，避免出现下面的情况：</p>
+
+<pre><code>s=Supplier.first
+a=s.account
+s.name==a.supplier.name #=&gt;true
+s.name="new_name"
+s.name==a.supplier.name #=&gt;false
+</code></pre>
+
+<p>所以，再次修改model：</p>
+
+<blockquote><p>account.rb</p></blockquote>
+
+<pre><code>class Account &lt; ActiveRecord::Base
+  belongs_to :supplier, :inverse_of=&gt;:account
+end
+</code></pre>
+
+<blockquote><p>supplier.rb</p></blockquote>
+
+<pre><code>class Supplier &lt; ActiveRecord::Base
+    has_one :account, :dependent=&gt;:destroy, :inverse_of=&gt;:supplier
+end
+</code></pre>
+
+<ol>
+<li>关系操作</li>
+</ol>
+
+
+<p>在建立1:1关系后，关系的两端都自动添加了如下方法来创建关系：</p>
+
+<pre><code>association(force_reload = false)
+association = (associate)
+build_association(attributes = {})
+create_association(attributes = {})
+</code></pre>
+
+<p>即，在rails中可以这样使用：</p>
+
+<pre><code>s = Supplier.first
+a = s.account #获取关系
+s.account = Account.find(11) #创建关系
+#仅仅创建关系，这个acc并没有被保存
+acc = s.build_account(account_number:"1234")
+#这个新的acc被创建并保存
+acc = s.create_account(account_number:"4589")
+</code></pre>
+
+<p>需要注意的是，对于association=()方法，在1:1关系的两端的工作是不一样的。</p>
+
+<pre><code>#关系被自动保存到数据库
+@supplier.account = @account
+#关系保存在内存，除非现实调用save，否则关系不会保存到数据库
+@account.supplier = @supplier #并未保存关系
+@account.save #保存了二者的关系
+</code></pre>
+
+<p>这个问题对于1：n关系也同样存在，在1的一方建立关系会自动保存，在多的一方建立关系不会自动保存。对于什么时候应该使用save方法，什么时候不必使用，有一个好记的规则，如果model包含外键，那么在该model上调用association=()建立的关系需要save（如上例的account），反过来如果model不包含外键，则不需要（如上例的supplier）。</p>
+
+<p>解除关系：</p>
+
+<pre><code>@supplier.account = nil
+@supplier.account.delete
+</code></pre>
+
+<p>在本例中，上述两种办法都可以解除关系，并且会删除account对象。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/">Go学习笔记-类型与接口</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:27:36+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
+
+<h3>结构类型</h3>
+
+<p>这里，还是和C语言很像的，定义结构：</p>
+
+<pre><code>type Man struct {
+     name string
+     age int
+}
+</code></pre>
+
+<p>声明结构变量及初始化：</p>
+
+<pre><code>var m Man   //声明Man变量
+m := new(Man)  //声明一个Man指针
+m := Man{name:"jack",age:12} //声明并初始化 
+m := Man{"jack",12}  //声明并初始化
+</code></pre>
+
+<h3>方法</h3>
+
+<p>go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。</p>
+
+<pre><code>func (m *Man) Introduce() bool {
+    fmt.Println("name: ",m.name)
+    return true
+}
+</code></pre>
+
+<p>调用方法使用了&#8221;.&ldquo;符号：</p>
+
+<pre><code>m := Man{"Jack",12}
+ok := m.Introduce()
+</code></pre>
+
+<p>利用结构的方法，我们甚至还能像ruby一样，为系统中预定类型打个猴子补丁，添加新的方法，只不过手段稍微曲线了一点，比如，下面代码为字符串(不是string类型)添加一个chomp方法来去掉字符串最后一个换行符：</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "strings"
+)
+
+type MyString string
+func (str MyString) chomp() string {
+    return strings.TrimRight(string(str),"\n")
+}
+func main() {
+    str := "Hello world!\n"
+    ms := MyString(str)
+    fmt.Println(ms.chomp())   //输出 Hello world!
+}
+</code></pre>
+
+<h3>方法代理</h3>
+
+<p>其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+    n := new(Neo)
+    n.Fly()  //输出：The One can fly!
+}
+
+type Neo struct{
+    TheOne
+}
+type TheOne struct{}
+
+func (o *TheOne) Fly(){
+    fmt.Println("The One can fly!")
+}
+</code></pre>
+
+<p>在ruby语言中，有许多做这种方法代理的代码，而go语言的嵌入类型的表征和该特性竟是如此神似，嘿嘿</p>
+
+<p>另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。</p>
+
+<h3>go style duck-type</h3>
+
+<p>go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。</p>
+
+<p>接口定义：</p>
+
+<pre><code>type Duck interface {
+     run()
+     height() int
+     gaga(word string)
+}
+</code></pre>
+
+<p>Duck接口中仅包含了一系列的方法声明。</p>
+
+<p>然后在方法参数中我们可以这样使用：</p>
+
+<pre><code>func DuckRun(d Duck){
+    d.run()
+}
+</code></pre>
+
+<p>那么是不是我们需要去完成多个Duck接口的实现呢？NO。那样岂不是和java一样了。go语言的interface的唯一用处其实是为了满足编译器（唉，多少有点无奈），这样编译器在DuckRun函数入口会检查传递进来的对象是否含有Duck接口所包含的三个方法，如果符合定义，则通过编译。这样不就是鸭子类型吗？仅检查是否包含这些方法，而不管是否是某种类型，所以说go style的鸭子类型是很了不起的。</p>
+
+<p>举个例子，人是有say说话的方法的，但其实对于某个需要say方法的函数中，我们可以给它传递一个地球对象，尽管地球什么话也不会说：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+     m := Man{name:"Jack"}
+     m.say()
+     e := new(Earch)
+     SaySth(e)
+     SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
+}
+func SaySth(obj Object){
+    obj.say()
+}
+type Object interface{
+    say()
+}
+type Man struct{
+    name string
+}
+type Earch struct{}
+
+func (m *Man) say(){
+    fmt.Println("Man says: I'm ",m.name)
+}
+
+func (e *Earch) say(){
+    //do nothing
+}
+</code></pre>
+
+<h3>空接口及类型</h3>
+
+<p>空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
+类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。</p>
+
+<pre><code>// 定义a为空接口
+var a interface{}
+var i int = 5
+s := "Hello world"
+// a可以存储任意类型的数值 a=i,a=s
+</code></pre>
+
+<p>一个函数把interface{}作为参数,那么他可以接受任意类型的值作为参数,如果一个函数返回interface{},那么也 就可以返回任意类型的值。</p>
+
+<p>我们知道interface的变量里面可以存储任意类型的数值(该类型实现了interface)。那么我们怎么反向知道这个变量 里面实际保存了的是哪个类型的对象呢?可以使用Comma-ok断言</p>
+
+<pre><code>value, ok = element.(T)
+</code></pre>
+
+<p>这里value就是变 量的值,ok是一个bool类型,element是interface变量,T是断言的类型。</p>
+
+<p>如果element里面确实存储了T类型的数值,那么ok返回true,否则返回false。</p>
+
+<p>此外，关于go语言中类型处理的要求更多时，就需要使用反射。Go语言实现了反射,所谓反射就是动态运行时的状态。我们一般用到的包是reflect包。使用reflect一般分成三步,下面简要的讲解一下:要去反射是一个类型的值(这些值都实现了空interface),首先需 要把它转化成reflect对象(reflect.Type或者reflect.Value,根据不同的情况调用不同的函数)。这两种获取方式如 下:</p>
+
+<pre><code>t := reflect.TypeOf(i) //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
+v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面的值,还可以去改变值
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/">Go学习笔记-go Routine</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:23:38+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Go routine indeed</h2>
+
+<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
+
+<p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
+
+<p>(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
+
+<p>(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
+
+<p>(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
+
+<p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
+
+<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
+
+<p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
+
+<p>(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
+
+<p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
+
+<h3>启动一个go routine</h3>
+
+<p>go关键字+函数名即可启动一个go routine:</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "time"
+)
+func p() {
+     for i := 0; i &lt; 100; i++ {
+           fmt.Println(i)
+           time.Sleep(time.Second * 1)
+       } 
+}
+func main() {
+     go p()
+     var input string
+     fmt.Scanln(&amp;input)
+     fmt.Println("End")
+}
+</code></pre>
+
+<h3>goroutine通信：Channel</h3>
+
+<p>go routine使用channel来进行routine间的通信：</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "time"
+    "math/rand"
+)
+func sell(c chan int) {
+    for {
+    num := &lt;- c
+    fmt.Println("Sell ",num," bread")
+}
+}
+func produce(c chan int){
+    for {
+    num := rand.Intn(10)
+    t := time.Duration(num)
+    fmt.Println("Product ",num," bread")
+    c &lt;- num
+    time.Sleep(time.Second* t)
+    }
+}
+func main() {
+    var c chan int = make(chan int)
+     go sell(c)
+     go produce(c)
+     var input string
+     fmt.Scanln(&amp;input)
+     fmt.Println("End")
+}
+//输出结果：
+Product  1  bread
+Sell  1  bread
+Product  7  bread
+Sell  7  bread
+Product  7  bread
+Sell  7  bread
+Product  9  bread
+Sell  9  bread
+</code></pre>
+
+<p>默认channel是双向的，在函数入口也可以定义为单向：</p>
+
+<pre><code>func sell(c &lt;-chan int)  //只能从通道取出
+func produce(c chan&lt;- int) //通道只能放入
+</code></pre>
+
+<p>select语句用于在多个channel中选择已经ready的通道，如：</p>
+
+<pre><code>select {
+case msg1 := &lt;- c1:
+     fmt.Println("Message 1", msg1)
+case msg2 := &lt;- c2:
+     fmt.Println("Message 2", msg2)
+case &lt;- time.After(time.Second):
+     fmt.Println("timeout")
+default:
+     fmt.Println("nothing ready")
+}
+</code></pre>
+
+<p>time.After会在指定时间后创建一个匿名通道，用来进行等待超时。如果所有channel都没有准备妥当，则立即执行default块。</p>
+
+<p>在make channel时指定第二个参数可以创建一个缓冲通道，类似其他高级语言中的定长队列：</p>
+
+<pre><code>c := make(chan int, 1)
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/">Go学习笔记-函数和包</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:15:26+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>函数定义</h3>
+
+<p>go语言中使用func关键字定义函数，如main函数的定义：</p>
+
+<pre><code>func main() {
+     fmt.Println("main function")
+}
+</code></pre>
+
+<p>定义一个具有参数和返回值的函数：</p>
+
+<pre><code>func sum(a int,b int) int {
+    return a+b
+}
+</code></pre>
+
+<h3>多值返回</h3>
+
+<p>go语言的函数可以有多个返回值，它是真正的多值返回，这个特性让ruby之父都有些艳羡呢（ruby的多值实际上是返回的列表）。</p>
+
+<pre><code>func sum(a int,b int) (int,bool){
+    s := a+b
+    t := true
+    return s,t
+}
+</code></pre>
+
+<p>调用函数时，可以这样获取多个值：</p>
+
+<pre><code>m,n := sum(1,2)
+//如果，不需要全部的返回值，可以用_来替代
+m,_ := sum(1,2)
+</code></pre>
+
+<p>多值返回还有一个很cool的特性，如果返回值使用了命名参数，那么函数最后可以直接使用空的return语句，go函数会自动寻找匹配返回值的变量返回：</p>
+
+<pre><code>func sum(a int,b int) (s int,t bool){
+    s = a+b
+    t = true
+    return 
+}
+</code></pre>
+
+<h3>闭包</h3>
+
+<p>go语言另一个很cool的特性就是它支持了闭包，虽然这在众多的动态语言中已经被玩坏了，不过go语言明确对它提出了支持，这仍旧是令人十分激动的。</p>
+
+<pre><code>func main() {
+     x := 0
+     increment := func() int {
+           x++
+return x }
+     fmt.Println(increment())
+     fmt.Println(increment())
+}
+</code></pre>
+
+<h3>defer</h3>
+
+<p>go语言的defer延迟执行是一个很有意思的特性，它将defer后的函数推迟到退出函数的最后一刻才执行：</p>
+
+<pre><code>func main() {
+    defer second()
+    first() 
+}
+</code></pre>
+
+<p>main函数里执行的真正顺序是first()，然后才是 second()，defer保证其后的函数会最后执行，甚至在发生运行时异常后，也会保证执行。</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+     defer func() {
+           str := recover()
+           fmt.Println(str)
+     }()
+     panic("PANIC")
+}
+</code></pre>
+
+<h3>指针</h3>
+
+<p>go的指针和c语言的指针用法非常类似，不再赘述。另外go还提供了另一种创建指针的方式，new关键字，它返回对应类型的地址：</p>
+
+<pre><code>func one(xPtr *int) {
+     *xPtr = 1
+}
+func main() {
+     xPtr := new(int)
+     one(xPtr)
+     fmt.Println(*xPtr) // x is 1
+}
+</code></pre>
+
+<h3>go保留函数</h3>
+
+<blockquote><p>本节内容来自：Go Web编程</p>
+
+<p>Go里面有两个保留的函数:init函数(能够应用于所有的package)和main函数(只能应用于package main)。 这两个函数在定义时不能有任何的参数和返回值。虽然一个package里面可以写任意多个init函数,但这无论是对 于可读性还是以后的可维护性来说,我们都强烈建议用户在一个package中每个文件只写一个init函数。</p>
+
+<p>Go程序会自动调用init()和main(),所以你不需要在任何地方调用这两个函数。每个package中的init函数都是可选的,但package main就必须包含一个main函数。</p>
+
+<p>程序的初始化和执行都起始于main包。如果main包还导入了其它的包,那么就会在编译时将它们依次导入。有时一 个包会被多个包同时导入,那么它只会被导入一次(例如很多包可能都会用到fmt包,但它只会被导入一次,因为没 有必要导入多次)。</p></blockquote>
+
+<h4>包的引入</h4>
+
+<p>我们在写Go代码的时候经常用到import这个命令用来导入包文件,而我们经常看到的方式参考如下:</p>
+
+<pre><code>import(
+   "fmt"
+)
+</code></pre>
+
+<p>然后我们代码里面可以通过如下的方式调用</p>
+
+<pre><code>fmt.Println("hello world")
+</code></pre>
+
+<p>上面这个fmt是Go语言的标准库,其实是去goroot下去加载该模块,当然Go的import还支持如下两种方式来加载自己写的模块:</p>
+
+<ol>
+<li><p>相对路径</p>
+
+<pre><code> import “./model”   //当前文件同一目录的model目录,但是不建议这种方式来import
+</code></pre></li>
+<li><p>绝对路径</p>
+
+<pre><code> import “shorturl/model”   //加载$GOPATH/src/shorturl/model模块
+</code></pre></li>
+</ol>
+
+
+<p>上面展示了一些import常用的几种方式,但是还有一些特殊的import,让很多新手很费解,下面我们来一一讲解一下 到底是怎么一回事</p>
+
+<ol>
+<li>点操作</li>
+</ol>
+
+
+<p>我们有时候会看到如下的方式导入包</p>
+
+<pre><code>import(
+   . "fmt"
+)
+</code></pre>
+
+<p>这个点操作的含义就是这个包导入之后在你调用这个包的函数时,你可以省略前缀的包名,也就是前面你调用的<code>fmt.Println("hello world")</code>可以省略的写成<code>Println("hello world")</code></p>
+
+<ol>
+<li>别名操作</li>
+</ol>
+
+
+<p>别名操作顾名思义我们可以把包命名成另一个我们用起来容易记忆的名字</p>
+
+<pre><code>import(
+   f "fmt"
+)
+</code></pre>
+
+<p>别名操作的话调用包函数时前缀变成了我们的前缀,即 f.Println(&ldquo;hello world&rdquo;)</p>
+
+<ol>
+<li>_操作</li>
+</ol>
+
+
+<p>这个操作经常是让很多人费解的一个操作符,请看下面这个import</p>
+
+<pre><code>import (
+     "database/sql"
+     _ "github.com/ziutek/mymysql/godrv"
+)
+</code></pre>
+
+<p>_操作其实是引入该包,而不直接使用包里面的函数,而是调用了该包里面的init函数</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/shellzi-fu-chuan-chu-li/">Shell字符串处理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:10:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1.获取字符串长度</h3>
+
+<pre><code>${#string}
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="hello,world"
+[jason@localhost ~]$ echo ${#str}
+11
+</code></pre>
+
+<h3>2.获取子串</h3>
+
+<pre><code>${string:position}
+${string:position:length}
+$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str=ABCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1}
+BCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1:2}
+BC
+[jason@localhost ~]$ echo ${str:(-2)}
+MN
+</code></pre>
+
+<h3>3.子串切除</h3>
+
+<pre><code>${string#substring} 从左向右切除最短匹配的子串
+${stirng##substring} 从左向右切除最长匹配的子串
+${string%substring} 从右向左切除最短匹配的子串
+${stirng%%substring} 
+</code></pre>
+
+<h3>4.字符串正则提取</h3>
+
+<pre><code>echo $string | grep -oE "regexpression”
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I am 12 years old"
+[jason@localhost ~]$ echo $str | grep -Eo '[0-9]+'
+12
+</code></pre>
+
+<h3>5.字符串正则替换</h3>
+
+<pre><code>echo $string | sed -r 's/regexpr/replacement'
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I am 12 years old" 
+[jason@localhost ~]$ echo $str | sed -r  "s/ am/'m/"
+I'm 12 years old
+</code></pre>
+
+<h3>6.分割字符串</h3>
+
+<pre><code>awk
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
+[jason@localhost ~]$ echo $str | awk -F '_' '{print $3}'
+12
+[jason@localhost ~]$ echo $str | awk  '{split($1,a,"_");print a[3]}'
+12
+</code></pre>
+
+<h3>7. 获取索引</h3>
+
+<pre><code>awk '{print match($0,"substring")}'
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
+[jason@localhost ~]$ echo $str | awk '{print match($0,"[0-9]+")}'
+6
+</code></pre>
+
+<p>注意这个索引是从1开始的</p>
+
+<h3>8.sed分组</h3>
+
+<p>sed的分组是很好玩的，在替换模式中，“&amp;”代表前面匹配的全部字符串，而反斜杠加数字表示分组。</p>
+
+<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
+[jason@localhost ~]$ echo $str | sed -r 's/name:[^;]+/[&amp;]/'
+[name:jack];age:12
+[jason@localhost ~]$ echo $str | sed -r 's/name:([^;]+)/--\1--/'
+--jack--;age:12
+</code></pre>
+
+<h3>9.awk常用字符串处理函数</h3>
+
+<pre><code>sub(reg,replacement,string)
+gsub(reg,replacement,string)
+</code></pre>
+
+<p>将string中匹配正则表达式reg的字符串（全部）替换为replacement</p>
+
+<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
+[jason@localhost ~]$ echo $str | awk '{gsub(/a/,"A",$0);print $0}'      
+nAme:jAck;Age:12
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>index(substring,string) #返回子字符串substring在字符串string中的位置
+length(string) #获取字符串的长度
+match(string,reg) #获取匹配reg得到的子串在字符串中的位置
+split(string,array,separator) #将字符串按分隔符separator分割到array数组中
+sprintf("format",expression) #和c语言的sprintf类似
+substr(string,position,length)  #获取子字符串
+tolower(string)
+toupper(string)
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/code-snippets/">Code Snippets</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:08:28+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>ruby文件utf-8编码</h3>
+
+<pre><code># -*- coding: UTF-8 -*-
+</code></pre>
+
+<h3>退出ssh登录后继续执行命令</h3>
+
+<p>如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：</p>
+
+<pre><code>nohup long_run_cmd &amp;
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rake-rubys-make/">Rake-ruby&#8217;s Make</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:49:14+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Rake，顾名思义，就是Ruby的Make工具。</p>
+
+<h2>Rake的特性</h2>
+
+<p>Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语法。不需要编辑XML文件，也不需要记忆古怪的makefile语法。</p>
+
+<ul>
+<li>可以定义任务（task），并为任务定义依赖。</li>
+<li>rake支持利用规则模式来合成隐式任务。</li>
+<li>灵活的文件列表，可以像列表一样操作。</li>
+<li>预置的库使得编写rakefile变得更加简单。</li>
+<li>支持并行执行多个任务。</li>
+</ul>
+
+
+<p>所以说，rakefile文件没有特殊的格式，仅仅是一个包含ruby代码的文件，不过，仍然有一些关于rakefile的约定，遵循这些约定，使得rake能够更好地处理任务和行为。</p>
+
+<h2>任务(Task)</h2>
+
+<p>Task是rakefile的最重要组成部分。task拥有自己的名称（通常使用符号或字符串命名），一个依赖列表，以及一系列动作（在task的块中定义）。</p>
+
+<h3>简单任务</h3>
+
+<p>使用task方法定义任务。task方法接受单个参数作为任务名称。</p>
+
+<pre><code>task :name
+</code></pre>
+
+<h3>依赖任务</h3>
+
+<p>依赖以列表的形式紧跟任务名。</p>
+
+<pre><code>task :name =&gt; [:prereq1, :prereq2]
+</code></pre>
+
+<h3>任务动作</h3>
+
+<p>在task方法块中定义动作，块中可以使用任意ruby代码。块中的Ruby代码也可以使用块的参数引用任务对象本身。</p>
+
+<pre><code>task :name =&gt; [:prereq1, :prereq2] do |t|
+  # actions (may reference t)
+end
+</code></pre>
+
+<h3>任务的多次定义</h3>
+
+<p>一个任务可以被多次定义。每次定义都能增加新的规定到已经存在的任务。该特性使得可以在不同的rakefile文件中定义的任务组合成一个完整任务。例如，下面的任务定义和上面的代码定义了完全相同的任务。</p>
+
+<pre><code>task :name
+task :name =&gt; [:prereq1]
+task :name =&gt; [:prereq2]
+task :name do |t|
+  # actions
+end
+</code></pre>
+
+<h3>文件任务File Task</h3>
+
+<p>实际情况中可能遇到在文件中创建其他文件的情况。如果文件已经存在，文件任务就会跳过该文件。使用方法file（而不是task）可以定义文件任务，此外文件任务名通常使用字符串而不是符号来定义。下面的任务会创建一个可执行程序prog，它依赖于另两个文件a.o和b.o（创建a.o和b.o的任务未写出）。</p>
+
+<pre><code>file "prog" =&gt; ["a.o", "b.o"] do |t|
+  sh "cc -o #{t.name} #{t.prerequisites.join(' ')}"
+end
+</code></pre>
+
+<h3>目录任务Directory Task</h3>
+
+<p>创建目录也是很常见的任务，这是由directory方法来完成的，它是使用文件任务创建目录的一个快捷方式。如：</p>
+
+<pre><code>directory "testdata/examples/doc"
+</code></pre>
+
+<p>等价于：</p>
+
+<pre><code>file "testdata"              do |t| mkdir t.name end
+file "testdata/examples"     do |t| mkdir t.name end
+file "testdata/examples/doc" do |t| mkdir t.name end
+</code></pre>
+
+<p>目录任务并不接受依赖和动作定义。但是，可以在定义完成后追加依赖或动作。如：</p>
+
+<pre><code>directory "testdata"
+file "testdata" =&gt; ["otherdata"]
+file "testdata" do
+  cp Dir["standard_data/*.data"], "testdata"
+end
+</code></pre>
+
+<h3>并行依赖任务Task with Parallel Prerequisites</h3>
+
+<p>Rake可以让依赖任务并行执行：</p>
+
+<pre><code>multitask :copy_files =&gt; [:copy_src, :copy_doc, :copy_bin] do
+  puts "All Copies Complete"
+end
+</code></pre>
+
+<p>copy_files是一个普通任务，它的动作在所有依赖任务完成后才会执行。但copy_src, copy_doc, copy_bin这三个依赖任务会并行执行，它们各自在自己的ruby线程中执行。如果这三个任务还依赖于某个共同任务pre_for_copy，那么只有当pre_for_copy任务完成后这个三个任务才开始并行执行。</p>
+
+<p>另外，Rake内部的数据结构是线程安全的，所以当执行并行任务时不必考虑同步。但如果使用了某些用户自定义的数据，就可能需要考虑线程安全的问题了。</p>
+
+<h3>带参数的任务</h3>
+
+<p>直接传递参数给需要的任务。如，有个release任务需要版本号作为参数：</p>
+
+<pre><code>rake release[0.8.2]
+</code></pre>
+
+<p>版本号字符串0.8.2就会传递给release任务。多个参数可以以逗号分隔的列表的形式传递给任务：</p>
+
+<pre><code>rake name[john,doe]
+</code></pre>
+
+<p>注意，rake任务名及其参数是以单个命令行参数传递给rake的，即中间不允许有空格。如果任务名和参数包含空格，就必须进行使用引号：</p>
+
+<pre><code>rake "name[billy bob, smith]"
+</code></pre>
+
+<h3>任务参数和环境参数</h3>
+
+<p>任务参数也可以从环境参数获得。如：</p>
+
+<pre><code>rake release[0.8.2]
+</code></pre>
+
+<p>也可以写成：</p>
+
+<pre><code>RELEASE_VERSION=0.8.2 rake release
+</code></pre>
+
+<p>或：</p>
+
+<pre><code>rake release RELEASE_VERSION=0.8.2
+</code></pre>
+
+<p>注意：</p>
+
+<ul>
+<li>环境参数名要么完全匹配任务定义中的参数，要么和参数全部大写匹配；</li>
+<li>rake命令中声明使用的环境参数不影响系统中的环境变量。</li>
+</ul>
+
+
+<h3>带参数任务的定义</h3>
+
+<p>必须声明接收参数的任务才能接受参数。定义带参数的任务十分简单：</p>
+
+<pre><code>task :name, [:first_name, :last_name]
+</code></pre>
+
+<p>name是任务名，后面的列表是name任务需要接收的参数。利用task块的第二个参数可以在动作中访问传递来的参数：</p>
+
+<pre><code>task :name, [:first_name, :last_name] do |t, args|
+  puts "First name is #{args.first_name}"
+  puts "Last  name is #{args.last_name}"
+end
+</code></pre>
+
+<p>块中的t总是绑定为当前任务对象，第二个参数args就是传递进来的参数对象。如果传递了额外的参数，则多余的参数会被忽略；如果缺少参数，那么任务首先会从环境变量中获取，如果没有找到则将参数赋值为nil。</p>
+
+<p>也可以为参数指定默认值：</p>
+
+<pre><code>task :name, [:first_name, :last_name] do |t, args|
+  args.with_defaults(:first_name =&gt; "John", :last_name =&gt; "Dough")
+  puts "First name is #{args.first_name}"
+  puts "Last  name is #{args.last_name}"
+end
+</code></pre>
+
+<h3>任务接受参数并包含依赖任务</h3>
+
+<p>如果任务需要接受参数，并且还依赖于其他任务，则可以这样定义：</p>
+
+<pre><code>task :name, [:first_name, :last_name] =&gt; [:pre_name] do |t, args|
+  args.with_defaults(:first_name =&gt; "John", :last_name =&gt; "Dough")
+  puts "First name is #{args.first_name}"
+  puts "Last  name is #{args.last_name}"
+end
+</code></pre>
+
+<h3>接收额外参数的任务</h3>
+
+<pre><code>task :email, [:message] do |t, args|
+  mail = Mail.new(args.message)
+  recipients = args.extras
+  recipients.each do |target|
+    mail.send_to(recipents)
+  end
+end
+</code></pre>
+
+<p>此外，可以使用to_a方法将所有参数按顺序转换为列表，包括命名参数和额外参数。</p>
+
+<h3>以编程方式访问任务</h3>
+
+<p>有时我们需要在rakefile中操作任务本身，使用Rake::Task的:[ ]操作符查找任务。例如，:doit任务打印“DONE”，而:dont任务会查找doit任务并且清除其所有依赖和动作。</p>
+
+<pre><code>task :doit do
+  puts "DONE"
+end
+
+task :dont do
+  Rake::Task[:doit].clear
+end
+</code></pre>
+
+<p>执行任务：</p>
+
+<pre><code>$ rake doit
+(in /Users/jim/working/git/rake/x)
+DONE
+$ rake dont doit
+(in /Users/jim/working/git/rake/x)
+$
+</code></pre>
+
+<p>编程方式处理任务再一次使用了元编程的能力，所以，小心使用该魔法。</p>
+
+<h2>规则</h2>
+
+<p>如果一个文件依赖于别的任务，但却没有为它定义文件任务，rake会尝试查找rakefile定义的规则去合成一个任务。</p>
+
+<p>若我们要调用任务&#8221;mycode.o&#8221;，但却没有为它定义文件任务，但rakefile文件却含有如下的规则：</p>
+
+<pre><code>rule '.o' =&gt; ['.c'] do |t|
+  sh "cc #{t.source} -c -o #{t.name}"
+end
+</code></pre>
+
+<p>该规则会合成所有以“.o”结尾的方法。它依赖于以“.c”结尾的源文件。如果rake能找到一个名为&#8221;mycode.c&#8221;的文件，它就会创建一个任务将mycode.c编译为mycode.o。如果mycode.c文件不存在，rake会递归尝试合成其他规则。</p>
+
+<p>如果任务是由规则合成而来的，那么任务的source属性就被设置为匹配的源文件，这样在规则的动作中就可硬
+引用该源文件了。</p>
+
+<h3>高级规则</h3>
+
+<p>规则模式支持正则表达式。此外，   proc块可以用来计算源文件的名称。下面的规则定义和上面的规则是等价的：</p>
+
+<pre><code>rule( /\.o$/ =&gt; [
+  proc {|task_name| task_name.sub(/\.[^.]+$/, '.c') }
+]) do |t|
+  sh "cc #{t.source} -c -o #{t.name}"
+end
+</code></pre>
+
+<p>下面的任务用于java的编译：</p>
+
+<pre><code>rule '.class' =&gt; [
+  proc { |tn| tn.sub(/\.class$/, '.java').sub(/^classes\//, 'src/') }
+] do |t|
+  java_compile(t.source, t.name)
+end
+</code></pre>
+
+<p>注意：java_compile是一个假想的调用java编译器的方法。</p>
+
+<h2>注释</h2>
+
+<p>在rakefile中同样可以使用ruby的标准注释（以#开头），但如果希望使用rake -T来显示任务描述，就需要
+使用desc命令来描述任务。如：</p>
+
+<pre><code>desc "Create a distribution package"
+task :package =&gt; [ ... ] do ... end
+</code></pre>
+
+<p>rake -T（或者rake -tasks）会列出所有带描述的任务。如果使用desc来描述任务，就能非常方便的看到rakefile的主要任务。注：-T参数只能列出带desc的任务，如果想列出所有任务，需要使用-P或-prereqs。</p>
+
+<h2>命名空间</h2>
+
+<p>命名空间是用来解决大程序rakefile可能发生的命名冲突问题。</p>
+
+<pre><code>namespace "main" do
+  task :build do
+    # Build the main program
+  end
+end
+
+namespace "samples" do
+  task :build do
+    # Build the sample programs
+  end
+end
+
+task :build =&gt; ["main:build", "samples:build"]
+</code></pre>
+
+<p>使用 命名空间:任务名 来引用任务，如“main:build”。但注意，在task定义内部获取的任务名是不带命名空间的。</p>
+
+<h3>文件任务</h3>
+
+<p>文件任务和目录任务是不使用命名空间的，因为他们代表真实文件系统中的文件，所以是不会冲突的，故而将他们放置在命名空间中是没有意义的。</p>
+
+<h3>命名空间解析</h3>
+
+<p>当查找任务时，首先在当前命名空间寻找，如果失败则到父命名空间寻找。</p>
+
+<p>“rake”是隐式定义的命名空间，它指代顶级命名空间。</p>
+
+<p>如果一个任务名以“^”打头，那么命名解析会从父级命名空间开始解析。允许使用多个“^”符号。</p>
+
+<pre><code>task :run
+
+namespace "one" do
+  task :run
+
+  namespace "two" do
+    task :run
+
+    # :run            =&gt; "one:two:run"
+    # "two:run"       =&gt; "one:two:run"
+    # "one:two:run"   =&gt; "one:two:run"
+    # "one:run"       =&gt; "one:run"
+    # "^run"          =&gt; "one:run"
+    # "^^run"         =&gt; "rake:run" (the top level task)
+    # "rake:run"      =&gt; "rake:run" (the top level task)
+  end
+
+  # :run       =&gt; "one:run"
+  # "two:run"  =&gt; "one:two:run"
+  # "^run"     =&gt; "rake:run"
+end
+
+# :run           =&gt; "rake:run"
+# "one:run"      =&gt; "one:run"
+# "one:two:run"  =&gt; "one:two:run"
+</code></pre>
+
+<h3>文件列表FileList</h3>
+
+<p>文件列表基本等同于字符串列表，但建议使用文件列表。下面是创建文件列表的示例：</p>
+
+<pre><code>fl = FileList['file1.rb', file2.rb']
+</code></pre>
+
+<p>使用通配符：</p>
+
+<pre><code>fl = FileList['*.rb']
+</code></pre>
+
+<h3>do/end和{ }</h3>
+
+<p>建议在任务定义时使用do/end，不要使用{ }。</p>
+
+<h3>Rakefile路径</h3>
+
+<p>当在终端键入rake命令时，rake会在当前目录下查找rakefile，如果没有则在父目录查找直到找到为止。</p>
+
+<h3>多个rakefile</h3>
+
+<p>并不是所有任务都要在一个单独的rakefile文件中定义，额外的任务可以在应用根目录下的rakelib文件夹中定义，额外的rakefile以&#8221;.rake&#8221;结尾。rails应用的额外rakefile就放置在lib/tasks目录中。</p>
+
+<p>附：如果不在rails环境中使用分离的子rake文件，则可以在根目录的rakefile中这样引用子目录tasks中的子rakefile：</p>
+
+<pre><code>Dir.glob('tasks/*.rake').each { |r| import r }
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/">天道酬勤-在追逐梦想的路上</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:43:24+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>还记得大概一年前，也是在CSDN博客上读过一篇文章，拜读某个大牛描述了他为心仪的公司准备的过程，当时觉得很受触动，于是在博客下留言自勉，还记得他回复的话说：跨专业，更要提早准备。而现在，作为一个机械专业的学生，一路过关斩将拿到百度offer，除了激动之余，我能清晰的感觉到，自己的梦想画卷才刚刚展开。</p>
+
+<p>说起来，我一开始完全没想到自己会干上IT这一行。大学学的是机械，但老实说，我对机械一点都没兴趣，中国应试教育的结果就是，我能高分考入大学，但却完全不知道自己想做什么，未来，仍然是一片迷茫。在大二的时候，学了C++编程的课程，但也没能勾起对编程的爱好。回想起来，我很庆幸自己没有读计算机专业，否则以中国老师的讲课方式，我现在应当是极度厌恶计算机的。不过我有一个好习惯，喜欢读书。记得有一个下午，我闲来无事去书店，抓起了一本Java的书，是个韩国人写的，随手翻翻竟然比国字教材将得有趣多了。就是这本书，唤醒了我对编程的热爱。</p>
+
+<p>从那以后，我就不停读了很多计算机类的书籍，但都是完全凭着爱好去看的，没有任何人给我指导，零零散散不成体系，比起计算机系的学生基础比较薄弱，而且各类知识也没能构成网络。不过好的一点就是，我完全自主去深入，虽然走了很多弯路，但自始至终都保留了一份完整的兴趣，所以，这又是上天给我的偏爱。</p>
+
+<p>在读完本科时，我已经完全沉迷进计算机的世界里。那时我决定去考计算机研究生，于是把计算机系所有的基础课程都学习了一遍。后来虽然放弃了，但我却借这个机会，将计算机里的基础课程全部深入了一遍，至少达到了研究生考试的水平，所以，不得不说，上天帮助了我不少啊。说到我为什么放弃考研，主要因为两个原因。第一，我极度厌恶政治，所以，我从5月份开始复习到10月份放弃考研，数据结构这类书都翻了两三遍了，但政治却碰也没碰，最后放弃考研，很大部分是我翻开政治书就想自残；第二，我遇到了可以算是我的贵人的老师（话说回来，高中也有一个老师也改变了我的命运，也是难得的贵人），在机械学院有一位老师同样沉迷于计算机，在linux界还颇有名气。所以我争取了保研资格，成为他的学生。在争取成为他的学生的过程中，过程还是比较曲折的，但我就不一一细表了。但是，就是在导师的教导下，我的编程能力得到了质的飞跃。可以说，之前我对计算机程序设计就如同是在森林茂密的树丛里转悠，一直没有意识到见木不见林的可怕，但是他不停引导我爬到高山上，将程序世界里的名山一一指点给我，这时，我觉得自己突然明白了编程的意义，同时也在山顶看到了自己的方向。所以，我的研究生导师在我的梦想道路上是极为重要的一个人，看起来放弃考研而继续留在机械是个失败，其实，我仍然非常感恩，这次上天仍然眷顾了我。</p>
+
+<p>在研究生阶段，我不再迷茫，对于编程对于人生我都有了非常清晰的认识和规划，知道了自己是什么样的人，此时再去看外面的世界，什么事情应该争取什么事情应该舍弃，就再明白不过了。这个时候我开始涉猎大量的程序设计艺术类的书籍，更加注重思考的过程，阅读的深度也逐渐增加，对编程里面的为什么也挖掘得更多了。回过头来还是得感谢我的导师，没有他的首肯，我是买不了那么多好书的。</p>
+
+<p>后来在师兄的帮助下，我进入了一家有名的IT外企实习，说起来，真的很多人帮助了很多。在这段经历中幸运的是，我没有像其他人那样实习打打酱油，感谢主管的信任，我直接接手了开发类的工作。这段实习经历使我受益良多，也认识的很多牛人。</p>
+
+<p>最后，在找工作时，我拿到了想要的offer，如果要分享什么笔经面经，我真的没什么好说的。所有的努力都在平时，在面试过程中，我仅仅是把自己原原本本展示出来而已。最后通过了，说明自己的能力还是被认可的。但是他们给了我这次展示的机会，没有像MS在简历阶段因为专业就剔除我们这些非计算机专业的，我还是很感激的。</p>
+
+<p>总的来说，我觉得自己整个求索的过程都是非常幸运的，一路上遇到了那么多人在非常关键的时刻都指引和帮助了我，所以我多少有点诚惶诚恐，不敢有些许辜负。但是还有最重要的一个人，我的宝贝，她一直支持我相信我，我在一无所有的时候（虽然现在也是，但是现在有自信）将梦想的蓝图描绘给她看时，她就比我自己还有笃信，所以，不能让她的相信落空。</p>
+
+<p>好了，如果非要在文章最后分享点什么的话，那我就说说自己的一些感悟吧。人一定要会自省，佛语观心以观天下，知道自己想要什么知道自己能做什么，没有目标的人生是惨淡的，尤其是男人，要懂得聆听内心的声音，它决定了人生的方向和高度。</p>
+
+<p>过去的都过去了，丢弃过去的包袱，现在是一个新的开始，一切，也才刚刚开始。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/">Ruby之周期性任务</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:38:41+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1.前言</h3>
+
+<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
+
+<h3>2.whenever</h3>
+
+<p>首先，whenever是基于linux的cron服务的，所以，在windows平台上没有直接的方法使用该gem。whenever严格来说应该算一个cron的翻译器，将ruby代码翻译为cron脚本，从而将周期性任务转交给cron实际去完成。对于精通cron的shell程序员来说可能不值一提，但对rubyist却不是。首先，我们可以使用ruby语言来书写任务代码，在ruby层面上控制代码，避免了和一些shell脚本的切换；另外，cron命令很强大，但我总是记不住它的命令参数，为了避免一遍一遍去man它的手册，还是ruby语法比较亲民。</p>
+
+<p>首先，安装whenever：</p>
+
+<pre><code>$ gem install whenever
+</code></pre>
+
+<p>然后切换到任务编写文件夹project下，保证该文件夹下有一个config文件夹。如果是在rails项目中建立
+whenever任务，则config文件夹已经存在了。</p>
+
+<pre><code>$ cd /project
+$ wheneverize .
+</code></pre>
+
+<p>whenverize命令会在config文件夹下创建schedule.rb文件，我们的任务代码需要在该文件中定义。下面的是schedule.rb文件示例：</p>
+
+<pre><code>every 3.hours do
+  runner "MyModel.some_process"
+  rake "my:rake:task"
+  command "/usr/bin/my_great_command"
+end
+
+every 1.day, :at =&gt; '4:30 am' do
+  runner "MyModel.task_to_run_at_four_thirty_in_the_morning"
+end
+
+every :hour do # 常用的简写有： :hour, :day, :month, :year, :reboot
+  runner "SomeModel.ladeeda"
+end
+
+every :sunday, :at =&gt; '12pm' do # 你可以使用星期几或周末或工作日： :weekend, :weekday
+  runner "Task.do_something_great"
+end
+
+every '0 0 27-31 * *' do
+  command "echo 'you can use raw cron syntax too'"
+end
+
+# run this task only on servers with the :app role in Capistrano
+# see Capistrano roles section below
+every :day, :at =&gt; '12:20am', :roles =&gt; [:app] do
+  rake "app_server:task"
+end
+</code></pre>
+
+<p>如示例代码，whenever默认定义了三种任务类型：runner, rake, command，我们也可以定义自己的任务，比如，下面的代码定义了脱离rails环境，独立执行ruby代码的类型：</p>
+
+<pre><code>job_type :ruby, "cd :path &amp;&amp; /usr/bin/ruby ':task'.rb"
+
+every :hour do
+  ruby 'have_a_rest'
+end
+</code></pre>
+
+<p>该示例描述了：每个小时会执行一次当前文件夹下的have_a_rest.rb脚本。
+下面看看怎么将任务写入cron服务。</p>
+
+<pre><code>$ whenever   #不带参数的whenever会显示转换程cron任务的代码，不写入cron任务表
+$ whenever -w #写入cron任务表，开始执行
+$ whenever -c #取消任务
+</code></pre>
+
+<p>如果要查看cron任务表，也可以使用linux的命令列出所有cron任务：</p>
+
+<pre><code>$ crontab -l
+</code></pre>
+
+<h3>3.sidetiq</h3>
+
+<p>sidetiq是sidekiq的亲兄弟，如果在rails项目中使用sidekiq来处理后台任务，那么就用sidetiq来交付周期性任务也显得比较自然。</p>
+
+<p>安装sidetiq：</p>
+
+<pre><code>$ [sudo] gem install sidetiq
+</code></pre>
+
+<p>定义周期性任务：</p>
+
+<pre><code>class MyWorker
+  include Sidekiq::Worker
+  include Sidetiq::Schedulable
+
+  recurrence { daily }
+
+  def perform
+    # do stuff ...
+  end
+end
+</code></pre>
+
+<p>sidetiq和sidekiq一样，依赖于redis消息来处理消息。当rails项目启动后，这些周期性任务会自动加载执行。</p>
+
+<h3>4.clockwork</h3>
+
+<p>clockwork和sidetiq一样，也不必依赖于cron，可以适应”跨平台“要求。下面是代码示例(clock.rb)：</p>
+
+<pre><code>require 'clockwork'
+include Clockwork
+
+handler do |job|
+  puts "Running #{job}"
+end
+
+every(10.seconds, 'frequent.job')
+every(3.minutes, 'less.frequent.job')
+every(1.hour, 'hourly.job')
+
+every(1.day, 'midnight.job', :at =&gt; '00:00')
+</code></pre>
+
+<p>启动任务：</p>
+
+<pre><code>$ clockwork clock.rb
+Starting clock for 4 events: [ frequent.job less.frequent.job hourly.job midnight.job ]
+Triggering frequent.job
+</code></pre>
+
+<p>如果要带上rails环境，就在任务文件加入：</p>
+
+<pre><code>require './config/boot'
+require './config/environment'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

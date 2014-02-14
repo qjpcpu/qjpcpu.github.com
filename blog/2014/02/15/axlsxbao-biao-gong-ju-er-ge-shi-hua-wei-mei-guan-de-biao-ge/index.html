@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Axlsx报表工具(二)格式化为美观的表格 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="基础知识 axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义： (Integer) add_style(options = {}) 所有的格式设置操作都在options这个hash中指定， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Axlsx报表工具(二)格式化为美观的表格</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:38:10+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>基础知识</h3>
+
+<p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
+
+<pre><code>(Integer) add_style(options = {})
+</code></pre>
+
+<p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
+
+<pre><code>Options Hash (options):
+fg_color (String) — 字体颜色，如：FFFF0000
+sz (Integer) — 字体大小
+b (Boolean) — 是否粗体
+i (Boolean) — 是否斜体
+u (Boolean) — 是否加下划线
+strike (Boolean) — 是否加删除线
+shadow (Boolean) — 是否加阴影
+charset (Integer) — 字符集，可选的字符集列表：
+0   ANSI_CHARSET
+1   DEFAULT_CHARSET
+2   SYMBOL_CHARSET
+77  MAC_CHARSET
+128 SHIFTJIS_CHARSET
+129 HANGUL_CHARSET
+130 JOHAB_CHARSET
+134 GB2312_CHARSET
+136 CHINESEBIG5_CHARSET
+161 GREEK_CHARSET
+162 TURKISH_CHARSET
+163 VIETNAMESE_CHARSET
+177 HEBREW_CHARSET
+178 ARABIC_CHARSET
+186 BALTIC_CHARSET
+204 RUSSIAN_CHARSET
+222 THAI_CHARSET
+238 EASTEUROPE_CHARSET
+255 OEM_CHARSET
+
+
+family (Integer) — 字体，可选字体：
+0 Not applicable.
+1 Roman
+2 Swiss
+3 Modern
+4 Script
+5 Decorative
+6..14 Reserved for future use
+
+
+font_name (String) — 字体名称
+num_fmt (Integer) — 数字格式：可选格式：
+1 0
+2 0.00
+3 #,##0
+4 #,##0.00
+5 $#,##0_);($#,##0)
+6 $#,##0_);[Red]($#,##0)
+7 $#,##0.00_);($#,##0.00)
+8 $#,##0.00_);[Red]($#,##0.00)
+9 0%
+10 0.00%
+11 0.00E+00
+12 # ?/?
+13 # ??/??
+14 m/d/yyyy
+15 d-mmm-yy
+16 d-mmm
+17 mmm-yy
+18 h:mm AM/PM
+19 h:mm:ss AM/PM
+20 h:mm
+21 h:mm:ss
+22 m/d/yyyy h:mm
+37 #,##0_);(#,##0)
+38 #,##0_);[Red](#,##0)
+39 #,##0.00_);(#,##0.00)
+40 #,##0.00_);[Red](#,##0.00)
+45 mm:ss
+46 [h]:mm:ss
+47 mm:ss.0
+48 ##0.0E+0
+49 @
+
+
+format_code (String) — 自定义格式如'yyyy-mm-dd'，如果设置了该值，则num_fmt将被忽略.
+border (Integer|Hash) — 边框样式.
+bg_color (String) — 单元格背景色
+hidden (Boolean) — 是否隐藏单元格
+locked (Boolean) — 是否锁定单元格
+type (Symbol) — 风格类型，可选的类型有[:dxf, :xf]. :xf事默认类型
+alignment (Hash) — 对齐.该hash的包括：
+horizontal (Symbol)，该键对应的值包括有：
+:general
+:left
+:center
+:right
+:fill
+:justify
+:centerContinuous
+:distributed
+vertical (Symbol)，该键对应的值有：
+:top
+:center
+:bottom
+:justify
+:distributed
+textRotation (Integer)
+wrapText (Boolean)
+indent (Integer)
+relativeIndent (Integer)
+justifyLastLine (Boolean)
+shrinkToFit (Boolean)
+readingOrder (Integer)
+</code></pre>
+
+<h3>格式化报表示例</h3>
+
+<p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
+
+<pre><code>sheet.add_row ['a', "b"], :style =&gt; [nil, header] #header是创建好的style
+#or
+sheet.add_row ["a', "b"], :style =&gt; header
+</code></pre>
+
+<p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
+
+<p><img src="../images/20131222115944718.jpeg" alt="image" /></p>
+
+<p>下面是创建如图报表的部分代码：</p>
+
+<pre><code>require 'axlsx'
+
+Axlsx::Package.new do |p|
+  p.workbook do |wb|
+    styles = wb.styles
+    header     = styles.add_style :bg_color =&gt; "FFFF33",:fg_color=&gt;"0033CC", :sz =&gt; 16, :b =&gt; true, :alignment =&gt; {:horizontal =&gt; :center}
+    tbl_header = styles.add_style :bg_color=&gt;"99FF33",:b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    ind_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; {:indent =&gt; 1}
+    col_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    label      = styles.add_style :alignment =&gt; { :indent =&gt; 1 }
+    money      = styles.add_style :num_fmt =&gt; 5
+    t_label    = styles.add_style :b =&gt; true, :bg_color =&gt; "FFDFDEDF"
+    t_money    = styles.add_style :b =&gt; true, :num_fmt =&gt; 5, :bg_color =&gt; "FFDFDEDF"
+
+    wb.add_worksheet do |sheet|
+      sheet.add_row               #添加空行
+      sheet.add_row [nil, "College Budget"], :style =&gt; [nil, header]        #标题，大字体居中
+      sheet.add_row
+      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style =&gt; tbl_header
+      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style =&gt; [nil, ind_header, col_header, nil, ind_header, col_header]
+      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style =&gt; [nil, label, money, nil, label, money]
+      #省略部分代码
+      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
+      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
+    end
+  end
+  p.use_shared_strings = true
+  p.serialize 'styles.xlsx'
+end
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:38:10+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/" title="Previous Post: axlsx报表工具(一)安装及入门">&laquo; axlsx报表工具(一)安装及入门</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/" title="Next Post: axlsx报表工具(三)创建图表">axlsx报表工具(三)创建图表 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

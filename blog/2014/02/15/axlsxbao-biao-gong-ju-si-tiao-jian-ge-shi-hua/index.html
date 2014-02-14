@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Axlsx报表工具(四)——条件格式化 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 # define the style for conditional formatting
+profitable = book.styles.add_style( :fg_color &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Axlsx报表工具(四)——条件格式化</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:47:04+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>定义格式化操作</h3>
+
+<p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
+
+<pre><code># define the style for conditional formatting
+profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
+unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
+</code></pre>
+
+<p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
+
+<h3>cellIs</h3>
+
+<p>cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。</p>
+
+<p><img src="../images/20131222124537296.jpeg" alt="image" /></p>
+
+<p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Cell Is") do |ws|
+
+  # 产生20行数据
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+# 格式化条件&gt;100000
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :cellIs, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1 })
+# 格式化条件0.00%&lt;x&lt;100%
+  ws.add_conditional_formatting("C3:C100", { :type =&gt; :cellIs, :operator =&gt; :between, :formula =&gt; ["0.00%","100.00%"], :dxfId =&gt; unprofitable, :priority =&gt; 1 })
+end
+</code></pre>
+
+<p>add_conditional_formatting方法指定条件格式化，类型type是cellIs，条件由operator和formula共同指定，dxfId就是我们上面定义的格式化操作，priority优先级数值越小，优先级越高。</p>
+
+<h3>colorScale</h3>
+
+<p><img src="../images/20131222125354250.jpeg" alt="image" /></p>
+
+<p>colorScale是以颜色渐变的方式来格式化表格。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Color Scale") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  color_scale = Axlsx::ColorScale.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :colorScale, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1, :color_scale =&gt; color_scale })
+end
+</code></pre>
+
+<p>大于100000的单元格颜色越来越深，而小于的单元格越来越浅。</p>
+
+<h3>dataBar</h3>
+
+<p>dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。</p>
+
+<p><img src="../images/20131222125728531.jpeg" alt="image" /></p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  data_bar = Axlsx::DataBar.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :dataBar, :dxfId =&gt; profitable, :priority =&gt; 1, :data_bar =&gt; data_bar })
+end
+</code></pre>
+
+<h3>iconSet</h3>
+
+<p>iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。</p>
+
+<p><img src="../images/20131222125946421.jpeg" alt="image" /></p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  icon_set = Axlsx::IconSet.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :iconSet, :dxfId =&gt; profitable, :priority =&gt; 1, :icon_set =&gt; icon_set })
+end
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:47:04+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/" title="Previous Post: axlsx报表工具(三)创建图表">&laquo; axlsx报表工具(三)创建图表</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

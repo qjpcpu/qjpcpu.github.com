@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby之周期性任务 - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ruby之周期性任务</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:38:41+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>1.前言</h3>
+
+<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
+
+<h3>2.whenever</h3>
+
+<p>首先，whenever是基于linux的cron服务的，所以，在windows平台上没有直接的方法使用该gem。whenever严格来说应该算一个cron的翻译器，将ruby代码翻译为cron脚本，从而将周期性任务转交给cron实际去完成。对于精通cron的shell程序员来说可能不值一提，但对rubyist却不是。首先，我们可以使用ruby语言来书写任务代码，在ruby层面上控制代码，避免了和一些shell脚本的切换；另外，cron命令很强大，但我总是记不住它的命令参数，为了避免一遍一遍去man它的手册，还是ruby语法比较亲民。</p>
+
+<p>首先，安装whenever：</p>
+
+<pre><code>$ gem install whenever
+</code></pre>
+
+<p>然后切换到任务编写文件夹project下，保证该文件夹下有一个config文件夹。如果是在rails项目中建立
+whenever任务，则config文件夹已经存在了。</p>
+
+<pre><code>$ cd /project
+$ wheneverize .
+</code></pre>
+
+<p>whenverize命令会在config文件夹下创建schedule.rb文件，我们的任务代码需要在该文件中定义。下面的是schedule.rb文件示例：</p>
+
+<pre><code>every 3.hours do
+  runner "MyModel.some_process"
+  rake "my:rake:task"
+  command "/usr/bin/my_great_command"
+end
+
+every 1.day, :at =&gt; '4:30 am' do
+  runner "MyModel.task_to_run_at_four_thirty_in_the_morning"
+end
+
+every :hour do # 常用的简写有： :hour, :day, :month, :year, :reboot
+  runner "SomeModel.ladeeda"
+end
+
+every :sunday, :at =&gt; '12pm' do # 你可以使用星期几或周末或工作日： :weekend, :weekday
+  runner "Task.do_something_great"
+end
+
+every '0 0 27-31 * *' do
+  command "echo 'you can use raw cron syntax too'"
+end
+
+# run this task only on servers with the :app role in Capistrano
+# see Capistrano roles section below
+every :day, :at =&gt; '12:20am', :roles =&gt; [:app] do
+  rake "app_server:task"
+end
+</code></pre>
+
+<p>如示例代码，whenever默认定义了三种任务类型：runner, rake, command，我们也可以定义自己的任务，比如，下面的代码定义了脱离rails环境，独立执行ruby代码的类型：</p>
+
+<pre><code>job_type :ruby, "cd :path &amp;&amp; /usr/bin/ruby ':task'.rb"
+
+every :hour do
+  ruby 'have_a_rest'
+end
+</code></pre>
+
+<p>该示例描述了：每个小时会执行一次当前文件夹下的have_a_rest.rb脚本。
+下面看看怎么将任务写入cron服务。</p>
+
+<pre><code>$ whenever   #不带参数的whenever会显示转换程cron任务的代码，不写入cron任务表
+$ whenever -w #写入cron任务表，开始执行
+$ whenever -c #取消任务
+</code></pre>
+
+<p>如果要查看cron任务表，也可以使用linux的命令列出所有cron任务：</p>
+
+<pre><code>$ crontab -l
+</code></pre>
+
+<h3>3.sidetiq</h3>
+
+<p>sidetiq是sidekiq的亲兄弟，如果在rails项目中使用sidekiq来处理后台任务，那么就用sidetiq来交付周期性任务也显得比较自然。</p>
+
+<p>安装sidetiq：</p>
+
+<pre><code>$ [sudo] gem install sidetiq
+</code></pre>
+
+<p>定义周期性任务：</p>
+
+<pre><code>class MyWorker
+  include Sidekiq::Worker
+  include Sidetiq::Schedulable
+
+  recurrence { daily }
+
+  def perform
+    # do stuff ...
+  end
+end
+</code></pre>
+
+<p>sidetiq和sidekiq一样，依赖于redis消息来处理消息。当rails项目启动后，这些周期性任务会自动加载执行。</p>
+
+<h3>4.clockwork</h3>
+
+<p>clockwork和sidetiq一样，也不必依赖于cron，可以适应”跨平台“要求。下面是代码示例(clock.rb)：</p>
+
+<pre><code>require 'clockwork'
+include Clockwork
+
+handler do |job|
+  puts "Running #{job}"
+end
+
+every(10.seconds, 'frequent.job')
+every(3.minutes, 'less.frequent.job')
+every(1.hour, 'hourly.job')
+
+every(1.day, 'midnight.job', :at =&gt; '00:00')
+</code></pre>
+
+<p>启动任务：</p>
+
+<pre><code>$ clockwork clock.rb
+Starting clock for 4 events: [ frequent.job less.frequent.job hourly.job midnight.job ]
+Triggering frequent.job
+</code></pre>
+
+<p>如果要带上rails环境，就在任务文件加入：</p>
+
+<pre><code>require './config/boot'
+require './config/environment'
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:38:41+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan/" title="Previous Post: 学算法并非和语言无关">&laquo; 学算法并非和语言无关</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/" title="Next Post: 天道酬勤-在追逐梦想的路上">天道酬勤-在追逐梦想的路上 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

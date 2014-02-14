@@ -9,7 +9,8 @@
   <meta name="author" content="Jason">
 
   
-  <meta name="description" content="如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到rubygems.org上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。 以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤： &hellip;">
+  <meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 # define the style for conditional formatting
+profitable = book.styles.add_style( :fg_color &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,7 +72,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/02/14/chuang-jian-zi-ji-de-gem/">创建自己的gem</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a></h1>
     
     
       <p class="meta">
@@ -87,93 +88,113 @@
   
 
 
-<time datetime="2014-02-14T09:45:52+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+<time datetime="2014-02-15T00:47:04+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到<a href="https://rubygems.org">rubygems.org</a>上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。</p>
+  <div class="entry-content"><h3>定义格式化操作</h3>
 
-<p>以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤：</p>
+<p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<ol>
-<li>首先要有<a href="https://rubygems.org">rubygems.org</a>和<a href="https://github.com">github</a>的帐号。</li>
-<li><p>利用bundler创建新的gem：</p>
-
-<pre><code> $ bundle gem jgem
-       create  jgem/Gemfile
-       create  jgem/Rakefile
-       create  jgem/LICENSE.txt
-       create  jgem/README.md
-       create  jgem/.gitignore
-       create  jgem/jgem.gemspec
-       create  jgem/lib/jgem.rb
-       create  jgem/lib/jgem/version.rb
- Initializing git repo in /Users/jason/Documents/tmp/jgem
-</code></pre></li>
-<li><p>修改<code>.gemspec</code>文件，主要修改新gem描述：</p>
-
-<pre><code> spec.summary       = %q{TODO: Write a short summary. Required.}
- spec.description   = %q{TODO: Write a longer description. Optional.}
+<pre><code># define the style for conditional formatting
+profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
+unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
 </code></pre>
 
-<p> 添加gem的依赖，包括开发时依赖和运行时依赖：</p>
+<p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 
-<pre><code> spec.add_development_dependency "rake"
- spec.add_runtime_dependency "activerecord"
-</code></pre></li>
-<li><p>编译gem</p>
+<h3>cellIs</h3>
 
-<pre><code> $ gem build jgem.gemspec 
- WARNING:  no homepage specified
- WARNING:  open-ended dependency on rake (&gt;= 0, development) is not recommended
-   if rake is semantically versioned, use:
-     add_development_dependency 'rake', '~&gt; 0'
- WARNING:  See http://guides.rubygems.org/specification-reference/ for help
-   Successfully built RubyGem
-   Name: jgem
-   Version: 0.0.1
-   File: jgem-0.0.1.gem
+<p>cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。</p>
+
+<p><img src="../images/20131222124537296.jpeg" alt="image" /></p>
+
+<p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Cell Is") do |ws|
+
+  # 产生20行数据
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+# 格式化条件&gt;100000
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :cellIs, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1 })
+# 格式化条件0.00%&lt;x&lt;100%
+  ws.add_conditional_formatting("C3:C100", { :type =&gt; :cellIs, :operator =&gt; :between, :formula =&gt; ["0.00%","100.00%"], :dxfId =&gt; unprofitable, :priority =&gt; 1 })
+end
 </code></pre>
 
-<p> 编译后生成jgem-0.0.1.gem。</p>
+<p>add_conditional_formatting方法指定条件格式化，类型type是cellIs，条件由operator和formula共同指定，dxfId就是我们上面定义的格式化操作，priority优先级数值越小，优先级越高。</p>
 
-<p> 注意：在每次<code>gem build</code>编译gem前，必须<code>git add .</code>或<code>git commit</code>一次，因为由于gem和git的紧密关系，没有<code>git add</code>到暂存区的文件变更很可能不会被编译进gem。有的朋友说在bin目录下创建的可执行文件始终无法被编译进gem就是这个原因（他们采取的办法是将<code>.gemspec</code>文件的<code>spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }</code>改成<code>spec.executables =['your_executable_file']</code>，实际这是不必要的）</p></li>
-<li><p>发布</p>
+<h3>colorScale</h3>
 
-<p> 发布生成的gem到rubygems.org。</p>
+<p><img src="../images/20131222125354250.jpeg" alt="image" /></p>
 
-<pre><code> $ gem push jgem-0.0.1.gem
+<p>colorScale是以颜色渐变的方式来格式化表格。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Color Scale") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  color_scale = Axlsx::ColorScale.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :colorScale, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1, :color_scale =&gt; color_scale })
+end
 </code></pre>
 
-<p> 根据提示输入用户信息就行了。</p></li>
-<li><p>托管代码</p>
+<p>大于100000的单元格颜色越来越深，而小于的单元格越来越浅。</p>
 
-<p>在github上新建一个代码库，名称最好和gem保持一致为jgem。</p>
+<h3>dataBar</h3>
 
-<pre><code> git remote add origin git@github.com:USERNAME/jgem.git
- git push -u origin master
-</code></pre></li>
-<li><p>更新gem代码</p>
+<p>dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。</p>
 
-<p>如果在本地更新代码，需要先<code>git add .</code>或<code>git commit</code>，然后执行<code>gem build</code>才能正确编译。编译好的gem可以先在本地安装试用：</p>
+<p><img src="../images/20131222125728531.jpeg" alt="image" /></p>
 
-<pre><code>$ gem build jgem.gemspec
-$ gem install --local jgem-0.0.1.gem
+<pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  data_bar = Axlsx::DataBar.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :dataBar, :dxfId =&gt; profitable, :priority =&gt; 1, :data_bar =&gt; data_bar })
+end
 </code></pre>
 
-<p>如果要上传到rubygems，则必须更新<code>jgem/lib/jgem/version.rb</code>里的版本号，相同的版本号是不允许重复上传的。到rubygems上传的只是编译好的gem，不要忘了提交代码变更到github。</p>
+<h3>iconSet</h3>
 
-<p>PS. 如果gem需要添加可执行文件如<code>example_cmd</code>，在jgem目录下创建bin目录来放置这些命令即可(反复提醒，别忘了将新文件添加到git库哦)。</p>
+<p>iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。</p>
 
-<pre><code>$ mkdir bin
-$ touch bin/example_cmd
-$ chmod a+x bin/example_cmd
-</code></pre></li>
-</ol>
+<p><img src="../images/20131222125946421.jpeg" alt="image" /></p>
 
+<pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  icon_set = Axlsx::IconSet.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :iconSet, :dxfId =&gt; profitable, :priority =&gt; 1, :icon_set =&gt; icon_set })
+end
+</code></pre>
 </div>
   
   
@@ -186,7 +207,7 @@ $ chmod a+x bin/example_cmd
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/02/13/first-post/">First Post!</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a></h1>
     
     
       <p class="meta">
@@ -202,17 +223,1175 @@ $ chmod a+x bin/example_cmd
   
 
 
-<time datetime="2014-02-13T22:12:38+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2014</time>
+<time datetime="2014-02-15T00:42:48+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><pre><code>    Get started now!
+  <div class="entry-content"><h3>饼图</h3>
+
+<p>axlsx创建饼状图非常简单，上图：</p>
+
+<p><img src="../images/20131222120934093.jpeg" alt="image" /></p>
+
+<pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
+  sheet.add_row ["First", "Second", "Third", "Fourth"]
+  sheet.add_row [1, 2, 3, 4]
+  sheet.add_chart(Axlsx::Pie3DChart, :start_at =&gt; [0,2], :end_at =&gt; [5, 15], :title=&gt; 'dark corner here') do |chart|
+    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"]    #数据点序列及其名称
+    chart.d_lbls.show_val = true       #是否在饼状图中显示数值
+    chart.d_lbls.show_percent = true    #是否在饼状图中显示所占百分比
+    chart.d_lbls.d_lbl_pos = :outEnd    #图例位于图标外部
+    chart.d_lbls.show_leader_lines = true  #是否显示数据和数值间的指示线
+  end
+end
 </code></pre>
 
-<p> <img src="../images/first_post_logo.png" alt="logo" /></p>
+<p>在add_chart方法中，第一个参数指定图标的类型Aslsx::Pie3DChart，而start_at和end_at分别指定图表的左上角单元格和右下角+1单元格，注意图中饼图的右下角单元格是E15即[4,14]，而end_at是[5,15]，所以称为右下角+1单元格，此外注意和excel编号不同，这里单元格序号是从0开始的。</p>
+
+<ul>
+<li>chart.add_series方法是创建图表的主要方法，用来添加点序列的值及其名称。</li>
+<li>chart.d_lbls是Data Lables的缩写，顾名思义就是数据标签。</li>
+</ul>
+
+
+<p>饼图中每块扇形的颜色是自动生成的，如果想要手动指定也是可以的：</p>
+
+<pre><code>chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; ["A1:D1"], :colors =&gt; ['FF0000', '00FF00', '0000FF']
+</code></pre>
+
+<h3>折线图</h3>
+
+<p><img src="../images/20131222122241750.jpeg" alt="image" /></p>
+
+<pre><code> wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
+  sheet.add_row ['l1','l2','l3','l4']
+  sheet.add_row [1, 2, 100, '=sum(A2:C2)']
+  sheet.add_chart(Axlsx::Line3DChart, :start_at =&gt; [0,2], :end_at =&gt; [8, 17], :title =&gt; "Chart") do |chart|
+    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"], :title =&gt; 'bob'
+    chart.d_lbls.show_val = true
+    chart.d_lbls.show_cat_name = true
+    chart.catAxis.tick_lbl_pos = :none   #不在横轴上显示坐标
+
+  end
+ end
+</code></pre>
+
+<p>chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显示每个数值的名称。</p>
+
+<h3>柱形图</h3>
+
+<p><img src="../images/20131222122546203.jpeg" alt="image" /></p>
+
+<pre><code>wb.add_worksheet(:name =&gt; "Bar Chart") do |sheet|
+  sheet.add_row ["A Simple Bar Chart"]
+  sheet.add_row ["First", "Second", "Third"]
+  sheet.add_row [1, 2, 3]
+  sheet.add_chart(Axlsx::Bar3DChart, :start_at =&gt; "A4", :end_at =&gt; "F17") do |chart|
+    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
+    chart.valAxis.label_rotation = -45
+    chart.catAxis.label_rotation = 45
+    chart.d_lbls.d_lbl_pos = :outEnd
+    chart.d_lbls.show_val = true
+
+    chart.catAxis.tick_lbl_pos = :none
+  end
+  sheet.add_chart(Axlsx::Bar3DChart, :barDir =&gt; :col,:start_at =&gt; "A17", :end_at =&gt; "F30") do |chart| #barDir指定方向:bar或:col
+    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
+    chart.valAxis.label_rotation = -45
+    chart.catAxis.label_rotation = 45
+    chart.d_lbls.d_lbl_pos = :outEnd
+    chart.d_lbls.show_val = true
+
+    chart.catAxis.tick_lbl_pos = :none
+  end
+ end
+</code></pre>
+
+<p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:38:10+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>基础知识</h3>
+
+<p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
+
+<pre><code>(Integer) add_style(options = {})
+</code></pre>
+
+<p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
+
+<pre><code>Options Hash (options):
+fg_color (String) — 字体颜色，如：FFFF0000
+sz (Integer) — 字体大小
+b (Boolean) — 是否粗体
+i (Boolean) — 是否斜体
+u (Boolean) — 是否加下划线
+strike (Boolean) — 是否加删除线
+shadow (Boolean) — 是否加阴影
+charset (Integer) — 字符集，可选的字符集列表：
+0   ANSI_CHARSET
+1   DEFAULT_CHARSET
+2   SYMBOL_CHARSET
+77  MAC_CHARSET
+128 SHIFTJIS_CHARSET
+129 HANGUL_CHARSET
+130 JOHAB_CHARSET
+134 GB2312_CHARSET
+136 CHINESEBIG5_CHARSET
+161 GREEK_CHARSET
+162 TURKISH_CHARSET
+163 VIETNAMESE_CHARSET
+177 HEBREW_CHARSET
+178 ARABIC_CHARSET
+186 BALTIC_CHARSET
+204 RUSSIAN_CHARSET
+222 THAI_CHARSET
+238 EASTEUROPE_CHARSET
+255 OEM_CHARSET
+
+
+family (Integer) — 字体，可选字体：
+0 Not applicable.
+1 Roman
+2 Swiss
+3 Modern
+4 Script
+5 Decorative
+6..14 Reserved for future use
+
+
+font_name (String) — 字体名称
+num_fmt (Integer) — 数字格式：可选格式：
+1 0
+2 0.00
+3 #,##0
+4 #,##0.00
+5 $#,##0_);($#,##0)
+6 $#,##0_);[Red]($#,##0)
+7 $#,##0.00_);($#,##0.00)
+8 $#,##0.00_);[Red]($#,##0.00)
+9 0%
+10 0.00%
+11 0.00E+00
+12 # ?/?
+13 # ??/??
+14 m/d/yyyy
+15 d-mmm-yy
+16 d-mmm
+17 mmm-yy
+18 h:mm AM/PM
+19 h:mm:ss AM/PM
+20 h:mm
+21 h:mm:ss
+22 m/d/yyyy h:mm
+37 #,##0_);(#,##0)
+38 #,##0_);[Red](#,##0)
+39 #,##0.00_);(#,##0.00)
+40 #,##0.00_);[Red](#,##0.00)
+45 mm:ss
+46 [h]:mm:ss
+47 mm:ss.0
+48 ##0.0E+0
+49 @
+
+
+format_code (String) — 自定义格式如'yyyy-mm-dd'，如果设置了该值，则num_fmt将被忽略.
+border (Integer|Hash) — 边框样式.
+bg_color (String) — 单元格背景色
+hidden (Boolean) — 是否隐藏单元格
+locked (Boolean) — 是否锁定单元格
+type (Symbol) — 风格类型，可选的类型有[:dxf, :xf]. :xf事默认类型
+alignment (Hash) — 对齐.该hash的包括：
+horizontal (Symbol)，该键对应的值包括有：
+:general
+:left
+:center
+:right
+:fill
+:justify
+:centerContinuous
+:distributed
+vertical (Symbol)，该键对应的值有：
+:top
+:center
+:bottom
+:justify
+:distributed
+textRotation (Integer)
+wrapText (Boolean)
+indent (Integer)
+relativeIndent (Integer)
+justifyLastLine (Boolean)
+shrinkToFit (Boolean)
+readingOrder (Integer)
+</code></pre>
+
+<h3>格式化报表示例</h3>
+
+<p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
+
+<pre><code>sheet.add_row ['a', "b"], :style =&gt; [nil, header] #header是创建好的style
+#or
+sheet.add_row ["a', "b"], :style =&gt; header
+</code></pre>
+
+<p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
+
+<p><img src="../images/20131222115944718.jpeg" alt="image" /></p>
+
+<p>下面是创建如图报表的部分代码：</p>
+
+<pre><code>require 'axlsx'
+
+Axlsx::Package.new do |p|
+  p.workbook do |wb|
+    styles = wb.styles
+    header     = styles.add_style :bg_color =&gt; "FFFF33",:fg_color=&gt;"0033CC", :sz =&gt; 16, :b =&gt; true, :alignment =&gt; {:horizontal =&gt; :center}
+    tbl_header = styles.add_style :bg_color=&gt;"99FF33",:b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    ind_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; {:indent =&gt; 1}
+    col_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    label      = styles.add_style :alignment =&gt; { :indent =&gt; 1 }
+    money      = styles.add_style :num_fmt =&gt; 5
+    t_label    = styles.add_style :b =&gt; true, :bg_color =&gt; "FFDFDEDF"
+    t_money    = styles.add_style :b =&gt; true, :num_fmt =&gt; 5, :bg_color =&gt; "FFDFDEDF"
+
+    wb.add_worksheet do |sheet|
+      sheet.add_row               #添加空行
+      sheet.add_row [nil, "College Budget"], :style =&gt; [nil, header]        #标题，大字体居中
+      sheet.add_row
+      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style =&gt; tbl_header
+      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style =&gt; [nil, ind_header, col_header, nil, ind_header, col_header]
+      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style =&gt; [nil, label, money, nil, label, money]
+      #省略部分代码
+      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
+      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
+    end
+  end
+  p.use_shared_strings = true
+  p.serialize 'styles.xlsx'
+end
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:34:19+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>安装</h3>
+
+<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
+
+<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
+
+<p>安装axlsx和安装其他gem一样：</p>
+
+<pre><code>$ gem install axlsx
+</code></pre>
+
+<h3>创建第一个报表</h3>
+
+<p>axlsx使用的对象和office文档使用的对象完全一样，workbook代表一个文档，worksheet代表一张表，row和cell代表行和单元格，基本上所有的对象顾名思义即可，而不需要了解文档ECMA规范。</p>
+
+<p>比如要创建一张如图所示的报表：</p>
+
+<p><img src="../images/20131222113617468.jpeg" alt="image" /></p>
+
+<pre><code>require 'axlsx'
+
+p = Axlsx::Package.new
+wb = p.workbook
+
+wb.add_worksheet(:name =&gt; "Basic Worksheet") do |sheet|
+  sheet.add_row ["First Column", "Second", "Third","Total"]
+  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
+  sheet.add_row ['This is a very very long sentence.']
+  sheet.merge_cells "A3:D3"
+end
+
+p.serialize 'basic.xlsx'
+</code></pre>
+
+<p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
+
+<p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:24:49+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>下载mysql数据库</h3>
+
+<pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
+tar vzxf mysql-5.1.73.tar.gz
+</code></pre>
+
+<h3>编译安装</h3>
+
+<p>最好专门创建一个用户mysql来安装数据库。</p>
+
+<pre><code>MYSQL_BASEDIR=$HOME/mysql
+cd mysql-5.1.73
+./configure 
+--prefix=${MYSQL_BASEDIR} 
+--with-charset=gbk 
+--with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
+--with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
+--with-mysqld-user=mysql     #以哪个用户执行mysqld进程
+make
+make install
+</code></pre>
+
+<h3>初始化数据库</h3>
+
+<p>复制必要的配置文件和启停脚本</p>
+
+<pre><code>cd ${MYSQL_BASEDIR}
+mkdir etc log tmp var
+cp share/mysql/my-medium.cnf  my.cnf
+cp share/mysql/mysql.server  bin/
+</code></pre>
+
+<h3>修改配置文件</h3>
+
+<pre><code>vim ./my.cnf
+</code></pre>
+
+<p>在[mysqld]下添加配置项：</p>
+
+<pre><code>basedir= ${MYSQL_BASEDIR}   # ${MYSQL_BASEDIR}是你的mysql安装目录
+datadir = ${MYSQL_BASEDIR}/var   # mysql数据路径
+tmpdir = ${MYSQL_BASEDIR}/tmp   # 临时文件路径
+slave-load-tmpdir = ${MYSQL_BASEDIR}/tmp   # 从服务器同步LOAD DATA INFILE语句时创建临时文件的目录名
+port = 3306   # 如果修改port，[mysqld] 和 [client]下的port都要修改
+pid-file = ${MYSQL_BASEDIR}/var/mysql.pid  # mysqld PID文件位置
+#以下为可选
+socket = ${MYSQL_BASEDIR}/tmp/mysql.sock  # 用于指定本地连接的Unix套接字文件位置，[mysqld] 和 [client]下的port都要修改
+#skip-name-resolve   # 是否仅使用ip验证客户端
+#skip-symbolic-links  #忽略MyISAM表的数据及索引文件连接到另一个目录下
+max_connect_errors = 10000
+max_connections = 500
+wait-timeout = 30
+</code></pre>
+
+<p>启动数据库</p>
+
+<pre><code>$ ./bin/mysql_install_db  #安装数据库文件
+$ ./bin/mysql.server start    #出现下面这行说数据库启动ok了
+Starting MySQL.                                            [  OK  ]
+</code></pre>
+
+<h3>配置mysql用户</h3>
+
+<p>使用./bin目录下的mysql命令可以登录到数据库，登录后删除匿名用户并且为root设置密码：</p>
+
+<pre><code>$ mysql -u root
+&gt; delete from mysql.user where user='';
+&gt; UPDATE mysql.user SET Password = PASSWORD('password') WHERE user='root';
+</code></pre>
+
+<p>按照以上同样的步骤再搭建一个mysql，注意，如果在同一主机搭建多个mysql实例，那么就需要将端口改成不同才行。</p>
+
+<p>下面开始配置主从同步。</p>
+
+<p>首先在主库新建专门用于同步的数据库账号mysqlsync</p>
+
+<pre><code>&gt; GRANT REPLICATION SLAVE ON *.* TO 'mysqlsync'@'%' IDENTIFIED BY 'password';
+</code></pre>
+
+<h3>主库配置</h3>
+
+<p>所有的配置项还是在my.cnf中的[mysqld]下添加。</p>
+
+<p>首先server-id作为MySQL服务器的标识，具有相关联上下游同步系统需具有全局唯一性。主库我们将server-id配置为1。其他主库需要添加的配置有：</p>
+
+<pre><code>server-id=1
+# 同步过程中需要忽略的表，支持正则表达式。全库同步时，必须屏蔽mysql系统库和test测试库。
+replicate-wild-ignore-table = mysql.%
+replicate-wild-ignore-table = test.%
+# 需要同步的表，多个表需多次指定，这里我们使用全库同步,方便点
+# replicate-do-table = database.table
+log-bin = mysql-bin  #二进制日志，强制开启
+log-bin-index = mysql-bin.index  # 记录二进制日志索引文件
+relay-log-index = relay-log.index # 记录中继日志索引文件
+</code></pre>
+
+<h3>从库配置</h3>
+
+<pre><code>server-id=2
+read-only # 在从库开启该选项，避免在从库上进行写操作，导致主从数据不一致（不过对super权限无效哦）
+skip-slave-start # 在从库开启该选项，启动数据库后，需手动开启同步进程
+relay-log = mysql-relay #中继日志，从库开启
+relay-log-index = relay-log.index
+log-bin = mysql-bin
+log-bin-index = mysql-bin.index
+replicate-wild-ignore-table = mysql.%
+replicate-wild-ignore-table = test.%
+</code></pre>
+
+<h3>同步设置</h3>
+
+<p>启动主数据库，并查看主库状态：</p>
+
+<pre><code>$ ./bin/mysql.server start
+$ mysql -u root -p
+mysql&gt; show master status;
+</code></pre>
+
+<p><img src="../images/20140108190001984.jpeg" alt="image" /></p>
+
+<p>记下来log文件名和位置，这里是“mysql-bin.000005&#8221;和”106“。</p>
+
+<p>然后启动从库，</p>
+
+<pre><code>$ ./bin/mysql.server start
+$ mysql -u root -p
+mysql&gt; change master to master_host='your_host',master_port=3307,master_user='mysqlsync',master_password='pasword',master_log_file='mysql-bin.000005',master_log_pos=106;
+mysql&gt; startslave;  #启动从库
+mysql&gt; show slave status\G;
+</code></pre>
+
+<p>最后一条sql命令得到如图结果：</p>
+
+<p><img src="../images/20140108190137578.jpeg" alt="image" /></p>
+
+<p>其中Slave_IO_Running和Slave_SQL_Running是yes就对了。</p>
+
+<p>最后，可以验证一下，在主库修改记录，从库可以看到同步过来的变化。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/">在rails外单独使用ActiveRecord</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:20:50+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>单独使用ActiveRecord</h3>
+
+<p>需要在应用根目录demo/下的app.rb文件中写入：</p>
+
+<pre><code>require 'active_record'  
+require 'sqlite3'  
+
+ActiveRecord::Base.establish_connection(  
+    :adapter=&gt;'sqlite3',  
+    :database=&gt;'data.sqlite3',  
+    :pool=&gt;5,  
+    :timeout=&gt;5000  
+    )  
+
+class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+
+CreateUsers.new.change
+
+class User &lt; ActiveRecord::Base  
+end  
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<p>首先，使用ActiveRecord::Base.establish_connection建立连接，然后定义数据表迁移，再使迁移生效建立数据表，最后就可以像在rails中一样定义model，然后正常使用ActiveRecord了。</p>
+
+<p>代码可以正常工作了，但可以做的工作还有很多，因为这段代码实在是不美观。</p>
+
+<h3>像样的结构</h3>
+
+<p>大杂烩式的代码文件总是不美的，上面代码中包含了数据库连接，表创建，model定义和实际的应用代码四部分，这么多功能各异的部件还是分开好。首先创建demo/db目录，在这个目录下放置所有数据库连接的定义；创建demo/models目录，在下面放置model定义文件。demo/app.rb文件位置不变。</p>
+
+<h3>model定义</h3>
+
+<p>model定义文件demo/user.rb的内容就是将上面的user类定义复制过来即可。</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+end
+</code></pre>
+
+<h3>ActiveRecord配置</h3>
+
+<p>新建demo/db/connection.rb文件，该文件里设置数据库连接：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+
+dbconfig = YAML::load(File.open('db/database.yml'))
+ActiveRecord::Base.establish_connection(dbconfig)
+</code></pre>
+
+<p>这里模仿rails使用了yaml来配置连接，该文件也在demo/db目录下，内容为：</p>
+
+<pre><code>adapter: sqlite3
+database: data.sqlite3
+pool: 5
+timeout: 5000
+</code></pre>
+
+<p>现在的demo/app.rb清爽多了：</p>
+
+<pre><code>require File.expand_path('../db/connection',__FILE__)
+Dir[File.expand_path('../models',__FILE__)+'/*.rb'].each{|f| require f }
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<h3>数据表迁移</h3>
+
+<p>现在还有一个问题，我也想像rails中那样利用rake来迁移数据表定义。参考我前一篇博客Rake就可以轻松写出数据迁移的rakefile。在demo/根目录下创建rakefile文件：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+require 'logger'
+
+task :default =&gt; :migrate
+
+task :migrate =&gt; :environment do
+  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
+end
+
+task :environment do
+  ActiveRecord::Base.establish_connection(YAML::load(File.open('db/database.yml')))
+  ActiveRecord::Base.logger = Logger.new(File.open('db/database.log', 'a'))
+end
+</code></pre>
+
+<p>只要在终端中执行rake命令就可能完成数据迁移：</p>
+
+<pre><code>$ rake
+==  CreateUsers: migrating ====================================================
+-- create_table(:users)
+   -&gt; 0.0020s
+==  CreateUsers: migrated (0.0040s) ===========================================
+</code></pre>
+
+<p>实际上现在还无法得出这样的输出，因为还没有编写迁移代码文件。那么迁移文件写在哪儿呢？在demo/db/migrate/目录中专门用来放置数据迁移代码，比如现在我们在该目录下新建一个迁移文件001_create_users.rb，写入迁移代码：</p>
+
+<pre><code>class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+</code></pre>
+
+<p>现在执行rake命令才能得出上面给出的正确输出。</p>
+
+<p>最后给出示例应用的最终目录结构：</p>
+
+<p><img src="../images/20131203203056312.png" alt="image" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/rspec/">Rspec</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:14:29+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>RSpec断言规则</h2>
+
+<p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
+
+<pre><code>[].should be_empty =&gt; [].empty? #passes
+[].should_not be_empty =&gt; [].empty? #fails
+</code></pre>
+
+<p>除了用&#8221;be_&ldquo;来前缀断言方法，也可以用&#8221;be_a_&#8221;和&#8221;be_an_&#8221;前缀，使得代码读起来更加自然：</p>
+
+<pre><code>"a string".should be_an_instance_of(String) =&gt;"a string".instance_of?(String)#passes
+3.should be_a_kind_of(Fixnum) =&gt; 3.kind_of?(Numeric) #passes
+3.should be_a_kind_of(Numeric) =&gt; 3.kind_of?(Numeric) #passes
+3.should be_an_instance_of(Fixnum) =&gt; 3.instance_of?(Fixnum) #passes 
+3.should_not be_instance_of(Numeric) =&gt; 3.instance_of?(Numeric) #fails
+</code></pre>
+
+<p>Rspec也会为诸如“has_key?”之类的断言创建匹配器，要使用该特性，在断言对象上使用 should have_key(:key) 就可以了，rspec会自动在对象上调用has_key?(:key)。如：</p>
+
+<pre><code>{:a =&gt; "A"}.should have_key(:a) =&gt; {:a =&gt; "A"}.has_key?(:a) #passes
+{:a =&gt; "A"}.should have_key(:b) =&gt; {:a =&gt; "A"}.has_key?(:b) #fails
+</code></pre>
+
+<p>还有一些常见的断言方法如： be  be_close  change  eql  have  be_true  be_false be_nil include raise_error respond_to throw_symbol   等等</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/rake-based-application/">Rake Based Application</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:04:13+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1.什么是rack</h3>
+
+<p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
+
+<pre><code>app = lambda do |env|
+  body = "Hello, World!"
+  [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
+end
+
+run app
+</code></pre>
+
+<p>重点是第三行，一个基于rack的ruby应用只需要一个包含call方法的对象，在调用call方法后该对象会返回形如第三行的一个列表，该列表包含三个元素：第一个元素是这次http请求的返回状态码200，第二个元素是一个返回的http响应headers的hash表，第三个元素是http响应体的列表，所以该列表的形式为：</p>
+
+<pre><code>[ status_code, headers, body ]
+</code></pre>
+
+<h3>2.一个简单的rack-based-application</h3>
+
+<p>编写一个最简单的rack based application，ok，需要一个能响应call方法的对象，在该对象上调用call方法能返回[ status_code, headers, body ]列表。在文件夹rack_based下新建simple.ru文件，*.ru被称为rakcup文件，rack使用该文件来启动rack应用。该文件内容为：</p>
+
+<pre><code>run lambda { |env| [200,{'Content-Type'=&gt;'text/plain'},['OK']]}
+</code></pre>
+
+<p>That&rsquo;s all.这个基于rack的应用已经编写完成了，在terminal中键入下面命令即可启动这个应用了：</p>
+
+<pre><code>rackup rack_based/simple.ru
+</code></pre>
+
+<p>rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动该应用：</p>
+
+<pre><code>JasondeMacBook-Pro:Projects jason$ rackup rack_based/simple.ru 
+Thin web server (v1.6.1 codename Death Proof)
+Maximum connections set to 1024
+Listening on 0.0.0.0:9292, CTRL+C to stop
+</code></pre>
+
+<p>在浏览器中访问<a href="http://localhost:9292%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E2%80%9COK%E2%80%9D%EF%BC%8C%E8%AF%B4%E6%98%8E%E5%BA%94%E7%94%A8%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C%E4%BA%86%E3%80%82">http://localhost:9292%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E2%80%9COK%E2%80%9D%EF%BC%8C%E8%AF%B4%E6%98%8E%E5%BA%94%E7%94%A8%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C%E4%BA%86%E3%80%82</a></p>
+
+<p>Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应用根目录下的config.ru：</p>
+
+<pre><code># This file is used by Rack-based servers to start the application.
+
+require ::File.expand_path('../config/environment',  __FILE__)
+run Rails.application
+</code></pre>
+
+<p>所以，Rails.application也能响应call方法。</p>
+
+<p>另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：</p>
+
+<pre><code>module Simple
+    class Application
+        def self.call(env)
+            [200,{'Content-Type'=&gt;'text/plain'},[env.to_s]]
+        end
+    end
+end
+run Simple::Application
+</code></pre>
+
+<p>启动该应用，则可以看到结果：</p>
+
+<p><img src="../images/20131130160230578.jpeg" alt="image" /></p>
+
+<h3>3.middleware</h3>
+
+<p>这是一个rack应用的请求栈：</p>
+
+<p><img src="../images/20131130151319640.png" alt="image" /></p>
+
+<p>浏览器发出http请求到web Server，web server 再将请求转交给rack，rack负责将请求转交给应用程序栈。在应用栈中，请求经过一层层的中间层middleware后，最好才传达给rack应用，譬如rails的应用的controller最后来处理请求，当rack应用处理完请求后，又逐层返回，最后由rack上交给web server完成响应。注意，并非每次请求都需要完成从上到下的全部栈层次，比如请求一个存在的静态文件，就可能直接由处理静态文件的middleware发送文件，而根本不会将请求传递到rack应用controller中去。</p>
+
+<p>由这张图可以看出来，rack是web server和应用之间的桥梁，或者说适配器。另外，rack应用处在请求栈的最后一层，web请求经过了无数的middleware后才真正到达应用这里。middleware所起的作用和java struts中的拦截器概念非常相似，它们都负责将请求逐层包裹最后递交给应用的是一个非常友好的请求包，使得应用可以更方便地处理逻辑。</p>
+
+<p>下面就来创建一个自定义的middleware，该middleware可以将请求网页内所有&lt;h1>标记内的内容的e改写成大写的X。</p>
+
+<p>首先新建一个rails app，在新建完成后，实用下面命令可以查看rails已经使用的middleware：</p>
+
+<pre><code>rake middleware
+
+use Rack::Sendfile
+use ActionDispatch::Static
+......
+use Rack::Head
+use Rack::ConditionalGet
+use Rack::ETag
+run Demo::Application.routes
+</code></pre>
+
+<p>现在在应用的lib目录下新建文件link_jumbler.rb，文件app/lib/link_jumbler.rb的内容：</p>
+
+<pre><code>require 'nokogiri'
+
+class LinkJumbler
+    def initialize(app,letters)
+        @app=app
+        @letters=letters
+    end
+
+    def call(env)
+        status, headers, response = @app.call(env)
+        body=Nokogiri::HTML(response.body)
+        body.css("h1").each do |a|
+            @letters.each do |f,r|
+                a.content=a.content.gsub f.to_s,r.to_s
+            end
+        end
+
+        [status,headers,[body.to_s]]
+    end
+end
+</code></pre>
+
+<p>首先，在initialize方法中，接受了两个参数，一个是app参数，它会在各个middleware中传递，需要对它调用call方法。另一个参数letters是我们这个middleware需要的参数，这个参数来源是挂载middleware时产生的。不同middleware的传递的这个参数不同，也可能根本没有这个额外的参数。在call方法中，先对@app调用了call方法获得了一个rack风格的响应结果，这里利用nokogiri解析结果，并做出修改，最后返回结果。在java struts中有个前拦截器和后拦截器，从这里也可以看出middleware也可以有相同的功能，比如这里就是对结果作处理，属于一个后处理的middleware。</p>
+
+<p>然后将这个middleware添加到该应用的middleware栈中（看到letters哪儿来的了吧），在app/config/application.rb中添加
+<code>config.middleware.use LinkJumbler,{"e"=&gt;"X"}</code>
+添加完成后app/config/application.rb文件内容为：</p>
+
+<pre><code>require File.expand_path('../boot', __FILE__)
+
+require 'rails/all'
+require File.expand_path('../../lib/link_jumbler', __FILE__)
+
+Bundler.require(:default, Rails.env)
+
+module Demo
+  class Application &lt; Rails::Application
+    config.middleware.use LinkJumbler,{"e"=&gt;"X"}
+  end
+end
+</code></pre>
+
+<p>再次执行rake middleware命令，可以看到LinkJumbler被添加到最后一层middleware：</p>
+
+<pre><code>use Rack::Sendfile
+use ActionDispatch::Static
+......
+use Rack::Head
+use Rack::ConditionalGet
+use Rack::ETag
+use LinkJumbler
+run Demo::Application.routes
+</code></pre>
+
+<p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
+
+<p><img src="../images/20131130155854312.jpeg" alt="image" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/">初识jruby之在tomcat上部署jruby-on-rails</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:58:44+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1. prerequesite</h3>
+
+<p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
+
+<h3>2. 安装配置Apache Tomcat</h3>
+
+<p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
+
+<p><img src="../images/20130731113711703.jpeg" alt="image" /></p>
+
+<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82">http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82</a></p>
+
+<p><img src="../images/20130731114036640.jpeg" alt="image" /></p>
+
+<h3>3. 下载安装jruby</h3>
+
+<p>安装jruby在前一篇博文讲解较细，这里不再赘述。</p>
+
+<p>安装必要的JDBC。</p>
+
+<pre><code>jruby -S gem install activerecord-jdbcmysql-adapter -v 1.3.0.beta2
+</code></pre>
+
+<p>如果要将jruby on rails工程打包为war发布到tomcat上，就必须要用到warbler Gem：</p>
+
+<pre><code>jruby -S gem install warbler
+</code></pre>
+
+<h3>4. 打包jruby on rails工程</h3>
+
+<p>首先确认database.yml文件production环境配置正确：</p>
+
+<pre><code>production:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: demo_production
+  username: user
+  password: password
+  host: localhost
+  port: 3306
+</code></pre>
+
+<p>配置正确的production数据库，及其用户密码。</p>
+
+<p>在数据库中创建production数据库demo_production，并且赋予用户user对该数据库的完全权限。</p>
+
+<p>然后开始打包工程，在rails app根目录下执行：</p>
+
+<pre><code>jruby -S warble
+</code></pre>
+
+<p>该命令会在工程根目录下生成一个war文件，如demo.war，该war会将必要的gem打包进去，使得我们能够像普通java工程war文件那样部署到tomcat中。</p>
+
+<h3>5. 部署war</h3>
+
+<p>将该war复制到tomcat的webapps目录下，等待大约几秒钟，tomcat会自动释放文件完成部署。</p>
+
+<p>最后一步，进入tomcat释放的文件夹demo中，生成数据库schema：</p>
+
+<pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
+</code></pre>
+
+<p>现在可以访问<a href="http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails">http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails</a> app的首页了。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/">初识jruby之安装配置jrubyonrails</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:49:23+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1. prerequesite</h3>
+
+<p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
+
+<h3>2. 安装rails</h3>
+
+<p>安装rails4.0.0：</p>
+
+<pre><code>C:\&gt;jruby -S gem install rails -V
+</code></pre>
+
+<p>查看安装的rails版本：</p>
+
+<pre><code>C:\&gt;jruby -S rails -v
+Rails 4.0.0
+</code></pre>
+
+<h3>3. 新建一个rails Apps</h3>
+
+<pre><code>C:\&gt;jruby -S rails new demo
+</code></pre>
+
+<p>并且取消bundle install，因为使用默认安装的ActiveRecord-JDBC-adapter的master分支版本目前，会导致执行rake db:migrate命令时发生wrong number of arguments calling exec_insert (5 for 3) error错误，所以，修改gemfile使用它的1.3.0.beta2版本（这个步骤是现在的权宜之计，以后肯定不必这么麻烦了。后注：此问题目前已修复)：</p>
+
+<p>如果使用的是sqlite数据库，则将：</p>
+
+<pre><code>gem 'activerecord-jdbcsqlite3-adapter'
+</code></pre>
+
+<p>改为：</p>
+
+<pre><code>gem 'activerecord-jdbcsqlite3-adapter', '1.3.0.beta2'
+</code></pre>
+
+<p>如果使用的mysql数据库，则将：</p>
+
+<pre><code>gem 'activerecord-jdbcmysql-adapter'
+</code></pre>
+
+<p>改为：</p>
+
+<pre><code>gem 'activerecord-jdbcmysql-adapter','1.3.0.beta2'
+</code></pre>
+
+<p>然后再进行 jruby -S bundle install 安装gem。</p>
+
+<p>如果使用sqlite数据库，默认配置即可，如果使用mysql数据库，则修改database.yml，以development
+环境为例，这里的username，password，host，port按照具体情况进行具体配置：</p>
+
+<pre><code>development:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: demo_development
+  username: user
+  password: user_password
+  host: localhost
+  port: 3306
+</code></pre>
+
+<p>最后，启动rails app：</p>
+
+<pre><code>C:\DEMO&gt;jruby -S rails s
+</code></pre>
+
+<p>然而此时又出错了：</p>
+
+<pre><code>OpenSSL::Cipher::CipherError: Illegal key size: possibly you need to install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for your JRE
+</code></pre>
+
+<p>要求安装JCE，到Oracle 官网上下载一个UnlimitedJCEPolicyJDK7.zip文件，解压缩后包含两个jar文件：local_policy.jar和US_export_policy.jar。将这两个文件替换$JAVA_HOME/jre/lib/security目录下两个同名文件，如，在我的电脑是就是替换C:\Program Files\Java\jdk1.7.0_25\jre\lib\security目录下两个文件。替换后，重启电脑。</p>
+
+<p>此时，再jruby -S rails s启动app则可以正确运行了。</p>
+
+<h3>4. 配置java类路径</h3>
+
+<p>如果需要在rails中使用java外部类，则需要配置一下$CLASSPATH，首先，假设我们将需要的java类都放在rails_root/lib/java文件夹下。那么就在environment.rb文件中require File.expand_path(&lsquo;../
+application&rsquo;, __FILE__)后添加代码：</p>
+
+<pre><code>require 'java'
+$CLASSPATH &lt;&lt; File.join(Rails.root, 'lib','java')
+</code></pre>
+
+<p>这样，如果在该目录下有一个编译好的java类example.MyClass在rails中就可以像这样使用该类：</p>
+
+<pre><code>mc=Java::example.MyClass.new
+</code></pre>
+
+<p>如果还使用了外部jar，则还要添加引用jar的代码，同样在environment.rb文件中添加：</p>
+
+<pre><code>Dir.glob(File.join(Rails.root, 'lib','java',"**","*.jar")).each do |jar| 
+    $CLASSPATH &lt;&lt; jar
+end
+</code></pre>
+
+<p>所以最终environment.rb文件看起来是这样的：</p>
+
+<blockquote><p>environment.rb</p></blockquote>
+
+<pre><code># Load the rails application
+require File.expand_path('../application',__FILE__)
+requrie 'java'
+$CLASSPATH&lt;&lt;File.join(Rails.root,'lib','java')
+Dir.glob(File.join(Rails.root,'lib','java','**','*.jar)).each do |jar|
+    $CLASSPATH &lt;&lt; jar
+end
+
+Demo::Application.initialize!
+</code></pre>
 </div>
   
   
@@ -221,6 +1400,8 @@ $ chmod a+x bin/example_cmd
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -233,11 +1414,23 @@ $ chmod a+x bin/example_cmd
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/02/14/chuang-jian-zi-ji-de-gem/">创建自己的gem</a>
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/02/13/first-post/">First Post!</a>
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
       </li>
     
   </ul>

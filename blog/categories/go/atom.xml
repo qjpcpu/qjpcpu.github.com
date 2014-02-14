@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Go | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2014-02-15T01:07:18+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Go学习笔记-类型与接口]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/"/>
+    <updated>2014-02-14T18:27:36+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou</id>
+    <content type="html"><![CDATA[<p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
+
+<h3>结构类型</h3>
+
+<p>这里，还是和C语言很像的，定义结构：</p>
+
+<pre><code>type Man struct {
+     name string
+     age int
+}
+</code></pre>
+
+<p>声明结构变量及初始化：</p>
+
+<pre><code>var m Man   //声明Man变量
+m := new(Man)  //声明一个Man指针
+m := Man{name:"jack",age:12} //声明并初始化 
+m := Man{"jack",12}  //声明并初始化
+</code></pre>
+
+<h3>方法</h3>
+
+<p>go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。</p>
+
+<pre><code>func (m *Man) Introduce() bool {
+    fmt.Println("name: ",m.name)
+    return true
+}
+</code></pre>
+
+<p>调用方法使用了".&ldquo;符号：</p>
+
+<pre><code>m := Man{"Jack",12}
+ok := m.Introduce()
+</code></pre>
+
+<p>利用结构的方法，我们甚至还能像ruby一样，为系统中预定类型打个猴子补丁，添加新的方法，只不过手段稍微曲线了一点，比如，下面代码为字符串(不是string类型)添加一个chomp方法来去掉字符串最后一个换行符：</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "strings"
+)
+
+type MyString string
+func (str MyString) chomp() string {
+    return strings.TrimRight(string(str),"\n")
+}
+func main() {
+    str := "Hello world!\n"
+    ms := MyString(str)
+    fmt.Println(ms.chomp())   //输出 Hello world!
+}
+</code></pre>
+
+<h3>方法代理</h3>
+
+<p>其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+    n := new(Neo)
+    n.Fly()  //输出：The One can fly!
+}
+
+type Neo struct{
+    TheOne
+}
+type TheOne struct{}
+
+func (o *TheOne) Fly(){
+    fmt.Println("The One can fly!")
+}
+</code></pre>
+
+<p>在ruby语言中，有许多做这种方法代理的代码，而go语言的嵌入类型的表征和该特性竟是如此神似，嘿嘿</p>
+
+<p>另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。</p>
+
+<h3>go style duck-type</h3>
+
+<p>go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。</p>
+
+<p>接口定义：</p>
+
+<pre><code>type Duck interface {
+     run()
+     height() int
+     gaga(word string)
+}
+</code></pre>
+
+<p>Duck接口中仅包含了一系列的方法声明。</p>
+
+<p>然后在方法参数中我们可以这样使用：</p>
+
+<pre><code>func DuckRun(d Duck){
+    d.run()
+}
+</code></pre>
+
+<p>那么是不是我们需要去完成多个Duck接口的实现呢？NO。那样岂不是和java一样了。go语言的interface的唯一用处其实是为了满足编译器（唉，多少有点无奈），这样编译器在DuckRun函数入口会检查传递进来的对象是否含有Duck接口所包含的三个方法，如果符合定义，则通过编译。这样不就是鸭子类型吗？仅检查是否包含这些方法，而不管是否是某种类型，所以说go style的鸭子类型是很了不起的。</p>
+
+<p>举个例子，人是有say说话的方法的，但其实对于某个需要say方法的函数中，我们可以给它传递一个地球对象，尽管地球什么话也不会说：</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+     m := Man{name:"Jack"}
+     m.say()
+     e := new(Earch)
+     SaySth(e)
+     SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
+}
+func SaySth(obj Object){
+    obj.say()
+}
+type Object interface{
+    say()
+}
+type Man struct{
+    name string
+}
+type Earch struct{}
+
+func (m *Man) say(){
+    fmt.Println("Man says: I'm ",m.name)
+}
+
+func (e *Earch) say(){
+    //do nothing
+}
+</code></pre>
+
+<h3>空接口及类型</h3>
+
+<p>空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
+类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。</p>
+
+<pre><code>// 定义a为空接口
+var a interface{}
+var i int = 5
+s := "Hello world"
+// a可以存储任意类型的数值 a=i,a=s
+</code></pre>
+
+<p>一个函数把interface{}作为参数,那么他可以接受任意类型的值作为参数,如果一个函数返回interface{},那么也 就可以返回任意类型的值。</p>
+
+<p>我们知道interface的变量里面可以存储任意类型的数值(该类型实现了interface)。那么我们怎么反向知道这个变量 里面实际保存了的是哪个类型的对象呢?可以使用Comma-ok断言</p>
+
+<pre><code>value, ok = element.(T)
+</code></pre>
+
+<p>这里value就是变 量的值,ok是一个bool类型,element是interface变量,T是断言的类型。</p>
+
+<p>如果element里面确实存储了T类型的数值,那么ok返回true,否则返回false。</p>
+
+<p>此外，关于go语言中类型处理的要求更多时，就需要使用反射。Go语言实现了反射,所谓反射就是动态运行时的状态。我们一般用到的包是reflect包。使用reflect一般分成三步,下面简要的讲解一下:要去反射是一个类型的值(这些值都实现了空interface),首先需 要把它转化成reflect对象(reflect.Type或者reflect.Value,根据不同的情况调用不同的函数)。这两种获取方式如 下:</p>
+
+<pre><code>t := reflect.TypeOf(i) //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
+v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面的值,还可以去改变值
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Go学习笔记-go Routine]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine/"/>
+    <updated>2014-02-14T18:23:38+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine</id>
+    <content type="html"><![CDATA[<h2>Go routine indeed</h2>
+
+<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
+
+<p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
+
+<p>(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
+
+<p>(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
+
+<p>(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
+
+<p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
+
+<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
+
+<p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
+
+<p>(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
+
+<p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
+
+<h3>启动一个go routine</h3>
+
+<p>go关键字+函数名即可启动一个go routine:</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "time"
+)
+func p() {
+     for i := 0; i &lt; 100; i++ {
+           fmt.Println(i)
+           time.Sleep(time.Second * 1)
+       } 
+}
+func main() {
+     go p()
+     var input string
+     fmt.Scanln(&amp;input)
+     fmt.Println("End")
+}
+</code></pre>
+
+<h3>goroutine通信：Channel</h3>
+
+<p>go routine使用channel来进行routine间的通信：</p>
+
+<pre><code>package main
+import (
+    "fmt"
+    "time"
+    "math/rand"
+)
+func sell(c chan int) {
+    for {
+    num := &lt;- c
+    fmt.Println("Sell ",num," bread")
+}
+}
+func produce(c chan int){
+    for {
+    num := rand.Intn(10)
+    t := time.Duration(num)
+    fmt.Println("Product ",num," bread")
+    c &lt;- num
+    time.Sleep(time.Second* t)
+    }
+}
+func main() {
+    var c chan int = make(chan int)
+     go sell(c)
+     go produce(c)
+     var input string
+     fmt.Scanln(&amp;input)
+     fmt.Println("End")
+}
+//输出结果：
+Product  1  bread
+Sell  1  bread
+Product  7  bread
+Sell  7  bread
+Product  7  bread
+Sell  7  bread
+Product  9  bread
+Sell  9  bread
+</code></pre>
+
+<p>默认channel是双向的，在函数入口也可以定义为单向：</p>
+
+<pre><code>func sell(c &lt;-chan int)  //只能从通道取出
+func produce(c chan&lt;- int) //通道只能放入
+</code></pre>
+
+<p>select语句用于在多个channel中选择已经ready的通道，如：</p>
+
+<pre><code>select {
+case msg1 := &lt;- c1:
+     fmt.Println("Message 1", msg1)
+case msg2 := &lt;- c2:
+     fmt.Println("Message 2", msg2)
+case &lt;- time.After(time.Second):
+     fmt.Println("timeout")
+default:
+     fmt.Println("nothing ready")
+}
+</code></pre>
+
+<p>time.After会在指定时间后创建一个匿名通道，用来进行等待超时。如果所有channel都没有准备妥当，则立即执行default块。</p>
+
+<p>在make channel时指定第二个参数可以创建一个缓冲通道，类似其他高级语言中的定长队列：</p>
+
+<pre><code>c := make(chan int, 1)
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Go学习笔记-函数和包]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/"/>
+    <updated>2014-02-14T18:15:26+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao</id>
+    <content type="html"><![CDATA[<h3>函数定义</h3>
+
+<p>go语言中使用func关键字定义函数，如main函数的定义：</p>
+
+<pre><code>func main() {
+     fmt.Println("main function")
+}
+</code></pre>
+
+<p>定义一个具有参数和返回值的函数：</p>
+
+<pre><code>func sum(a int,b int) int {
+    return a+b
+}
+</code></pre>
+
+<h3>多值返回</h3>
+
+<p>go语言的函数可以有多个返回值，它是真正的多值返回，这个特性让ruby之父都有些艳羡呢（ruby的多值实际上是返回的列表）。</p>
+
+<pre><code>func sum(a int,b int) (int,bool){
+    s := a+b
+    t := true
+    return s,t
+}
+</code></pre>
+
+<p>调用函数时，可以这样获取多个值：</p>
+
+<pre><code>m,n := sum(1,2)
+//如果，不需要全部的返回值，可以用_来替代
+m,_ := sum(1,2)
+</code></pre>
+
+<p>多值返回还有一个很cool的特性，如果返回值使用了命名参数，那么函数最后可以直接使用空的return语句，go函数会自动寻找匹配返回值的变量返回：</p>
+
+<pre><code>func sum(a int,b int) (s int,t bool){
+    s = a+b
+    t = true
+    return 
+}
+</code></pre>
+
+<h3>闭包</h3>
+
+<p>go语言另一个很cool的特性就是它支持了闭包，虽然这在众多的动态语言中已经被玩坏了，不过go语言明确对它提出了支持，这仍旧是令人十分激动的。</p>
+
+<pre><code>func main() {
+     x := 0
+     increment := func() int {
+           x++
+return x }
+     fmt.Println(increment())
+     fmt.Println(increment())
+}
+</code></pre>
+
+<h3>defer</h3>
+
+<p>go语言的defer延迟执行是一个很有意思的特性，它将defer后的函数推迟到退出函数的最后一刻才执行：</p>
+
+<pre><code>func main() {
+    defer second()
+    first() 
+}
+</code></pre>
+
+<p>main函数里执行的真正顺序是first()，然后才是 second()，defer保证其后的函数会最后执行，甚至在发生运行时异常后，也会保证执行。</p>
+
+<pre><code>package main
+import "fmt"
+func main() {
+     defer func() {
+           str := recover()
+           fmt.Println(str)
+     }()
+     panic("PANIC")
+}
+</code></pre>
+
+<h3>指针</h3>
+
+<p>go的指针和c语言的指针用法非常类似，不再赘述。另外go还提供了另一种创建指针的方式，new关键字，它返回对应类型的地址：</p>
+
+<pre><code>func one(xPtr *int) {
+     *xPtr = 1
+}
+func main() {
+     xPtr := new(int)
+     one(xPtr)
+     fmt.Println(*xPtr) // x is 1
+}
+</code></pre>
+
+<h3>go保留函数</h3>
+
+<blockquote><p>本节内容来自：Go Web编程</p>
+
+<p>Go里面有两个保留的函数:init函数(能够应用于所有的package)和main函数(只能应用于package main)。 这两个函数在定义时不能有任何的参数和返回值。虽然一个package里面可以写任意多个init函数,但这无论是对 于可读性还是以后的可维护性来说,我们都强烈建议用户在一个package中每个文件只写一个init函数。</p>
+
+<p>Go程序会自动调用init()和main(),所以你不需要在任何地方调用这两个函数。每个package中的init函数都是可选的,但package main就必须包含一个main函数。</p>
+
+<p>程序的初始化和执行都起始于main包。如果main包还导入了其它的包,那么就会在编译时将它们依次导入。有时一 个包会被多个包同时导入,那么它只会被导入一次(例如很多包可能都会用到fmt包,但它只会被导入一次,因为没 有必要导入多次)。</p></blockquote>
+
+<h4>包的引入</h4>
+
+<p>我们在写Go代码的时候经常用到import这个命令用来导入包文件,而我们经常看到的方式参考如下:</p>
+
+<pre><code>import(
+   "fmt"
+)
+</code></pre>
+
+<p>然后我们代码里面可以通过如下的方式调用</p>
+
+<pre><code>fmt.Println("hello world")
+</code></pre>
+
+<p>上面这个fmt是Go语言的标准库,其实是去goroot下去加载该模块,当然Go的import还支持如下两种方式来加载自己写的模块:</p>
+
+<ol>
+<li><p>相对路径</p>
+
+<pre><code> import “./model”   //当前文件同一目录的model目录,但是不建议这种方式来import
+</code></pre></li>
+<li><p>绝对路径</p>
+
+<pre><code> import “shorturl/model”   //加载$GOPATH/src/shorturl/model模块
+</code></pre></li>
+</ol>
+
+
+<p>上面展示了一些import常用的几种方式,但是还有一些特殊的import,让很多新手很费解,下面我们来一一讲解一下 到底是怎么一回事</p>
+
+<ol>
+<li>点操作</li>
+</ol>
+
+
+<p>我们有时候会看到如下的方式导入包</p>
+
+<pre><code>import(
+   . "fmt"
+)
+</code></pre>
+
+<p>这个点操作的含义就是这个包导入之后在你调用这个包的函数时,你可以省略前缀的包名,也就是前面你调用的<code>fmt.Println("hello world")</code>可以省略的写成<code>Println("hello world")</code></p>
+
+<ol>
+<li>别名操作</li>
+</ol>
+
+
+<p>别名操作顾名思义我们可以把包命名成另一个我们用起来容易记忆的名字</p>
+
+<pre><code>import(
+   f "fmt"
+)
+</code></pre>
+
+<p>别名操作的话调用包函数时前缀变成了我们的前缀,即 f.Println(&ldquo;hello world&rdquo;)</p>
+
+<ol>
+<li>_操作</li>
+</ol>
+
+
+<p>这个操作经常是让很多人费解的一个操作符,请看下面这个import</p>
+
+<pre><code>import (
+     "database/sql"
+     _ "github.com/ziutek/mymysql/godrv"
+)
+</code></pre>
+
+<p>_操作其实是引入该包,而不直接使用包里面的函数,而是调用了该包里面的init函数</p>
+]]></content>
+  </entry>
+  
+</feed>

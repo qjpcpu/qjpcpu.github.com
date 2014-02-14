@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Install and Deploy Rails on CentOS - Jason's space</title>
+  <meta name="author" content="Jason">
+
+  
+  <meta name="description" content="prerequisites: I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/install-and-deploy-rails-on-centos">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jason's space</a></h1>
+  
+    <h2>靡不有初 鲜克有终</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Install and Deploy Rails on CentOS</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T14:30:55+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>prerequisites:</h3>
+
+<p>I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, you needn&rsquo;t worry about SELinux.</p>
+
+<h4>1. install essentical library</h4>
+
+<pre><code>yum update
+yum install gcc g++ make automake autoconf curl-devel openssl-devel zlib-develhttpd-devel apr-devel apr-util-devel sqlite-devel gcc-c++
+</code></pre>
+
+<p>then compile and install nodejs</p>
+
+<pre><code>wget http://nodejs.org/dist/v0.10.7/node-v0.10.7.tar.gz
+# then compile and install it
+</code></pre>
+
+<h4>2. install libyaml(needed by ruby)</h4>
+
+<pre><code>wget http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
+tar xzvf yaml-0.1.4.tar.gz
+cd yaml-0.1.4
+./configure
+make
+make install
+</code></pre>
+
+<h4>3. install ruby</h4>
+
+<pre><code>wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p0.tar.gz
+# compile and install
+ruby –v # check ruby installed correctly
+</code></pre>
+
+<h4>4. install rubygems</h4>
+
+<pre><code>wget  http://production.cf.rubygems.org/rubygems/rubygems-2.0.3.tgz
+tar vxzf rubygems-2.0.3.tgz
+cd rubygems-2.0.3.tgz
+ruby setup.rb
+gem –v
+</code></pre>
+
+<h4>5. install rails</h4>
+
+<pre><code>gem update
+gem update --system
+gem install rails –V  #It really costs a longtime, enjoy a coffee now
+</code></pre>
+
+<p>Next,we talk about deploy on centos</p>
+
+<h4>6. install passenger(follow the instructions to install extra lib)</h4>
+
+<pre><code>gem  install passenger
+passenger-install-apache2-module
+</code></pre>
+
+<h4>7. find the apache configure</h4>
+
+<pre><code>apachectl  –V | grep HTTPD_ROOT
+apachectl  –V | grep SERVER_CONFIG_FILE
+</code></pre>
+
+<p>Add code snippet below to apache config file</p>
+
+<pre><code>&lt;VirtualHost*:80&gt;
+      ServerName   test.com
+      DocumentRoot  /var/www/html/blog/public   
+      &lt;Directory  /var/www/html/blog/public&gt;
+         AllowOverride all
+         Options -MultiViews
+      &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<p>If something’s wrong, add line below then try again</p>
+
+<pre><code>NameVirtualHost*:80
+</code></pre>
+
+<h4>8. config mysql database(if you use sqlite,skip this step)</h4>
+
+<p>If you use mysql in production, add below to gemfile</p>
+
+<pre><code>group:production do
+    gem ‘mysql2’
+end
+</code></pre>
+
+<p>Then bundle install</p>
+
+<pre><code>bundle install
+</code></pre>
+
+<p>Config mysql</p>
+
+<pre><code>mysql–u root –p # login to mysqlserver
+mysql&gt;create database depot_production character set utf8;
+mysql&gt;grant all privileges on depot_production.*
+mysql&gt;to ‘username’@’localhost’ identified by ‘password’;
+mysql&gt;exit;
+</code></pre>
+
+<p>Modify the config/database.yml</p>
+
+<pre><code>production:
+     adapter: mysql2
+     encoding: utf8
+     reconnect: false
+     database: depot_production
+     pool: 5
+     username: username
+     password: password
+     host: localhost
+</code></pre>
+
+<h4>9. apply your migrations</h4>
+
+<pre><code>rake db:setup RAILS_ENV=”production”
+</code></pre>
+
+<h4>10. precompile the static resources</h4>
+
+<pre><code>bundle exec rake assets:precompile
+</code></pre>
+
+<p>On centos, we must change selinux’s behavior(Everytime you deploy!)</p>
+
+<h4>11. Temporarily go into SELinux permissive mode</h4>
+
+<pre><code>setenforce  0
+</code></pre>
+
+<h4>12. restart apache</h4>
+
+<pre><code>apachectl restart
+</code></pre>
+
+<h4>13. use your rails app for a while</h4>
+
+<h4>14. allow passenger run with selinux</h4>
+
+<p>Note: if can&rsquo;t find audit2allow, you should install it first, otherwise you can skip 2 commands below</p>
+
+<pre><code>yum  provides  \*/audit2allow
+yum  install  policycoreutils-python
+grep httpd  /var/log/audit/audit.log | audit2allow -M passenger
+</code></pre>
+
+<p>install newly created selinux module</p>
+
+<pre><code>semodule  -i passenger.pp
+</code></pre>
+
+<h4>15. switch selinux back to enforcing mode</h4>
+
+<pre><code>setenforce 1
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T14:30:55+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/install-and-deploy-rails-on-centos/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/install-and-deploy-rails-on-centos/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/14/gitchang-yong-cao-zuo/" title="Previous Post: git常用操作">&laquo; git常用操作</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/14/rubylei-he-mo-kuai-de-guan-xi/" title="Next Post: ruby类和模块的关系">ruby类和模块的关系 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

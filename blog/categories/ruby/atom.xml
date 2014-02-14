@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-14T10:34:28+08:00</updated>
+  <updated>2014-02-15T01:07:18+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,90 +14,540 @@
 
   
   <entry>
-    <title type="html"><![CDATA[创建自己的gem]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem/"/>
-    <updated>2014-02-14T09:45:52+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem</id>
-    <content type="html"><![CDATA[<p>如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到<a href="https://rubygems.org">rubygems.org</a>上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。</p>
+    <title type="html"><![CDATA[Axlsx报表工具(四)——条件格式化]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/"/>
+    <updated>2014-02-15T00:47:04+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua</id>
+    <content type="html"><![CDATA[<h3>定义格式化操作</h3>
 
-<p>以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤：</p>
+<p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<ol>
-<li>首先要有<a href="https://rubygems.org">rubygems.org</a>和<a href="https://github.com">github</a>的帐号。</li>
-<li><p>利用bundler创建新的gem：</p>
-
-<pre><code> $ bundle gem jgem
-       create  jgem/Gemfile
-       create  jgem/Rakefile
-       create  jgem/LICENSE.txt
-       create  jgem/README.md
-       create  jgem/.gitignore
-       create  jgem/jgem.gemspec
-       create  jgem/lib/jgem.rb
-       create  jgem/lib/jgem/version.rb
- Initializing git repo in /Users/jason/Documents/tmp/jgem
-</code></pre></li>
-<li><p>修改<code>.gemspec</code>文件，主要修改新gem描述：</p>
-
-<pre><code> spec.summary       = %q{TODO: Write a short summary. Required.}
- spec.description   = %q{TODO: Write a longer description. Optional.}
+<pre><code># define the style for conditional formatting
+profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
+unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
 </code></pre>
 
-<p> 添加gem的依赖，包括开发时依赖和运行时依赖：</p>
+<p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 
-<pre><code> spec.add_development_dependency "rake"
- spec.add_runtime_dependency "activerecord"
-</code></pre></li>
-<li><p>编译gem</p>
+<h3>cellIs</h3>
 
-<pre><code> $ gem build jgem.gemspec 
- WARNING:  no homepage specified
- WARNING:  open-ended dependency on rake (&gt;= 0, development) is not recommended
-   if rake is semantically versioned, use:
-     add_development_dependency 'rake', '~&gt; 0'
- WARNING:  See http://guides.rubygems.org/specification-reference/ for help
-   Successfully built RubyGem
-   Name: jgem
-   Version: 0.0.1
-   File: jgem-0.0.1.gem
+<p>cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。</p>
+
+<p><img src="../images/20131222124537296.jpeg" alt="image" /></p>
+
+<p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Cell Is") do |ws|
+
+  # 产生20行数据
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+# 格式化条件&gt;100000
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :cellIs, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1 })
+# 格式化条件0.00%&lt;x&lt;100%
+  ws.add_conditional_formatting("C3:C100", { :type =&gt; :cellIs, :operator =&gt; :between, :formula =&gt; ["0.00%","100.00%"], :dxfId =&gt; unprofitable, :priority =&gt; 1 })
+end
 </code></pre>
 
-<p> 编译后生成jgem-0.0.1.gem。</p>
+<p>add_conditional_formatting方法指定条件格式化，类型type是cellIs，条件由operator和formula共同指定，dxfId就是我们上面定义的格式化操作，priority优先级数值越小，优先级越高。</p>
 
-<p> 注意：在每次<code>gem build</code>编译gem前，必须<code>git add .</code>或<code>git commit</code>一次，因为由于gem和git的紧密关系，没有<code>git add</code>到暂存区的文件变更很可能不会被编译进gem。有的朋友说在bin目录下创建的可执行文件始终无法被编译进gem就是这个原因（他们采取的办法是将<code>.gemspec</code>文件的<code>spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }</code>改成<code>spec.executables =['your_executable_file']</code>，实际这是不必要的）</p></li>
-<li><p>发布</p>
+<h3>colorScale</h3>
 
-<p> 发布生成的gem到rubygems.org。</p>
+<p><img src="../images/20131222125354250.jpeg" alt="image" /></p>
 
-<pre><code> $ gem push jgem-0.0.1.gem
+<p>colorScale是以颜色渐变的方式来格式化表格。</p>
+
+<pre><code>book.add_worksheet(:name =&gt; "Color Scale") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  color_scale = Axlsx::ColorScale.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :colorScale, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1, :color_scale =&gt; color_scale })
+end
 </code></pre>
 
-<p> 根据提示输入用户信息就行了。</p></li>
-<li><p>托管代码</p>
+<p>大于100000的单元格颜色越来越深，而小于的单元格越来越浅。</p>
 
-<p>在github上新建一个代码库，名称最好和gem保持一致为jgem。</p>
+<h3>dataBar</h3>
 
-<pre><code> git remote add origin git@github.com:USERNAME/jgem.git
- git push -u origin master
-</code></pre></li>
-<li><p>更新gem代码</p>
+<p>dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。</p>
 
-<p>如果在本地更新代码，需要先<code>git add .</code>或<code>git commit</code>，然后执行<code>gem build</code>才能正确编译。编译好的gem可以先在本地安装试用：</p>
+<p><img src="../images/20131222125728531.jpeg" alt="image" /></p>
 
-<pre><code>$ gem build jgem.gemspec
-$ gem install --local jgem-0.0.1.gem
+<pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  data_bar = Axlsx::DataBar.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :dataBar, :dxfId =&gt; profitable, :priority =&gt; 1, :data_bar =&gt; data_bar })
+end
 </code></pre>
 
-<p>如果要上传到rubygems，则必须更新<code>jgem/lib/jgem/version.rb</code>里的版本号，相同的版本号是不允许重复上传的。到rubygems上传的只是编译好的gem，不要忘了提交代码变更到github。</p>
+<h3>iconSet</h3>
 
-<p>PS. 如果gem需要添加可执行文件如<code>example_cmd</code>，在jgem目录下创建bin目录来放置这些命令即可(反复提醒，别忘了将新文件添加到git库哦)。</p>
+<p>iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。</p>
 
-<pre><code>$ mkdir bin
-$ touch bin/example_cmd
-$ chmod a+x bin/example_cmd
-</code></pre></li>
-</ol>
+<p><img src="../images/20131222125946421.jpeg" alt="image" /></p>
 
+<pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
+  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
+  ws.add_row ["Quarter", "Profit", "% of Total"]
+  offset = 3
+  rows = 20
+  offset.upto(rows + offset) do |i|
+    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
+  end
+
+  icon_set = Axlsx::IconSet.new
+  ws.add_conditional_formatting("B3:B100", { :type =&gt; :iconSet, :dxfId =&gt; profitable, :priority =&gt; 1, :icon_set =&gt; icon_set })
+end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Axlsx报表工具(三)创建图表]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/"/>
+    <updated>2014-02-15T00:42:48+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao</id>
+    <content type="html"><![CDATA[<h3>饼图</h3>
+
+<p>axlsx创建饼状图非常简单，上图：</p>
+
+<p><img src="../images/20131222120934093.jpeg" alt="image" /></p>
+
+<pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
+  sheet.add_row ["First", "Second", "Third", "Fourth"]
+  sheet.add_row [1, 2, 3, 4]
+  sheet.add_chart(Axlsx::Pie3DChart, :start_at =&gt; [0,2], :end_at =&gt; [5, 15], :title=&gt; 'dark corner here') do |chart|
+    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"]    #数据点序列及其名称
+    chart.d_lbls.show_val = true       #是否在饼状图中显示数值
+    chart.d_lbls.show_percent = true    #是否在饼状图中显示所占百分比
+    chart.d_lbls.d_lbl_pos = :outEnd    #图例位于图标外部
+    chart.d_lbls.show_leader_lines = true  #是否显示数据和数值间的指示线
+  end
+end
+</code></pre>
+
+<p>在add_chart方法中，第一个参数指定图标的类型Aslsx::Pie3DChart，而start_at和end_at分别指定图表的左上角单元格和右下角+1单元格，注意图中饼图的右下角单元格是E15即[4,14]，而end_at是[5,15]，所以称为右下角+1单元格，此外注意和excel编号不同，这里单元格序号是从0开始的。</p>
+
+<ul>
+<li>chart.add_series方法是创建图表的主要方法，用来添加点序列的值及其名称。</li>
+<li>chart.d_lbls是Data Lables的缩写，顾名思义就是数据标签。</li>
+</ul>
+
+
+<p>饼图中每块扇形的颜色是自动生成的，如果想要手动指定也是可以的：</p>
+
+<pre><code>chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; ["A1:D1"], :colors =&gt; ['FF0000', '00FF00', '0000FF']
+</code></pre>
+
+<h3>折线图</h3>
+
+<p><img src="../images/20131222122241750.jpeg" alt="image" /></p>
+
+<pre><code> wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
+  sheet.add_row ['l1','l2','l3','l4']
+  sheet.add_row [1, 2, 100, '=sum(A2:C2)']
+  sheet.add_chart(Axlsx::Line3DChart, :start_at =&gt; [0,2], :end_at =&gt; [8, 17], :title =&gt; "Chart") do |chart|
+    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"], :title =&gt; 'bob'
+    chart.d_lbls.show_val = true
+    chart.d_lbls.show_cat_name = true
+    chart.catAxis.tick_lbl_pos = :none   #不在横轴上显示坐标
+
+  end
+ end
+</code></pre>
+
+<p>chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显示每个数值的名称。</p>
+
+<h3>柱形图</h3>
+
+<p><img src="../images/20131222122546203.jpeg" alt="image" /></p>
+
+<pre><code>wb.add_worksheet(:name =&gt; "Bar Chart") do |sheet|
+  sheet.add_row ["A Simple Bar Chart"]
+  sheet.add_row ["First", "Second", "Third"]
+  sheet.add_row [1, 2, 3]
+  sheet.add_chart(Axlsx::Bar3DChart, :start_at =&gt; "A4", :end_at =&gt; "F17") do |chart|
+    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
+    chart.valAxis.label_rotation = -45
+    chart.catAxis.label_rotation = 45
+    chart.d_lbls.d_lbl_pos = :outEnd
+    chart.d_lbls.show_val = true
+
+    chart.catAxis.tick_lbl_pos = :none
+  end
+  sheet.add_chart(Axlsx::Bar3DChart, :barDir =&gt; :col,:start_at =&gt; "A17", :end_at =&gt; "F30") do |chart| #barDir指定方向:bar或:col
+    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
+    chart.valAxis.label_rotation = -45
+    chart.catAxis.label_rotation = 45
+    chart.d_lbls.d_lbl_pos = :outEnd
+    chart.d_lbls.show_val = true
+
+    chart.catAxis.tick_lbl_pos = :none
+  end
+ end
+</code></pre>
+
+<p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Axlsx报表工具(二)格式化为美观的表格]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
+    <updated>2014-02-15T00:38:10+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
+    <content type="html"><![CDATA[<h3>基础知识</h3>
+
+<p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
+
+<pre><code>(Integer) add_style(options = {})
+</code></pre>
+
+<p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
+
+<pre><code>Options Hash (options):
+fg_color (String) — 字体颜色，如：FFFF0000
+sz (Integer) — 字体大小
+b (Boolean) — 是否粗体
+i (Boolean) — 是否斜体
+u (Boolean) — 是否加下划线
+strike (Boolean) — 是否加删除线
+shadow (Boolean) — 是否加阴影
+charset (Integer) — 字符集，可选的字符集列表：
+0   ANSI_CHARSET
+1   DEFAULT_CHARSET
+2   SYMBOL_CHARSET
+77  MAC_CHARSET
+128 SHIFTJIS_CHARSET
+129 HANGUL_CHARSET
+130 JOHAB_CHARSET
+134 GB2312_CHARSET
+136 CHINESEBIG5_CHARSET
+161 GREEK_CHARSET
+162 TURKISH_CHARSET
+163 VIETNAMESE_CHARSET
+177 HEBREW_CHARSET
+178 ARABIC_CHARSET
+186 BALTIC_CHARSET
+204 RUSSIAN_CHARSET
+222 THAI_CHARSET
+238 EASTEUROPE_CHARSET
+255 OEM_CHARSET
+
+
+family (Integer) — 字体，可选字体：
+0 Not applicable.
+1 Roman
+2 Swiss
+3 Modern
+4 Script
+5 Decorative
+6..14 Reserved for future use
+
+
+font_name (String) — 字体名称
+num_fmt (Integer) — 数字格式：可选格式：
+1 0
+2 0.00
+3 #,##0
+4 #,##0.00
+5 $#,##0_);($#,##0)
+6 $#,##0_);[Red]($#,##0)
+7 $#,##0.00_);($#,##0.00)
+8 $#,##0.00_);[Red]($#,##0.00)
+9 0%
+10 0.00%
+11 0.00E+00
+12 # ?/?
+13 # ??/??
+14 m/d/yyyy
+15 d-mmm-yy
+16 d-mmm
+17 mmm-yy
+18 h:mm AM/PM
+19 h:mm:ss AM/PM
+20 h:mm
+21 h:mm:ss
+22 m/d/yyyy h:mm
+37 #,##0_);(#,##0)
+38 #,##0_);[Red](#,##0)
+39 #,##0.00_);(#,##0.00)
+40 #,##0.00_);[Red](#,##0.00)
+45 mm:ss
+46 [h]:mm:ss
+47 mm:ss.0
+48 ##0.0E+0
+49 @
+
+
+format_code (String) — 自定义格式如'yyyy-mm-dd'，如果设置了该值，则num_fmt将被忽略.
+border (Integer|Hash) — 边框样式.
+bg_color (String) — 单元格背景色
+hidden (Boolean) — 是否隐藏单元格
+locked (Boolean) — 是否锁定单元格
+type (Symbol) — 风格类型，可选的类型有[:dxf, :xf]. :xf事默认类型
+alignment (Hash) — 对齐.该hash的包括：
+horizontal (Symbol)，该键对应的值包括有：
+:general
+:left
+:center
+:right
+:fill
+:justify
+:centerContinuous
+:distributed
+vertical (Symbol)，该键对应的值有：
+:top
+:center
+:bottom
+:justify
+:distributed
+textRotation (Integer)
+wrapText (Boolean)
+indent (Integer)
+relativeIndent (Integer)
+justifyLastLine (Boolean)
+shrinkToFit (Boolean)
+readingOrder (Integer)
+</code></pre>
+
+<h3>格式化报表示例</h3>
+
+<p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
+
+<pre><code>sheet.add_row ['a', "b"], :style =&gt; [nil, header] #header是创建好的style
+#or
+sheet.add_row ["a', "b"], :style =&gt; header
+</code></pre>
+
+<p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
+
+<p><img src="../images/20131222115944718.jpeg" alt="image" /></p>
+
+<p>下面是创建如图报表的部分代码：</p>
+
+<pre><code>require 'axlsx'
+
+Axlsx::Package.new do |p|
+  p.workbook do |wb|
+    styles = wb.styles
+    header     = styles.add_style :bg_color =&gt; "FFFF33",:fg_color=&gt;"0033CC", :sz =&gt; 16, :b =&gt; true, :alignment =&gt; {:horizontal =&gt; :center}
+    tbl_header = styles.add_style :bg_color=&gt;"99FF33",:b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    ind_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; {:indent =&gt; 1}
+    col_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
+    label      = styles.add_style :alignment =&gt; { :indent =&gt; 1 }
+    money      = styles.add_style :num_fmt =&gt; 5
+    t_label    = styles.add_style :b =&gt; true, :bg_color =&gt; "FFDFDEDF"
+    t_money    = styles.add_style :b =&gt; true, :num_fmt =&gt; 5, :bg_color =&gt; "FFDFDEDF"
+
+    wb.add_worksheet do |sheet|
+      sheet.add_row               #添加空行
+      sheet.add_row [nil, "College Budget"], :style =&gt; [nil, header]        #标题，大字体居中
+      sheet.add_row
+      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style =&gt; tbl_header
+      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style =&gt; [nil, ind_header, col_header, nil, ind_header, col_header]
+      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style =&gt; [nil, label, money, nil, label, money]
+      #省略部分代码
+      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
+      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
+    end
+  end
+  p.use_shared_strings = true
+  p.serialize 'styles.xlsx'
+end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Axlsx报表工具(一)安装及入门]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/"/>
+    <updated>2014-02-15T00:34:19+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-[?]-an-zhuang-ji-ru-men</id>
+    <content type="html"><![CDATA[<h3>安装</h3>
+
+<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
+
+<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
+
+<p>安装axlsx和安装其他gem一样：</p>
+
+<pre><code>$ gem install axlsx
+</code></pre>
+
+<h3>创建第一个报表</h3>
+
+<p>axlsx使用的对象和office文档使用的对象完全一样，workbook代表一个文档，worksheet代表一张表，row和cell代表行和单元格，基本上所有的对象顾名思义即可，而不需要了解文档ECMA规范。</p>
+
+<p>比如要创建一张如图所示的报表：</p>
+
+<p><img src="../images/20131222113617468.jpeg" alt="image" /></p>
+
+<pre><code>require 'axlsx'
+
+p = Axlsx::Package.new
+wb = p.workbook
+
+wb.add_worksheet(:name =&gt; "Basic Worksheet") do |sheet|
+  sheet.add_row ["First Column", "Second", "Third","Total"]
+  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
+  sheet.add_row ['This is a very very long sentence.']
+  sheet.merge_cells "A3:D3"
+end
+
+p.serialize 'basic.xlsx'
+</code></pre>
+
+<p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
+
+<p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[在rails外单独使用ActiveRecord]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/"/>
+    <updated>2014-02-15T00:20:50+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord</id>
+    <content type="html"><![CDATA[<h3>单独使用ActiveRecord</h3>
+
+<p>需要在应用根目录demo/下的app.rb文件中写入：</p>
+
+<pre><code>require 'active_record'  
+require 'sqlite3'  
+
+ActiveRecord::Base.establish_connection(  
+    :adapter=&gt;'sqlite3',  
+    :database=&gt;'data.sqlite3',  
+    :pool=&gt;5,  
+    :timeout=&gt;5000  
+    )  
+
+class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+
+CreateUsers.new.change
+
+class User &lt; ActiveRecord::Base  
+end  
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<p>首先，使用ActiveRecord::Base.establish_connection建立连接，然后定义数据表迁移，再使迁移生效建立数据表，最后就可以像在rails中一样定义model，然后正常使用ActiveRecord了。</p>
+
+<p>代码可以正常工作了，但可以做的工作还有很多，因为这段代码实在是不美观。</p>
+
+<h3>像样的结构</h3>
+
+<p>大杂烩式的代码文件总是不美的，上面代码中包含了数据库连接，表创建，model定义和实际的应用代码四部分，这么多功能各异的部件还是分开好。首先创建demo/db目录，在这个目录下放置所有数据库连接的定义；创建demo/models目录，在下面放置model定义文件。demo/app.rb文件位置不变。</p>
+
+<h3>model定义</h3>
+
+<p>model定义文件demo/user.rb的内容就是将上面的user类定义复制过来即可。</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+end
+</code></pre>
+
+<h3>ActiveRecord配置</h3>
+
+<p>新建demo/db/connection.rb文件，该文件里设置数据库连接：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+
+dbconfig = YAML::load(File.open('db/database.yml'))
+ActiveRecord::Base.establish_connection(dbconfig)
+</code></pre>
+
+<p>这里模仿rails使用了yaml来配置连接，该文件也在demo/db目录下，内容为：</p>
+
+<pre><code>adapter: sqlite3
+database: data.sqlite3
+pool: 5
+timeout: 5000
+</code></pre>
+
+<p>现在的demo/app.rb清爽多了：</p>
+
+<pre><code>require File.expand_path('../db/connection',__FILE__)
+Dir[File.expand_path('../models',__FILE__)+'/*.rb'].each{|f| require f }
+
+User.create name:"Jack",age:12
+</code></pre>
+
+<h3>数据表迁移</h3>
+
+<p>现在还有一个问题，我也想像rails中那样利用rake来迁移数据表定义。参考我前一篇博客Rake就可以轻松写出数据迁移的rakefile。在demo/根目录下创建rakefile文件：</p>
+
+<pre><code>require 'active_record'
+require 'yaml'
+require 'logger'
+
+task :default =&gt; :migrate
+
+task :migrate =&gt; :environment do
+  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
+end
+
+task :environment do
+  ActiveRecord::Base.establish_connection(YAML::load(File.open('db/database.yml')))
+  ActiveRecord::Base.logger = Logger.new(File.open('db/database.log', 'a'))
+end
+</code></pre>
+
+<p>只要在终端中执行rake命令就可能完成数据迁移：</p>
+
+<pre><code>$ rake
+==  CreateUsers: migrating ====================================================
+-- create_table(:users)
+   -&gt; 0.0020s
+==  CreateUsers: migrated (0.0040s) ===========================================
+</code></pre>
+
+<p>实际上现在还无法得出这样的输出，因为还没有编写迁移代码文件。那么迁移文件写在哪儿呢？在demo/db/migrate/目录中专门用来放置数据迁移代码，比如现在我们在该目录下新建一个迁移文件001_create_users.rb，写入迁移代码：</p>
+
+<pre><code>class CreateUsers &lt; ActiveRecord::Migration  
+  def change  
+    create_table :users do |t|  
+      t.string :name  
+      t.integer :age  
+    end 
+  end  
+end  
+</code></pre>
+
+<p>现在执行rake命令才能得出上面给出的正确输出。</p>
+
+<p>最后给出示例应用的最终目录结构：</p>
+
+<p><img src="../images/20131203203056312.png" alt="image" /></p>
 ]]></content>
   </entry>
   
