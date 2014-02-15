@@ -10,6 +10,8 @@ categories: rails
 
 由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。
 
+<!-- more -->
+
 ###1 更改paperclip默认的上传位置
 
 若有一个story类，每个story有一个封面cover，该cover是一张图片，就可以这样更改model定义：

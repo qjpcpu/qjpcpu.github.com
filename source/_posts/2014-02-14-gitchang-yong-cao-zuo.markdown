@@ -5,7 +5,7 @@ date: 2014-02-14 14:26:31 +0800
 comments: true
 categories: git
 ---
-
+<!-- more -->
 ### 创建远程版本库
 
 1. 设置git

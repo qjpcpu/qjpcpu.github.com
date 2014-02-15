@@ -20,6 +20,8 @@ Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语�
 
 所以说，rakefile文件没有特殊的格式，仅仅是一个包含ruby代码的文件，不过，仍然有一些关于rakefile的约定，遵循这些约定，使得rake能够更好地处理任务和行为。
 
+<!-- more -->
+
 ##任务(Task)
 
 Task是rakefile的最重要组成部分。task拥有自己的名称（通常使用符号或字符串命名），一个依赖列表，以及一系列动作（在task的块中定义）。

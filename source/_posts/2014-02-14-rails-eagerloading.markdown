@@ -22,6 +22,8 @@ categories: rails
 	  puts "Last comment on: " + post.comments.first.created_on
 	end
 
+<!-- more -->
+
 首先，解决author获取问题：
 
 	Post.includes(:author).each do |post|

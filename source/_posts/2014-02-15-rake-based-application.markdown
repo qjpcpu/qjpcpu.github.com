@@ -21,6 +21,8 @@ rack是基于ruby的web服务器接口，它将http协议以非常简单的方�
 
 	[ status_code, headers, body ]
 
+<!-- more -->
+
 ### 2.一个简单的rack-based-application
 
 编写一个最简单的rack based application，ok，需要一个能响应call方法的对象，在该对象上调用call方法能返回[ status_code, headers, body ]列表。在文件夹rack_based下新建simple.ru文件，*.ru被称为rakcup文件，rack使用该文件来启动rack应用。该文件内容为：

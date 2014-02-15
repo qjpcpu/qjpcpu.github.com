@@ -15,3 +15,5 @@ categories: script
 如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：
 
 	nohup long_run_cmd &
+	
+<!-- more -->

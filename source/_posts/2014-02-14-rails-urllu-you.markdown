@@ -14,6 +14,8 @@ rails URL路由的最权威文档当然是其官方站点Rails routing from the 
 
 	resources :photos
 
+<!-- more -->
+
 ### 2.单例资源
 
 单例资源也比较常用，官方文档上举的例子很形象也很常见，用户user需要拥有一个profile资源，而每个用户必然只有一个profile，所以如果生成类似/profiles/:id的URL显然是不美观的，此时就需要单例资源，单例资源的生成使用的是单数形式方法resource：

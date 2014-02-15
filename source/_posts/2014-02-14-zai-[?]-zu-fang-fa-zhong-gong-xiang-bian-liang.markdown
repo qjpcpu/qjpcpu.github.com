@@ -19,3 +19,6 @@ categories: ruby
 	show #=>10
 	3.times{counter}
 	show #=>13
+	
+
+<!-- more -->

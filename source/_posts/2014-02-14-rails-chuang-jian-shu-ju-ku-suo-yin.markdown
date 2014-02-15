@@ -16,6 +16,8 @@ categories: rails
 
 ![image](http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&x=.jpg)
 
+<!-- more -->
+
 2. 手动附加索引
 
 此时创建数据表是以普通字段创建的外键

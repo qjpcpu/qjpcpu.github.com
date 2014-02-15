@@ -12,6 +12,8 @@ Twitter-bootstrap是一个功能强大的前端web框架，使用它可以快速
 
 而Bootswatch是基于bootstrap的主题资源站，提供了很多收费和免费的主题，利用这些现成的主题能够在bootstrap的基础上更进一步加快网站开发，制作出精美的页面。
 
+<!-- more -->
+
 ### 2.安装twitter-bootstrap
 
 这里推荐使用tomas-macdonald/bootstrap-sass。首先在gemfile中添加：

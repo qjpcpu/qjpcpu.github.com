@@ -16,6 +16,8 @@ categories: rails
 
 此时的<%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。
 
+<!-- more -->
+
 ### 2.在javascript中使用ruby复杂对象
 
 公共桥梁显然是json，但要正确地转义json就需要raw方法：

@@ -21,6 +21,8 @@ categories: rails
 	rails generate devise user
 	rake db:migrate
 
+<!-- more -->
+
 查看models文件夹下devise创建了user.rb文件：
 
 ![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=f2f25a60612762d0843ea4ba90d779c7/8b13632762d0f703ca91709f0afa513d2697c556.jpg?referer=7e3304592a34349b2d115bb5234c&x=.jpg)

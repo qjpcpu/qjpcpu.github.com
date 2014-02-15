@@ -6,6 +6,8 @@ comments: true
 categories: ruby
 ---
 
+<!-- more -->
+
 ### 单独使用ActiveRecord
 
 需要在应用根目录demo/下的app.rb文件中写入：

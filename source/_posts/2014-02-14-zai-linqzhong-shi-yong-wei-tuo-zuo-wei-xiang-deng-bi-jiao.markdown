@@ -14,6 +14,7 @@ Contains<TSource>(IEnumerable<TSource>, TSource, IEqualityComparer<TSource>)
 ```
                 
 使用该接口固然可以进行自定义的相等比较，但若对同一类型要做多种相等比较则需要继承实现IEqualityComparer<T>接口的多个子类型，这对于像我这样懒惰的程序员是很难接受的。
+<!-- more -->
 如果有一个Person类定义如下：
 
 ``` csharp

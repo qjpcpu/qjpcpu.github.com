@@ -10,6 +10,8 @@ categories: rails
 
 ![1-1](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e9efbd7d0ef3d7ca08f63f73c224cf34/730e0cf3d7ca7bcb7b8b3d6cbc096b63f724a885.jpg?referer=c1b305f367380cd7bf0996dd089b&x=.jpg)
 
+<!-- more -->
+
 1. 建立数据表
 
 		 $ rails g model supplier name:string

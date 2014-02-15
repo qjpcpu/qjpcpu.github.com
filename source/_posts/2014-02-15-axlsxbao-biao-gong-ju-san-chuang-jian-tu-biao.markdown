@@ -12,6 +12,8 @@ axlsx创建饼状图非常简单，上图：
 
 ![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&x=.jpg)
 
+<!-- more -->
+
 	wb.add_worksheet(:name => "Pie Chart") do |sheet|
 	  sheet.add_row ["First", "Second", "Third", "Fourth"]
 	  sheet.add_row [1, 2, 3, 4]

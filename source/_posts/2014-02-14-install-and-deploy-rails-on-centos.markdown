@@ -10,6 +10,8 @@ categories: rails
 
 I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, you needn't worry about SELinux.
 
+<!-- more -->
+
 #### 1. install essentical library
 
 	yum update

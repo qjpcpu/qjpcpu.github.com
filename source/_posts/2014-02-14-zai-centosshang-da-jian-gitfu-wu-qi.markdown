@@ -23,6 +23,8 @@ linux是jason的workstation。
 
 文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。
 
+<!-- more -->
+
 ###1.安装git
 
 	[test@localhost ~]$ sudo yum install git

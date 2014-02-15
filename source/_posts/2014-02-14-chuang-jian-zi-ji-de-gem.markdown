@@ -8,6 +8,8 @@ categories: ruby
 
 如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到[rubygems.org](https://rubygems.org)上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。
 
+<!-- more -->
+
 以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤：
 
 ### 1.首先要有[rubygems.org](https://rubygems.org)和[github](https://github.com)的帐号。

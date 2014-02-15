@@ -8,6 +8,8 @@ categories: rails
 
 一步步安装使用jquery-file-upload
 
+<!-- more -->
+
 ### 1.安装Gem
 
 在gemfile中添加jquery-fileupload-rails和paperclip的gem：
@@ -55,7 +57,7 @@ pictures表的avatar属性代表上传的文件对象。
 
 只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。
 
-[file](../images/rails-jquery-attach.txt)
+{% gist 9017226 jquery_template.html.erb %}
 
 ### 6.创建controller
 

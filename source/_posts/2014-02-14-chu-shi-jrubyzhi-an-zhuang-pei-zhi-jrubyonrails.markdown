@@ -21,6 +21,8 @@ categories: jruby
 	C:\>jruby -S rails -v
 	Rails 4.0.0
 
+<!-- more -->
+
 ### 3. 新建一个rails Apps
 
 	C:\>jruby -S rails new demo

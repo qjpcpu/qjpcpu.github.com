@@ -12,6 +12,8 @@ axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add
 
 	(Integer) add_style(options = {})
 
+<!-- more -->
+
 所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：
 
 	Options Hash (options):

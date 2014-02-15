@@ -8,6 +8,8 @@ categories: ruby
 
 ruby是一门可以用sexy来形容的语言，下面就列举几个sexy的迭代操作。
 
+<!-- more -->
+
 ###1. each简单迭代
 
 each是ruby中非常常见的遍历操作，她是年老色衰的for直接替代品。如果需要索引，则可以使用each_with_index方法。

@@ -11,6 +11,8 @@ categories: linux
 	$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
 	tar vzxf mysql-5.1.73.tar.gz
 
+<!-- more -->
+
 ### 编译安装
 
 最好专门创建一个用户mysql来安装数据库。

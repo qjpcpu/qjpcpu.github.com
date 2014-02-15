@@ -13,6 +13,8 @@ RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并�
 	[].should be_empty => [].empty? #passes
 	[].should_not be_empty => [].empty? #fails
 
+<!-- more -->
+
 除了用"be\_"来前缀断言方法，也可以用"be_a\_"和"be_an_"前缀，使得代码读起来更加自然：
 
 	"a string".should be_an_instance_of(String) =>"a string".instance_of?(String)#passes

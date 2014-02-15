@@ -16,6 +16,8 @@ categories: ruby
 
 条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。
 
+<!-- more -->
+
 ### cellIs
 
 cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。

@@ -32,6 +32,8 @@ categories: shell
 	[jason@localhost ~]$ echo ${str:(-2)}
 	MN
 
+<!-- more -->
+
 ###3.子串切除
 
 	${string#substring} 从左向右切除最短匹配的子串

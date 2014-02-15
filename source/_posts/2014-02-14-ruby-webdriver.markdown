@@ -10,6 +10,8 @@ categories: ruby
 
 Watir Webdriver是用ruby操作webdriver的很酷的方式，通常被用来做一些rails app的测试。
 
+<!-- more -->
+
 ###Example
 
 下面的示例是一个网站的登录示例：

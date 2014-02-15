@@ -12,6 +12,8 @@ axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下�
 
 ![axlsx](https://raw.github.com/randym/axlsx/master/examples/sample.png)
 
+<!-- more -->
+
 安装axlsx和安装其他gem一样：
 
 	$ gem install axlsx
