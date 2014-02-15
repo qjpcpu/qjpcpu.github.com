@@ -10,7 +10,7 @@ categories: ruby
 
 axlsx创建饼状图非常简单，上图：
 
-![image](../images/20131222120934093.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&x=.jpg)
 
 	wb.add_worksheet(:name => "Pie Chart") do |sheet|
 	  sheet.add_row ["First", "Second", "Third", "Fourth"]
@@ -35,7 +35,7 @@ axlsx创建饼状图非常简单，上图：
 
 ### 折线图
 
-![image](../images/20131222122241750.jpeg)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&x=.jpg)
 
 	 wb.add_worksheet(:name => "Line Chart") do |sheet|
 	  sheet.add_row ['l1','l2','l3','l4']
@@ -53,7 +53,7 @@ chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显
 
 ### 柱形图
 
-![image](../images/20131222122546203.jpeg)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&x=.jpg)
 
 	wb.add_worksheet(:name => "Bar Chart") do |sheet|
 	  sheet.add_row ["A Simple Bar Chart"]

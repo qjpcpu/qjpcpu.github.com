@@ -108,9 +108,9 @@ pictures表的avatar属性代表上传的文件对象。
 
 ### 7.效果图
 
-![image](../images/20130622184225625.jpeg)
+![image](http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=794ee559c45c1038207ecec7822ae22e/342ac65c103853436bec62629113b07eca808856.jpg?referer=457c5546e7dde711bec576c6e84c&x=.jpg)
 
 这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。
 
-![image](../images/20130622184920031.jpeg)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff26dca4932397ddd279980169b9c38a/0dd7912397dda144372a89f1b0b7d0a20cf48656.jpg?referer=354f23adb68f8c54bac4f01fe24c&x=.jpg)
 

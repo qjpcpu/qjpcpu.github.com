@@ -62,13 +62,13 @@ Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应
 
 启动该应用，则可以看到结果：
 
-![image](../images/20131130160230578.jpeg)
+![image](http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6bc04cf1d358ccbf1fbcb53f29e3cd03/9d82d158ccbf6c815814c9abbe3eb13533fa4056.jpg?referer=0e96044c8594a4c25334d21ba04c&x=.jpg)
 
 ### 3.middleware
 
 这是一个rack应用的请求栈：
 
-![image](../images/20131130151319640.png)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=70915c2796eef01f491418c0d0c5e818/8d5494eef01f3a29e9eb308d9b25bc315c607c56.jpg?referer=639819647d3e6709e71770cfbc4c&x=.jpg)
 
 浏览器发出http请求到web Server，web server 再将请求转交给rack，rack负责将请求转交给应用程序栈。在应用栈中，请求经过一层层的中间层middleware后，最好才传达给rack应用，譬如rails的应用的controller最后来处理请求，当rack应用处理完请求后，又逐层返回，最后由rack上交给web server完成响应。注意，并非每次请求都需要完成从上到下的全部栈层次，比如请求一个存在的静态文件，就可能直接由处理静态文件的middleware发送文件，而根本不会将请求传递到rack应用controller中去。
 
@@ -143,4 +143,4 @@ Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应
 
 启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？
 
-![image](../images/20131130155854312.jpeg)
+![image](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&x=.jpg)

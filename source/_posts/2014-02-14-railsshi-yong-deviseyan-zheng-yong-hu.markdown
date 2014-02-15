@@ -23,7 +23,7 @@ categories: rails
 
 查看models文件夹下devise创建了user.rb文件：
 
-![image](../images/20130618141054171.png)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=f2f25a60612762d0843ea4ba90d779c7/8b13632762d0f703ca91709f0afa513d2697c556.jpg?referer=7e3304592a34349b2d115bb5234c&x=.jpg)
 
 devise方法来自Devise gem，其中默认启用了database_authenticatable,registerable等模块，注释部分列出了其他模块默认未启用，根据devise文档按需要使能。
 
@@ -33,17 +33,17 @@ attr_accessible定义的属性可以被create, update_attributes使用，未在�
 
 执行rake routes可以看到devise创建的url：
 
-![image](../images/20130618141818062.png)
+![image](http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4a985b9df21f3a295ec8d5cba91ecd0c/95eef01f3a292df526325656be315c6035a87384.jpg?referer=0fdbb04d6509c93d5ee53ac7bd9a&x=.jpg)
 
 注意devise gem提供的账户注销和用户退出登陆都是默认使用的DELETE方法，该url设计常导致编码出错，但它确是遵循了RESTful规范，留意下即可。
 
 在需要的页面上添加注册、登陆的代码（我添加在application.html.erb中yield语句上方）：
 
-![image](../images/20130618142335171.png)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6ae4814e249759ee4e5060ce82c0322b/503d269759ee3d6d37e5628841166d224f4ade56.jpg?referer=77d0e6a0d739b60014d93a871a4c&x=.jpg)
 
 rails server启动服务器，即可查看注册登陆页面：
 
-![image](../images/20130618142534640.png)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e7392f8d9b25bc312f5d019d6ee4fc8c/e1fe9925bc315c60fe6491ac8fb1cb1348547784.jpg?referer=ba03f4b49d3df8dcff2abba1b19a&x=.jpg)
 
 ### devise提供的常用method
 
@@ -60,7 +60,7 @@ devise gem提供了足够功能的用户验证，但是由上图可见，其自�
 	
 	rails generate devise:views
 	
-![image](../images/20130618145150890.png)
+![image](http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff4c4851700e0cf3a4f74efe3a7d8322/9922720e0cf3d7ca14d5da35f01fbe096b63a956.jpg?referer=fc0d600dc880653822fd9123174c&x=.jpg)
 
 该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。
 
@@ -83,23 +83,23 @@ devise gem提供了足够功能的用户验证，但是由上图可见，其自�
 
 首先，修改user.rb文件，启用devise的confirmable模块：
 
-![image](../images/20130618153122203.png)
+![image](http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7f58226cbc096b6385195e553c08f679/f31fbe096b63f6241e7edc408544ebf81a4ca356.jpg?referer=e2c37137af3459829c9dd0a20d4c&x=.jpg)
 
 在数据表users中新加字段：
 
 	rails g migration add_confirmable_fields_to_users
 
-![image](../images/20130618153359328.png)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=117edc408544ebf86971643ae9c2a617/0d338744ebf81a4c2b11098ad52a6059252da656.jpg?referer=aabcdc8733adcbef58234b36024c&x=.jpg)
 
 新用户是以邮件的方式确认，所以，需要更改rails的环境配置。rails的环境配置位于config/environments/xxx.rb文件，xx代表develepment/test/production，三个文件的配置选项都十分类似，下面以production环境为例，打开config/environments/production.rb，在最后的end前添加：
 
-![image](../images/20130618154736625.png)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=464e1e2bcebf6c81f3372ced8c05c008/d058ccbf6c81800ac314734db33533fa838b4784.jpg?referer=0ef348e7a6c27d1efc310ff4a19a&x=.jpg)
 
 配置邮件帐户，在production时rails建议使用邮件服务如Mandrill，这里为了简单，使用gmail帐户示例。
 
 在改文件中继续添加smtp配置，新添加的内容最终如下：
 
-![image](../images/20130618161158218.png)
+![image](http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5cf27e4631fa828bd5239de6cd243009/b03533fa828ba61e481f326c4334970a314e5984.jpg?referer=fb19621ddfc451daafe138dba79a&x=.jpg)
 
 最后，修改devise.rb文件
 

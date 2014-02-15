@@ -13,10 +13,9 @@ categories: git
 		git config --global user.name "MyName"
 		git config --global user.email abcde@example.com
 
-
 2. 创建版本库
   
-   a.新建版本库，并推送到远端
+    a.新建版本库，并推送到远端
 
 		mkdir TestRepo
 		cd TestRepo
@@ -27,13 +26,11 @@ categories: git
 		git remote add origin git@gitserver.com:MyAcountName/TestRepo.git
 		git push -u origin master
 
-
-	b.使用已有本地版本库，并推送到远端
-	
+    b.使用已有本地版本库，并推送到远端
+			
 		cd TestRepo
 		git remote add origin git@gitserver.com:MyAcountName/TestRepo.git
-		git push -u origin master
-
+		git push -u origin mast
 
 3. 推/拉
 

@@ -129,7 +129,7 @@ axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add
 
 如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。
 
-![image](../images/20131222115944718.jpeg)
+![image](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9b79859e2c738bd4c021b23491b0f6eb/4bed2e738bd4b31cc6cc6ef885d6277f9f2ff885.jpg?referer=f3368c656f224f4a0e8e4723389b&x=.jpg)
 
 下面是创建如图报表的部分代码：
 

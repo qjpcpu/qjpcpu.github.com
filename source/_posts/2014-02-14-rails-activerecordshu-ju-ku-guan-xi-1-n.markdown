@@ -7,7 +7,7 @@ categories: rails
 ---
 
     如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。
-![1:n](../images/RailsActiveRecord数据库关系1vn-1.png)
+![1:n](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&x=.jpg)
 
 1. 建立数据表
 

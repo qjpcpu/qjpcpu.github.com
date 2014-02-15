@@ -117,4 +117,4 @@ model定义文件demo/user.rb的内容就是将上面的user类定义复制过�
 
 最后给出示例应用的最终目录结构：
 
-![image](../images/20131203203056312.png)
+![image](http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8350422bd309b3deefbfe46dfc841dbc/9358d109b3de9c8204461ccc6e81800a19d84356.jpg?referer=16e32c709045d688fa158794ad4c&x=.jpg)

@@ -8,7 +8,7 @@ categories: rails
 
 如图所示，在demo数据库中有suppliers和accounts两张表。一个supplier有一个account，一个account属于一个supplier，是一个1:1关系。
 
-![1-1](../images/RailsActiveRecord数据库关系1v1-1.png)
+![1-1](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e9efbd7d0ef3d7ca08f63f73c224cf34/730e0cf3d7ca7bcb7b8b3d6cbc096b63f724a885.jpg?referer=c1b305f367380cd7bf0996dd089b&x=.jpg)
 
 1. 建立数据表
 

@@ -14,11 +14,11 @@ categories: jruby
 
 首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：
 
-![image](../images/20130731113711703.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c5fe07e6d343ad4ba22e46c5b2392b92/c995d143ad4bd1136f3d4d7158afa40f4afb0584.jpg?referer=97197c6f8501a18ba9fc267f639b&x=.jpg)
 
-进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问http://localhost:8080，如果出现图示页面说明tomcat安装配置正确。
+进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问http://localhost:8080 ，如果出现图示页面说明tomcat安装配置正确。
 
-![image](../images/20130731114036640.jpeg)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=79626b7c49fbfbedd859367a48cb860b/a50f4bfbfbedab642082b783f536afc378311e84.jpg?referer=24c5e74b1d30e92496b3a8015a9b&x=.jpg)
 
 ### 3. 下载安装jruby
 
@@ -64,4 +64,4 @@ categories: jruby
 
 	C:\apache-tomcat-7.0.35\webapps\demo>jruby -S rake db:migrate RAILS_ENV="production"
 
-现在可以访问http://localhost:8080/demo，可以看到rails app的首页了。
+现在可以访问http://localhost:8080/demo ，可以看到rails app的首页了。

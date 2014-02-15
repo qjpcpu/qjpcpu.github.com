@@ -20,7 +20,7 @@ categories: ruby
 
 cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。
 
-![image](../images/20131222124537296.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0cc20173b8a1cd1101b672258929b9c1/d000baa1cd11728bb30e6961cafcc3cec3fd2c56.jpg?referer=3c8b0130af4bd1135dda82028c4c&x=.jpg)
 
 对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。
 
@@ -45,7 +45,7 @@ add_conditional_formatting方法指定条件格式化，类型type是cellIs，�
 
 ### colorScale
 
-![image](../images/20131222125354250.jpeg)
+![image](http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=3d1d3870938fa0ec7bc7640816ac28d3/f603918fa0ec08fa0ef0e9e45bee3d6d54fbda85.jpg?referer=6b56cc4859b5c9ea3be437d3269b&x=.jpg)
 
 colorScale是以颜色渐变的方式来格式化表格。
 
@@ -68,7 +68,7 @@ colorScale是以颜色渐变的方式来格式化表格。
 
 dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。
 
-![image](../images/20131222125728531.jpeg)
+![image](http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=435a969d3f6d55fbc1c676235d193e77/58ee3d6d55fbb2fb26dba2514d4a20a44723dc85.jpg?referer=b0f4797338f33a87c77a342a1c9b&x=.jpg)
 
 	book.add_worksheet(:name => "Data Bar") do |ws|
 	  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
@@ -87,7 +87,7 @@ dataBar格式化能够在单元格中同时显示数值和一个柱形图，非�
 
 iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。
 
-![image](../images/20131222125946421.jpeg)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c718e589e4cd7b89ed6c3a863f1f339a/34fae6cd7b899e511cacdf5740a7d933c8950d56.jpg?referer=a0046022fa1986181850dab46b4d&x=.jpg)
 
 	book.add_worksheet(:name => "Icon Set") do |ws|
 	  ws.add_row ["Previous Year Quarterly Profits (JPY)"]

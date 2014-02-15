@@ -22,7 +22,7 @@ rails URL路由的最权威文档当然是其官方站点Rails routing from the 
 
 该语句生成的路由如下：
 
-![image](../images/20130707221605953.jpeg)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c9415095dda144de096cb7828ca19f/902397dda144ad34c29c62c4d2a20cf431ad8556.jpg?referer=68c064fc8e5494eede353a29e34c&x=.jpg)
 
 ### 3.嵌入的路由
 
@@ -32,7 +32,7 @@ rails URL路由的最权威文档当然是其官方站点Rails routing from the 
 	    resources :comments
 	end
 
-![image](../images/20130707222229703.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8d06f6a8b4fd5266a32b3c119b23e616/38dbb6fd5266d01605e9646b952bd40734fa3584.jpg?referer=12da45f1bb014a90d829728d739b&x=.jpg)
 
 对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。
 
@@ -48,7 +48,7 @@ rails URL路由的最权威文档当然是其官方站点Rails routing from the 
 
 此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：
 
-![image](../images/20130707224653531.jpeg)
+![image](http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b8309d15d2160924d825a21ee43c44c7/5366d0160924ab1899e61b7437fae6cd7a890b84.jpg?referer=b7cc85e3f403738d875d3812759b&x=.jpg)
 
 一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。
 
@@ -59,7 +59,7 @@ scope。
 	  resources :posts
 	end
 
-![image](../images/20130707225527953.jpeg) 
+![image](http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8e21687d79ec54e745ec1a1b8903ea6d/b90e7bec54e736d18030694b99504fc2d5626956.jpg?referer=7e1763ad9e82d158e2956c81d74c&x=.jpg) 
 
 由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。
 
@@ -71,7 +71,7 @@ scope。
 	  resources :posts
 	end
 
-![image](../images/20130707230019750.jpeg)
+![image](http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6c4451220db30f24319aec06f8aea07e/9f510fb30f2442a7cefe07e6d343ad4bd0130284.jpg?referer=91d5f909d8b44aed00598ad46e9b&x=.jpg)
 
 此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。
 
@@ -85,7 +85,7 @@ scope。
 
 	resources :posts, path: '/articles'
 
-![image](../images/20130707230525468.jpeg)
+![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=596a1640ca95d143de76e42643cbf33f/d833c895d143ad4bcadebc8380025aafa50f0684.jpg?referer=35be44a7b11c87018fa186d6629b&x=.jpg)
 
 ### 5.新增RESTful动词
 
@@ -109,7 +109,7 @@ controller中处理该请求的方法，以及自定义url helper：
 	  end
 	end
 
-![image](../images/20130707231956765.jpeg)
+![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=15e98dd4db33c895a27e987ee12802cd/43a7d933c895d143b7861e6071f082025baf0784.jpg?referer=5020e10089d4b31ca92ba08b619b&x=.jpg)
 
 ### 6.非resourceful路由
 

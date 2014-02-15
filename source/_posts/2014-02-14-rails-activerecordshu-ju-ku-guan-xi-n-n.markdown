@@ -8,7 +8,7 @@ categories: rails
 
 如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。
 
-![n-n](../images/RailsActiveRecord数据库关系nvn-1.png)
+![n-n](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=85dca9420855b31998f982707392f31b/78310a55b319ebc49d5a93da8026cffc1e171656.jpg?referer=378ada0800087bf424fb62d9524d&x=.jpg)
 
 1.建立数据表
 

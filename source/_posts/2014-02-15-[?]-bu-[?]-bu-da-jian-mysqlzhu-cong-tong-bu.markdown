@@ -113,7 +113,7 @@ categories: linux
 	$ mysql -u root -p
 	mysql> show master status;
 
-![image](../images/20140108190001984.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=21e536be79899e517c8e3a11729ca80e/e7cd7b899e510fb31b3b92d4db33c895d1430c56.jpg?referer=a44e286a8418367af49e4aed6c4d&x=.jpg)
 
 记下来log文件名和位置，这里是“mysql-bin.000005"和”106“。
 
@@ -127,7 +127,7 @@ categories: linux
 
 最后一条sql命令得到如图结果：
 
-![image](../images/20140108190137578.jpeg)
+![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a307b4b80846f21fcd345e56c61f1a5d/7acb0a46f21fbe091fae395769600c338644ad85.jpg?referer=781a5e5095dda144831e58820b9b&x=.jpg)
 
 其中Slave_IO_Running和Slave_SQL_Running是yes就对了。
 
