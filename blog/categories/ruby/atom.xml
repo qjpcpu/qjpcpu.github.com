@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T16:26:03+08:00</updated>
+  <updated>2014-02-15T17:43:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -33,7 +33,7 @@ unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf
 
 <p>cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。</p>
 
-<p><img src="../images/20131222124537296.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0cc20173b8a1cd1101b672258929b9c1/d000baa1cd11728bb30e6961cafcc3cec3fd2c56.jpg?referer=3c8b0130af4bd1135dda82028c4c&amp;x=.jpg" alt="image" /></p>
 
 <p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
 
@@ -59,7 +59,7 @@ end
 
 <h3>colorScale</h3>
 
-<p><img src="../images/20131222125354250.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=3d1d3870938fa0ec7bc7640816ac28d3/f603918fa0ec08fa0ef0e9e45bee3d6d54fbda85.jpg?referer=6b56cc4859b5c9ea3be437d3269b&amp;x=.jpg" alt="image" /></p>
 
 <p>colorScale是以颜色渐变的方式来格式化表格。</p>
 
@@ -83,7 +83,7 @@ end
 
 <p>dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。</p>
 
-<p><img src="../images/20131222125728531.jpeg" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=435a969d3f6d55fbc1c676235d193e77/58ee3d6d55fbb2fb26dba2514d4a20a44723dc85.jpg?referer=b0f4797338f33a87c77a342a1c9b&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
   ws.add_row ["Previous Year Quarterly Profits (JPY)"]
@@ -103,7 +103,7 @@ end
 
 <p>iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。</p>
 
-<p><img src="../images/20131222125946421.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c718e589e4cd7b89ed6c3a863f1f339a/34fae6cd7b899e511cacdf5740a7d933c8950d56.jpg?referer=a0046022fa1986181850dab46b4d&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
   ws.add_row ["Previous Year Quarterly Profits (JPY)"]
@@ -130,7 +130,7 @@ end
 
 <p>axlsx创建饼状图非常简单，上图：</p>
 
-<p><img src="../images/20131222120934093.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
   sheet.add_row ["First", "Second", "Third", "Fourth"]
@@ -160,7 +160,7 @@ end
 
 <h3>折线图</h3>
 
-<p><img src="../images/20131222122241750.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code> wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
   sheet.add_row ['l1','l2','l3','l4']
@@ -179,7 +179,7 @@ end
 
 <h3>柱形图</h3>
 
-<p><img src="../images/20131222122546203.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>wb.add_worksheet(:name =&gt; "Bar Chart") do |sheet|
   sheet.add_row ["A Simple Bar Chart"]
@@ -341,7 +341,7 @@ sheet.add_row ["a', "b"], :style =&gt; header
 
 <p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
 
-<p><img src="../images/20131222115944718.jpeg" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9b79859e2c738bd4c021b23491b0f6eb/4bed2e738bd4b31cc6cc6ef885d6277f9f2ff885.jpg?referer=f3368c656f224f4a0e8e4723389b&amp;x=.jpg" alt="image" /></p>
 
 <p>下面是创建如图报表的部分代码：</p>
 
@@ -400,7 +400,7 @@ end
 
 <p>比如要创建一张如图所示的报表：</p>
 
-<p><img src="../images/20131222113617468.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>require 'axlsx'
 
@@ -547,7 +547,7 @@ end
 
 <p>最后给出示例应用的最终目录结构：</p>
 
-<p><img src="../images/20131203203056312.png" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8350422bd309b3deefbfe46dfc841dbc/9358d109b3de9c8204461ccc6e81800a19d84356.jpg?referer=16e32c709045d688fa158794ad4c&amp;x=.jpg" alt="image" /></p>
 ]]></content>
   </entry>
   

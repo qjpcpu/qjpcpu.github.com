@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T16:26:03+08:00</updated>
+  <updated>2014-02-15T17:43:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -33,7 +33,7 @@ unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf
 
 <p>cellIs条件格式化使用得较为普遍，即对满足条件的单元格更改字体颜色，字体大小，背景色等等。</p>
 
-<p><img src="../images/20131222124537296.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0cc20173b8a1cd1101b672258929b9c1/d000baa1cd11728bb30e6961cafcc3cec3fd2c56.jpg?referer=3c8b0130af4bd1135dda82028c4c&amp;x=.jpg" alt="image" /></p>
 
 <p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
 
@@ -59,7 +59,7 @@ end
 
 <h3>colorScale</h3>
 
-<p><img src="../images/20131222125354250.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=3d1d3870938fa0ec7bc7640816ac28d3/f603918fa0ec08fa0ef0e9e45bee3d6d54fbda85.jpg?referer=6b56cc4859b5c9ea3be437d3269b&amp;x=.jpg" alt="image" /></p>
 
 <p>colorScale是以颜色渐变的方式来格式化表格。</p>
 
@@ -83,7 +83,7 @@ end
 
 <p>dataBar格式化能够在单元格中同时显示数值和一个柱形图，非常直观漂亮。</p>
 
-<p><img src="../images/20131222125728531.jpeg" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=435a969d3f6d55fbc1c676235d193e77/58ee3d6d55fbb2fb26dba2514d4a20a44723dc85.jpg?referer=b0f4797338f33a87c77a342a1c9b&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
   ws.add_row ["Previous Year Quarterly Profits (JPY)"]
@@ -103,7 +103,7 @@ end
 
 <p>iconSet方式是对于满足条件和不满足条件的单元格分别使用不同的图标。</p>
 
-<p><img src="../images/20131222125946421.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c718e589e4cd7b89ed6c3a863f1f339a/34fae6cd7b899e511cacdf5740a7d933c8950d56.jpg?referer=a0046022fa1986181850dab46b4d&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
   ws.add_row ["Previous Year Quarterly Profits (JPY)"]
@@ -130,7 +130,7 @@ end
 
 <p>axlsx创建饼状图非常简单，上图：</p>
 
-<p><img src="../images/20131222120934093.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
   sheet.add_row ["First", "Second", "Third", "Fourth"]
@@ -160,7 +160,7 @@ end
 
 <h3>折线图</h3>
 
-<p><img src="../images/20131222122241750.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code> wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
   sheet.add_row ['l1','l2','l3','l4']
@@ -179,7 +179,7 @@ end
 
 <h3>柱形图</h3>
 
-<p><img src="../images/20131222122546203.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>wb.add_worksheet(:name =&gt; "Bar Chart") do |sheet|
   sheet.add_row ["A Simple Bar Chart"]
@@ -341,7 +341,7 @@ sheet.add_row ["a', "b"], :style =&gt; header
 
 <p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
 
-<p><img src="../images/20131222115944718.jpeg" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9b79859e2c738bd4c021b23491b0f6eb/4bed2e738bd4b31cc6cc6ef885d6277f9f2ff885.jpg?referer=f3368c656f224f4a0e8e4723389b&amp;x=.jpg" alt="image" /></p>
 
 <p>下面是创建如图报表的部分代码：</p>
 
@@ -400,7 +400,7 @@ end
 
 <p>比如要创建一张如图所示的报表：</p>
 
-<p><img src="../images/20131222113617468.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
 
 <pre><code>require 'axlsx'
 
@@ -546,7 +546,7 @@ $ mysql -u root -p
 mysql&gt; show master status;
 </code></pre>
 
-<p><img src="../images/20140108190001984.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=21e536be79899e517c8e3a11729ca80e/e7cd7b899e510fb31b3b92d4db33c895d1430c56.jpg?referer=a44e286a8418367af49e4aed6c4d&amp;x=.jpg" alt="image" /></p>
 
 <p>记下来log文件名和位置，这里是“mysql-bin.000005&#8221;和”106“。</p>
 
@@ -561,7 +561,7 @@ mysql&gt; show slave status\G;
 
 <p>最后一条sql命令得到如图结果：</p>
 
-<p><img src="../images/20140108190137578.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a307b4b80846f21fcd345e56c61f1a5d/7acb0a46f21fbe091fae395769600c338644ad85.jpg?referer=781a5e5095dda144831e58820b9b&amp;x=.jpg" alt="image" /></p>
 
 <p>其中Slave_IO_Running和Slave_SQL_Running是yes就对了。</p>
 
@@ -693,7 +693,7 @@ end
 
 <p>最后给出示例应用的最终目录结构：</p>
 
-<p><img src="../images/20131203203056312.png" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8350422bd309b3deefbfe46dfc841dbc/9358d109b3de9c8204461ccc6e81800a19d84356.jpg?referer=16e32c709045d688fa158794ad4c&amp;x=.jpg" alt="image" /></p>
 ]]></content>
   </entry>
   
@@ -797,13 +797,13 @@ run Simple::Application
 
 <p>启动该应用，则可以看到结果：</p>
 
-<p><img src="../images/20131130160230578.jpeg" alt="image" /></p>
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6bc04cf1d358ccbf1fbcb53f29e3cd03/9d82d158ccbf6c815814c9abbe3eb13533fa4056.jpg?referer=0e96044c8594a4c25334d21ba04c&amp;x=.jpg" alt="image" /></p>
 
 <h3>3.middleware</h3>
 
 <p>这是一个rack应用的请求栈：</p>
 
-<p><img src="../images/20131130151319640.png" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=70915c2796eef01f491418c0d0c5e818/8d5494eef01f3a29e9eb308d9b25bc315c607c56.jpg?referer=639819647d3e6709e71770cfbc4c&amp;x=.jpg" alt="image" /></p>
 
 <p>浏览器发出http请求到web Server，web server 再将请求转交给rack，rack负责将请求转交给应用程序栈。在应用栈中，请求经过一层层的中间层middleware后，最好才传达给rack应用，譬如rails的应用的controller最后来处理请求，当rack应用处理完请求后，又逐层返回，最后由rack上交给web server完成响应。注意，并非每次请求都需要完成从上到下的全部栈层次，比如请求一个存在的静态文件，就可能直接由处理静态文件的middleware发送文件，而根本不会将请求传递到rack应用controller中去。</p>
 
@@ -882,7 +882,7 @@ run Demo::Application.routes
 
 <p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
 
-<p><img src="../images/20131130155854312.jpeg" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&amp;x=.jpg" alt="image" /></p>
 ]]></content>
   </entry>
   
@@ -899,11 +899,11 @@ run Demo::Application.routes
 
 <p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
 
-<p><img src="../images/20130731113711703.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c5fe07e6d343ad4ba22e46c5b2392b92/c995d143ad4bd1136f3d4d7158afa40f4afb0584.jpg?referer=97197c6f8501a18ba9fc267f639b&amp;x=.jpg" alt="image" /></p>
 
-<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82">http://localhost:8080%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%87%BA%E7%8E%B0%E5%9B%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E8%AF%B4%E6%98%8Etomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%AD%A3%E7%A1%AE%E3%80%82</a></p>
+<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080">http://localhost:8080</a> ，如果出现图示页面说明tomcat安装配置正确。</p>
 
-<p><img src="../images/20130731114036640.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=79626b7c49fbfbedd859367a48cb860b/a50f4bfbfbedab642082b783f536afc378311e84.jpg?referer=24c5e74b1d30e92496b3a8015a9b&amp;x=.jpg" alt="image" /></p>
 
 <h3>3. 下载安装jruby</h3>
 
@@ -954,7 +954,7 @@ run Demo::Application.routes
 <pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
 </code></pre>
 
-<p>现在可以访问<a href="http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails">http://localhost:8080/demo%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0rails</a> app的首页了。</p>
+<p>现在可以访问<a href="http://localhost:8080/demo">http://localhost:8080/demo</a> ，可以看到rails app的首页了。</p>
 ]]></content>
   </entry>
   
@@ -1207,7 +1207,7 @@ end
 
 <p>该语句生成的路由如下：</p>
 
-<p><img src="../images/20130707221605953.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c9415095dda144de096cb7828ca19f/902397dda144ad34c29c62c4d2a20cf431ad8556.jpg?referer=68c064fc8e5494eede353a29e34c&amp;x=.jpg" alt="image" /></p>
 
 <h3>3.嵌入的路由</h3>
 
@@ -1218,7 +1218,7 @@ end
 end
 </code></pre>
 
-<p><img src="../images/20130707222229703.jpeg" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8d06f6a8b4fd5266a32b3c119b23e616/38dbb6fd5266d01605e9646b952bd40734fa3584.jpg?referer=12da45f1bb014a90d829728d739b&amp;x=.jpg" alt="image" /></p>
 
 <p>对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。</p>
 
@@ -1235,7 +1235,7 @@ end
 
 <p>此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：</p>
 
-<p><img src="../images/20130707224653531.jpeg" alt="image" /></p>
+<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b8309d15d2160924d825a21ee43c44c7/5366d0160924ab1899e61b7437fae6cd7a890b84.jpg?referer=b7cc85e3f403738d875d3812759b&amp;x=.jpg" alt="image" /></p>
 
 <p>一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。</p>
 
@@ -1247,7 +1247,7 @@ scope。</p>
 end
 </code></pre>
 
-<p><img src="../images/20130707225527953.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8e21687d79ec54e745ec1a1b8903ea6d/b90e7bec54e736d18030694b99504fc2d5626956.jpg?referer=7e1763ad9e82d158e2956c81d74c&amp;x=.jpg" alt="image" /></p>
 
 <p>由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。</p>
 
@@ -1260,7 +1260,7 @@ end
 end
 </code></pre>
 
-<p><img src="../images/20130707230019750.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6c4451220db30f24319aec06f8aea07e/9f510fb30f2442a7cefe07e6d343ad4bd0130284.jpg?referer=91d5f909d8b44aed00598ad46e9b&amp;x=.jpg" alt="image" /></p>
 
 <p>此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。</p>
 
@@ -1276,7 +1276,7 @@ end
 <pre><code>resources :posts, path: '/articles'
 </code></pre>
 
-<p><img src="../images/20130707230525468.jpeg" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=596a1640ca95d143de76e42643cbf33f/d833c895d143ad4bcadebc8380025aafa50f0684.jpg?referer=35be44a7b11c87018fa186d6629b&amp;x=.jpg" alt="image" /></p>
 
 <h3>5.新增RESTful动词</h3>
 
@@ -1302,7 +1302,7 @@ controller中处理该请求的方法，以及自定义url helper：</p>
 end
 </code></pre>
 
-<p><img src="../images/20130707231956765.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=15e98dd4db33c895a27e987ee12802cd/43a7d933c895d143b7861e6071f082025baf0784.jpg?referer=5020e10089d4b31ca92ba08b619b&amp;x=.jpg" alt="image" /></p>
 
 <h3>6.非resourceful路由</h3>
 
@@ -1519,11 +1519,11 @@ end
 
 <h3>7.效果图</h3>
 
-<p><img src="../images/20130622184225625.jpeg" alt="image" /></p>
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=794ee559c45c1038207ecec7822ae22e/342ac65c103853436bec62629113b07eca808856.jpg?referer=457c5546e7dde711bec576c6e84c&amp;x=.jpg" alt="image" /></p>
 
 <p>这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。</p>
 
-<p><img src="../images/20130622184920031.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff26dca4932397ddd279980169b9c38a/0dd7912397dda144372a89f1b0b7d0a20cf48656.jpg?referer=354f23adb68f8c54bac4f01fe24c&amp;x=.jpg" alt="image" /></p>
 ]]></content>
   </entry>
   
@@ -1586,11 +1586,11 @@ Address.includes(:addressable)
 </ol>
 
 
-<p><img src="../images/20130622094250171.jpeg" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d1364df8a41ea8d38e227401a7314173/838ba61ea8d3fd1fa3f85879324e251f94ca5f84.jpg?referer=3f089ea983cb39db98d75366999a&amp;x=.jpg" alt="image" /></p>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<p><img src="../images/20130622094517109.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
 
 <ol>
 <li>手动附加索引</li>
@@ -1599,15 +1599,15 @@ Address.includes(:addressable)
 
 <p>此时创建数据表是以普通字段创建的外键</p>
 
-<p><img src="../images/20130622094719421.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=84258bc6cbea15ce45eee00c863b4bce/5ab5c9ea15ce36d35227667338f33a87e950b156.jpg?referer=a621687d79ec54e718fb2f2eff4c&amp;x=.jpg" alt="image" /></p>
 
 <p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
 
-<p><img src="../images/20130622095445515.png" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d982ea6c97cad1c8d4bbfc224f051634/241f95cad1c8a78620dbb04d6509c93d71cf5084.jpg?referer=e0e8646b952bd4071bd0e7cd909a&amp;x=.jpg" alt="image" /></p>
 
 <p>修改migration文件，手动添加index</p>
 
-<p><img src="../images/20130622095549781.jpeg" alt="image" /></p>
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c5064e72cf3bc7ec00cde9e13bcb9c/c83d70cf3bc79f3d08101e73b8a1cd11738b2984.jpg?referer=6e9dc0c00d2442a7f719c995979a&amp;x=.jpg" alt="image" /></p>
 
 <ol>
 <li>many-to-many关系中添加index</li>
@@ -1616,7 +1616,7 @@ Address.includes(:addressable)
 
 <p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
 
-<p><img src="../images/20130622101142750.jpeg" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b5993923372ac65c63056676cbc9c32c/e850352ac65c1038dc5d2b81b0119313b07e8956.jpg?referer=c0dc05118735e5ddc93b90eff74c&amp;x=.jpg" alt="image" /></p>
 
 <ol>
 <li>建议</li>
@@ -1652,7 +1652,7 @@ rake db:migrate
 
 <p>查看models文件夹下devise创建了user.rb文件：</p>
 
-<p><img src="../images/20130618141054171.png" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=f2f25a60612762d0843ea4ba90d779c7/8b13632762d0f703ca91709f0afa513d2697c556.jpg?referer=7e3304592a34349b2d115bb5234c&amp;x=.jpg" alt="image" /></p>
 
 <p>devise方法来自Devise gem，其中默认启用了database_authenticatable,registerable等模块，注释部分列出了其他模块默认未启用，根据devise文档按需要使能。</p>
 
@@ -1662,17 +1662,17 @@ rake db:migrate
 
 <p>执行rake routes可以看到devise创建的url：</p>
 
-<p><img src="../images/20130618141818062.png" alt="image" /></p>
+<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4a985b9df21f3a295ec8d5cba91ecd0c/95eef01f3a292df526325656be315c6035a87384.jpg?referer=0fdbb04d6509c93d5ee53ac7bd9a&amp;x=.jpg" alt="image" /></p>
 
 <p>注意devise gem提供的账户注销和用户退出登陆都是默认使用的DELETE方法，该url设计常导致编码出错，但它确是遵循了RESTful规范，留意下即可。</p>
 
 <p>在需要的页面上添加注册、登陆的代码（我添加在application.html.erb中yield语句上方）：</p>
 
-<p><img src="../images/20130618142335171.png" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6ae4814e249759ee4e5060ce82c0322b/503d269759ee3d6d37e5628841166d224f4ade56.jpg?referer=77d0e6a0d739b60014d93a871a4c&amp;x=.jpg" alt="image" /></p>
 
 <p>rails server启动服务器，即可查看注册登陆页面：</p>
 
-<p><img src="../images/20130618142534640.png" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e7392f8d9b25bc312f5d019d6ee4fc8c/e1fe9925bc315c60fe6491ac8fb1cb1348547784.jpg?referer=ba03f4b49d3df8dcff2abba1b19a&amp;x=.jpg" alt="image" /></p>
 
 <h3>devise提供的常用method</h3>
 
@@ -1690,7 +1690,7 @@ rake db:migrate
 <pre><code>rails generate devise:views
 </code></pre>
 
-<p><img src="../images/20130618145150890.png" alt="image" /></p>
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff4c4851700e0cf3a4f74efe3a7d8322/9922720e0cf3d7ca14d5da35f01fbe096b63a956.jpg?referer=fc0d600dc880653822fd9123174c&amp;x=.jpg" alt="image" /></p>
 
 <p>该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。</p>
 
@@ -1716,24 +1716,24 @@ rake db:migrate
 
 <p>首先，修改user.rb文件，启用devise的confirmable模块：</p>
 
-<p><img src="../images/20130618153122203.png" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7f58226cbc096b6385195e553c08f679/f31fbe096b63f6241e7edc408544ebf81a4ca356.jpg?referer=e2c37137af3459829c9dd0a20d4c&amp;x=.jpg" alt="image" /></p>
 
 <p>在数据表users中新加字段：</p>
 
 <pre><code>rails g migration add_confirmable_fields_to_users
 </code></pre>
 
-<p><img src="../images/20130618153359328.png" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=117edc408544ebf86971643ae9c2a617/0d338744ebf81a4c2b11098ad52a6059252da656.jpg?referer=aabcdc8733adcbef58234b36024c&amp;x=.jpg" alt="image" /></p>
 
 <p>新用户是以邮件的方式确认，所以，需要更改rails的环境配置。rails的环境配置位于config/environments/xxx.rb文件，xx代表develepment/test/production，三个文件的配置选项都十分类似，下面以production环境为例，打开config/environments/production.rb，在最后的end前添加：</p>
 
-<p><img src="../images/20130618154736625.png" alt="image" /></p>
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=464e1e2bcebf6c81f3372ced8c05c008/d058ccbf6c81800ac314734db33533fa838b4784.jpg?referer=0ef348e7a6c27d1efc310ff4a19a&amp;x=.jpg" alt="image" /></p>
 
 <p>配置邮件帐户，在production时rails建议使用邮件服务如Mandrill，这里为了简单，使用gmail帐户示例。</p>
 
 <p>在改文件中继续添加smtp配置，新添加的内容最终如下：</p>
 
-<p><img src="../images/20130618161158218.png" alt="image" /></p>
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5cf27e4631fa828bd5239de6cd243009/b03533fa828ba61e481f326c4334970a314e5984.jpg?referer=fb19621ddfc451daafe138dba79a&amp;x=.jpg" alt="image" /></p>
 
 <p>最后，修改devise.rb文件</p>
 
@@ -1754,21 +1754,21 @@ rake db:migrate
 </ol>
 
 
-<p><img src="../images/20130615125249265.png" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c21f71f885d6277fed12323d18036e0d/a08b87d6277f9e2f4216f84b1d30e924b899f356.jpg?referer=033dd984925298225c240cf33d4c&amp;x=.jpg" alt="image" /></p>
 
 <p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
 
-<p><img src="../images/20130615132410906.png" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&amp;x=.jpg" alt="image" /></p>
 
 <p>新线程中保存num的副本，在线程中更改num并不影响外部num值，而新线程对book的修改会直接影响外部book，在新线程中也可打破作用域直接访问外部count并作出修改。</p>
 
 <p>常用方法</p>
 
-<p><img src="../images/20130615132410906.png" alt="image" /></p>
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&amp;x=.jpg" alt="image" /></p>
 
 <p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
 
-<p><img src="../images/20130615143555750.png" alt="image" /></p>
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5bdd5f9c74c6a7efbd26a823cdc1de6c/91ef76c6a7efce1b21da3289ad51f3deb58f6584.jpg?referer=1ad267a0ff1f4134b920314ec39a&amp;x=.jpg" alt="image" /></p>
 
 <ol>
 <li>Mutex</li>
@@ -1777,7 +1777,7 @@ rake db:migrate
 
 <p>来自ruby-doc的例子</p>
 
-<p><img src="../images/20130615140140578.png" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&amp;x=.jpg" alt="image" /></p>
 
 <ol>
 <li>Condition Variables</li>
@@ -1786,7 +1786,7 @@ rake db:migrate
 
 <p>来自ruby-doc</p>
 
-<p><img src="../images/20130615134503984.png" alt="image" /></p>
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9ae2764b99504fc2a65fb000d5e6962c/b8389b504fc2d56230f92aaee51190ef77c66c84.jpg?referer=d94d4f791bd8bc3e9f1f32facc9a&amp;x=.jpg" alt="image" /></p>
 
 <p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
 
@@ -1797,7 +1797,7 @@ rake db:migrate
 
 <p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
 
-<p><img src="../images/20130615140140578.png" alt="image" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&amp;x=.jpg" alt="image" /></p>
 
 <p>ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。</p>
 ]]></content>
@@ -1811,7 +1811,7 @@ rake db:migrate
     <content type="html"><![CDATA[<pre><code>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。
 </code></pre>
 
-<p><img src="../images/RailsActiveRecord%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%B3%E7%B3%BB1vn-1.png" alt="1:n" /></p>
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
 
 <ol>
 <li><p>建立数据表</p>
