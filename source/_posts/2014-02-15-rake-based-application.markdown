@@ -40,7 +40,7 @@ rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动�
 	Maximum connections set to 1024
 	Listening on 0.0.0.0:9292, CTRL+C to stop
 
-在浏览器中访问http://localhost:9292即可看到页面显示“OK”，说明应用正常工作了。
+在浏览器中访问http://localhost:9292 即可看到页面显示“OK”，说明应用正常工作了。
 
 Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应用根目录下的config.ru：
 
