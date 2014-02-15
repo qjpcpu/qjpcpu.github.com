@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Script | Jason's space]]></title>
+  <title><![CDATA[Category: script | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/script/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Code Snippets]]></title>
+    <title type="html"><![CDATA[code snippets]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/code-snippets/"/>
     <updated>2014-02-14T18:08:28+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/code-snippets</id>

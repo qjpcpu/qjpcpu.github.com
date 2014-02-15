@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Axlsx报表工具(四)——条件格式化]]></title>
+    <title type="html"><![CDATA[axlsx报表工具(四)——条件格式化]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/"/>
     <updated>2014-02-15T00:47:04+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua</id>
@@ -122,7 +122,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Axlsx报表工具(三)创建图表]]></title>
+    <title type="html"><![CDATA[axlsx报表工具(三)创建图表]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/"/>
     <updated>2014-02-15T00:42:48+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao</id>
@@ -211,7 +211,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Axlsx报表工具(二)格式化为美观的表格]]></title>
+    <title type="html"><![CDATA[axlsx报表工具(二)格式化为美观的表格]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
     <updated>2014-02-15T00:38:10+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
@@ -379,7 +379,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Axlsx报表工具(一)安装及入门]]></title>
+    <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/"/>
     <updated>2014-02-15T00:34:19+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-[?]-an-zhuang-ji-ru-men</id>
@@ -698,7 +698,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rspec]]></title>
+    <title type="html"><![CDATA[rspec]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/rspec/"/>
     <updated>2014-02-15T00:14:29+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/rspec</id>
@@ -730,7 +730,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rake Based Application]]></title>
+    <title type="html"><![CDATA[rake based application]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/15/rake-based-application/"/>
     <updated>2014-02-15T00:04:13+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/rake-based-application</id>
@@ -1098,7 +1098,7 @@ show #=&gt;13
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 在javascript中使用ruby对象]]></title>
+    <title type="html"><![CDATA[rails 在javascript中使用ruby对象]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/"/>
     <updated>2014-02-14T23:40:15+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang</id>
@@ -1185,7 +1185,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails URL路由]]></title>
+    <title type="html"><![CDATA[rails URL路由]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you/"/>
     <updated>2014-02-14T23:26:35+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you</id>
@@ -1381,7 +1381,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 填充数据库初始数据]]></title>
+    <title type="html"><![CDATA[rails 填充数据库初始数据]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
     <updated>2014-02-14T23:21:46+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
@@ -1407,7 +1407,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 配置使用jquery-file-upload Step by Step]]></title>
+    <title type="html"><![CDATA[rails 配置使用jquery-file-upload  step by step]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/"/>
     <updated>2014-02-14T23:11:06+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step</id>
@@ -1528,7 +1528,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails Eagerloading]]></title>
+    <title type="html"><![CDATA[rails Eagerloading]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading/"/>
     <updated>2014-02-14T23:05:33+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading</id>
@@ -1575,7 +1575,7 @@ Address.includes(:addressable)
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 创建数据库索引]]></title>
+    <title type="html"><![CDATA[rails 创建数据库索引]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/"/>
     <updated>2014-02-14T23:01:32+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin</id>
@@ -1628,7 +1628,7 @@ Address.includes(:addressable)
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails使用devise验证用户]]></title>
+    <title type="html"><![CDATA[rails使用devise验证用户]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/"/>
     <updated>2014-02-14T22:46:34+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu</id>
@@ -1745,7 +1745,7 @@ rake db:migrate
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Ruby线程]]></title>
+    <title type="html"><![CDATA[ruby线程]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng/"/>
     <updated>2014-02-14T22:35:53+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng</id>
@@ -1804,7 +1804,7 @@ rake db:migrate
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails ActiveRecord数据库关系1:n]]></title>
+    <title type="html"><![CDATA[rails ActiveRecord数据库关系1:n]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/"/>
     <updated>2014-02-14T22:05:20+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n</id>

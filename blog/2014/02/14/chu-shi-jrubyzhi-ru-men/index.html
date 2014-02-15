@@ -1,97 +1,81 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="utf-8">
-  <title>初识jruby之入门 - Jason's space</title>
-  <meta name="author" content="Jason">
+	<meta charset="utf-8">
+	<title>初识jruby之入门 - Jason's space</title>
+	<meta name="author" content="Jason">
 
-  
-  <meta name="description" content="首先，Jruby的官方站点是http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3% &hellip;">
-  
+	
+	<meta name="description" content="首先，Jruby的官方站点是http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3% &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Jason's space</a></h1>
-  
-    <h2>靡不有初 鲜克有终</h2>
-  
-</hgroup>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:qjpcpu.github.io">
+	</form>
+</nav>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:qjpcpu.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">初识jruby之入门</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T17:24:21+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>首先，Jruby的官方站点是<a href="http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82">http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82</a></p>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">初识jruby之入门</h2>
+	<div class="entry-content"><p>首先，Jruby的官方站点是<a href="http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82">http://jruby.org/%EF%BC%8C%E6%9C%80%E8%AF%A6%E5%B0%BD%E7%9A%84%E8%B5%84%E6%96%99%E9%83%BD%E5%9C%A8%E9%82%A3%E9%87%8C%E3%80%82%E8%87%B3%E4%BA%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9JRuby%EF%BC%8C%E5%AE%98%E6%96%B9%E7%AB%99%E7%82%B9%E4%B8%8A%E5%88%97%E4%B8%BE%E4%BA%86%E8%AF%B8%E5%A6%82jvm%E7%9A%84%E6%99%AE%E5%8F%8A%E4%BB%A5%E5%8F%8A%E6%80%A7%E8%83%BD%E7%AD%89%E7%AD%89%E4%BC%98%E7%82%B9%EF%BC%8C%E4%BD%86%E6%88%91%E6%83%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%9E%E7%AD%94%E5%B0%B1%E6%98%AF%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%94%A8ruby%E7%BC%96%E7%A8%8B%EF%BC%8C%E8%80%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E4%B8%8D%E5%86%8D%E5%85%85%E7%94%B5%E7%9A%84%E8%80%81%E6%9D%BF%E8%BF%98%E5%9B%BA%E5%AE%88%E7%9D%80java%EF%BC%8C%E5%AF%B9%E4%BB%96%E4%BB%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E7%9B%B8%E5%AF%B9%E4%BA%8Eruby%EF%BC%8Cjava%E8%BF%99%E4%B8%AA%E8%AF%8D%E6%9C%AC%E8%BA%AB%E5%85%88%E4%BA%A7%E7%94%9F%E4%BA%8650%%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F%EF%BC%8C%E6%89%80%E4%BB%A5%E8%BF%99%E5%8F%AF%E8%83%BD%E6%98%AF%E6%AF%94%E8%BE%83%E8%B4%B4%E8%BF%91%E7%8E%B0%E5%AE%9E%E7%9A%84%E9%80%89%E6%8B%A9%E3%80%82%E4%B8%8D%E8%BF%87%E6%88%91%E4%BB%8A%E5%A4%A9%E6%83%B3%E5%8E%BB%E5%80%92%E8%85%BE%E5%80%92%E8%85%BE%E8%BF%99%E4%B8%AA%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%88%99%E5%AE%8C%E5%85%A8%E6%98%AF%E4%B8%BA%E4%BA%86%E4%BA%86%E8%A7%A3ruby%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2%E3%80%82</a></p>
 
 <h3>1. 下载安装</h3>
 
@@ -232,14 +216,8 @@ Name:Jason Sex:Male Age:10
 </div>
 
 
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">Jason</span></span>
-
-      
+<div class="meta">
+	<div class="date">
 
 
 
@@ -251,102 +229,45 @@ Name:Jason Sex:Male Age:10
   
 
 
-<time datetime="2014-02-14T17:24:21+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/jruby/'>jruby</a>
-  
-</span>
+<time datetime="2014-02-14T17:24:21+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
 
 
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/" data-via="" data-counturl="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/" >Tweet</a>
-  
-  
-  
+	<a class='category' href='/blog/categories/jruby/'>jruby</a>
+
+
 </div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/02/14/rubychang-yong-de-die-dai-cao-zuo/" title="Previous Post: ruby常用的迭代操作">&laquo; ruby常用的迭代操作</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/02/14/zhuang-tai-zhuan-yi/" title="Next Post: 状态转移">状态转移 &raquo;</a>
-      
-    </p>
-  </footer>
+	
+</div>
 </article>
 
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
 </div>
 
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">Axlsx报表工具(四)——条件格式化</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">Axlsx报表工具(三)创建图表</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/">Axlsx报表工具(二)格式化为美观的表格</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/">Axlsx报表工具(一)安装及入门</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/">一步一步搭建mysql主从同步</a>
-      </li>
-    
-  </ul>
-</section>
 
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
-
-
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Jason -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+    Jason
 
 </footer>
-  
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
 
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

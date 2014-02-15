@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Git | Jason's space]]></title>
+  <title><![CDATA[Category: git | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -183,7 +183,7 @@ our @git_base_url_list = qw(git://git.the_git_host
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Git常用操作]]></title>
+    <title type="html"><![CDATA[git常用操作]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo/"/>
     <updated>2014-02-14T14:26:31+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo</id>
@@ -197,7 +197,7 @@ our @git_base_url_list = qw(git://git.the_git_host
 </code></pre></li>
 <li><p>创建版本库</p>
 
-<p>a.新建版本库，并推送到远端</p>
+<p> a.新建版本库，并推送到远端</p>
 
 <pre><code> mkdir TestRepo
  cd TestRepo
@@ -213,7 +213,7 @@ our @git_base_url_list = qw(git://git.the_git_host
 
 <pre><code> cd TestRepo
  git remote add origin git@gitserver.com:MyAcountName/TestRepo.git
- git push -u origin master
+ git push -u origin mast
 </code></pre></li>
 <li><p>推/拉</p>
 

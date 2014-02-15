@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Rails | Jason's space]]></title>
+  <title><![CDATA[Category: rails | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Rails 在javascript中使用ruby对象]]></title>
+    <title type="html"><![CDATA[rails 在javascript中使用ruby对象]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/"/>
     <updated>2014-02-14T23:40:15+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang</id>
@@ -101,7 +101,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails URL路由]]></title>
+    <title type="html"><![CDATA[rails URL路由]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you/"/>
     <updated>2014-02-14T23:26:35+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you</id>
@@ -297,7 +297,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 填充数据库初始数据]]></title>
+    <title type="html"><![CDATA[rails 填充数据库初始数据]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
     <updated>2014-02-14T23:21:46+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
@@ -323,7 +323,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails 配置使用jquery-file-upload Step by Step]]></title>
+    <title type="html"><![CDATA[rails 配置使用jquery-file-upload  step by step]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/"/>
     <updated>2014-02-14T23:11:06+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step</id>
@@ -444,7 +444,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Rails Eagerloading]]></title>
+    <title type="html"><![CDATA[rails Eagerloading]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading/"/>
     <updated>2014-02-14T23:05:33+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading</id>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Shell | Jason's space]]></title>
+  <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Shell字符串处理]]></title>
+    <title type="html"><![CDATA[shell字符串处理]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/"/>
     <updated>2014-02-14T18:10:30+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li</id>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Go | Jason's space]]></title>
+  <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T13:17:09+08:00</updated>
+  <updated>2014-02-15T16:26:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -185,7 +185,7 @@ v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Go学习笔记-go Routine]]></title>
+    <title type="html"><![CDATA[Go学习笔记-go routine]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine/"/>
     <updated>2014-02-14T18:23:38+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine</id>
