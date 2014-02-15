@@ -79,6 +79,9 @@
 
 <p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
 
+<!-- more -->
+
+
 <h3>2.whenever</h3>
 
 <p>首先，whenever是基于linux的cron服务的，所以，在windows平台上没有直接的方法使用该gem。whenever严格来说应该算一个cron的翻译器，将ruby代码翻译为cron脚本，从而将周期性任务转交给cron实际去完成。对于精通cron的shell程序员来说可能不值一提，但对rubyist却不是。首先，我们可以使用ruby语言来书写任务代码，在ruby层面上控制代码，避免了和一些shell脚本的切换；另外，cron命令很强大，但我总是记不住它的命令参数，为了避免一遍一遍去man它的手册，还是ruby语法比较亲民。</p>

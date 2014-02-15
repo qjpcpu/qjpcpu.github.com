@@ -92,6 +92,9 @@ run app
 <pre><code>[ status_code, headers, body ]
 </code></pre>
 
+<!-- more -->
+
+
 <h3>2.一个简单的rack-based-application</h3>
 
 <p>编写一个最简单的rack based application，ok，需要一个能响应call方法的对象，在该对象上调用call方法能返回[ status_code, headers, body ]列表。在文件夹rack_based下新建simple.ru文件，*.ru被称为rakcup文件，rack使用该文件来启动rack应用。该文件内容为：</p>

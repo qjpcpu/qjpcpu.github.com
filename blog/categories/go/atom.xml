@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T17:43:10+08:00</updated>
+  <updated>2014-02-15T18:24:56+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-02-14T18:27:36+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou</id>
     <content type="html"><![CDATA[<p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
+
+<!-- more -->
+
 
 <h3>结构类型</h3>
 
@@ -211,6 +214,9 @@ v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面�
 
 <p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
 
+<!-- more -->
+
+
 <h3>启动一个go routine</h3>
 
 <p>go关键字+函数名即可启动一个go routine:</p>
@@ -327,6 +333,9 @@ default:
     return a+b
 }
 </code></pre>
+
+<!-- more -->
+
 
 <h3>多值返回</h3>
 

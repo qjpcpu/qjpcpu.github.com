@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T17:43:10+08:00</updated>
+  <updated>2014-02-15T18:24:56+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -28,6 +28,9 @@ unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf
 </code></pre>
 
 <p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
+
+<!-- more -->
+
 
 <h3>cellIs</h3>
 
@@ -132,6 +135,9 @@ end
 
 <p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
 
+<!-- more -->
+
+
 <pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
   sheet.add_row ["First", "Second", "Third", "Fourth"]
   sheet.add_row [1, 2, 3, 4]
@@ -221,6 +227,9 @@ end
 
 <pre><code>(Integer) add_style(options = {})
 </code></pre>
+
+<!-- more -->
+
 
 <p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
 
@@ -389,6 +398,9 @@ end
 
 <p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
 
+<!-- more -->
+
+
 <p>安装axlsx和安装其他gem一样：</p>
 
 <pre><code>$ gem install axlsx
@@ -433,6 +445,9 @@ p.serialize 'basic.xlsx'
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
 tar vzxf mysql-5.1.73.tar.gz
 </code></pre>
+
+<!-- more -->
+
 
 <h3>编译安装</h3>
 
@@ -574,7 +589,10 @@ mysql&gt; show slave status\G;
     <link href="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/"/>
     <updated>2014-02-15T00:20:50+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord</id>
-    <content type="html"><![CDATA[<h3>单独使用ActiveRecord</h3>
+    <content type="html"><![CDATA[<!-- more -->
+
+
+<h3>单独使用ActiveRecord</h3>
 
 <p>需要在应用根目录demo/下的app.rb文件中写入：</p>
 
@@ -710,6 +728,9 @@ end
 [].should_not be_empty =&gt; [].empty? #fails
 </code></pre>
 
+<!-- more -->
+
+
 <p>除了用&#8221;be_&ldquo;来前缀断言方法，也可以用&#8221;be_a_&#8221;和&#8221;be_an_&#8221;前缀，使得代码读起来更加自然：</p>
 
 <pre><code>"a string".should be_an_instance_of(String) =&gt;"a string".instance_of?(String)#passes
@@ -750,6 +771,9 @@ run app
 
 <pre><code>[ status_code, headers, body ]
 </code></pre>
+
+<!-- more -->
+
 
 <h3>2.一个简单的rack-based-application</h3>
 
@@ -895,6 +919,9 @@ run Demo::Application.routes
 
 <p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
 
+<!-- more -->
+
+
 <h3>2. 安装配置Apache Tomcat</h3>
 
 <p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
@@ -979,6 +1006,9 @@ run Demo::Application.routes
 <pre><code>C:\&gt;jruby -S rails -v
 Rails 4.0.0
 </code></pre>
+
+<!-- more -->
+
 
 <h3>3. 新建一个rails Apps</h3>
 
@@ -1094,6 +1124,9 @@ show #=&gt;10
 3.times{counter}
 show #=&gt;13
 </code></pre>
+
+<!-- more -->
+
 ]]></content>
   </entry>
   
@@ -1112,6 +1145,9 @@ show #=&gt;13
 </code></pre>
 
 <p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
+
+<!-- more -->
+
 
 <h3>2.在javascript中使用ruby复杂对象</h3>
 
@@ -1197,6 +1233,9 @@ end
 
 <pre><code>resources :photos
 </code></pre>
+
+<!-- more -->
+
 
 <h3>2.单例资源</h3>
 
@@ -1385,7 +1424,10 @@ end
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
     <updated>2014-02-14T23:21:46+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
-    <content type="html"><![CDATA[<p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
+    <content type="html"><![CDATA[<!-- more -->
+
+
+<p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
 
 <blockquote><p>seeds.rb</p></blockquote>
 
@@ -1412,6 +1454,9 @@ end
     <updated>2014-02-14T23:11:06+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step</id>
     <content type="html"><![CDATA[<p>一步步安装使用jquery-file-upload</p>
+
+<!-- more -->
+
 
 <h3>1.安装Gem</h3>
 
@@ -1464,7 +1509,145 @@ end
 
 <p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
 
-<p><a href="../images/rails-jquery-attach.txt">file</a></p>
+<div><script src='https://gist.github.com/9017226.js?file=jquery_template.html.erb'></script>
+<noscript><pre><code>&lt;div class=&quot;container&quot;&gt;
+  &lt;h2&gt;Upload file&lt;/h2&gt;
+  &lt;%= form_for Picture.new, :html =&gt; { :multipart =&gt; true, :id =&gt; &quot;fileupload&quot;  } do |f| %&gt;
+    &lt;!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload --&gt;
+    &lt;div class=&quot;row fileupload-buttonbar&quot;&gt;
+      &lt;div class=&quot;span7&quot;&gt;
+        &lt;!-- The fileinput-button span is used to style the file input field as button --&gt;
+        &lt;span class=&quot;btn btn-success fileinput-button&quot;&gt;
+          &lt;i class=&quot;icon-plus icon-white&quot;&gt;&lt;/i&gt;
+          &lt;span&gt;Add files...&lt;/span&gt;
+          &lt;%= f.file_field :avatar %&gt;
+        &lt;/span&gt;
+        &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary start&quot;&gt;
+          &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
+          &lt;span&gt;Start upload&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type=&quot;reset&quot; class=&quot;btn btn-warning cancel&quot;&gt;
+          &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
+          &lt;span&gt;Cancel upload&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-danger delete&quot;&gt;
+          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
+          &lt;span&gt;Delete&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;toggle&quot;&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;span5&quot;&gt;
+        &lt;!-- The global progress bar --&gt;
+        &lt;div class=&quot;progress progress-success progress-striped active fade&quot;&gt;
+          &lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- The loading indicator is shown during image processing --&gt;
+    &lt;div class=&quot;fileupload-loading&quot;&gt;&lt;/div&gt;
+    &lt;br&gt;
+    &lt;!-- The table listing the files available for upload/download --&gt;
+    &lt;table class=&quot;table table-striped&quot;&gt;&lt;tbody class=&quot;files&quot; data-toggle=&quot;modal-gallery&quot; data-target=&quot;#modal-gallery&quot;&gt;&lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;% end %&gt;
+
+&lt;/div&gt;
+&lt;script&gt;
+  var fileUploadErrors = {
+  maxFileSize: &#39;File is too big&#39;,
+  minFileSize: &#39;File is too small&#39;,
+  acceptFileTypes: &#39;Filetype not allowed&#39;,
+  maxNumberOfFiles: &#39;Max number of files exceeded&#39;,
+  uploadedBytes: &#39;Uploaded bytes exceed file size&#39;,
+  emptyResult: &#39;Empty file upload result&#39;
+  };
+&lt;/script&gt;
+
+&lt;!-- The template to display files available for upload --&gt;
+&lt;script id=&quot;template-upload&quot; type=&quot;text/x-tmpl&quot;&gt;
+  {% for (var i=0, file; file=o.files[i]; i++) { %}
+  &lt;tr class=&quot;template-upload fade&quot;&gt;
+    &lt;td class=&quot;preview&quot;&gt;&lt;span class=&quot;fade&quot;&gt;&lt;/span&gt;&lt;/td&gt;
+    &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
+    &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
+    {% if (file.error) { %}
+    &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
+    {% } else if (o.files.valid &amp;&amp; !i) { %}
+    &lt;td&gt;
+      &lt;div class=&quot;progress progress-success progress-striped active&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/td&gt;
+    &lt;td class=&quot;start&quot;&gt;{% if (!o.options.autoUpload) { %}
+      &lt;button class=&quot;btn btn-primary&quot;&gt;
+        &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;{%=locale.fileupload.start%}&lt;/span&gt;
+      &lt;/button&gt;
+      {% } %}&lt;/td&gt;
+    {% } else { %}
+    &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
+    {% } %}
+    &lt;td class=&quot;cancel&quot;&gt;{% if (!i) { %}
+      &lt;button class=&quot;btn btn-warning&quot;&gt;
+        &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;{%=locale.fileupload.cancel%}&lt;/span&gt;
+      &lt;/button&gt;
+      {% } %}&lt;/td&gt;
+  &lt;/tr&gt;
+  {% } %}
+&lt;/script&gt;
+&lt;!-- The template to display files available for download --&gt;
+&lt;script id=&quot;template-download&quot; type=&quot;text/x-tmpl&quot;&gt;
+  {% for (var i=0, file; file=o.files[i]; i++) { %}
+    &lt;tr class=&quot;template-download fade&quot;&gt;
+      {% if (file.error) { %}
+        &lt;td&gt;&lt;/td&gt;
+        &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
+        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
+        &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
+        {% } else { %}
+        &lt;td class=&quot;preview&quot;&gt;{% if (file.thumbnail_url) { %}
+          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;gallery&quot; download=&quot;{%=file.name%}&quot;&gt;&lt;img src=&quot;{%=file.thumbnail_url%}&quot;&gt;&lt;/a&gt;
+          {% } %}&lt;/td&gt;
+        &lt;td class=&quot;name&quot;&gt;
+          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;{%=file.thumbnail_url&amp;&amp;&#39;gallery&#39;%}&quot; download=&quot;{%=file.name%}&quot;&gt;{%=file.name%}&lt;/a&gt;
+        &lt;/td&gt;
+        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
+        &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
+        {% } %}
+      &lt;td class=&quot;delete&quot;&gt;
+        &lt;button class=&quot;btn btn-danger&quot; data-type=&quot;{%=file.delete_type%}&quot; data-url=&quot;{%=file.delete_url%}&quot;&gt;
+          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
+          &lt;span&gt;{%=locale.fileupload.destroy%}&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;input type=&quot;checkbox&quot; name=&quot;delete&quot; value=&quot;1&quot;&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    {% } %}
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;
+  $(function () {
+      // Initialize the jQuery File Upload widget:
+      $(&#39;#fileupload&#39;).fileupload();
+      // 
+      // Load existing files:
+      $.getJSON($(&#39;#fileupload&#39;).prop(&#39;action&#39;), function (files) {
+        var fu = $(&#39;#fileupload&#39;).data(&#39;blueimpFileupload&#39;), 
+          template;
+        fu._adjustMaxNumberOfFiles(-files.length);
+        console.log(files);
+        template = fu._renderDownload(files)
+          .appendTo($(&#39;#fileupload .files&#39;));
+        // Force reflow:
+        fu._reflow = fu._transition &amp;&amp; template.length &amp;&amp;
+          template[0].offsetWidth;
+        template.addClass(&#39;in&#39;);
+        $(&#39;#loading&#39;).remove();
+      });
+
+  });
+&lt;/script&gt;
+</code></pre></noscript></div>
+
 
 <h3>6.创建controller</h3>
 
@@ -1549,6 +1732,9 @@ end
 end
 </code></pre>
 
+<!-- more -->
+
+
 <p>首先，解决author获取问题：</p>
 
 <pre><code>Post.includes(:author).each do |post|
@@ -1591,6 +1777,9 @@ Address.includes(:addressable)
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
 <p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
+
+<!-- more -->
+
 
 <ol>
 <li>手动附加索引</li>
@@ -1649,6 +1838,9 @@ Address.includes(:addressable)
 <pre><code>rails generate devise user
 rake db:migrate
 </code></pre>
+
+<!-- more -->
+
 
 <p>查看models文件夹下devise创建了user.rb文件：</p>
 
@@ -1760,6 +1952,9 @@ rake db:migrate
 
 <p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&amp;x=.jpg" alt="image" /></p>
 
+<!-- more -->
+
+
 <p>新线程中保存num的副本，在线程中更改num并不影响外部num值，而新线程对book的修改会直接影响外部book，在新线程中也可打破作用域直接访问外部count并作出修改。</p>
 
 <p>常用方法</p>
@@ -1808,8 +2003,7 @@ rake db:migrate
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/"/>
     <updated>2014-02-14T22:05:20+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n</id>
-    <content type="html"><![CDATA[<pre><code>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。
-</code></pre>
+    <content type="html"><![CDATA[<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
 
 <p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
 
@@ -1820,7 +2014,14 @@ rake db:migrate
  $ rails g model order customer_id:integer order_date:datetime
  $ rails g model rake db:migrate
 </code></pre></li>
-<li><p>修改model，添加关系</p></li>
+</ol>
+
+
+<!-- more -->
+
+
+<ol>
+<li>修改model，添加关系</li>
 </ol>
 
 
