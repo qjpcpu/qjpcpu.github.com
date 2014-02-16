@@ -6,13 +6,37 @@ comments: true
 categories: ruby
 ---
 
-1. 创建线程
+### 1. 创建线程
 
-![image](http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c21f71f885d6277fed12323d18036e0d/a08b87d6277f9e2f4216f84b1d30e924b899f356.jpg?referer=033dd984925298225c240cf33d4c&x=.jpg)
+		Thread.new do
+			3.times do 
+				sleep 3
+				puts "Thread #{Thread.current.object_id} running..."
+			end
+		end
 
 ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。
 
-![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&x=.jpg)
+	class Book
+		attr_accessor :name
+	end
+	num = 0
+	count = 0
+	book = Book.new
+	book.name = 'ybur'
+	puts "main Thread=#{num} count=#{count} book=#{book.name}"
+	
+	t.Thread.new(num,book) do |n,b|
+		n+=1
+		count+=1
+		b.name.reverse!
+		puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+	end
+	t.join
+	puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
+	#=>main Thread:num=0 count=0 book=ybur
+	#=>new Thread:num=1 count=1 book=ruby
+	#=>main Thread:num=0 count=1 book=ruby
 
 <!-- more -->
 
@@ -20,30 +44,108 @@ ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同
 
 常用方法
 
-![image](http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&x=.jpg)
+	Thread.current #获取当前线程
+	Thread.list #所有线程列表
+	Thread#status #线程状态
+	Thread#alive?
+	Thread#stop?
+	Thread#join
 
 线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：
 
-![image](http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5bdd5f9c74c6a7efbd26a823cdc1de6c/91ef76c6a7efce1b21da3289ad51f3deb58f6584.jpg?referer=1ad267a0ff1f4134b920314ec39a&x=.jpg)
+	t=Thread.new(1,10) do |a,b|
+		sleep 3
+		Thread.current['plus_result']=a+b
+		"thread result:#{a+b}"
+	end
+	t.join
+	puts "1+10=#{t['plus_result']}"
+	puts "#{t.value}"
+	#=> 1+10=11
+	#=> thread result:11
 
-2. Mutex
+### 2. Mutex
 
 来自ruby-doc的例子
 
-![image](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&x=.jpg)
+	require 'thread'
+	mutex=Mutex.new
+	count1=count2=0
+	difference=0
+	counter=Thread.new do
+		loop do
+			mutex.synchronize do
+				count1+=1
+				count2+=1
+			end
+		end
+	end
+	spy=Thread.new do
+		loop do
+			mutex.synchronize do
+				difference+=(count1-count2).abs
+			end
+		end
+	end
+	sleep 1
+	mutex.lock
+	#=> count1 >> 21192
+	#=> count2 >> 21192
+	#=> difference >>0
 
-3. Condition Variables
+### 3. Condition Variables
 
 来自ruby-doc
 
-![image](http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9ae2764b99504fc2a65fb000d5e6962c/b8389b504fc2d56230f92aaee51190ef77c66c84.jpg?referer=d94d4f791bd8bc3e9f1f32facc9a&x=.jpg)
+	require 'thread'
+	mutext=Mutex.new
+	cv=ConditionVariable.new
+	a=Thread.new {
+		mutex.synchronize {
+			puts "A:I have critical section, but will wait for cv"
+			cv.wait mutex
+			puts "A:I have critical section again! I rule!"
+		}
+	}
+	puts "(Later, back at the ranch...)"
+	b=Thread.new {
+		mutex.synchronize {
+			puts "B: Now I am critical, but am done with cv"
+			cv.signal
+			puts "B: I am still critical, finishing up"
+		}
+	}
+	a.join
+	b.join
+	
+	produces:
+	A:I have critical section, but will wait for cv(Later, back at the ranch...)
+	B: Now I am critical,but am done with cv
+	B:I am still critical, finishing up
+	A: I have critical section again! I Rule!
 
 在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。
 
-4. Queue
+### 4. Queue
 
 ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。
 
-![image](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&x=.jpg)
+	require 'thread'
+	queue=Queue.new
+	producer=Thread.new do 
+		5.times do |i|
+			sleep 4
+			queue << i # operator << is alias of push
+			puts "#{i} produced"
+		end
+	end
+	consumer=Thread.new do 
+		5.times do |i|
+			value=queue.pop
+			sleep 2
+			puts "consumed #{value}"
+		end
+	end
+
 
 ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。

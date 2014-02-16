@@ -3,7 +3,7 @@ layout: post
 title: "在Linq中使用委托作为相等比较"
 date: 2014-02-14 14:13:30 +0800
 comments: true
-categories: c#
+categories: c-sharp
 ---
 
 Linq中的操作符的相等比较都使用IEqualityComparer<T>作为判断依据，常见的使用该接口的操作符有：
