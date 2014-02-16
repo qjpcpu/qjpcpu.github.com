@@ -120,6 +120,14 @@ puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
 
 <p>常用方法</p>
 
+<pre><code>Thread.current #获取当前线程
+Thread.list #所有线程列表
+Thread#status #线程状态
+Thread#alive?
+Thread#stop?
+Thread#join
+</code></pre>
+
 <p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
 
 <pre><code>t=Thread.new(1,10) do |a,b|
@@ -139,6 +147,70 @@ puts "#{t.value}"
 <p>来自ruby-doc的例子</p>
 
 <pre><code>require 'thread'
+mutex=Mutex.new
+count1=count2=0
+difference=0
+counter=Thread.new do
+    loop do
+        mutex.synchronize do
+            count1+=1
+            count2+=1
+        end
+    end
+end
+spy=Thread.new do
+    loop do
+        mutex.synchronize do
+            difference+=(count1-count2).abs
+        end
+    end
+end
+sleep 1
+mutex.lock
+#=&gt; count1 &gt;&gt; 21192
+#=&gt; count2 &gt;&gt; 21192
+#=&gt; difference &gt;&gt;0
+</code></pre>
+
+<h3>3. Condition Variables</h3>
+
+<p>来自ruby-doc</p>
+
+<pre><code>require 'thread'
+mutext=Mutex.new
+cv=ConditionVariable.new
+a=Thread.new {
+    mutex.synchronize {
+        puts "A:I have critical section, but will wait for cv"
+        cv.wait mutex
+        puts "A:I have critical section again! I rule!"
+    }
+}
+puts "(Later, back at the ranch...)"
+b=Thread.new {
+    mutex.synchronize {
+        puts "B: Now I am critical, but am done with cv"
+        cv.signal
+        puts "B: I am still critical, finishing up"
+    }
+}
+a.join
+b.join
+
+produces:
+A:I have critical section, but will wait for cv(Later, back at the ranch...)
+B: Now I am critical,but am done with cv
+B:I am still critical, finishing up
+A: I have critical section again! I Rule!
+</code></pre>
+
+<p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
+
+<h3>4. Queue</h3>
+
+<p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
+
+<pre><code>require 'thread'
 queue=Queue.new
 producer=Thread.new do 
     5.times do |i|
@@ -155,20 +227,6 @@ consumer=Thread.new do
     end
 end
 </code></pre>
-
-<h3>3. Condition Variables</h3>
-
-<p>来自ruby-doc</p>
-
-<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9ae2764b99504fc2a65fb000d5e6962c/b8389b504fc2d56230f92aaee51190ef77c66c84.jpg?referer=d94d4f791bd8bc3e9f1f32facc9a&amp;x=.jpg" alt="image" /></p>
-
-<p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
-
-<h3>4. Queue</h3>
-
-<p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
-
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&amp;x=.jpg" alt="image" /></p>
 
 <p>ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。</p>
 </div>
