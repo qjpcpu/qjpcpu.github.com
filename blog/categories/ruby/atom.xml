@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T19:38:00+08:00</updated>
+  <updated>2014-02-16T18:27:20+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -389,9 +389,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/"/>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
     <updated>2014-02-15T00:34:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-[?]-an-zhuang-ji-ru-men</id>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
     <content type="html"><![CDATA[<h3>安装</h3>
 
 <p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>

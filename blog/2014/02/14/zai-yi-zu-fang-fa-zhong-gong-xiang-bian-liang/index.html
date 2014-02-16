@@ -3,11 +3,13 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>axlsx报表工具(一)安装及入门 - Jason's space</title>
+	<title>在一组方法中共享变量 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="安装 axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图 安装axlsx和安装其他gem一样： $ gem install axlsx 创建第一个报表 axlsx使用的对象和office文档使用的对象完全一样， &hellip;">
+	<meta name="description" content="lambda{ shared=10 Kernel.send :define_method, :counter do shared+=1 end Kernel.send :define_method, :show do shared end
+}.call show #=&gt;10
+3.times{ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -24,7 +26,7 @@
 <body>
 	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
 <nav id="main-nav"><ul class="main">
-	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/">Blog</a></li>
 	<li><a href="/blog/archives">Archives</a></li>
 	<li><a href="/blog/categories">Categories</a></li>
 	<li><a href="/about">About</a></li>
@@ -34,7 +36,7 @@
 	<div class="alignleft menu">
 		<a class="button">Menu</a>
 		<div class="container"><ul class="main">
-	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/">Blog</a></li>
 	<li><a href="/blog/archives">Archives</a></li>
 	<li><a href="/blog/categories">Categories</a></li>
 	<li><a href="/about">About</a></li>
@@ -78,47 +80,24 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Axlsx报表工具(一)安装及入门</h2>
-	<div class="entry-content"><h3>安装</h3>
+	<h2 class="title">在一组方法中共享变量</h2>
+	<div class="entry-content"><pre><code>lambda{
+    shared=10
+    Kernel.send :define_method, :counter do
+        shared+=1
+    end
+    Kernel.send :define_method, :show do
+        shared
+    end
+}.call
 
-<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
-
-<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
+show #=&gt;10
+3.times{counter}
+show #=&gt;13
+</code></pre>
 
 <!-- more -->
 
-
-<p>安装axlsx和安装其他gem一样：</p>
-
-<pre><code>$ gem install axlsx
-</code></pre>
-
-<h3>创建第一个报表</h3>
-
-<p>axlsx使用的对象和office文档使用的对象完全一样，workbook代表一个文档，worksheet代表一张表，row和cell代表行和单元格，基本上所有的对象顾名思义即可，而不需要了解文档ECMA规范。</p>
-
-<p>比如要创建一张如图所示的报表：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
-
-<pre><code>require 'axlsx'
-
-p = Axlsx::Package.new
-wb = p.workbook
-
-wb.add_worksheet(:name =&gt; "Basic Worksheet") do |sheet|
-  sheet.add_row ["First Column", "Second", "Third","Total"]
-  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
-  sheet.add_row ['This is a very very long sentence.']
-  sheet.merge_cells "A3:D3"
-end
-
-p.serialize 'basic.xlsx'
-</code></pre>
-
-<p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
-
-<p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
 </div>
 
 
@@ -135,7 +114,7 @@ p.serialize 'basic.xlsx'
   
 
 
-<time datetime="2014-02-15T00:34:19+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+<time datetime="2014-02-14T23:46:19+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
 	<div class="tags">
 
 

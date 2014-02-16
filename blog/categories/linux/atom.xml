@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T19:38:00+08:00</updated>
+  <updated>2014-02-16T18:27:20+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[一步一步搭建mysql主从同步]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
     <updated>2014-02-15T00:24:49+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/[?]-bu-[?]-bu-da-jian-mysqlzhu-cong-tong-bu</id>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu</id>
     <content type="html"><![CDATA[<h3>下载mysql数据库</h3>
 
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz

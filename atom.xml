@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-15T19:38:00+08:00</updated>
+  <updated>2014-02-16T18:27:20+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -389,9 +389,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-%5B%3F%5D-an-zhuang-ji-ru-men/"/>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
     <updated>2014-02-15T00:34:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-[?]-an-zhuang-ji-ru-men</id>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
     <content type="html"><![CDATA[<h3>安装</h3>
 
 <p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
@@ -437,9 +437,9 @@ p.serialize 'basic.xlsx'
   
   <entry>
     <title type="html"><![CDATA[一步一步搭建mysql主从同步]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/%5B%3F%5D-bu-%5B%3F%5D-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
+    <link href="http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
     <updated>2014-02-15T00:24:49+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/[?]-bu-[?]-bu-da-jian-mysqlzhu-cong-tong-bu</id>
+    <id>http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu</id>
     <content type="html"><![CDATA[<h3>下载mysql数据库</h3>
 
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
@@ -1107,9 +1107,9 @@ Demo::Application.initialize!
   
   <entry>
     <title type="html"><![CDATA[在一组方法中共享变量]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-%5B%3F%5D-zu-fang-fa-zhong-gong-xiang-bian-liang/"/>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/"/>
     <updated>2014-02-14T23:46:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/zai-[?]-zu-fang-fa-zhong-gong-xiang-bian-liang</id>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang</id>
     <content type="html"><![CDATA[<pre><code>lambda{
     shared=10
     Kernel.send :define_method, :counter do
@@ -1941,16 +1941,39 @@ rake db:migrate
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng/"/>
     <updated>2014-02-14T22:35:53+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng</id>
-    <content type="html"><![CDATA[<ol>
-<li>创建线程</li>
-</ol>
+    <content type="html"><![CDATA[<h3>1. 创建线程</h3>
 
-
-<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c21f71f885d6277fed12323d18036e0d/a08b87d6277f9e2f4216f84b1d30e924b899f356.jpg?referer=033dd984925298225c240cf33d4c&amp;x=.jpg" alt="image" /></p>
+<pre><code>    Thread.new do
+        3.times do 
+            sleep 3
+            puts "Thread #{Thread.current.object_id} running..."
+        end
+    end
+</code></pre>
 
 <p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&amp;x=.jpg" alt="image" /></p>
+<pre><code>class Book
+    attr_accessor :name
+end
+num = 0
+count = 0
+book = Book.new
+book.name = 'ybur'
+puts "main Thread=#{num} count=#{count} book=#{book.name}"
+
+t.Thread.new(num,book) do |n,b|
+    n+=1
+    count+=1
+    b.name.reverse!
+    puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+end
+t.join
+puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
+#=&gt;main Thread:num=0 count=0 book=ybur
+#=&gt;new Thread:num=1 count=1 book=ruby
+#=&gt;main Thread:num=0 count=1 book=ruby
+</code></pre>
 
 <!-- more -->
 
@@ -1959,25 +1982,43 @@ rake db:migrate
 
 <p>常用方法</p>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6326cf43eb24b899da3c793d5e3d6ca8/1e30e924b899a9010716be751f950a7b0208f556.jpg?referer=9cd4abb80846f21f90236b63334c&amp;x=.jpg" alt="image" /></p>
-
 <p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
 
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5bdd5f9c74c6a7efbd26a823cdc1de6c/91ef76c6a7efce1b21da3289ad51f3deb58f6584.jpg?referer=1ad267a0ff1f4134b920314ec39a&amp;x=.jpg" alt="image" /></p>
+<pre><code>t=Thread.new(1,10) do |a,b|
+    sleep 3
+    Thread.current['plus_result']=a+b
+    "thread result:#{a+b}"
+end
+t.join
+puts "1+10=#{t['plus_result']}"
+puts "#{t.value}"
+#=&gt; 1+10=11
+#=&gt; thread result:11
+</code></pre>
 
-<ol>
-<li>Mutex</li>
-</ol>
-
+<h3>2. Mutex</h3>
 
 <p>来自ruby-doc的例子</p>
 
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6cae4a46e7dde711e3d243f397d4bf26/8435e5dde71190efcf0a689ccc1b9d16fcfa6084.jpg?referer=08f9fc89808ba61e86f9fc1fc09a&amp;x=.jpg" alt="image" /></p>
+<pre><code>require 'thread'
+queue=Queue.new
+producer=Thread.new do 
+    5.times do |i|
+        sleep 4
+        queue &lt;&lt; i # operator &lt;&lt; is alias of push
+        puts "#{i} produced"
+    end
+end
+consumer=Thread.new do 
+    5.times do |i|
+        value=queue.pop
+        sleep 2
+        puts "consumed #{value}"
+    end
+end
+</code></pre>
 
-<ol>
-<li>Condition Variables</li>
-</ol>
-
+<h3>3. Condition Variables</h3>
 
 <p>来自ruby-doc</p>
 
@@ -1985,10 +2026,7 @@ rake db:migrate
 
 <p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
 
-<ol>
-<li>Queue</li>
-</ol>
-
+<h3>4. Queue</h3>
 
 <p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
 
