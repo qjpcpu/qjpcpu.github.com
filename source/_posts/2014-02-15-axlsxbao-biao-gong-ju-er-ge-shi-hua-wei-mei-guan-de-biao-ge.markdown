@@ -135,32 +135,34 @@ axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add
 
 下面是创建如图报表的部分代码：
 
-	require 'axlsx'
-	
-	Axlsx::Package.new do |p|
-	  p.workbook do |wb|
-	    styles = wb.styles
-	    header     = styles.add_style :bg_color => "FFFF33",:fg_color=>"0033CC", :sz => 16, :b => true, :alignment => {:horizontal => :center}
-	    tbl_header = styles.add_style :bg_color=>"99FF33",:b => true, :alignment => { :horizontal => :center }
-	    ind_header = styles.add_style :bg_color => "FFDFDEDF", :b => true, :alignment => {:indent => 1}
-	    col_header = styles.add_style :bg_color => "FFDFDEDF", :b => true, :alignment => { :horizontal => :center }
-	    label      = styles.add_style :alignment => { :indent => 1 }
-	    money      = styles.add_style :num_fmt => 5
-	    t_label    = styles.add_style :b => true, :bg_color => "FFDFDEDF"
-	    t_money    = styles.add_style :b => true, :num_fmt => 5, :bg_color => "FFDFDEDF"
-	
-	    wb.add_worksheet do |sheet|
-	      sheet.add_row               #添加空行
-	      sheet.add_row [nil, "College Budget"], :style => [nil, header]        #标题，大字体居中
-	      sheet.add_row
-	      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style => tbl_header
-	      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style => [nil, ind_header, col_header, nil, ind_header, col_header]
-	      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style => [nil, label, money, nil, label, money]
-	      #省略部分代码
-	      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
-	      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
-	    end
-	  end
-	  p.use_shared_strings = true
-	  p.serialize 'styles.xlsx'
-	end
+``` ruby
+require 'axlsx'
+
+Axlsx::Package.new do |p|
+  p.workbook do |wb|
+    styles = wb.styles
+    header     = styles.add_style :bg_color => "FFFF33",:fg_color=>"0033CC", :sz => 16, :b => true, :alignment => {:horizontal => :center}
+    tbl_header = styles.add_style :bg_color=>"99FF33",:b => true, :alignment => { :horizontal => :center }
+    ind_header = styles.add_style :bg_color => "FFDFDEDF", :b => true, :alignment => {:indent => 1}
+    col_header = styles.add_style :bg_color => "FFDFDEDF", :b => true, :alignment => { :horizontal => :center }
+    label      = styles.add_style :alignment => { :indent => 1 }
+    money      = styles.add_style :num_fmt => 5
+    t_label    = styles.add_style :b => true, :bg_color => "FFDFDEDF"
+    t_money    = styles.add_style :b => true, :num_fmt => 5, :bg_color => "FFDFDEDF"
+
+    wb.add_worksheet do |sheet|
+      sheet.add_row               #添加空行
+      sheet.add_row [nil, "College Budget"], :style => [nil, header]        #标题，大字体居中
+      sheet.add_row
+      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style => tbl_header
+      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style => [nil, ind_header, col_header, nil, ind_header, col_header]
+      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style => [nil, label, money, nil, label, money]
+      #省略部分代码
+      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
+      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
+    end
+  end
+  p.use_shared_strings = true
+  p.serialize 'styles.xlsx'
+end
+```

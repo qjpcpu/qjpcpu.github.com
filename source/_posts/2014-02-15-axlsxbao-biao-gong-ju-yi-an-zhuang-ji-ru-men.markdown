@@ -26,19 +26,21 @@ axlsx使用的对象和office文档使用的对象完全一样，workbook代表�
 
 ![image](http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&x=.jpg)
 
-	require 'axlsx'
-	
-	p = Axlsx::Package.new
-	wb = p.workbook
-	
-	wb.add_worksheet(:name => "Basic Worksheet") do |sheet|
-	  sheet.add_row ["First Column", "Second", "Third","Total"]
-	  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
-	  sheet.add_row ['This is a very very long sentence.']
-	  sheet.merge_cells "A3:D3"
-	end
-	
-	p.serialize 'basic.xlsx'
+``` ruby
+require 'axlsx'
+
+p = Axlsx::Package.new
+wb = p.workbook
+
+wb.add_worksheet(:name => "Basic Worksheet") do |sheet|
+  sheet.add_row ["First Column", "Second", "Third","Total"]
+  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
+  sheet.add_row ['This is a very very long sentence.']
+  sheet.merge_cells "A3:D3"
+end
+
+p.serialize 'basic.xlsx'
+```
 
 代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。
 
