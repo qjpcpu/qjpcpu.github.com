@@ -7,8 +7,11 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 # define the style for conditional formatting
-profitable = book.styles.add_style( :fg_color &hellip;">
+	<meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 1
+2
+3
+# define the style for conditional formatting
+profitable = book.styles.add_style( : &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,10 +87,14 @@ profitable = book.styles.add_style( :fg_color &hellip;">
 
 <p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<pre><code># define the style for conditional formatting
-profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
-unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># define the style for conditional formatting</span>
+</span><span class='line'><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span><span class='line'><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 
@@ -102,23 +109,36 @@ unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf
 
 <p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Cell Is") do |ws|
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Cell Is&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'><span class="c1"># 产生20行数据</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'><span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'> <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># 格式化条件&gt;100000</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:cellIs</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:greaterThan</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="s2">&quot;100000&quot;</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="c1"># 格式化条件0.00%&lt;x&lt;100%</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;C3:C100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:cellIs</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:between</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;0.00%&quot;</span><span class="p">,</span><span class="s2">&quot;100.00%&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">unprofitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  # 产生20行数据
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
-
-# 格式化条件&gt;100000
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :cellIs, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1 })
-# 格式化条件0.00%&lt;x&lt;100%
-  ws.add_conditional_formatting("C3:C100", { :type =&gt; :cellIs, :operator =&gt; :between, :formula =&gt; ["0.00%","100.00%"], :dxfId =&gt; unprofitable, :priority =&gt; 1 })
-end
-</code></pre>
 
 <p>add_conditional_formatting方法指定条件格式化，类型type是cellIs，条件由operator和formula共同指定，dxfId就是我们上面定义的格式化操作，priority优先级数值越小，优先级越高。</p>
 
@@ -128,19 +148,32 @@ end
 
 <p>colorScale是以颜色渐变的方式来格式化表格。</p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Color Scale") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Color Scale&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">color_scale</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:ColorScale</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:colorScale</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:greaterThan</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="s2">&quot;100000&quot;</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:color_scale</span> <span class="o">=&gt;</span> <span class="n">color_scale</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  color_scale = Axlsx::ColorScale.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :colorScale, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1, :color_scale =&gt; color_scale })
-end
-</code></pre>
 
 <p>大于100000的单元格颜色越来越深，而小于的单元格越来越浅。</p>
 
@@ -150,19 +183,32 @@ end
 
 <p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=435a969d3f6d55fbc1c676235d193e77/58ee3d6d55fbb2fb26dba2514d4a20a44723dc85.jpg?referer=b0f4797338f33a87c77a342a1c9b&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Data Bar&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">data_bar</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:DataBar</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dataBar</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:data_bar</span> <span class="o">=&gt;</span> <span class="n">data_bar</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  data_bar = Axlsx::DataBar.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :dataBar, :dxfId =&gt; profitable, :priority =&gt; 1, :data_bar =&gt; data_bar })
-end
-</code></pre>
 
 <h3>iconSet</h3>
 
@@ -170,19 +216,32 @@ end
 
 <p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c718e589e4cd7b89ed6c3a863f1f339a/34fae6cd7b899e511cacdf5740a7d933c8950d56.jpg?referer=a0046022fa1986181850dab46b4d&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Icon Set&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">icon_set</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:IconSet</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:iconSet</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:icon_set</span> <span class="o">=&gt;</span> <span class="n">icon_set</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  icon_set = Axlsx::IconSet.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :iconSet, :dxfId =&gt; profitable, :priority =&gt; 1, :icon_set =&gt; icon_set })
-end
-</code></pre>
 </div>
 
 

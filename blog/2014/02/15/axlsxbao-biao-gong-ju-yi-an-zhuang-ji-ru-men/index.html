@@ -101,20 +101,34 @@
 
 <p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>require 'axlsx'
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">wb</span> <span class="o">=</span> <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Basic Worksheet&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First Column&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="p">,</span><span class="s2">&quot;Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="s2">&quot;=SUM(A2:C2)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s1">&#39;This is a very very long sentence.&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span> <span class="s2">&quot;A3:D3&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;basic.xlsx&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-p = Axlsx::Package.new
-wb = p.workbook
-
-wb.add_worksheet(:name =&gt; "Basic Worksheet") do |sheet|
-  sheet.add_row ["First Column", "Second", "Third","Total"]
-  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
-  sheet.add_row ['This is a very very long sentence.']
-  sheet.merge_cells "A3:D3"
-end
-
-p.serialize 'basic.xlsx'
-</code></pre>
 
 <p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
 

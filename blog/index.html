@@ -7,7 +7,10 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 # define the style for conditional formatting
+	<meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 1
+2
+3
+# define the style for conditional formatting
 profitable = book.styles.add_style( : &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -93,10 +96,14 @@ profitable = book.styles.add_style( : &hellip;">
 
 <p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<pre><code># define the style for conditional formatting
-profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
-unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># define the style for conditional formatting</span>
+</span><span class='line'><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span><span class='line'><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 

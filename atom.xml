@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-17T19:52:32+08:00</updated>
+  <updated>2014-02-17T20:04:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -22,10 +22,14 @@
 
 <p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<pre><code># define the style for conditional formatting
-profitable = book.styles.add_style( :fg_color =&gt; "FF428751", :type =&gt; :dxf )
-unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf )
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># define the style for conditional formatting</span>
+</span><span class='line'><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span><span class='line'><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 
@@ -40,23 +44,36 @@ unprofitable = book.styles.add_style( :fg_color =&gt; "FF0000", :type =&gt; :dxf
 
 <p>对于B列，如果数值大于100000表示盈利，则更改字体颜色；对于亏损的，则在C列中将百分比小于100%的赤字显示。</p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Cell Is") do |ws|
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Cell Is&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'><span class="c1"># 产生20行数据</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'><span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'><span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'> <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># 格式化条件&gt;100000</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:cellIs</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:greaterThan</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="s2">&quot;100000&quot;</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="c1"># 格式化条件0.00%&lt;x&lt;100%</span>
+</span><span class='line'><span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;C3:C100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:cellIs</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:between</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;0.00%&quot;</span><span class="p">,</span><span class="s2">&quot;100.00%&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">unprofitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  # 产生20行数据
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
-
-# 格式化条件&gt;100000
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :cellIs, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1 })
-# 格式化条件0.00%&lt;x&lt;100%
-  ws.add_conditional_formatting("C3:C100", { :type =&gt; :cellIs, :operator =&gt; :between, :formula =&gt; ["0.00%","100.00%"], :dxfId =&gt; unprofitable, :priority =&gt; 1 })
-end
-</code></pre>
 
 <p>add_conditional_formatting方法指定条件格式化，类型type是cellIs，条件由operator和formula共同指定，dxfId就是我们上面定义的格式化操作，priority优先级数值越小，优先级越高。</p>
 
@@ -66,19 +83,32 @@ end
 
 <p>colorScale是以颜色渐变的方式来格式化表格。</p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Color Scale") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Color Scale&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">color_scale</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:ColorScale</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:colorScale</span><span class="p">,</span> <span class="ss">:operator</span> <span class="o">=&gt;</span> <span class="ss">:greaterThan</span><span class="p">,</span> <span class="ss">:formula</span> <span class="o">=&gt;</span> <span class="s2">&quot;100000&quot;</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:color_scale</span> <span class="o">=&gt;</span> <span class="n">color_scale</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  color_scale = Axlsx::ColorScale.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :colorScale, :operator =&gt; :greaterThan, :formula =&gt; "100000", :dxfId =&gt; profitable, :priority =&gt; 1, :color_scale =&gt; color_scale })
-end
-</code></pre>
 
 <p>大于100000的单元格颜色越来越深，而小于的单元格越来越浅。</p>
 
@@ -88,19 +118,32 @@ end
 
 <p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=435a969d3f6d55fbc1c676235d193e77/58ee3d6d55fbb2fb26dba2514d4a20a44723dc85.jpg?referer=b0f4797338f33a87c77a342a1c9b&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Data Bar") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Data Bar&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">data_bar</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:DataBar</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dataBar</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:data_bar</span> <span class="o">=&gt;</span> <span class="n">data_bar</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  data_bar = Axlsx::DataBar.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :dataBar, :dxfId =&gt; profitable, :priority =&gt; 1, :data_bar =&gt; data_bar })
-end
-</code></pre>
 
 <h3>iconSet</h3>
 
@@ -108,19 +151,32 @@ end
 
 <p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c718e589e4cd7b89ed6c3a863f1f339a/34fae6cd7b899e511cacdf5740a7d933c8950d56.jpg?referer=a0046022fa1986181850dab46b4d&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>book.add_worksheet(:name =&gt; "Icon Set") do |ws|
-  ws.add_row ["Previous Year Quarterly Profits (JPY)"]
-  ws.add_row ["Quarter", "Profit", "% of Total"]
-  offset = 3
-  rows = 20
-  offset.upto(rows + offset) do |i|
-    ws.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=&gt;[nil, money, percent]
-  end
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Icon Set&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Previous Year Quarterly Profits (JPY)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Quarter&quot;</span><span class="p">,</span> <span class="s2">&quot;Profit&quot;</span><span class="p">,</span> <span class="s2">&quot;% of Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">offset</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>  <span class="n">rows</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>  <span class="n">offset</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ws</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;Q</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="o">*</span><span class="p">((</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rows</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="p">)),</span> <span class="s2">&quot;=100*B</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">/SUM(B3:B</span><span class="si">#{</span><span class="n">rows</span><span class="o">+</span><span class="n">offset</span><span class="si">}</span><span class="s2">)&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span><span class="o">=&gt;[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="n">percent</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">icon_set</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:IconSet</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">ws</span><span class="o">.</span><span class="n">add_conditional_formatting</span><span class="p">(</span><span class="s2">&quot;B3:B100&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:iconSet</span><span class="p">,</span> <span class="ss">:dxfId</span> <span class="o">=&gt;</span> <span class="n">profitable</span><span class="p">,</span> <span class="ss">:priority</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:icon_set</span> <span class="o">=&gt;</span> <span class="n">icon_set</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  icon_set = Axlsx::IconSet.new
-  ws.add_conditional_formatting("B3:B100", { :type =&gt; :iconSet, :dxfId =&gt; profitable, :priority =&gt; 1, :icon_set =&gt; icon_set })
-end
-</code></pre>
 ]]></content>
   </entry>
   
@@ -138,18 +194,32 @@ end
 <!-- more -->
 
 
-<pre><code>wb.add_worksheet(:name =&gt; "Pie Chart") do |sheet|
-  sheet.add_row ["First", "Second", "Third", "Fourth"]
-  sheet.add_row [1, 2, 3, 4]
-  sheet.add_chart(Axlsx::Pie3DChart, :start_at =&gt; [0,2], :end_at =&gt; [5, 15], :title=&gt; 'dark corner here') do |chart|
-    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"]    #数据点序列及其名称
-    chart.d_lbls.show_val = true       #是否在饼状图中显示数值
-    chart.d_lbls.show_percent = true    #是否在饼状图中显示所占百分比
-    chart.d_lbls.d_lbl_pos = :outEnd    #图例位于图标外部
-    chart.d_lbls.show_leader_lines = true  #是否显示数据和数值间的指示线
-  end
-end
-</code></pre>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Pie Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="p">,</span> <span class="s2">&quot;Fourth&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Pie3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span><span class="o">=&gt;</span> <span class="s1">&#39;dark corner here&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span>    <span class="c1">#数据点序列及其名称</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>       <span class="c1">#是否在饼状图中显示数值</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_percent</span> <span class="o">=</span> <span class="kp">true</span>    <span class="c1">#是否在饼状图中显示所占百分比</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>    <span class="c1">#图例位于图标外部</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_leader_lines</span> <span class="o">=</span> <span class="kp">true</span>  <span class="c1">#是否显示数据和数值间的指示线</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>在add_chart方法中，第一个参数指定图标的类型Aslsx::Pie3DChart，而start_at和end_at分别指定图表的左上角单元格和右下角+1单元格，注意图中饼图的右下角单元格是E15即[4,14]，而end_at是[5,15]，所以称为右下角+1单元格，此外注意和excel编号不同，这里单元格序号是从0开始的。</p>
 
@@ -161,25 +231,37 @@ end
 
 <p>饼图中每块扇形的颜色是自动生成的，如果想要手动指定也是可以的：</p>
 
-<pre><code>chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; ["A1:D1"], :colors =&gt; ['FF0000', '00FF00', '0000FF']
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:colors</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;00FF00&#39;</span><span class="p">,</span> <span class="s1">&#39;0000FF&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>折线图</h3>
 
 <p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&amp;x=.jpg" alt="image" /></p>
 
-<pre><code> wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
-  sheet.add_row ['l1','l2','l3','l4']
-  sheet.add_row [1, 2, 100, '=sum(A2:C2)']
-  sheet.add_chart(Axlsx::Line3DChart, :start_at =&gt; [0,2], :end_at =&gt; [8, 17], :title =&gt; "Chart") do |chart|
-    chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"], :title =&gt; 'bob'
-    chart.d_lbls.show_val = true
-    chart.d_lbls.show_cat_name = true
-    chart.catAxis.tick_lbl_pos = :none   #不在横轴上显示坐标
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Line Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span><span class="s1">&#39;l3&#39;</span><span class="p">,</span><span class="s1">&#39;l4&#39;</span><span class="o">]</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;=sum(A2:C2)&#39;</span><span class="o">]</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Line3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s1">&#39;bob&#39;</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_cat_name</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>   <span class="c1">#不在横轴上显示坐标</span>
+</span><span class='line'> <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  end
- end
-</code></pre>
 
 <p>chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显示每个数值的名称。</p>
 
@@ -187,30 +269,54 @@ end
 
 <p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>wb.add_worksheet(:name =&gt; "Bar Chart") do |sheet|
-  sheet.add_row ["A Simple Bar Chart"]
-  sheet.add_row ["First", "Second", "Third"]
-  sheet.add_row [1, 2, 3]
-  sheet.add_chart(Axlsx::Bar3DChart, :start_at =&gt; "A4", :end_at =&gt; "F17") do |chart|
-    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
-    chart.valAxis.label_rotation = -45
-    chart.catAxis.label_rotation = 45
-    chart.d_lbls.d_lbl_pos = :outEnd
-    chart.d_lbls.show_val = true
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Bar Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;A Simple Bar Chart&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Bar3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;F17&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A3:C3&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:C2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">valAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Bar3DChart</span><span class="p">,</span> <span class="ss">:barDir</span> <span class="o">=&gt;</span> <span class="ss">:col</span><span class="p">,</span><span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;A17&quot;</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;F30&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span> <span class="c1">#barDir指定方向:bar或:col</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A3:C3&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:C2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">valAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-    chart.catAxis.tick_lbl_pos = :none
-  end
-  sheet.add_chart(Axlsx::Bar3DChart, :barDir =&gt; :col,:start_at =&gt; "A17", :end_at =&gt; "F30") do |chart| #barDir指定方向:bar或:col
-    chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
-    chart.valAxis.label_rotation = -45
-    chart.catAxis.label_rotation = 45
-    chart.d_lbls.d_lbl_pos = :outEnd
-    chart.d_lbls.show_val = true
-
-    chart.catAxis.tick_lbl_pos = :none
-  end
- end
-</code></pre>
 
 <p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
 ]]></content>
@@ -354,36 +460,66 @@ sheet.add_row ["a', "b"], :style =&gt; header
 
 <p>下面是创建如图报表的部分代码：</p>
 
-<pre><code>require 'axlsx'
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span>
+</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span> <span class="k">do</span> <span class="o">|</span><span class="n">wb</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">styles</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">styles</span>
+</span><span class='line'>    <span class="n">header</span>     <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFFF33&quot;</span><span class="p">,</span><span class="ss">:fg_color</span><span class="o">=&gt;</span><span class="s2">&quot;0033CC&quot;</span><span class="p">,</span> <span class="ss">:sz</span> <span class="o">=&gt;</span> <span class="mi">16</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span><span class="p">}</span>
+</span><span class='line'>    <span class="n">tbl_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span><span class="o">=&gt;</span><span class="s2">&quot;99FF33&quot;</span><span class="p">,</span><span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">ind_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">}</span>
+</span><span class='line'>    <span class="n">col_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">label</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">money</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+</span><span class='line'>    <span class="n">t_label</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
+</span><span class='line'>    <span class="n">t_money</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>               <span class="c1">#添加空行</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;College Budget&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">header</span><span class="o">]</span>        <span class="c1">#标题，大字体居中</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;What&#39;s coming in this month.&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;How am I doing&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="n">tbl_header</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Estimated monthly net income&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Monthly income&quot;</span><span class="p">,</span> <span class="s2">&quot;=C9&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="o">]</span>
+</span><span class='line'>      <span class="c1">#省略部分代码</span>
+</span><span class='line'>      <span class="sx">%w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">range</span><span class="o">|</span> <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span><span class="p">(</span><span class="n">range</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">column_widths</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">use_shared_strings</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;styles.xlsx&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-Axlsx::Package.new do |p|
-  p.workbook do |wb|
-    styles = wb.styles
-    header     = styles.add_style :bg_color =&gt; "FFFF33",:fg_color=&gt;"0033CC", :sz =&gt; 16, :b =&gt; true, :alignment =&gt; {:horizontal =&gt; :center}
-    tbl_header = styles.add_style :bg_color=&gt;"99FF33",:b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
-    ind_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; {:indent =&gt; 1}
-    col_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
-    label      = styles.add_style :alignment =&gt; { :indent =&gt; 1 }
-    money      = styles.add_style :num_fmt =&gt; 5
-    t_label    = styles.add_style :b =&gt; true, :bg_color =&gt; "FFDFDEDF"
-    t_money    = styles.add_style :b =&gt; true, :num_fmt =&gt; 5, :bg_color =&gt; "FFDFDEDF"
-
-    wb.add_worksheet do |sheet|
-      sheet.add_row               #添加空行
-      sheet.add_row [nil, "College Budget"], :style =&gt; [nil, header]        #标题，大字体居中
-      sheet.add_row
-      sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style =&gt; tbl_header
-      sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style =&gt; [nil, ind_header, col_header, nil, ind_header, col_header]
-      sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style =&gt; [nil, label, money, nil, label, money]
-      #省略部分代码
-      %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
-      sheet.column_widths 2, nil, nil, 2, nil, nil, 2
-    end
-  end
-  p.use_shared_strings = true
-  p.serialize 'styles.xlsx'
-end
-</code></pre>
 ]]></content>
   </entry>
   
@@ -414,20 +550,34 @@ end
 
 <p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
 
-<pre><code>require 'axlsx'
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">wb</span> <span class="o">=</span> <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Basic Worksheet&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First Column&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="p">,</span><span class="s2">&quot;Total&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="s2">&quot;=SUM(A2:C2)&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s1">&#39;This is a very very long sentence.&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span> <span class="s2">&quot;A3:D3&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;basic.xlsx&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-p = Axlsx::Package.new
-wb = p.workbook
-
-wb.add_worksheet(:name =&gt; "Basic Worksheet") do |sheet|
-  sheet.add_row ["First Column", "Second", "Third","Total"]
-  sheet.add_row [1, 2, 3,"=SUM(A2:C2)"]
-  sheet.add_row ['This is a very very long sentence.']
-  sheet.merge_cells "A3:D3"
-end
-
-p.serialize 'basic.xlsx'
-</code></pre>
 
 <p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
 
