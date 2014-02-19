@@ -120,3 +120,12 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 	substr(string,position,length)  #获取子字符串
 	tolower(string)
 	toupper(string)
+	
+P.S. awk的常见控制语法
+
+	exit #退出awk执行
+	next #跳转到命令块首，并开始下一行数据读入
+	NF #列数
+	NR #行号
+	FS #分隔符
+	FILENAME #文件名
