@@ -3,11 +3,16 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Category: shell - Jason's space</title>
+	<title>sendmail发邮件中文乱码 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="Category: shell">
+	<meta name="description" content="如果这是要使用sendmail命令发送的邮件file内容： Subject:标题
+TO:to@example.com
+From:from@example
+Content-Type:text/html
+&lt;html&gt; &lt;body&gt; 邮件内容 &lt;/body&gt;
+&lt &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -77,50 +82,85 @@
 	
 		
 	
-	<div id="content" class="inner">
-	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Sendmail发邮件中文乱码</h2>
+	<div class="entry-content"><p>如果这是要使用sendmail命令发送的邮件file内容：</p>
+
+<pre><code>Subject:标题
+TO:to@example.com
+From:from@example
+Content-Type:text/html
+&lt;html&gt;
+    &lt;body&gt;
+        邮件内容
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3>解决内容乱码</h3>
+
+<p>内容乱码比较好解决，首先内容先使用utf-8编码，然后在修改邮件的<code>Content-Type</code>为：</p>
+
+<pre><code>Content-Type:text/html;charset=UTF-8
+</code></pre>
+
+<h3>解决标题乱码</h3>
+
+<p>需要利用base64编码标题内容，例如，如果UTF-8编码的字符串<code>标题</code>进行base64编码后的内容为<code>5qCH6aKY</code>,则邮件标题为：</p>
+
+<pre><code>Subject:=?UTF-8?B?5qCH6aKY?=
+</code></pre>
+
+<p>即邮件标题<code>Subject:</code>后字符串格式为：&#8221;<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>&#8221;</p>
+
+<h3>发送邮件</h3>
+
+<p>最后发送文件可以正确显示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cat file | sendmail -t
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
 
 
-	
-	
-	<section class="archives"><h1 class="year">2014</h1>
+<div class="meta">
+	<div class="date">
 
-<article>
-	<h2 class="title"><a href="/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/">sendmail发邮件中文乱码</a></h2>
-	<div class="meta">
-		<div class="date">Feb 19</div>
-		<div class="tags">
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-19T23:23:15+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2014</time></div>
+	<div class="tags">
 
 
 	<a class='category' href='/blog/categories/shell/'>shell</a>
 
 
 </div>
-	    
-	</div>
-</article>
 	
-
-	
-
-
-<article>
-	<h2 class="title"><a href="/blog/2014/02/14/shellzi-fu-chuan-chu-li/">shell字符串处理</a></h2>
-	<div class="meta">
-		<div class="date">Feb 14</div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
 </div>
-	    
-	</div>
 </article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
 	
-	</section>
-	
+</div>
+
 
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014

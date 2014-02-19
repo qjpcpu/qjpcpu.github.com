@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-18T21:15:50+08:00</updated>
+  <updated>2014-02-19T23:41:54+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,51 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[sendmail发邮件中文乱码]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/"/>
+    <updated>2014-02-19T23:23:15+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma</id>
+    <content type="html"><![CDATA[<p>如果这是要使用sendmail命令发送的邮件file内容：</p>
+
+<pre><code>Subject:标题
+TO:to@example.com
+From:from@example
+Content-Type:text/html
+&lt;html&gt;
+    &lt;body&gt;
+        邮件内容
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3>解决内容乱码</h3>
+
+<p>内容乱码比较好解决，首先内容先使用utf-8编码，然后在修改邮件的<code>Content-Type</code>为：</p>
+
+<pre><code>Content-Type:text/html;charset=UTF-8
+</code></pre>
+
+<h3>解决标题乱码</h3>
+
+<p>需要利用base64编码标题内容，例如，如果UTF-8编码的字符串<code>标题</code>进行base64编码后的内容为<code>5qCH6aKY</code>,则邮件标题为：</p>
+
+<pre><code>Subject:=?UTF-8?B?5qCH6aKY?=
+</code></pre>
+
+<p>即邮件标题<code>Subject:</code>后字符串格式为：&#8221;<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>&#8221;</p>
+
+<h3>发送邮件</h3>
+
+<p>最后发送文件可以正确显示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cat file | sendmail -t
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(四)——条件格式化]]></title>
@@ -2241,174 +2286,6 @@ end
 </code></pre>
 
 <p>ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails ActiveRecord数据库关系1:n]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/"/>
-    <updated>2014-02-14T22:05:20+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n</id>
-    <content type="html"><![CDATA[<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
-
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
-
-<ol>
-<li><p>建立数据表</p>
-
-<pre><code> $ rails g model customer name:string
- $ rails g model order customer_id:integer order_date:datetime
- $ rails g model rake db:migrate
-</code></pre></li>
-</ol>
-
-
-<!-- more -->
-
-
-<ol>
-<li>修改model，添加关系</li>
-</ol>
-
-
-<p>在这个1:n关系中，orders拥有外键customer_id，所以需要在order.rb中添加belongs_to关系，相对应在customer.rb中添加has_many关系。注意rails的约定，用rails g命令创建model时使用单数形式（首字母大小写无所谓），得到的数据库的表名是小写的复数形式，model的类名是驼峰形式的单数形式，model文件名是小写单数形式。</p>
-
-<p>类似1:1关系，同样添加inverse_of和dependent选项。此处dependent选项的多了一个delete_all，即:dependent=>:delete_all，表示移除customer时会删除其order的所有数据库记录，但不调用这些order的destroy方法销毁对象。</p>
-
-<blockquote><p>customer.rb</p></blockquote>
-
-<pre><code>class Customer &lt; ActiveRecord::Base
-    has_many :orders, :dependent =&gt; :destory, :inverse_of =&gt; :customer
-end
-</code></pre>
-
-<blockquote><p>order.rb</p></blockquote>
-
-<pre><code>class Order &lt; ActiveRecord::Base
-    belongs_to :customer, :inverse_of =&gt; :orders
-end
-</code></pre>
-
-<ol>
-<li>操作关系</li>
-</ol>
-
-
-<p>1：n关系中，在belongs_to关系端添加的方法和1：1中类似，不再赘述。在has_many端添加了如下方法：</p>
-
-<pre><code>collection(force_reload=false)
-collection&lt;&lt;(object, ...)
-collection.delete(object,...)
-collection = objects
-collection_singular_ids
-collection_singular_ids = ids
-collection.clear
-collection.empty?
-collection.size
-collection.find(...)
-collection.where(...)
-collection.exists?(...)
-collection.build(attributes={},...)
-collection.create(attributes={})
-</code></pre>
-
-<p>使用举例：</p>
-
-<pre><code>c = Customer.first
-order_list = c.orders #获取customer c的所有orders
-c.orders.delete order_list.first #解除关系
-c.orders.clear #清空当前customer的所有order
-ar = c.order_ids # =&gt; [1,2,3,4,9,12]
-c.orders &lt;&lt; Order.create( order_date:DateTime.now ) #自动保存关系到数据库
-c.orders.create(order_date:DateTime.now) #和上一行等同
-c.orders.build(order_date:DateTime.now) #需要手动保存该order对象
-c.orders.size #获取orders的数量
-c.orders.find 6 # 找到customer的orders中id为6的order
-c.orders.where :order_date=&gt;DateTime.now
-c.orders.where("id &gt; ?",6)
-c.orders.empty?
-</code></pre>
-
-<ol>
-<li>特殊的1：n关系——自引用关联</li>
-</ol>
-
-
-<p>如，一个Employee拥有多个下属，同时也拥有一个主管，这就是一个自引用关系表。</p>
-
-<pre><code>$ rails g model employee name:string manager_id:integer
-$ rake db:migrate
-</code></pre>
-
-<blockquote><p>employee.rb</p></blockquote>
-
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :subordinates, :class_name=&gt;'Employee', :forgeign_key=&gt;'manager_id'
-    belongs_to :manager, :class_name=&gt;'Employee'
-end
-</code></pre>
-
-<p>建立好model后，和普通1：n关系使用方法并无二致：</p>
-
-<pre><code>manger = Emloyee.where(manager_id:nil).first
-manager.subordinates.each do |s|
-    puts s.name
-end
-</code></pre>
-
-<ol>
-<li>特殊的1：n关系——多态关系</li>
-</ol>
-
-
-<p>多态关系(polymorphic)可以看作是一种特殊的1：n关系。考虑一种情况，Emplyee和Picture是1：n的关系，Product和Picture也是1：n的关系，Company和Picture也是1：n的关系，这样，在Picture的model中就需要添加许多的belongs_to关系，这些belongs_to的功能是非常类似的，多态关系就是为了解决这类重复。</p>
-
-<p>以Picture,Employee,Product为例，首先创建数据表。</p>
-
-<pre><code>$ rails g model picture name:string owner_id:integer owner_type:string
-$ rails g model employee
-$ rails g model product
-</code></pre>
-
-<p>注意在创建pictures时，将所有拥有Picture的model称为owner（也可以取别的名称，如RailsGuide上取名为imageable，个人觉得称为owner更形象），并创建了owner_id和owner_type两个字段，分别表示拥有者model的id和类型。</p>
-
-<p>修改model：</p>
-
-<blockquote><p>product.rb</p></blockquote>
-
-<pre><code>class Product &lt; ActiveRecord::Base
-    has_many :picture, :as=&gt;:owner
-end
-</code></pre>
-
-<blockquote><p>employee.rb</p></blockquote>
-
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :pictures, :as=&gt;:owner
-end
-</code></pre>
-
-<blockquote><p>picture.rb</p></blockquote>
-
-<pre><code>class Picture &lt; ActiveRecord:Base
-    belongs_to :owner, :polymorphic =&gt; true
-end
-</code></pre>
-
-<p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:owner，而picture的model中belongs_to关系添加了:polymorphic=>true选项。这样，如果以后还有新的model和picture是1:n的关系，那么在其中写入has_many :pictures,:as=>:owner即可，不必修改Picture的model及其数据表。</p>
-
-<p>关系的使用：</p>
-
-<pre><code>p1=Picture.create name:'picture-1'
-p2=Picture.create name:'picture-2'
-e=Employee.create
-pro=Product.create
-e.pictures&lt;&lt;p1
-pro.pictures&lt;&lt;p2
-
-p1.owner.class.name # =&gt; 'Employee'
-p2.owner.class.naem # =&gt; 'Product'
-</code></pre>
 ]]></content>
   </entry>
   
