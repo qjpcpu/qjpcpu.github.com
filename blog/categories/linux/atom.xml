@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-19T23:41:54+08:00</updated>
+  <updated>2014-02-21T23:06:06+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[linux日常维护]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu/"/>
+    <updated>2014-02-21T22:58:13+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu</id>
+    <content type="html"><![CDATA[<h3>某些用户cron任务失败</h3>
+
+<p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
+
+<p>解决办法是在crontab任务前先执行<code>source /home/username/.bash_profile</code>，后面再接用户自己的任务命令即可。</p>
+
+<p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
+
+<ul>
+<li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
+<li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
+<li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
+</ul>
+
+
+<!--more-->
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[一步一步搭建mysql主从同步]]></title>
