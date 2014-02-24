@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-22T21:38:09+08:00</updated>
+  <updated>2014-02-24T23:18:21+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,33 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[启动Project Smith]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/24/qi-dong-project-smith/"/>
+    <updated>2014-02-24T22:52:58+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/24/qi-dong-project-smith</id>
+    <content type="html"><![CDATA[<h2>Project Smith</h2>
+
+<p><strong>目的：</strong>旨在解决OP日常运维中的报警及故障处理，希望通过Smith计划达到报警智能判断，自动处理，处理过程无须人工干预，理想情况下甚至做到故障预判。</p>
+
+<!--more-->
+
+
+<p><strong>名称来源:</strong>来自电影《The Matrix》，剧中特工Smith的存在就是为了发现matrix中的不和谐因素并且消除它，类似运维故障处理，故而命名。</p>
+
+<p><strong>人力资源：</strong>目前就我。</p>
+
+<p><strong>时间计划：</strong></p>
+
+<ul>
+<li>2014-2-24至2014-8-23，六个月时间做一期调研。主要解决两个问题，一是熟悉运维工作，观察积累人工处理运维的思维方式，处理方式，记录哪些地方是可以自动化改进的；二是大量阅览文献，寻找智能化决策方面的理论模型，确定Smith计划的框架雏形。该阶段结束时整理出系统的设计方案书，或者得出计划失败报告。</li>
+<li>2014-8-24至2014-11-23，三个月时间做Smith的初稿实现。主要根据一期调研完成Smith的系统编码及调试。该阶段结束时能够拿出1.0的版本和人工运维做比较，并且能够解决60%以上的故障决策处理。</li>
+<li>2014-11-24至2014-12-31，一个月时间做最后的展示准备。主要目的准备展示工作，证明Smith的价值所在。该阶段结束时希望不但能吸引眼球，最重要获取人力物力的资源，将Smith做大，或者证明Smith没有价值，宣告Smith计划彻底失败。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[linux日常维护]]></title>
@@ -2033,126 +2060,6 @@ Address.includes(:addressable)
 
 
 <p>所有的外键最好都添加索引。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails使用devise验证用户]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/"/>
-    <updated>2014-02-14T22:46:34+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu</id>
-    <content type="html"><![CDATA[<h3>安装配置devise</h3>
-
-<p>在gemfile中添加一行：</p>
-
-<pre><code>gem 'devise'
-</code></pre>
-
-<p>执行bundle install后，需要安装devise到工程：</p>
-
-<pre><code>rails generate devise:install
-</code></pre>
-
-<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
-
-<pre><code>rails generate devise user
-rake db:migrate
-</code></pre>
-
-<!-- more -->
-
-
-<p>查看models文件夹下devise创建了user.rb文件：</p>
-
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=f2f25a60612762d0843ea4ba90d779c7/8b13632762d0f703ca91709f0afa513d2697c556.jpg?referer=7e3304592a34349b2d115bb5234c&amp;x=.jpg" alt="image" /></p>
-
-<p>devise方法来自Devise gem，其中默认启用了database_authenticatable,registerable等模块，注释部分列出了其他模块默认未启用，根据devise文档按需要使能。</p>
-
-<p>attr_accessible定义的属性可以被create, update_attributes使用，未在这里定义的属性会引发这两个方法的 mass-assignment异常。</p>
-
-<p>查看路由文件 routes.rb，devise gem在创建model时在路由文件中添加了： <code>devise_for :users</code></p>
-
-<p>执行rake routes可以看到devise创建的url：</p>
-
-<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4a985b9df21f3a295ec8d5cba91ecd0c/95eef01f3a292df526325656be315c6035a87384.jpg?referer=0fdbb04d6509c93d5ee53ac7bd9a&amp;x=.jpg" alt="image" /></p>
-
-<p>注意devise gem提供的账户注销和用户退出登陆都是默认使用的DELETE方法，该url设计常导致编码出错，但它确是遵循了RESTful规范，留意下即可。</p>
-
-<p>在需要的页面上添加注册、登陆的代码（我添加在application.html.erb中yield语句上方）：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6ae4814e249759ee4e5060ce82c0322b/503d269759ee3d6d37e5628841166d224f4ade56.jpg?referer=77d0e6a0d739b60014d93a871a4c&amp;x=.jpg" alt="image" /></p>
-
-<p>rails server启动服务器，即可查看注册登陆页面：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e7392f8d9b25bc312f5d019d6ee4fc8c/e1fe9925bc315c60fe6491ac8fb1cb1348547784.jpg?referer=ba03f4b49d3df8dcff2abba1b19a&amp;x=.jpg" alt="image" /></p>
-
-<h3>devise提供的常用method</h3>
-
-<pre><code>* authenticate_user!，验证用户是否登陆，常用于before_filter: `before_filter :authenticate_user!`. 另，如果你创建的devise model叫admin，那么该方法就是authenticate_admin!，以下方法同理。这又是ruby玩的一个小把戏了。
-* user_signed_in?，当前是否有登陆用户
-* current_user， 获取当前登陆用户
-* user_session, 用户session，类似于session，也是一个hash表，可以用来保存用户特有的数据
-* after_sign_in_path_for和after_sign_out_path_for方法指定用户登入/登出后的跳转url.
-</code></pre>
-
-<h3>自定义views</h3>
-
-<p>devise gem提供了足够功能的用户验证，但是由上图可见，其自带的view未免太过简单。如果需要自定义视图，就需要将devise默认的view拷贝到rails工程：</p>
-
-<pre><code>rails generate devise:views
-</code></pre>
-
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff4c4851700e0cf3a4f74efe3a7d8322/9922720e0cf3d7ca14d5da35f01fbe096b63a956.jpg?referer=fc0d600dc880653822fd9123174c&amp;x=.jpg" alt="image" /></p>
-
-<p>该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。</p>
-
-<h3>自定义controller</h3>
-
-<ul>
-<li><p>如果需要自定义controller，如Devise::SessionController：</p>
-
-<pre><code>  class Admins::SessionsController &lt; Devise::SessionsController
-  end
-</code></pre></li>
-<li><p>在路由文件routes.rb中更新配置，告诉devise使用新的controller</p>
-
-<pre><code>  devise_for :users, :controllers =&gt; { :sessions =&gt; "admins/sessions" }
-</code></pre></li>
-<li><p>更新了controller后，在app/views/devise/sessions下的views不会再被使用，所以，还需要将这部分views复制到app/views/admins/sessions下，或者在该目录下建立新的views。</p></li>
-</ul>
-
-
-<h3>邮件确认</h3>
-
-<p>如果需要更安全一点的注册验证，可以使用邮件确认方式。</p>
-
-<p>首先，修改user.rb文件，启用devise的confirmable模块：</p>
-
-<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7f58226cbc096b6385195e553c08f679/f31fbe096b63f6241e7edc408544ebf81a4ca356.jpg?referer=e2c37137af3459829c9dd0a20d4c&amp;x=.jpg" alt="image" /></p>
-
-<p>在数据表users中新加字段：</p>
-
-<pre><code>rails g migration add_confirmable_fields_to_users
-</code></pre>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=117edc408544ebf86971643ae9c2a617/0d338744ebf81a4c2b11098ad52a6059252da656.jpg?referer=aabcdc8733adcbef58234b36024c&amp;x=.jpg" alt="image" /></p>
-
-<p>新用户是以邮件的方式确认，所以，需要更改rails的环境配置。rails的环境配置位于config/environments/xxx.rb文件，xx代表develepment/test/production，三个文件的配置选项都十分类似，下面以production环境为例，打开config/environments/production.rb，在最后的end前添加：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=464e1e2bcebf6c81f3372ced8c05c008/d058ccbf6c81800ac314734db33533fa838b4784.jpg?referer=0ef348e7a6c27d1efc310ff4a19a&amp;x=.jpg" alt="image" /></p>
-
-<p>配置邮件帐户，在production时rails建议使用邮件服务如Mandrill，这里为了简单，使用gmail帐户示例。</p>
-
-<p>在改文件中继续添加smtp配置，新添加的内容最终如下：</p>
-
-<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5cf27e4631fa828bd5239de6cd243009/b03533fa828ba61e481f326c4334970a314e5984.jpg?referer=fb19621ddfc451daafe138dba79a&amp;x=.jpg" alt="image" /></p>
-
-<p>最后，修改devise.rb文件</p>
-
-<pre><code>config.mailer_sender = "replyme@126.com" 
-</code></pre>
-
-<p>现在，当新用户new@test.com注册后，它会收到一封确认邮件，邮件from: your_gmail_username@gmail.com, to: new@test.com, reply_to: replyme@126.com，邮件包含一个链接，指向用户激活地址。用户点击该链接激活帐户后才能登陆网站。</p>
 ]]></content>
   </entry>
   

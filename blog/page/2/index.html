@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1. prerequesite 假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for &hellip;">
+	<meta name="description" content="1.什么是rack rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用： app = lambda do |env| &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,6 +78,65 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/15/rake-based-application/">
+		
+			Rake Based Application</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1.什么是rack</h3>
+
+<p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
+
+<pre><code>app = lambda do |env|
+  body = "Hello, World!"
+  [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
+end
+
+run app
+</code></pre>
+
+<p>重点是第三行，一个基于rack的ruby应用只需要一个包含call方法的对象，在调用call方法后该对象会返回形如第三行的一个列表，该列表包含三个元素：第一个元素是这次http请求的返回状态码200，第二个元素是一个返回的http响应headers的hash表，第三个元素是http响应体的列表，所以该列表的形式为：</p>
+
+<pre><code>[ status_code, headers, body ]
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/15/rake-based-application/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:04:13+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/15/rake-based-application/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -541,66 +600,6 @@ end
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/">
-		
-			Rails使用devise验证用户</a>
-	</h2>
-	<div class="entry-content">
-		<h3>安装配置devise</h3>
-
-<p>在gemfile中添加一行：</p>
-
-<pre><code>gem 'devise'
-</code></pre>
-
-<p>执行bundle install后，需要安装devise到工程：</p>
-
-<pre><code>rails generate devise:install
-</code></pre>
-
-<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
-
-<pre><code>rails generate devise user
-rake db:migrate
-</code></pre>
-
-
-		
-		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T22:46:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
