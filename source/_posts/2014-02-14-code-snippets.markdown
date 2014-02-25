@@ -3,7 +3,7 @@ layout: post
 title: "code snippets"
 date: 2014-02-14 18:08:28 +0800
 comments: true
-categories: script
+categories: shell
 ---
 
 ### ruby文件utf-8编码
