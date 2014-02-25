@@ -76,7 +76,7 @@
     </url>
     <url>
         <loc>http://qjpcpu.github.io/blog/2014/02/14/code-snippets/</loc>
-        <lastmod>2014-02-21T23:06:06+08:00</lastmod>
+        <lastmod>2014-02-25T20:15:43+08:00</lastmod>
     </url>
     <url>
         <loc>http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/</loc>
@@ -225,12 +225,18 @@
         <lastmod>2014-02-24T23:17:55+08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://qjpcpu.github.io/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/
+        </loc>
+        <lastmod>2014-02-25T20:19:30+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://qjpcpu.github.io/about/</loc>
         <lastmod>2014-02-16T17:26:28+08:00</lastmod>
     </url>
     <url>
         <loc>http://qjpcpu.github.io/blog/archives/</loc>
-        <lastmod>2014-02-24T23:17:55+08:00</lastmod>
+        <lastmod>2014-02-25T20:19:30+08:00</lastmod>
     </url>
     <url>
         <loc>http://qjpcpu.github.io/blog/categories/</loc>
@@ -238,7 +244,7 @@
     </url>
     <url>
         <loc>http://qjpcpu.github.io/blog/</loc>
-        <lastmod>2014-02-24T23:17:55+08:00</lastmod>
+        <lastmod>2014-02-25T20:19:30+08:00</lastmod>
     </url>
     <url>
         <loc>http://qjpcpu.github.io/robots.txt</loc>

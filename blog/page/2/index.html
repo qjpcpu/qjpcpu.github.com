@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1.什么是rack rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用： app = lambda do |env| &hellip;">
+	<meta name="description" content="RSpec断言规则 RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty? nil? instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如： [].should be_empty &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,6 +78,56 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/15/rspec/">
+		
+			Rspec</a>
+	</h2>
+	<div class="entry-content">
+		<h2>RSpec断言规则</h2>
+
+<p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
+
+<pre><code>[].should be_empty =&gt; [].empty? #passes
+[].should_not be_empty =&gt; [].empty? #fails
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/15/rspec/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:14:29+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/15/rspec/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -545,61 +595,6 @@ end
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rails-eagerloading/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/">
-		
-			Rails 创建数据库索引</a>
-	</h2>
-	<div class="entry-content">
-		<p>以经典的customer-order为例</p>
-
-<ol>
-<li>在创建数据表时直接创建索引</li>
-</ol>
-
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d1364df8a41ea8d38e227401a7314173/838ba61ea8d3fd1fa3f85879324e251f94ca5f84.jpg?referer=3f089ea983cb39db98d75366999a&amp;x=.jpg" alt="image" /></p>
-
-<p>查看order的migration文件，rails自动为我们添加了index：</p>
-
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
-
-
-		
-		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

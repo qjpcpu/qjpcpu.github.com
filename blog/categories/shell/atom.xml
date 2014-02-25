@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-24T23:18:21+08:00</updated>
+  <updated>2014-02-25T20:19:30+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,123 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用expect实现自动登录]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/"/>
+    <updated>2014-02-25T20:13:57+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu</id>
+    <content type="html"><![CDATA[<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
+我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
+
+<h3>利用expect命令实现自动登录并执行命令</h3>
+
+<p>```bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>expect -c &lsquo;
+spawn ssh USER@HOST &ldquo;commands&rdquo;
+expect {
+&ldquo;<em>(yes/no)?&rdquo; { send &ldquo;yes\r&rdquo;;exp_continue }
+&ldquo;</em>assword:&rdquo; { send &ldquo;PASSWORD\r&rdquo; }
+}
+expect eof
+&rsquo;
+```</p>
+
+<p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
+
+<!--more-->
+
+
+<h3>获取登录名及登录密码</h3>
+
+<p>从bash中获取变量无非就是获取登录主机及密码，提高代码移植性。这里利用bash的Here document实现。</p>
+
+<p>```bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>host=&ldquo;USER@HOST&rdquo;
+password=&ldquo;PASSWORD&rdquo;
+cmd=&ldquo;command_list&rdquo;</p>
+
+<p>expect &lt;&lt;EOF
+spawn ssh $host &ldquo;$cmd&rdquo;
+expect {
+&ldquo;<em>(yes/no)?&rdquo; { send &ldquo;yes\r&rdquo;;exp_continue }
+&ldquo;</em>assword:&rdquo; { send &ldquo;$password\r&rdquo; }
+}
+expect eof
+EOF
+```</p>
+
+<p>bash会自动解析here document中的变量，个人认为这种方式比使用expect的set命令更简便。</p>
+
+<h3>获取登录执行命令结果</h3>
+
+<p>如果希望保持登录，去掉上面代码的<code>ssh</code>后的命令列表并且将<code>expect eof</code>改成<code>interact</code>即可。</p>
+
+<p>但通常我们只是登录到某台机器并执行命令后就返回，同时希望获得命令执行的结果。但上面的代码会混合登录时的部分输出，所以这里可以使用管道过滤一下。</p>
+
+<p>下面的代码展示的怎样获取并输出远程主机的真正命令输出，同时也是一个在here document后接管道操作的例子：</p>
+
+<p>```bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>host=&ldquo;USER@HOST&rdquo;
+password=&ldquo;PASSWORD&rdquo;
+cmd=&ldquo;command_list&rdquo;</p>
+
+<p>(expect &lt;&lt;EOF
+spawn ssh $host &ldquo;$cmd&rdquo;
+expect {
+&ldquo;<em>(yes/no)?&rdquo; { send &ldquo;yes\r&rdquo;;exp_continue }
+&ldquo;</em>assword:&rdquo; { send &ldquo;$password\r&rdquo; }
+}
+expect eof
+EOF
+) | awk &lsquo;BEGIN{find=0}
+{</p>
+
+<pre><code>if(find){print $0;next}
+if($0 ~ /[pP]assword:/){ find=1 }
+</code></pre>
+
+<p>}&lsquo;
+```</p>
+
+<p>这就是在bash中调用expect自动登录的完整代码了。</p>
+
+<p>P.S. 在here document后接管道操作的几种方法：</p>
+
+<p>```bash</p>
+
+<h1>1</h1>
+
+<p>cat &lt;&lt;EOF | sh
+echo 1
+EOF</p>
+
+<h1>2</h1>
+
+<p>(cat &lt;&lt;EOF
+echo 1
+EOF
+) | sh</p>
+
+<h1>3</h1>
+
+<p>{
+cat&lt;&lt;EOF
+echo 1
+EOF
+} | sh
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[sendmail发邮件中文乱码]]></title>
@@ -206,6 +323,40 @@ NR #行号
 FS #分隔符
 FILENAME #文件名
 </code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[code snippets]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/code-snippets/"/>
+    <updated>2014-02-14T18:08:28+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/code-snippets</id>
+    <content type="html"><![CDATA[<h3>ruby文件utf-8编码</h3>
+
+<pre><code># -*- coding: UTF-8 -*-
+</code></pre>
+
+<h3>退出ssh登录后继续执行命令</h3>
+
+<p>如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：</p>
+
+<pre><code>nohup long_run_cmd &amp;
+</code></pre>
+
+<!-- more -->
+
+
+<h3>date命令常用操作</h3>
+
+<p><code>bash
+date +%Y-%m-%d    #2014-02-21
+date -d "1 day ago"  "+%Y-%m-%d %H:%M:%S"  #一天前的当前时间 2014-02-20 11:11:31
+date -d "-5 minutes"  "+%Y-%m-%d %H:%M:%S"  #5分钟前
+date -d "5 minutes"  "%H:%M:%S"  #5分钟后
+date -d "2014-02-20 11:11:31" +%s  #获取某时间的时间戳
+date +%s   #返回当前时间戳1392954893
+date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
+</code></p>
 ]]></content>
   </entry>
   

@@ -7,7 +7,18 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" Project Smith 目的：旨在解决OP日常运维中的报警及故障处理，希望通过Smith计划达到报警智能判断，自动处理，处理过程无须人工干预，理想情况下甚至做到故障预判。 Read on &rarr; Feb 24th, 2014 smith Comments ">
+	<meta name="description" content="网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
+我希望直接在bash脚本里使用expect命令来实现自动登录。 利用expect命令实现自动登录并执行命令 1
+2
+3
+4
+5
+6
+7
+8
+9
+#!/bin/bash
+expect -c &#39; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,6 +89,76 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/">
+		
+			使用expect实现自动登录</a>
+	</h2>
+	<div class="entry-content">
+		<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
+我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
+
+<h3>利用expect命令实现自动登录并执行命令</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>expect -c <span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
+</span><span class='line'><span class="s1">expect {</span>
+</span><span class='line'><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class='line'><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
+</span><span class='line'><span class="s1">}</span>
+</span><span class='line'><span class="s1">expect eof</span>
+</span><span class='line'><span class="s1">&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
+
+
+		
+		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T20:13:57+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -549,56 +630,6 @@ tar vzxf mysql-5.1.73.tar.gz
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/15/rspec/">
-		
-			Rspec</a>
-	</h2>
-	<div class="entry-content">
-		<h2>RSpec断言规则</h2>
-
-<p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
-
-<pre><code>[].should be_empty =&gt; [].empty? #passes
-[].should_not be_empty =&gt; [].empty? #fails
-</code></pre>
-
-
-		
-		<a href="/blog/2014/02/15/rspec/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T00:14:29+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/15/rspec/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
