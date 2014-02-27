@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-25T20:19:30+08:00</updated>
+  <updated>2014-02-27T21:03:40+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,158 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[列出目录结构]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou/"/>
+    <updated>2014-02-27T20:52:50+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou</id>
+    <content type="html"><![CDATA[<h3>最简单美观的方法tree</h3>
+
+<p>tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。</p>
+
+<p>```bash
+$ tree demo
+demo
+├── Gemfile
+├── boot.rb
+├── collectors
+├── config
+│   └── mail_config.rb
+├── controllers
+├── db
+│   ├── connection.rb
+│   ├── database.yml
+│   └── migrate
+├── helpers
+├── models
+├── rakefile
+└── views</p>
+
+<p>8 directories, 6 files
+```</p>
+
+<!--more-->
+
+
+<h3>折衷的方法find</h3>
+
+<p>如果没有权限在机器上安装tree命令，find命令也是一种折衷的选择。</p>
+
+<p><code>bash
+$ find demo -type f -o -type d
+demo
+demo/boot.rb
+demo/collectors
+demo/config
+demo/config/.gitkeep
+demo/config/mail_config.rb
+demo/controllers
+demo/db
+demo/db/connection.rb
+demo/db/database.yml
+demo/db/migrate
+demo/db/migrate/.gitkeep
+demo/Gemfile
+demo/helpers
+demo/helpers/.gitkeep
+demo/models
+demo/rakefile
+demo/views
+</code></p>
+
+<p>虽然没有tree命令那么直观，但却有另一个好处，便于使用管道进一步操作。</p>
+
+<h3>仅仅是一种选择ls</h3>
+
+<p>ls命令也可以罗列出目录结构，但这个仅供娱乐了。</p>
+
+<p>```bash
+$ ls -R demo
+Gemfile     collectors  controllers helpers     rakefile
+boot.rb     config      db      models      views</p>
+
+<p>demo/collectors:</p>
+
+<p>demo/config:
+mail_config.rb</p>
+
+<p>demo/controllers:</p>
+
+<p>demo/db:
+connection.rb   database.yml    migrate</p>
+
+<p>demo/db/migrate:</p>
+
+<p>demo/helpers:</p>
+
+<p>demo/models:</p>
+
+<p>demo/views:
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[find命令]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/27/findming-ling/"/>
+    <updated>2014-02-27T20:10:37+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/27/findming-ling</id>
+    <content type="html"><![CDATA[<h3>find的基本语法</h3>
+
+<p><code>bash
+find PATH OPTIONS [-exec COMMANDD {} \;]
+</code></p>
+
+<p><code>find</code>命令可以使用多个OPTION，不同OPTION之间默认是<code>and</code>关系，除了<code>and</code>关系还有<code>not</code>和<code>or</code>关系，如：</p>
+
+<p><code>bash
+find / -name 'n1' -type f  #查找/目录下名称为n1且为普通文件的文件
+find / -name 'n1' -o -name 'n2' #查找名称为n1或n2的文件
+find / ! -name 'n1'  # 查找名称不为n1的文件
+</code></p>
+
+<p>当使用的OPTION很多时，可以将OPTIONS括起来增加可读性，注意括号需要用<code>\</code>来转义，同时<code>\(</code>和<code>\)</code>两边都需要有空格：</p>
+
+<p><code>bash
+find / \( -name 'n1' -o -name 'n2' \)
+</code></p>
+
+<!--more-->
+
+
+<h3>find命令常用的OPTION</h3>
+
+<ul>
+<li>-name  按名称查找，支持通配符*,?,[]</li>
+<li>-user  按用户名查找</li>
+<li>-empty  查找空文件(目录)</li>
+<li>-perm  查找对应权限的文件，权限表示的三位数字形式如777</li>
+<li>-type 按类型查找，类型可为<code>b</code>块设备，<code>c</code>字符设备，<code>p</code>管道，<code>f</code>普通文件，<code>l</code>链接文件，<code>s</code>socket文件</li>
+<li>-print  打印结果</li>
+<li>-regex 按正则表达式查找，注意该正则匹配属于完全匹配，即如果要查找<code>dir</code>目录下的文件<code>file_23</code>应该用正则表达式<code>.*file_[0-9]+</code>，用<code>file_[0-9]+</code>是匹配不到的，<code>find dir -regex '.*file_[0-9]+</code>是用完整结果即<code>dir/file_23</code>来做和<code>-regex</code>完全匹配的</li>
+<li>-maxdepth n  find的最大目录层级查找深度，最小为1</li>
+<li>-mindepth n find的最小目录查找深度</li>
+</ul>
+
+
+<p>按时间查找的参数：</p>
+
+<ul>
+<li>-amin n  查找n分钟以前被访问（access）的文件</li>
+<li>-atime n  查找n天前被访问的文件</li>
+<li>-cmin n  查找n分钟前文件元信息被修改（change）的文件</li>
+<li>-ctime n  查找n天前文件元信息被修改过的文件</li>
+<li>-mmin n  查找n分钟前内容被修改的文件</li>
+<li>-mtime n 查找n天前内容被修改的文件</li>
+</ul>
+
+
+<h3>exec</h3>
+
+<p>find命令最后的exec表示对找到的文件执行什么命令，其中<code>{}</code>代表找到的文件，注意<code>{}</code>和<code>\;</code>间有空格。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用expect实现自动登录]]></title>
@@ -323,40 +475,6 @@ NR #行号
 FS #分隔符
 FILENAME #文件名
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[code snippets]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/code-snippets/"/>
-    <updated>2014-02-14T18:08:28+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/code-snippets</id>
-    <content type="html"><![CDATA[<h3>ruby文件utf-8编码</h3>
-
-<pre><code># -*- coding: UTF-8 -*-
-</code></pre>
-
-<h3>退出ssh登录后继续执行命令</h3>
-
-<p>如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：</p>
-
-<pre><code>nohup long_run_cmd &amp;
-</code></pre>
-
-<!-- more -->
-
-
-<h3>date命令常用操作</h3>
-
-<p><code>bash
-date +%Y-%m-%d    #2014-02-21
-date -d "1 day ago"  "+%Y-%m-%d %H:%M:%S"  #一天前的当前时间 2014-02-20 11:11:31
-date -d "-5 minutes"  "+%Y-%m-%d %H:%M:%S"  #5分钟前
-date -d "5 minutes"  "%H:%M:%S"  #5分钟后
-date -d "2014-02-20 11:11:31" +%s  #获取某时间的时间戳
-date +%s   #返回当前时间戳1392954893
-date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
-</code></p>
 ]]></content>
   </entry>
   

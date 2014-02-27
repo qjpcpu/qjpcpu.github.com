@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-25T20:19:30+08:00</updated>
+  <updated>2014-02-27T21:03:40+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,221 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[列出目录结构]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou/"/>
+    <updated>2014-02-27T20:52:50+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou</id>
+    <content type="html"><![CDATA[<h3>最简单美观的方法tree</h3>
+
+<p>tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>tree demo
+</span><span class='line'>demo
+</span><span class='line'>├── Gemfile
+</span><span class='line'>├── boot.rb
+</span><span class='line'>├── collectors
+</span><span class='line'>├── config
+</span><span class='line'>│   └── mail_config.rb
+</span><span class='line'>├── controllers
+</span><span class='line'>├── db
+</span><span class='line'>│   ├── connection.rb
+</span><span class='line'>│   ├── database.yml
+</span><span class='line'>│   └── migrate
+</span><span class='line'>├── helpers
+</span><span class='line'>├── models
+</span><span class='line'>├── rakefile
+</span><span class='line'>└── views
+</span><span class='line'>
+</span><span class='line'>8 directories, 6 files
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<h3>折衷的方法find</h3>
+
+<p>如果没有权限在机器上安装tree命令，find命令也是一种折衷的选择。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>find demo -type f -o -type d
+</span><span class='line'>demo
+</span><span class='line'>demo/boot.rb
+</span><span class='line'>demo/collectors
+</span><span class='line'>demo/config
+</span><span class='line'>demo/config/.gitkeep
+</span><span class='line'>demo/config/mail_config.rb
+</span><span class='line'>demo/controllers
+</span><span class='line'>demo/db
+</span><span class='line'>demo/db/connection.rb
+</span><span class='line'>demo/db/database.yml
+</span><span class='line'>demo/db/migrate
+</span><span class='line'>demo/db/migrate/.gitkeep
+</span><span class='line'>demo/Gemfile
+</span><span class='line'>demo/helpers
+</span><span class='line'>demo/helpers/.gitkeep
+</span><span class='line'>demo/models
+</span><span class='line'>demo/rakefile
+</span><span class='line'>demo/views
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>虽然没有tree命令那么直观，但却有另一个好处，便于使用管道进一步操作。</p>
+
+<h3>仅仅是一种选择ls</h3>
+
+<p>ls命令也可以罗列出目录结构，但这个仅供娱乐了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ls -R demo
+</span><span class='line'>Gemfile       collectors  controllers helpers     rakefile
+</span><span class='line'>boot.rb       config      db      models      views
+</span><span class='line'>
+</span><span class='line'>demo/collectors:
+</span><span class='line'>
+</span><span class='line'>demo/config:
+</span><span class='line'>mail_config.rb
+</span><span class='line'>
+</span><span class='line'>demo/controllers:
+</span><span class='line'>
+</span><span class='line'>demo/db:
+</span><span class='line'>connection.rb database.yml    migrate
+</span><span class='line'>
+</span><span class='line'>demo/db/migrate:
+</span><span class='line'>
+</span><span class='line'>demo/helpers:
+</span><span class='line'>
+</span><span class='line'>demo/models:
+</span><span class='line'>
+</span><span class='line'>demo/views:
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[find命令]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/27/findming-ling/"/>
+    <updated>2014-02-27T20:10:37+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/27/findming-ling</id>
+    <content type="html"><![CDATA[<h3>find的基本语法</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>find</code>命令可以使用多个OPTION，不同OPTION之间默认是<code>and</code>关系，除了<code>and</code>关系还有<code>not</code>和<code>or</code>关系，如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
+</span><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
+</span><span class='line'>find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当使用的OPTION很多时，可以将OPTIONS括起来增加可读性，注意括号需要用<code>\</code>来转义，同时<code>\(</code>和<code>\)</code>两边都需要有空格：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<h3>find命令常用的OPTION</h3>
+
+<ul>
+<li>-name  按名称查找，支持通配符*,?,[]</li>
+<li>-user  按用户名查找</li>
+<li>-empty  查找空文件(目录)</li>
+<li>-perm  查找对应权限的文件，权限表示的三位数字形式如777</li>
+<li>-type 按类型查找，类型可为<code>b</code>块设备，<code>c</code>字符设备，<code>p</code>管道，<code>f</code>普通文件，<code>l</code>链接文件，<code>s</code>socket文件</li>
+<li>-print  打印结果</li>
+<li>-regex 按正则表达式查找，注意该正则匹配属于完全匹配，即如果要查找<code>dir</code>目录下的文件<code>file_23</code>应该用正则表达式<code>.*file_[0-9]+</code>，用<code>file_[0-9]+</code>是匹配不到的，<code>find dir -regex '.*file_[0-9]+</code>是用完整结果即<code>dir/file_23</code>来做和<code>-regex</code>完全匹配的</li>
+<li>-maxdepth n  find的最大目录层级查找深度，最小为1</li>
+<li>-mindepth n find的最小目录查找深度</li>
+</ul>
+
+
+<p>按时间查找的参数：</p>
+
+<ul>
+<li>-amin n  查找n分钟以前被访问（access）的文件</li>
+<li>-atime n  查找n天前被访问的文件</li>
+<li>-cmin n  查找n分钟前文件元信息被修改（change）的文件</li>
+<li>-ctime n  查找n天前文件元信息被修改过的文件</li>
+<li>-mmin n  查找n分钟前内容被修改的文件</li>
+<li>-mtime n 查找n天前内容被修改的文件</li>
+</ul>
+
+
+<h3>exec</h3>
+
+<p>find命令最后的exec表示对找到的文件执行什么命令，其中<code>{}</code>代表找到的文件，注意<code>{}</code>和<code>\;</code>间有空格。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用expect实现自动登录]]></title>
@@ -1848,318 +2063,6 @@ end
 <p>或者从头调用所有migration创建空的数据库并自动seed填充数据库：</p>
 
 <pre><code>rake db:setup
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails 配置使用jquery-file-upload  step by step]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/"/>
-    <updated>2014-02-14T23:11:06+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step</id>
-    <content type="html"><![CDATA[<p>一步步安装使用jquery-file-upload</p>
-
-<!-- more -->
-
-
-<h3>1.安装Gem</h3>
-
-<p>在gemfile中添加jquery-fileupload-rails和paperclip的gem：</p>
-
-<pre><code>gem "jquery-fileupload-rails"
-gem 'paperclip'
-</code></pre>
-
-<h3>2.在app/assets/application.js添加</h3>
-
-<pre><code>//= require jquery-fileupload
-</code></pre>
-
-<h3>3.在app/assets/stylesheets/application.css添加</h3>
-
-<pre><code>*= require jquery.fileupload-ui
-</code></pre>
-
-<h3>4.创建Picture数据表</h3>
-
-<pre><code>rails g model Picture avatar:attachment
-rake db:migrate
-</code></pre>
-
-<p>pictures表的avatar属性代表上传的文件对象。</p>
-
-<p>修改picture.rb的内容：</p>
-
-<pre><code>class Picture &lt; ActiveRecord::Base
-    has_attached_file :avatar
-
-    include Rails.application.routes.url_helpers
-
-    def to_json_picture
-        {
-            'name'=&gt;read_attribute(:avatar_file_name),
-            'size'=&gt;read_attribute(:avatar_file_size),
-            'url'=&gt;avatar.url(:original),
-            'delete_url'=&gt;picture_path(self),
-            'delete_type'=&gt;'DELETE'
-        }
-    end
-end
-</code></pre>
-
-<p>在model中，使用类方法has_attached_file指明文件对象是avatar，并且定义了to_json_picture方法，该方法将picture对象转换成一个hash，在jquery-fileupload和server的交互中被转变为json数据。</p>
-
-<h3>5.创建view</h3>
-
-<p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
-
-<div><script src='https://gist.github.com/9017226.js?file=jquery_template.html.erb'></script>
-<noscript><pre><code>&lt;div class=&quot;container&quot;&gt;
-  &lt;h2&gt;Upload file&lt;/h2&gt;
-  &lt;%= form_for Picture.new, :html =&gt; { :multipart =&gt; true, :id =&gt; &quot;fileupload&quot;  } do |f| %&gt;
-    &lt;!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload --&gt;
-    &lt;div class=&quot;row fileupload-buttonbar&quot;&gt;
-      &lt;div class=&quot;span7&quot;&gt;
-        &lt;!-- The fileinput-button span is used to style the file input field as button --&gt;
-        &lt;span class=&quot;btn btn-success fileinput-button&quot;&gt;
-          &lt;i class=&quot;icon-plus icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Add files...&lt;/span&gt;
-          &lt;%= f.file_field :avatar %&gt;
-        &lt;/span&gt;
-        &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary start&quot;&gt;
-          &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Start upload&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type=&quot;reset&quot; class=&quot;btn btn-warning cancel&quot;&gt;
-          &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Cancel upload&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type=&quot;button&quot; class=&quot;btn btn-danger delete&quot;&gt;
-          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Delete&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;input type=&quot;checkbox&quot; class=&quot;toggle&quot;&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;span5&quot;&gt;
-        &lt;!-- The global progress bar --&gt;
-        &lt;div class=&quot;progress progress-success progress-striped active fade&quot;&gt;
-          &lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;!-- The loading indicator is shown during image processing --&gt;
-    &lt;div class=&quot;fileupload-loading&quot;&gt;&lt;/div&gt;
-    &lt;br&gt;
-    &lt;!-- The table listing the files available for upload/download --&gt;
-    &lt;table class=&quot;table table-striped&quot;&gt;&lt;tbody class=&quot;files&quot; data-toggle=&quot;modal-gallery&quot; data-target=&quot;#modal-gallery&quot;&gt;&lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;% end %&gt;
-
-&lt;/div&gt;
-&lt;script&gt;
-  var fileUploadErrors = {
-  maxFileSize: &#39;File is too big&#39;,
-  minFileSize: &#39;File is too small&#39;,
-  acceptFileTypes: &#39;Filetype not allowed&#39;,
-  maxNumberOfFiles: &#39;Max number of files exceeded&#39;,
-  uploadedBytes: &#39;Uploaded bytes exceed file size&#39;,
-  emptyResult: &#39;Empty file upload result&#39;
-  };
-&lt;/script&gt;
-
-&lt;!-- The template to display files available for upload --&gt;
-&lt;script id=&quot;template-upload&quot; type=&quot;text/x-tmpl&quot;&gt;
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-  &lt;tr class=&quot;template-upload fade&quot;&gt;
-    &lt;td class=&quot;preview&quot;&gt;&lt;span class=&quot;fade&quot;&gt;&lt;/span&gt;&lt;/td&gt;
-    &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
-    &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-    {% if (file.error) { %}
-    &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
-    {% } else if (o.files.valid &amp;&amp; !i) { %}
-    &lt;td&gt;
-      &lt;div class=&quot;progress progress-success progress-striped active&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;start&quot;&gt;{% if (!o.options.autoUpload) { %}
-      &lt;button class=&quot;btn btn-primary&quot;&gt;
-        &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
-        &lt;span&gt;{%=locale.fileupload.start%}&lt;/span&gt;
-      &lt;/button&gt;
-      {% } %}&lt;/td&gt;
-    {% } else { %}
-    &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
-    {% } %}
-    &lt;td class=&quot;cancel&quot;&gt;{% if (!i) { %}
-      &lt;button class=&quot;btn btn-warning&quot;&gt;
-        &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
-        &lt;span&gt;{%=locale.fileupload.cancel%}&lt;/span&gt;
-      &lt;/button&gt;
-      {% } %}&lt;/td&gt;
-  &lt;/tr&gt;
-  {% } %}
-&lt;/script&gt;
-&lt;!-- The template to display files available for download --&gt;
-&lt;script id=&quot;template-download&quot; type=&quot;text/x-tmpl&quot;&gt;
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-    &lt;tr class=&quot;template-download fade&quot;&gt;
-      {% if (file.error) { %}
-        &lt;td&gt;&lt;/td&gt;
-        &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
-        {% } else { %}
-        &lt;td class=&quot;preview&quot;&gt;{% if (file.thumbnail_url) { %}
-          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;gallery&quot; download=&quot;{%=file.name%}&quot;&gt;&lt;img src=&quot;{%=file.thumbnail_url%}&quot;&gt;&lt;/a&gt;
-          {% } %}&lt;/td&gt;
-        &lt;td class=&quot;name&quot;&gt;
-          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;{%=file.thumbnail_url&amp;&amp;&#39;gallery&#39;%}&quot; download=&quot;{%=file.name%}&quot;&gt;{%=file.name%}&lt;/a&gt;
-        &lt;/td&gt;
-        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
-        {% } %}
-      &lt;td class=&quot;delete&quot;&gt;
-        &lt;button class=&quot;btn btn-danger&quot; data-type=&quot;{%=file.delete_type%}&quot; data-url=&quot;{%=file.delete_url%}&quot;&gt;
-          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;{%=locale.fileupload.destroy%}&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;input type=&quot;checkbox&quot; name=&quot;delete&quot; value=&quot;1&quot;&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    {% } %}
-&lt;/script&gt;
-
-&lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;
-  $(function () {
-      // Initialize the jQuery File Upload widget:
-      $(&#39;#fileupload&#39;).fileupload();
-      // 
-      // Load existing files:
-      $.getJSON($(&#39;#fileupload&#39;).prop(&#39;action&#39;), function (files) {
-        var fu = $(&#39;#fileupload&#39;).data(&#39;blueimpFileupload&#39;), 
-          template;
-        fu._adjustMaxNumberOfFiles(-files.length);
-        console.log(files);
-        template = fu._renderDownload(files)
-          .appendTo($(&#39;#fileupload .files&#39;));
-        // Force reflow:
-        fu._reflow = fu._transition &amp;&amp; template.length &amp;&amp;
-          template[0].offsetWidth;
-        template.addClass(&#39;in&#39;);
-        $(&#39;#loading&#39;).remove();
-      });
-
-  });
-&lt;/script&gt;
-</code></pre></noscript></div>
-
-
-<h3>6.创建controller</h3>
-
-<pre><code>rails g controller pictures index create destroy
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>class PicturesController &lt; ApplicationController
-  def index
-    @pictures = Picture.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @pictures.map{|picuture| picuture.to_json_picture } }
-    end
-  end
-
-  # POST /picture
-  # POST /picture.json
-  def create
-    @picture = Picture.new(params[:picture])
-
-    respond_to do |format|
-      if @picture.save
-        format.html {
-          render :json =&gt; [@picture.to_json_picture].to_json,
-          :content_type =&gt; 'text/html',
-          :layout =&gt; false
-        }
-        format.json { render json: {files: [@picture.to_json_picture]}, status: :created, location: @picture }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @picture.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /picture/1
-  # DELETE /picture/1.json
-  def destroy
-    @picture = Picture.find(params[:id])
-    @picture.destroy
-
-    respond_to do |format|
-      format.html { redirect_to picture_url }
-      format.json { head :no_content }
-    end
-  end
-end
-</code></pre>
-
-<h3>7.效果图</h3>
-
-<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=794ee559c45c1038207ecec7822ae22e/342ac65c103853436bec62629113b07eca808856.jpg?referer=457c5546e7dde711bec576c6e84c&amp;x=.jpg" alt="image" /></p>
-
-<p>这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff26dca4932397ddd279980169b9c38a/0dd7912397dda144372a89f1b0b7d0a20cf48656.jpg?referer=354f23adb68f8c54bac4f01fe24c&amp;x=.jpg" alt="image" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails Eagerloading]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading/"/>
-    <updated>2014-02-14T23:05:33+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading</id>
-    <content type="html"><![CDATA[<p>若存在如下Post model：</p>
-
-<pre><code>class Post &lt; ActiveRecord::Base
-    belongs_to :author
-    has_many :comments
-end
-</code></pre>
-
-<p>使用下面的循环加载数据时产生了N+1查询问题：</p>
-
-<pre><code>Post.all.each do |post|
-  puts "Post:            " + post.title
-  puts "Written by:      " + post.author.name
-  puts "Last comment on: " + post.comments.first.created_on
-end
-</code></pre>
-
-<!-- more -->
-
-
-<p>首先，解决author获取问题：</p>
-
-<pre><code>Post.includes(:author).each do |post|
-</code></pre>
-
-<p>然后解决comments加载：</p>
-
-<pre><code>Post.includes(:author, :comments).each do |post|
-</code></pre>
-
-<p>带条件的eager loading：</p>
-
-<pre><code>Post.includes([:author, :comments]).where(['comments.approved = ?', true]).all
-</code></pre>
-
-<p>多态关系的eager laoding</p>
-
-<pre><code>class Address &lt; ActiveRecord::Base
-    belongs_to :addressable, :polymorphic=&gt;true
-end
-Address.includes(:addressable)
 </code></pre>
 ]]></content>
   </entry>
