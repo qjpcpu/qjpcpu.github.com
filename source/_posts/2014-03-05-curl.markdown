@@ -1,0 +1,83 @@
+---
+layout: post
+title: "curl"
+date: 2014-03-05 23:29:56 +0800
+comments: true
+categories: shell
+---
+
+### 基本用法
+
+```bash
+curl http://www.google.com
+curl --proxy http://proxy.com:8888 http://ww.google.com #使用代理
+curl http://user:password@example.org/  #http验证
+curl -u user:password http://example.org/ #http验证
+```
+获取响应头
+
+```bash
+curl -i http://example.com  #在返回结果中包含响应头 
+curl -IL http://example.com  #仅返回响应头
+```
+<!--more-->
+
+### REST请求
+
+**GET**
+
+```bash
+curl http://www.google.com
+```
+
+**POST**
+
+```bash
+curl --data "birthyear=1905&press=%20OK%20"  http://www.example.com/when.cgi
+#or
+curl --data-urlencode "name=I am Daniel" http://www.example.com
+```
+
+**PUT**
+
+```bash
+curl --upload-file uploadfile http://www.example.com/receive.cgi #upload a file
+```
+
+**DELETE**
+
+实际上，可以用`curl -X http_method`指定包括GET,POST,PUT内的任意方法
+
+```bash
+curl -X DELETE http://example.com
+```
+
+### header
+
+使用-H或--header指定请求头部
+
+```bash
+curl -H "Content-Type: application/json" http:/example.com
+```
+
+### Cookie
+
+`-b,--cookie`选项告诉`curl`使用已有的cookie，可以是键值对也可以是文件
+
+```bash
+curl -b "name=value" http://host
+curl -b cookie.txt http://host.com
+```
+
+`-c,--cookie-jar`选项告诉`curl`将新的cookie保存在文件中
+
+```bash
+curl -c new.txt http://example.com
+```
+
+### HTTPS
+
+```bash
+curl https://example.com
+curl --cert mycert.pem https://example.com
+```
