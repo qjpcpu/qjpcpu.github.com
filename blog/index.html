@@ -7,29 +7,13 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="最简单美观的方法tree tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。 1
+	<meta name="description" content="基本用法 1
 2
 3
 4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-$ tree demo
-demo
-├── Gemfile
-├── boot.rb
-├── collectors &hellip;">
+curl http://www.google.com
+curl --proxy http://proxy.com:8888 http://ww.google.com #使用代理
+curl http://user:password@example.org/ #http验证 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -100,6 +84,141 @@ demo
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/05/curl/">
+		
+			Curl</a>
+	</h2>
+	<div class="entry-content">
+		<h3>基本用法</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl http://www.google.com
+</span><span class='line'>curl --proxy http://proxy.com:8888 http://ww.google.com <span class="c">#使用代理</span>
+</span><span class='line'>curl http://user:password@example.org/  <span class="c">#http验证</span>
+</span><span class='line'>curl -u user:password http://example.org/ <span class="c">#http验证</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>获取响应头</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
+</span><span class='line'>curl -IL http://example.com  <span class="c">#仅返回响应头</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>REST请求</h3>
+
+<p><strong>GET</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl http://www.google.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>POST</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl --data <span class="s2">&quot;birthyear=1905&amp;press=%20OK%20&quot;</span>  http://www.example.com/when.cgi
+</span><span class='line'><span class="c">#or</span>
+</span><span class='line'>curl --data-urlencode <span class="s2">&quot;name=I am Daniel&quot;</span> http://www.example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>PUT</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl --upload-file uploadfile http://www.example.com/receive.cgi <span class="c">#upload a file</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>DELETE</strong></p>
+
+<p>实际上，可以用<code>curl -X http_method</code>指定包括GET,POST,PUT内的任意方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -X DELETE http://example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>header</h3>
+
+<p>使用-H或&mdash;header指定请求头部</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -H <span class="s2">&quot;Content-Type: application/json&quot;</span> http:/example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Cookie</h3>
+
+<p><code>-b,--cookie</code>选项告诉<code>curl</code>使用已有的cookie，可以是键值对也可以是文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -b <span class="s2">&quot;name=value&quot;</span> http://host
+</span><span class='line'>curl -b cookie.txt http://host.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>-c,--cookie-jar</code>选项告诉<code>curl</code>将新的cookie保存在文件中</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -c new.txt http://example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>HTTPS</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl https://example.com
+</span><span class='line'>curl --cert mycert.pem https://example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T23:29:56+08:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/05/curl/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -655,54 +774,6 @@ Content-Type:text/html
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/">
-		
-			Axlsx报表工具(一)安装及入门</a>
-	</h2>
-	<div class="entry-content">
-		<h3>安装</h3>
-
-<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
-
-<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
-
-
-		
-		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T00:34:19+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

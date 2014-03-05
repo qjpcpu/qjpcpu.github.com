@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-02-27T21:03:40+08:00</updated>
+  <updated>2014-03-06T00:17:32+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[curl]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/05/curl/"/>
+    <updated>2014-03-05T23:29:56+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/05/curl</id>
+    <content type="html"><![CDATA[<h3>基本用法</h3>
+
+<p><code>bash
+curl http://www.google.com
+curl --proxy http://proxy.com:8888 http://ww.google.com #使用代理
+curl http://user:password@example.org/  #http验证
+curl -u user:password http://example.org/ #http验证
+</code>
+获取响应头</p>
+
+<p><code>bash
+curl -i http://example.com  #在返回结果中包含响应头
+curl -IL http://example.com  #仅返回响应头
+</code></p>
+
+<h3>REST请求</h3>
+
+<p><strong>GET</strong></p>
+
+<p><code>bash
+curl http://www.google.com
+</code></p>
+
+<p><strong>POST</strong></p>
+
+<p>```bash
+curl &mdash;data &ldquo;birthyear=1905&amp;press=%20OK%20&rdquo;  <a href="http://www.example.com/when.cgi">http://www.example.com/when.cgi</a></p>
+
+<h1>or</h1>
+
+<p>curl &mdash;data-urlencode &ldquo;name=I am Daniel&rdquo; <a href="http://www.example.com">http://www.example.com</a>
+```</p>
+
+<p><strong>PUT</strong></p>
+
+<p><code>bash
+curl --upload-file uploadfile http://www.example.com/receive.cgi #upload a file
+</code></p>
+
+<p><strong>DELETE</strong></p>
+
+<p>实际上，可以用<code>curl -X http_method</code>指定包括GET,POST,PUT内的任意方法</p>
+
+<p><code>bash
+curl -X DELETE http://example.com
+</code></p>
+
+<h3>header</h3>
+
+<p>使用-H或&mdash;header指定请求头部</p>
+
+<p><code>bash
+curl -H "Content-Type: application/json" http:/example.com
+</code></p>
+
+<h3>Cookie</h3>
+
+<p><code>-b,--cookie</code>选项告诉<code>curl</code>使用已有的cookie，可以是键值对也可以是文件</p>
+
+<p><code>bash
+curl -b "name=value" http://host
+curl -b cookie.txt http://host.com
+</code></p>
+
+<p><code>-c,--cookie-jar</code>选项告诉<code>curl</code>将新的cookie保存在文件中</p>
+
+<p><code>bash
+curl -c new.txt http://example.com
+</code></p>
+
+<h3>HTTPS</h3>
+
+<p><code>bash
+curl https://example.com
+curl --cert mycert.pem https://example.com
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[列出目录结构]]></title>
@@ -323,158 +407,6 @@ Content-Type:text/html
 <p><code>bash
 cat file | sendmail -t
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[shell字符串处理]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/"/>
-    <updated>2014-02-14T18:10:30+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li</id>
-    <content type="html"><![CDATA[<h3>1.获取字符串长度</h3>
-
-<pre><code>${#string}
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str="hello,world"
-[jason@localhost ~]$ echo ${#str}
-11
-</code></pre>
-
-<h3>2.获取子串</h3>
-
-<pre><code>${string:position}
-${string:position:length}
-$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str=ABCDEFGHIJKLMN
-[jason@localhost ~]$ echo ${str:1}
-BCDEFGHIJKLMN
-[jason@localhost ~]$ echo ${str:1:2}
-BC
-[jason@localhost ~]$ echo ${str:(-2)}
-MN
-</code></pre>
-
-<!-- more -->
-
-
-<h3>3.子串切除</h3>
-
-<pre><code>${string#substring} 从左向右切除最短匹配的子串
-${stirng##substring} 从左向右切除最长匹配的子串
-${string%substring} 从右向左切除最短匹配的子串
-${stirng%%substring} 
-</code></pre>
-
-<h3>4.字符串正则提取</h3>
-
-<pre><code>echo $string | grep -oE "regexpression”
-
-#awk的match方法利用RSTART和RLENGTH分别保存匹配的起点(从1开始)和匹配到的长度,RSTART同时也是match方法的返回值，如果没找到则RSTART==0,RLENGHT==-1
-echo $string | awk '{ match($0,"reg"); print substr(RSTART,RLENGTH)}'
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str="I am 12 years old"
-[jason@localhost ~]$ echo $str | grep -Eo '[0-9]+'
-12
-[jason@localhost ~]$ str="I am 12 years old"
-[jason@localhost ~]$ echo $str | awk '{ if(match($0,"[0-9]+")){ print substr($0,RSTART,RLENGTH) } }'
-12
-</code></pre>
-
-<h3>5.字符串正则替换</h3>
-
-<pre><code>echo $string | sed -r 's/regexpr/replacement'
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str="I am 12 years old" 
-[jason@localhost ~]$ echo $str | sed -r  "s/ am/'m/"
-I'm 12 years old
-</code></pre>
-
-<h3>6.分割字符串</h3>
-
-<pre><code>awk
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
-[jason@localhost ~]$ echo $str | awk -F '_' '{print $3}'
-12
-[jason@localhost ~]$ echo $str | awk  '{split($1,a,"_");print a[3]}'
-12
-</code></pre>
-
-<h3>7. 获取索引</h3>
-
-<pre><code>awk '{print match($0,"substring")}'
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str="I_am_12_years_old, and you?"
-[jason@localhost ~]$ echo $str | awk '{print match($0,"[0-9]+")}'
-6
-</code></pre>
-
-<p>注意这个索引是从1开始的</p>
-
-<h3>8.sed分组</h3>
-
-<p>sed的分组是很好玩的，在替换模式中，“&amp;”代表前面匹配的全部字符串，而反斜杠加数字表示分组。</p>
-
-<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
-[jason@localhost ~]$ echo $str | sed -r 's/name:[^;]+/[&amp;]/'
-[name:jack];age:12
-[jason@localhost ~]$ echo $str | sed -r 's/name:([^;]+)/--\1--/'
---jack--;age:12
-</code></pre>
-
-<h3>9.awk常用字符串处理函数</h3>
-
-<pre><code>sub(reg,replacement,string)
-gsub(reg,replacement,string)
-</code></pre>
-
-<p>将string中匹配正则表达式reg的字符串（全部）替换为replacement</p>
-
-<pre><code>[jason@localhost ~]$ str="name:jack;age:12"
-[jason@localhost ~]$ echo $str | awk '{gsub(/a/,"A",$0);print $0}'      
-nAme:jAck;Age:12
-</code></pre>
-
-<p>&ndash;</p>
-
-<pre><code>index(substring,string) #返回子字符串substring在字符串string中的位置
-length(string) #获取字符串的长度
-match(string,reg) #获取匹配reg得到的子串在字符串中的位置
-split(string,array,separator) #将字符串按分隔符separator分割到array数组中
-sprintf("format",expression) #和c语言的sprintf类似
-substr(string,position,length)  #获取子字符串
-tolower(string)
-toupper(string)
-</code></pre>
-
-<p>P.S. awk的常见控制语法</p>
-
-<pre><code>exit #退出awk执行
-next #跳转到命令块首，并开始下一行数据读入
-NF #列数
-NR #行号
-FS #分隔符
-FILENAME #文件名
-</code></pre>
 ]]></content>
   </entry>
   
