@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-06T00:17:32+08:00</updated>
+  <updated>2014-03-06T00:19:01+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -32,6 +32,9 @@ curl -u user:password http://example.org/ #http验证
 curl -i http://example.com  #在返回结果中包含响应头
 curl -IL http://example.com  #仅返回响应头
 </code></p>
+
+<!--more-->
+
 
 <h3>REST请求</h3>
 

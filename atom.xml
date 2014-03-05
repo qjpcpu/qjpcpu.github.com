@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-06T00:17:32+08:00</updated>
+  <updated>2014-03-06T00:19:01+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -38,6 +38,9 @@
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
 </span><span class='line'>curl -IL http://example.com  <span class="c">#仅返回响应头</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
 
 
 <h3>REST请求</h3>
