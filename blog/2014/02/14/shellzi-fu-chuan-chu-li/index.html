@@ -226,6 +226,43 @@ NR #行号
 FS #分隔符
 FILENAME #文件名
 </code></pre>
+
+<p>awk中调用shell命令，使用<code>system()</code>函数，被引号括起来的内容会直接发送给shell，而没有括起来的部分被当做awk当中的变量替换</p>
+
+<pre><code>$ awk 'BEGIN{a="AWK";system("echo "a)}' -
+AWK
+</code></pre>
+
+<p>awk中支持的正则表达式是ERES,它包含下列特殊符号：</p>
+
+<ul>
+<li><strong>+</strong>, 指定如果一个或多个字符或扩展正则表达式的具体值（在 +（加号）前）在这个字符串中，则字符串匹配。</li>
+<li><strong>?</strong>,    指定如果零个或一个字符或扩展正则表达式的具体值（在 ?（问号）之前）在字符串中，则字符串匹配</li>
+<li><strong>|</strong> , 指定如果以 |（垂直线）隔开的字符串的任何一个在字符串中，则字符串匹配。</li>
+<li><strong>( )</strong>,  在正则表达式中将字符串组合在一起。</li>
+<li><strong>{m}</strong>,  指定如果正好有 m 个模式的具体值位于字符串中，则字符串匹配。</li>
+<li><strong>{m,}</strong>, 指定如果至少 m 个模式的具体值在字符串中，则字符串匹配</li>
+<li><strong>{m, n}</strong>,   指定如果 m 和 n 之间（包含的 m 和 n）个模式的具体值在字符串中（其中m &lt;= n），则字符串匹配。</li>
+<li><strong>[String]</strong>, 指定正则表达式与方括号内 String 变量指定的任何字符匹配。</li>
+<li><strong>[^ String]</strong>,   在 [ ]（方括号）和在指定字符串开头的 ^ (插入记号) 指明正则表达式与方括号内的任何字符不匹配。</li>
+<li><strong>~,!~</strong>, 表示指定变量与正则表达式匹配（代字号）或不匹配（代字号、感叹号）的条件语句。</li>
+<li><strong>^</strong>,    指定字段或记录的开头。</li>
+<li><strong>$</strong>,    指定字段或记录的末尾。</li>
+<li><strong>.</strong>, （句号）   表示除了在空白末尾的终端换行字符以外的任何一个字符。</li>
+<li><strong>*</strong>（星号）    表示零个或更多的任意字符。</li>
+<li><strong>\</strong> (反斜杠)    转义字符</li>
+</ul>
+
+
+<p>对竖线符号<code>|</code>补充两句：</p>
+
+<pre><code>#匹配的内容是good或bad，是将两个整体来匹配
+good|bad
+#匹配的内容是以d结尾的单词，该单词要么以goo开头要么以ba开头
+(goo|ba)d
+</code></pre>
+
+<p>上面两种竖线匹配结果是一样的，但是匹配的方式不一样，<code>()</code>改变了<code>|</code>的作用域，有时可能导致匹配错误，需要注意。</p>
 </div>
 
 
