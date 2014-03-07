@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-06T22:04:19+08:00</updated>
+  <updated>2014-03-07T13:59:37+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -485,33 +485,6 @@
 </span><span class='line'><span class="s">EOF</span>
 </span><span class='line'><span class="o">}</span> | sh
 </span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[启动Project Smith]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/24/qi-dong-project-smith/"/>
-    <updated>2014-02-24T22:52:58+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/24/qi-dong-project-smith</id>
-    <content type="html"><![CDATA[<h2>Project Smith</h2>
-
-<p><strong>目的：</strong>旨在解决OP日常运维中的报警及故障处理，希望通过Smith计划达到报警智能判断，自动处理，处理过程无须人工干预，理想情况下甚至做到故障预判。</p>
-
-<!--more-->
-
-
-<p><strong>名称来源:</strong>来自电影《The Matrix》，剧中特工Smith的存在就是为了发现matrix中的不和谐因素并且消除它，类似运维故障处理，故而命名。</p>
-
-<p><strong>人力资源：</strong>目前就我。</p>
-
-<p><strong>时间计划：</strong></p>
-
-<ul>
-<li>2014-2-24至2014-8-23，六个月时间做一期调研。主要解决两个问题，一是熟悉运维工作，观察积累人工处理运维的思维方式，处理方式，记录哪些地方是可以自动化改进的；二是大量阅览文献，寻找智能化决策方面的理论模型，确定Smith计划的框架雏形。该阶段结束时整理出系统的设计方案书，或者得出计划失败报告。</li>
-<li>2014-8-24至2014-11-23，三个月时间做Smith的初稿实现。主要根据一期调研完成Smith的系统编码及调试。该阶段结束时能够拿出1.0的版本和人工运维做比较，并且能够解决60%以上的故障决策处理。</li>
-<li>2014-11-24至2014-12-31，一个月时间做最后的展示准备。主要目的准备展示工作，证明Smith的价值所在。该阶段结束时希望不但能吸引眼球，最重要获取人力物力的资源，将Smith做大，或者证明Smith没有价值，宣告Smith计划彻底失败。</li>
-</ul>
 
 ]]></content>
   </entry>
@@ -2139,6 +2112,35 @@ end
 </code></pre>
 
 <p>而此时受理该路由的方法仍为new和edit，即controller中的方法并未改名。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[rails 填充数据库初始数据]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
+    <updated>2014-02-14T23:21:46+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
+    <content type="html"><![CDATA[<!-- more -->
+
+
+<p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
+
+<blockquote><p>seeds.rb</p></blockquote>
+
+<pre><code>5.times do |i|
+    Product.create(name:"Product ##{i}",description:"A product")
+end
+</code></pre>
+
+<p>使用rake命令填充数据：</p>
+
+<pre><code>rake db:seed
+</code></pre>
+
+<p>或者从头调用所有migration创建空的数据库并自动seed填充数据库：</p>
+
+<pre><code>rake db:setup
+</code></pre>
 ]]></content>
   </entry>
   
