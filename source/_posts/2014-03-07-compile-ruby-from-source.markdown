@@ -11,6 +11,7 @@ categories: ruby
 * [openssl](http://www.openssl.org/source/)
 * [yaml](http://pyyaml.org/wiki/PyYAML)
 * [ruby](https://www.ruby-lang.org)
+* [sqlite3](http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz)(可选)
 
 <!--more-->
 
@@ -40,6 +41,8 @@ categories: ruby
 	./configure --prefix=/ruby --with-opt-dir=/ruby
 	make
 	make install
+	
+### 编译sqlite3(可选)
 	
 ### 测试
 
