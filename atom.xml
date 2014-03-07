@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-07T15:48:22+08:00</updated>
+  <updated>2014-03-07T18:14:41+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -24,6 +24,7 @@
 <li><a href="http://www.openssl.org/source/">openssl</a></li>
 <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
 <li><a href="https://www.ruby-lang.org">ruby</a></li>
+<li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
 </ul>
 
 
@@ -60,6 +61,8 @@ export C_INCLUDE_PATH=/ruby/include
 make
 make install
 </code></pre>
+
+<h3>编译sqlite3(可选)</h3>
 
 <h3>测试</h3>
 

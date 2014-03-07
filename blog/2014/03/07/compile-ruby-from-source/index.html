@@ -9,9 +9,9 @@
 	
 	<meta name="description" content="下载需要的软件包 openssl
 yaml
-ruby 假设需要安装的ruby目录为/ruby 编译openssl ./config --prefix=/ruby shared
-make make install 编译libyaml ./configure --prefix=/ruby
-make &hellip;">
+ruby
+sqlite3(可选) 假设需要安装的ruby目录为/ruby 编译openssl ./config --prefix=/ruby shared
+make make install 编译libyaml ./configure --prefix &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +89,7 @@ make &hellip;">
 <li><a href="http://www.openssl.org/source/">openssl</a></li>
 <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
 <li><a href="https://www.ruby-lang.org">ruby</a></li>
+<li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
 </ul>
 
 
@@ -125,6 +126,8 @@ export C_INCLUDE_PATH=/ruby/include
 make
 make install
 </code></pre>
+
+<h3>编译sqlite3(可选)</h3>
 
 <h3>测试</h3>
 
