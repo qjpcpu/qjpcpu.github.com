@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-07T13:59:37+08:00</updated>
+  <updated>2014-03-07T15:48:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[compile ruby from source]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source/"/>
+    <updated>2014-03-07T15:35:02+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source</id>
+    <content type="html"><![CDATA[<h3>下载需要的软件包</h3>
+
+<ul>
+<li><a href="http://www.openssl.org/source/">openssl</a></li>
+<li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
+<li><a href="https://www.ruby-lang.org">ruby</a></li>
+</ul>
+
+
+<!--more-->
+
+
+<p>假设需要安装的ruby目录为<code>/ruby</code></p>
+
+<h3>编译openssl</h3>
+
+<pre><code>./config --prefix=/ruby  shared
+make 
+make install
+</code></pre>
+
+<h3>编译libyaml</h3>
+
+<pre><code>./configure --prefix=/ruby
+make
+make install
+</code></pre>
+
+<h3>编译ruby</h3>
+
+<p>先导入环境变量,否则ruby找不到ssl的链接目录</p>
+
+<pre><code>export LD_LIBRARY_PATH=/ruby/lib
+export C_INCLUDE_PATH=/ruby/include
+</code></pre>
+
+<p>开始编译ruby</p>
+
+<pre><code>./configure --prefix=/ruby --with-opt-dir=/ruby
+make
+make install
+</code></pre>
+
+<h3>测试</h3>
+
+<pre><code>/ruby/bin/ruby -v #打印版本号，说明安装成功
+export PATH=$PATH:/ruby/bin
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[curl]]></title>
@@ -2112,35 +2168,6 @@ end
 </code></pre>
 
 <p>而此时受理该路由的方法仍为new和edit，即controller中的方法并未改名。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails 填充数据库初始数据]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
-    <updated>2014-02-14T23:21:46+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
-    <content type="html"><![CDATA[<!-- more -->
-
-
-<p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
-
-<blockquote><p>seeds.rb</p></blockquote>
-
-<pre><code>5.times do |i|
-    Product.create(name:"Product ##{i}",description:"A product")
-end
-</code></pre>
-
-<p>使用rake命令填充数据：</p>
-
-<pre><code>rake db:seed
-</code></pre>
-
-<p>或者从头调用所有migration创建空的数据库并自动seed填充数据库：</p>
-
-<pre><code>rake db:setup
-</code></pre>
 ]]></content>
   </entry>
   
