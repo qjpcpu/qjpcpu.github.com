@@ -250,6 +250,12 @@ SHELL
 SHELL
 </code></pre>
 
+<p>P.S.awk获取环境变量</p>
+
+<pre><code>$ awk 'BEGIN{print ENVIRON["LANG"]}' -
+en_US
+</code></pre>
+
 <p><strong>awk中调用shell命令</strong></p>
 
 <p>awk中调用shell命令，使用<code>system()</code>函数，被引号括起来的内容会直接发送给shell，而没有括起来的部分被当做awk当中的变量替换</p>
