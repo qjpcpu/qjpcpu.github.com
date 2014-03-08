@@ -192,7 +192,9 @@ I'm 12 years old
 --jack--;age:12
 </code></pre>
 
-<h3>9.awk常用字符串处理函数</h3>
+<h3>9.awk专题</h3>
+
+<p><strong>常用字符串处理函数</strong></p>
 
 <pre><code>sub(reg,replacement,string)
 gsub(reg,replacement,string)
@@ -217,7 +219,7 @@ tolower(string)
 toupper(string)
 </code></pre>
 
-<p>P.S. awk的常见控制语法</p>
+<p><strong>awk的常见控制语法</strong></p>
 
 <pre><code>exit #退出awk执行
 next #跳转到命令块首，并开始下一行数据读入
@@ -226,6 +228,29 @@ NR #行号
 FS #分隔符
 FILENAME #文件名
 </code></pre>
+
+<p><strong>给awk传递shell变量值</strong></p>
+
+<p>方法一：<code>awk '{action}' name1=val1 name2=val2 file</code>，变量值无法在<code>BEGIN</code>中获得</p>
+
+<pre><code>$ var="SHELL"
+$ awk 'BEGIN{print a}{print a}END{print a}' a=$var file
+#输出
+
+SHELL
+</code></pre>
+
+<p>方法二：<code>awk -v name=value '{action}' file</code>，变量在三种块中都可以获得</p>
+
+<pre><code>$ var="SHELL"
+$ awk -v a=$var 'BEGIN{print a}{print a}END{print a}' file
+#输出
+SHELL
+SHELL
+SHELL
+</code></pre>
+
+<p><strong>awk中调用shell命令</strong></p>
 
 <p>awk中调用shell命令，使用<code>system()</code>函数，被引号括起来的内容会直接发送给shell，而没有括起来的部分被当做awk当中的变量替换</p>
 
