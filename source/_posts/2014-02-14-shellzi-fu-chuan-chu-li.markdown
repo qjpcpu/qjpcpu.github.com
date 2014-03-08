@@ -99,7 +99,9 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 	[jason@localhost ~]$ echo $str | sed -r 's/name:([^;]+)/--\1--/'
 	--jack--;age:12
 
-###9.awk常用字符串处理函数
+###9.awk专题
+
+**常用字符串处理函数**
 
 	sub(reg,replacement,string)
 	gsub(reg,replacement,string)
@@ -121,7 +123,7 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 	tolower(string)
 	toupper(string)
 	
-P.S. awk的常见控制语法
+**awk的常见控制语法**
 
 	exit #退出awk执行
 	next #跳转到命令块首，并开始下一行数据读入
@@ -129,6 +131,32 @@ P.S. awk的常见控制语法
 	NR #行号
 	FS #分隔符
 	FILENAME #文件名
+	
+**给awk传递shell变量值**
+
+方法一：`awk '{action}' name1=val1 name2=val2 file`，变量值无法在`BEGIN`中获得
+
+	$ var="SHELL"
+	$ awk 'BEGIN{print a}{print a}END{print a}' a=$var file
+	#输出
+	
+	SHELL
+	
+方法二：`awk -v name=value '{action}' file`，变量在三种块中都可以获得
+
+	$ var="SHELL"
+	$ awk -v a=$var 'BEGIN{print a}{print a}END{print a}' file
+	#输出
+	SHELL
+	SHELL
+	SHELL
+	
+P.S.awk获取环境变量
+
+	$ awk 'BEGIN{print ENVIRON["LANG"]}' -
+	en_US
+
+**awk中调用shell命令**
 	
 awk中调用shell命令，使用`system()`函数，被引号括起来的内容会直接发送给shell，而没有括起来的部分被当做awk当中的变量替换
 
