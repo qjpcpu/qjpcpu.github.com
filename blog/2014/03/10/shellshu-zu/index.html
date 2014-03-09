@@ -3,11 +3,14 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>categories - Jason's space</title>
+	<title>shell数组 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" Life [ 2 ] Ruby [ 18 ] C-sharp [ 1 ] Git [ 2 ] Rails [ 13 ] Jruby [ 3 ] Shell [ 8 ] Go [ 3 ] Linux [ 2 ] ">
+	<meta name="description" content="数组定义 定义数组需要用括号把元素包裹起来。 colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]} # red green blue black white
+echo ${colors[@]} # red green blue &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -77,32 +80,85 @@
 	
 		
 	
-	<div id="content" class="inner"><article class="page">
-    
-    <h1 class="title">Categories</h1>
-    
-    <div class="entry-content"><ul>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Shell数组</h2>
+	<div class="entry-content"><h3>数组定义</h3>
 
-    <li><a href="/blog/categories/life/">Life</a> [ 2 ]</li>
+<p>定义数组需要用括号把元素包裹起来。</p>
 
-    <li><a href="/blog/categories/ruby/">Ruby</a> [ 18 ]</li>
+<pre><code>colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]}  # red green blue black white
+echo ${colors[@]}  # red green blue black white
+</code></pre>
 
-    <li><a href="/blog/categories/c-sharp/">C-sharp</a> [ 1 ]</li>
+<!--more-->
 
-    <li><a href="/blog/categories/git/">Git</a> [ 2 ]</li>
 
-    <li><a href="/blog/categories/rails/">Rails</a> [ 13 ]</li>
+<h3>基本操作</h3>
 
-    <li><a href="/blog/categories/jruby/">Jruby</a> [ 3 ]</li>
+<pre><code># 有两种方法获取数组长度
+echo ${#colors[@]}    # 5
+echo ${#colors[*]}    # 5
+</code></pre>
 
-    <li><a href="/blog/categories/shell/">Shell</a> [ 8 ]</li>
+<p>读写数组</p>
 
-    <li><a href="/blog/categories/go/">Go</a> [ 3 ]</li>
+<pre><code>echo ${colors[0]}    # red
+colors[0]=RED
+echo ${colors[0]}    # RED
+</code></pre>
 
-    <li><a href="/blog/categories/linux/">Linux</a> [ 2 ]</li>
+<p>移除元素</p>
 
-</ul>
+<pre><code>unset colors[1]
+echo ${colors[*]}    # red blue black white
+echo ${#colors[*]}   # 4
+</code></pre>
 
+<h3>切片</h3>
+
+<p>切片不影响原数组</p>
+
+<pre><code>echo ${colors[*]:1:3}    # green blue black
+# 获取切片得到的新数组
+c=(${colors[*]:1:3})
+echo ${c[*]}             # green blue black
+</code></pre>
+
+<h3>替换</h3>
+
+<p>替换也不影响原数组</p>
+
+<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-10T00:22:25+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
 </div>
 </article>
 
@@ -121,11 +177,10 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
-
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 
@@ -146,8 +201,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/categories/index.html';
-        var disqus_url = 'http://qjpcpu.github.io/blog/categories/index.html';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
         var disqus_script = 'embed.js';
       
     (function () {

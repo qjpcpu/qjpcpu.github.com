@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-08T15:47:22+08:00</updated>
+  <updated>2014-03-10T01:06:06+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[shell数组]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/"/>
+    <updated>2014-03-10T00:22:25+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu</id>
+    <content type="html"><![CDATA[<h3>数组定义</h3>
+
+<p>定义数组需要用括号把元素包裹起来。</p>
+
+<pre><code>colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]}  # red green blue black white
+echo ${colors[@]}  # red green blue black white
+</code></pre>
+
+<!--more-->
+
+
+<h3>基本操作</h3>
+
+<pre><code># 有两种方法获取数组长度
+echo ${#colors[@]}    # 5
+echo ${#colors[*]}    # 5
+</code></pre>
+
+<p>读写数组</p>
+
+<pre><code>echo ${colors[0]}    # red
+colors[0]=RED
+echo ${colors[0]}    # RED
+</code></pre>
+
+<p>移除元素</p>
+
+<pre><code>unset colors[1]
+echo ${colors[*]}    # red blue black white
+echo ${#colors[*]}   # 4
+</code></pre>
+
+<h3>切片</h3>
+
+<p>切片不影响原数组</p>
+
+<pre><code>echo ${colors[*]:1:3}    # green blue black
+# 获取切片得到的新数组
+c=(${colors[*]:1:3})
+echo ${c[*]}             # green blue black
+</code></pre>
+
+<h3>替换</h3>
+
+<p>替换也不影响原数组</p>
+
+<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[curl]]></title>
@@ -366,50 +424,6 @@ echo 1
 EOF
 } | sh
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[sendmail发邮件中文乱码]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/"/>
-    <updated>2014-02-19T23:23:15+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma</id>
-    <content type="html"><![CDATA[<p>如果这是要使用sendmail命令发送的邮件file内容：</p>
-
-<pre><code>Subject:标题
-TO:to@example.com
-From:from@example
-Content-Type:text/html
-&lt;html&gt;
-    &lt;body&gt;
-        邮件内容
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-
-<h3>解决内容乱码</h3>
-
-<p>内容乱码比较好解决，首先内容先使用utf-8编码，然后在修改邮件的<code>Content-Type</code>为：</p>
-
-<pre><code>Content-Type:text/html;charset=UTF-8
-</code></pre>
-
-<h3>解决标题乱码</h3>
-
-<p>需要利用base64编码标题内容，例如，如果UTF-8编码的字符串<code>标题</code>进行base64编码后的内容为<code>5qCH6aKY</code>,则邮件标题为：</p>
-
-<pre><code>Subject:=?UTF-8?B?5qCH6aKY?=
-</code></pre>
-
-<p>即邮件标题<code>Subject:</code>后字符串格式为："<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>"</p>
-
-<h3>发送邮件</h3>
-
-<p>最后发送文件可以正确显示：</p>
-
-<p><code>bash
-cat file | sendmail -t
-</code></p>
 ]]></content>
   </entry>
   

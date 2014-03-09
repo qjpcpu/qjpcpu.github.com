@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-08T15:47:22+08:00</updated>
+  <updated>2014-03-10T01:06:06+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[shell数组]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/"/>
+    <updated>2014-03-10T00:22:25+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu</id>
+    <content type="html"><![CDATA[<h3>数组定义</h3>
+
+<p>定义数组需要用括号把元素包裹起来。</p>
+
+<pre><code>colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]}  # red green blue black white
+echo ${colors[@]}  # red green blue black white
+</code></pre>
+
+<!--more-->
+
+
+<h3>基本操作</h3>
+
+<pre><code># 有两种方法获取数组长度
+echo ${#colors[@]}    # 5
+echo ${#colors[*]}    # 5
+</code></pre>
+
+<p>读写数组</p>
+
+<pre><code>echo ${colors[0]}    # red
+colors[0]=RED
+echo ${colors[0]}    # RED
+</code></pre>
+
+<p>移除元素</p>
+
+<pre><code>unset colors[1]
+echo ${colors[*]}    # red blue black white
+echo ${#colors[*]}   # 4
+</code></pre>
+
+<h3>切片</h3>
+
+<p>切片不影响原数组</p>
+
+<pre><code>echo ${colors[*]:1:3}    # green blue black
+# 获取切片得到的新数组
+c=(${colors[*]:1:3})
+echo ${c[*]}             # green blue black
+</code></pre>
+
+<h3>替换</h3>
+
+<p>替换也不影响原数组</p>
+
+<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[compile ruby from source]]></title>
@@ -1972,205 +2030,6 @@ end
 <li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails URL路由]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you/"/>
-    <updated>2014-02-14T23:26:35+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you</id>
-    <content type="html"><![CDATA[<p>rails URL路由的最权威文档当然是其官方站点Rails routing from the outside in，我这里只提几个文档中常用的要点。</p>
-
-<h3>1.CRUB</h3>
-
-<p>由resources建立的资源，是rails中最常见的路由方式，不用多说。</p>
-
-<pre><code>resources :photos
-</code></pre>
-
-<!-- more -->
-
-
-<h3>2.单例资源</h3>
-
-<p>单例资源也比较常用，官方文档上举的例子很形象也很常见，用户user需要拥有一个profile资源，而每个用户必然只有一个profile，所以如果生成类似/profiles/:id的URL显然是不美观的，此时就需要单例资源，单例资源的生成使用的是单数形式方法resource：</p>
-
-<pre><code>resource :profile
-</code></pre>
-
-<p>该语句生成的路由如下：</p>
-
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c9415095dda144de096cb7828ca19f/902397dda144ad34c29c62c4d2a20cf431ad8556.jpg?referer=68c064fc8e5494eede353a29e34c&amp;x=.jpg" alt="image" /></p>
-
-<h3>3.嵌入的路由</h3>
-
-<p>适用于某种资源必须依赖于另一种资源才有意义，比如某些comment必然在针对的event下存在，所以comment就必须依赖于event。</p>
-
-<pre><code>resources :events do
-    resources :comments
-end
-</code></pre>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8d06f6a8b4fd5266a32b3c119b23e616/38dbb6fd5266d01605e9646b952bd40734fa3584.jpg?referer=12da45f1bb014a90d829728d739b&amp;x=.jpg" alt="image" /></p>
-
-<p>对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。</p>
-
-<h3>4.namespace和scope路由</h3>
-
-<p>以下规则同时适用于resources和controller。</p>
-
-<p>比如，如果想要在特定的命名空间(admin)下访问某个资源(post)，这时就可以利用namespace。</p>
-
-<pre><code>namespace :admin do
-  resources :posts
-end
-</code></pre>
-
-<p>此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：</p>
-
-<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b8309d15d2160924d825a21ee43c44c7/5366d0160924ab1899e61b7437fae6cd7a890b84.jpg?referer=b7cc85e3f403738d875d3812759b&amp;x=.jpg" alt="image" /></p>
-
-<p>一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。</p>
-
-<p>如果需要让资源路由没有前缀，而又希望该路由url被某个模块下的controller受理，那么就需要使用
-scope。</p>
-
-<pre><code>scope module: 'admin' do
-  resources :posts
-end
-</code></pre>
-
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8e21687d79ec54e745ec1a1b8903ea6d/b90e7bec54e736d18030694b99504fc2d5626956.jpg?referer=7e1763ad9e82d158e2956c81d74c&amp;x=.jpg" alt="image" /></p>
-
-<p>由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。</p>
-
-<p>一言以蔽之，带module的scope产生的资源路由，路由url无“前缀”，controller以module指定模块为“前缀”。</p>
-
-<p>反过来，如果希望给资源附加一个前缀，而由普通controller受理该url，则需要另一种形式的scope：</p>
-
-<pre><code>scope '/admin' do
-  resources :posts
-end
-</code></pre>
-
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6c4451220db30f24319aec06f8aea07e/9f510fb30f2442a7cefe07e6d343ad4bd0130284.jpg?referer=91d5f909d8b44aed00598ad46e9b&amp;x=.jpg" alt="image" /></p>
-
-<p>此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。</p>
-
-<p>一言以蔽之，这种形式的scope产生的资源路由，路由url有“前缀”，controller无“前缀”。</p>
-
-<p>另外，这种形式的路由还有一种简写：</p>
-
-<pre><code>resources :posts, path: '/admin/posts'
-</code></pre>
-
-<p>该简写和使用scope产生的结果完全一样。不过，path还有另外的用途，如果保持controller及url helper不变，仅仅希望为url路由中的资源改个名称，这时path就派上用场了：</p>
-
-<pre><code>resources :posts, path: '/articles'
-</code></pre>
-
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=596a1640ca95d143de76e42643cbf33f/d833c895d143ad4bcadebc8380025aafa50f0684.jpg?referer=35be44a7b11c87018fa186d6629b&amp;x=.jpg" alt="image" /></p>
-
-<h3>5.新增RESTful动词</h3>
-
-<p>以下规则同样适用于resources和controller。</p>
-
-<pre><code>resources :photos do
-  get 'preview', on: :member
-end
-</code></pre>
-
-<p>该语句为某个特定photo新增了一个preview动作，该动作是一个get请求，默认photos_controller中存在一个preview方法处理该动作。</p>
-
-<p>类似的，如果需要为photos集合新增一个动词，只需要将语句中member改成collection即可。</p>
-
-<p>如果，需要为特定photo增加多个动词preview1和preview2，改成下面的形式即可，甚至可以指定
-controller中处理该请求的方法，以及自定义url helper：</p>
-
-<pre><code>resources :photos do
-  member do
-    get 'preview1'=&gt;:pre1, as:"p1"
-    get 'preview2'=&gt;:pre2, as:"p2"
-  end
-end
-</code></pre>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=15e98dd4db33c895a27e987ee12802cd/43a7d933c895d143b7861e6071f082025baf0784.jpg?referer=5020e10089d4b31ca92ba08b619b&amp;x=.jpg" alt="image" /></p>
-
-<h3>6.非resourceful路由</h3>
-
-<h4>使用参数：</h4>
-
-<pre><code>controller :photos do
-  get 'check/:id',:to=&gt;:check
-end
-</code></pre>
-
-<p>产生的路由输出如下：</p>
-
-<pre><code>GET /check/:id(.:format) photos#check
-</code></pre>
-
-<p>在执行该get请求如/check/23，后photos_controller的check方法受理该请求，并在params中将参数设置为23。</p>
-
-<h4>限制参数格式：</h4>
-
-<pre><code>get 'photos/:id', to: 'photos#show', constraints: { id: /[A-Z]\d{5}/ }
-</code></pre>
-
-<p>该路由规则能接受/photos/A12345却不能接受/photos/893。</p>
-
-<h4>指定请求的默认类型：</h4>
-
-<pre><code>get 'articles/:id', to: 'articles#show', defaults: { format: 'xml' }
-</code></pre>
-
-<p>若get请求/articles/2，该路由规则会自动将params的params[:format]置为&#8221;xml&#8221;。</p>
-
-<p>该方法仅仅是在请求未指定format时指定默认类型，如果需要某个controller仅接受某些格式的请求如xml和json，则可以在该controller类定义中添加如下代码，这在书写api时常常用到：</p>
-
-<pre><code>respond_to :json, :xml
-</code></pre>
-
-<h4>更换资源的controller：</h4>
-
-<p>如果不希望为某个资源使用默认的controller，则：</p>
-
-<pre><code>resources :photos, controller: 'images'
-</code></pre>
-
-<p>此时photos资源的所有请求都由images_controller受理，而photos的路由url和url helper都不变。</p>
-
-<h4>限制资源的默认动作：</h4>
-
-<p>如果仅希望使用资源的部分动作，如仅使用资源photos的index和show动作：</p>
-
-<pre><code>resources :photos, only: [:index, :show]
-</code></pre>
-
-<p>或者使用除了destroy动作外的所有默认动作：</p>
-
-<pre><code>resources :photos, except: :destroy
-</code></pre>
-
-<p>还可以使用:all（所有默认动作），:none（没有默认动作）：</p>
-
-<pre><code>resources :photos, :only=&gt;:none
-</code></pre>
-
-<h4>为new和edit的url路由改名：</h4>
-
-<pre><code>resources :photos, path_names: { new: 'make', edit: 'change' }
-</code></pre>
-
-<p>产生的新路由为：</p>
-
-<pre><code>/photos/make
-/photos/1/change
-</code></pre>
-
-<p>而此时受理该路由的方法仍为new和edit，即controller中的方法并未改名。</p>
 ]]></content>
   </entry>
   
