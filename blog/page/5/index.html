@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby， &hellip;">
+	<meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,6 +78,157 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/">
+		
+			Ruby之周期性任务</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1.前言</h3>
+
+<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
+
+
+		
+		<a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:38:41+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan/">
+		
+			学算法并非和语言无关</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1. 写在前面</h3>
+
+<p>算法这个东西，本来不是什么特别复杂的东西，就是为了解决某个问题提出的一个解决方案，说白了，就是一种思路。基本上，所有的算法书上都默认选用了伪代码来表达算法，因为这样可以脱离具体的语言，让算法学习者能够直面算法的本质，理解算法的核心，然后使用自己常用的语言来重新表达，写出能够运行的代码。实际上，在我接触到ruby这类高表达力的语言前，我也这么认为。虽然我能够理解很多算法的核心本质，但往往在实际用C或者java来实现时，总是被一些数组索引等细枝末节的问题所折磨，我通常会告诉自己，嗷，我还没有深刻领悟它，再去看看算法图述和伪码。</p>
+
+<p>但是，今天我想说，我错了。也许，有的语言能够更好地表述算法，表述算法的好的语言应该能够以最接近人类语言的方式表达出来，而且基本就能够运行出结果。</p>
+
+
+		
+		<a href="/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:35:43+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/">
+		
+			状态转移</a>
+	</h2>
+	<div class="entry-content">
+		<h3>0. 引言</h3>
+
+<p>昨天遇到一个问题，就是关于对象状态转移的问题，我姑且这样命名吧。简要描述一下就是：对于一个人，他有进食，帮助他人，恋爱等功能，但是这些功能是有先后顺序的，对于刚出生的人，他要先学会进食，然后随着他的成长，他逐渐学会帮助他人，在这个过程中他学会了爱与被爱，当他遇到一个合适的女孩，他就坠入了爱河。整个过程反映到程序上就是，必须按照下面的顺序调用方法：</p>
+
+<pre><code>man=Human.new
+man.feed
+man.fall_in_love   # Error
+man.help_people
+man.fall_in_love
+</code></pre>
+
+<p>如果你调用某个功能时没有完成前面的事情，就像上面的例子这样，一个人尚未学会帮助他人的人，我们是不希望他去恋爱的，这样一个不懂得互助互爱的人怎么可能珍惜自己的爱人呢？</p>
+
+<p>所以，对象状态转移就是：某个对象随着状态转移获得调用新方法的能力或权限，未达到某个状态前无法调用该状态下的方法。</p>
+
+
+		
+		<a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:30:39+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -409,147 +560,6 @@ git是为git服务器创建的专有账户。</p>
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rubylei-he-mo-kuai-de-guan-xi/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/install-and-deploy-rails-on-centos/">
-		
-			Install and Deploy Rails on CentOS</a>
-	</h2>
-	<div class="entry-content">
-		<h3>prerequisites:</h3>
-
-<p>I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, you needn&rsquo;t worry about SELinux.</p>
-
-
-		
-		<a href="/blog/2014/02/14/install-and-deploy-rails-on-centos/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T14:30:55+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/install-and-deploy-rails-on-centos/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/gitchang-yong-cao-zuo/">
-		
-			Git常用操作</a>
-	</h2>
-	<div class="entry-content">
-		
-		
-		<a href="/blog/2014/02/14/gitchang-yong-cao-zuo/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T14:26:31+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/git/'>git</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/gitchang-yong-cao-zuo/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/">
-		
-			在Linq中使用委托作为相等比较</a>
-	</h2>
-	<div class="entry-content">
-		<p>Linq中的操作符的相等比较都使用IEqualityComparer<T>作为判断依据，常见的使用该接口的操作符有：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">Distinct</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;,</span> <span class="n">IEqualityComparer</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;)</span>
-</span><span class='line'><span class="n">Contains</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;,</span> <span class="n">TSource</span><span class="p">,</span> <span class="n">IEqualityComparer</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用该接口固然可以进行自定义的相等比较，但若对同一类型要做多种相等比较则需要继承实现IEqualityComparer<T>接口的多个子类型，这对于像我这样懒惰的程序员是很难接受的。</p>
-
-
-		
-		<a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T14:13:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c-sharp/'>c-sharp</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

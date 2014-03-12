@@ -3,14 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>shell数组 - Jason's space</title>
+	<title>date命令 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="数组定义 定义数组需要用括号把元素包裹起来。 colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]} # red green blue black white
-echo ${colors[@]} # red green blue &hellip;">
+	<meta name="description" content="首先看看常用的格式字符串 %Y 年 %m 月 %d 日 %H 时 %M 分 %S 秒 %s 时间戳(秒) date命令常用操作 获取当前时间 date +%Y-%m-%d # 2014-02-21 几天前(后)，几月前(后)，几年前(后) date -d "1 day ago" "+%Y-%m-% &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -81,80 +78,47 @@ echo ${colors[@]} # red green blue &hellip;">
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Shell数组</h2>
-	<div class="entry-content"><h3>数组定义</h3>
+	<h2 class="title">Date命令</h2>
+	<div class="entry-content"><p>首先看看常用的格式字符串</p>
 
-<p>定义数组需要用括号把元素包裹起来。</p>
+<pre><code> %Y 年
+ %m 月
+ %d 日
+ %H 时
+ %M 分
+ %S 秒
+ %s 时间戳(秒)
+</code></pre>
 
-<pre><code>colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]}  # red green blue black white
-echo ${colors[@]}  # red green blue black white
+<p><strong>date命令常用操作</strong></p>
+
+<p>获取当前时间</p>
+
+<pre><code>date +%Y-%m-%d    # 2014-02-21
 </code></pre>
 
 <!--more-->
 
 
-<h3>基本操作</h3>
+<p>几天前(后)，几月前(后)，几年前(后)</p>
 
-<pre><code># 有两种方法获取数组长度
-echo ${#colors[@]}    # 5
-echo ${#colors[*]}    # 5
+<pre><code>date -d "1 day ago"  "+%Y-%m-%d %H:%M:%S"  #一天前的当前时间 2014-02-20 11:11:31
+date -d "2 days ago"  # 或者date-d "-2 days"
+date -d "-8 months"
+date -d "+2 years" # 两年后
 </code></pre>
 
-<p>遍历数组</p>
+<p>多少分钟，小时前（后）</p>
 
-<pre><code>for e in ${colors[*]};do
-    echo $e
-done
+<pre><code>date -d "-5 minutes"  "+%Y-%m-%d %H:%M:%S"  #5分钟前
+date -d "5 minutes"  "%H:%M:%S"  #5分钟后
 </code></pre>
 
-<p>或</p>
+<p>时间戳和日期互转，常用于计算</p>
 
-<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
-    echo ${colors[i]}
-done
-</code></pre>
-
-<p>读写数组</p>
-
-<pre><code>echo ${colors[0]}    # red
-colors[0]=RED
-echo ${colors[0]}    # RED
-</code></pre>
-
-<p>移除元素</p>
-
-<pre><code>unset colors[1]
-echo ${colors[*]}    # red blue black white
-echo ${#colors[*]}   # 4
-</code></pre>
-
-<h3>切片</h3>
-
-<p>切片不影响原数组</p>
-
-<pre><code>echo ${colors[*]:1:3}    # green blue black
-# 获取切片得到的新数组
-c=(${colors[*]:1:3})
-echo ${c[*]}             # green blue black
-</code></pre>
-
-<h3>替换</h3>
-
-<p>替换也不影响原数组</p>
-
-<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
-</code></pre>
-
-<h3>字符串转换为数组</h3>
-
-<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
-
-<pre><code>IFS=";"
-str="a;b;c;d;e"
-arr=($str)
-echo ${arr[*]}  # a b c d e
+<pre><code>date -d "2014-02-20 11:11:31" +%s  #获取某时间的时间戳
+date +%s   #返回当前时间戳1392954893
+date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
 </code></pre>
 </div>
 
@@ -172,7 +136,7 @@ echo ${arr[*]}  # a b c d e
   
 
 
-<time datetime="2014-03-10T00:22:25+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2014</time></div>
+<time datetime="2014-03-12T23:03:56+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
 	<div class="tags">
 
 
@@ -225,8 +189,8 @@ echo ${arr[*]}  # a b c d e
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
-        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/12/dateming-ling/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/12/dateming-ling/';
         var disqus_script = 'embed.js';
       
     (function () {

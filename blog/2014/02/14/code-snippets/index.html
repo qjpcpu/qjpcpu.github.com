@@ -7,12 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="ruby文件utf-8编码 # -*- coding: UTF-8 -*- 退出ssh登录后继续执行命令 如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令： nohup long_run_cmd &amp; date命令常用操作 1
-2
-3
-4
-5
-6 &hellip;">
+	<meta name="description" content="ruby文件utf-8编码 # -*- coding: UTF-8 -*- 退出ssh登录后继续执行命令 如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令： nohup long_run_cmd &amp; Feb 14th, 2014 shell &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -99,23 +94,6 @@
 <!-- more -->
 
 
-<h3>date命令常用操作</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>date +%Y-%m-%d    <span class="c">#2014-02-21</span>
-</span><span class='line'>date -d <span class="s2">&quot;1 day ago&quot;</span>  <span class="s2">&quot;+%Y-%m-%d %H:%M:%S&quot;</span>  <span class="c">#一天前的当前时间 2014-02-20 11:11:31</span>
-</span><span class='line'>date -d <span class="s2">&quot;-5 minutes&quot;</span>  <span class="s2">&quot;+%Y-%m-%d %H:%M:%S&quot;</span>  <span class="c">#5分钟前</span>
-</span><span class='line'>date -d <span class="s2">&quot;5 minutes&quot;</span>  <span class="s2">&quot;%H:%M:%S&quot;</span>  <span class="c">#5分钟后</span>
-</span><span class='line'>date -d <span class="s2">&quot;2014-02-20 11:11:31&quot;</span> +%s  <span class="c">#获取某时间的时间戳</span>
-</span><span class='line'>date +%s   <span class="c">#返回当前时间戳1392954893</span>
-</span><span class='line'>date -d @1392954893 <span class="s2">&quot;+%Y-%m-%d %H:%M:%S&quot;</span>  <span class="c">#将时间戳转换为时间</span>
-</span></code></pre></td></tr></table></div></figure>
 
 </div>
 

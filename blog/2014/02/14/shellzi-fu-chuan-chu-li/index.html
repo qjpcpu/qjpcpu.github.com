@@ -210,10 +210,11 @@ nAme:jAck;Age:12
 <p>&ndash;</p>
 
 <pre><code>index(substring,string) #返回子字符串substring在字符串string中的位置
-length(string) #获取字符串的长度
+length(string) #获取字符串或数组的长度
 match(string,reg) #获取匹配reg得到的子串在字符串中的位置
 split(string,array,separator) #将字符串按分隔符separator分割到array数组中
 sprintf("format",expression) #和c语言的sprintf类似
+printf("format",expression) #和c语言的printf类似
 substr(string,position,length)  #获取子字符串
 tolower(string)
 toupper(string)
@@ -227,6 +228,16 @@ NF #列数
 NR #行号
 FS #分隔符
 FILENAME #文件名
+</code></pre>
+
+<p><strong>定义函数</strong></p>
+
+<p>在awk中还可以定义函数：</p>
+
+<pre><code>awk 'function sum(a,b){
+    print "Computing..."
+    return a+b
+}BEGIN{ print sum(1,2) }' -
 </code></pre>
 
 <p><strong>给awk传递shell变量值</strong></p>
@@ -256,6 +267,8 @@ SHELL
 en_US
 </code></pre>
 
+<p>P.S.给awk传递数组，可以先将数组转化为字符串再作为参数传递，在awk内部再用<code>split</code>函数还原为数组</p>
+
 <p><strong>awk中调用shell命令</strong></p>
 
 <p>awk中调用shell命令，使用<code>system()</code>函数，被引号括起来的内容会直接发送给shell，而没有括起来的部分被当做awk当中的变量替换</p>
@@ -263,6 +276,8 @@ en_US
 <pre><code>$ awk 'BEGIN{a="AWK";system("echo "a)}' -
 AWK
 </code></pre>
+
+<p><strong>awk的正则表达式</strong></p>
 
 <p>awk中支持的正则表达式是ERES,它包含下列特殊符号：</p>
 

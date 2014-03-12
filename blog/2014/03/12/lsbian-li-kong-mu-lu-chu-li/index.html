@@ -3,14 +3,16 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>shell数组 - Jason's space</title>
+	<title>ls遍历空目录处理 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="数组定义 定义数组需要用括号把元素包裹起来。 colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]} # red green blue black white
-echo ${colors[@]} # red green blue &hellip;">
+	<meta name="description" content="先说说原因：for循环是利用空格做分隔符，所以可以这样打印句子中的单词： centence="Linux is cool"
+for word in $centence;do echo $word
+done 有时用ls命令遍历目录会遇到空目录： 1
+2
+3
+for d in $(ls);do &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -81,81 +83,38 @@ echo ${colors[@]} # red green blue &hellip;">
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Shell数组</h2>
-	<div class="entry-content"><h3>数组定义</h3>
+	<h2 class="title">Ls遍历空目录处理</h2>
+	<div class="entry-content"><p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
 
-<p>定义数组需要用括号把元素包裹起来。</p>
-
-<pre><code>colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]}  # red green blue black white
-echo ${colors[@]}  # red green blue black white
-</code></pre>
-
-<!--more-->
-
-
-<h3>基本操作</h3>
-
-<pre><code># 有两种方法获取数组长度
-echo ${#colors[@]}    # 5
-echo ${#colors[*]}    # 5
-</code></pre>
-
-<p>遍历数组</p>
-
-<pre><code>for e in ${colors[*]};do
-    echo $e
+<pre><code>centence="Linux is cool"
+for word in $centence;do
+    echo $word
 done
 </code></pre>
 
-<p>或</p>
+<p>有时用ls命令遍历目录会遇到空目录：</p>
 
-<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
-    echo ${colors[i]}
-done
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>读写数组</p>
 
-<pre><code>echo ${colors[0]}    # red
-colors[0]=RED
-echo ${colors[0]}    # RED
-</code></pre>
+<p>处理办法是：</p>
 
-<p>移除元素</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -1 | <span class="k">while </span><span class="nb">read </span>d
+</span><span class='line'><span class="k">do</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>unset colors[1]
-echo ${colors[*]}    # red blue black white
-echo ${#colors[*]}   # 4
-</code></pre>
-
-<h3>切片</h3>
-
-<p>切片不影响原数组</p>
-
-<pre><code>echo ${colors[*]:1:3}    # green blue black
-# 获取切片得到的新数组
-c=(${colors[*]:1:3})
-echo ${c[*]}             # green blue black
-</code></pre>
-
-<h3>替换</h3>
-
-<p>替换也不影响原数组</p>
-
-<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
-</code></pre>
-
-<h3>字符串转换为数组</h3>
-
-<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
-
-<pre><code>IFS=";"
-str="a;b;c;d;e"
-arr=($str)
-echo ${arr[*]}  # a b c d e
-</code></pre>
 </div>
 
 
@@ -172,7 +131,7 @@ echo ${arr[*]}  # a b c d e
   
 
 
-<time datetime="2014-03-10T00:22:25+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2014</time></div>
+<time datetime="2014-03-12T23:18:02+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
 	<div class="tags">
 
 
@@ -225,8 +184,8 @@ echo ${arr[*]}  # a b c d e
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
-        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-10T01:06:06+08:00</updated>
+  <updated>2014-03-12T23:20:51+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,138 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ls遍历空目录处理]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/"/>
+    <updated>2014-03-12T23:18:02+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li</id>
+    <content type="html"><![CDATA[<p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
+
+<pre><code>centence="Linux is cool"
+for word in $centence;do
+    echo $word
+done
+</code></pre>
+
+<p>有时用ls命令遍历目录会遇到空目录：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>处理办法是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -1 | <span class="k">while </span><span class="nb">read </span>d
+</span><span class='line'><span class="k">do</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[date命令]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/12/dateming-ling/"/>
+    <updated>2014-03-12T23:03:56+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/12/dateming-ling</id>
+    <content type="html"><![CDATA[<p>首先看看常用的格式字符串</p>
+
+<pre><code> %Y 年
+ %m 月
+ %d 日
+ %H 时
+ %M 分
+ %S 秒
+ %s 时间戳(秒)
+</code></pre>
+
+<p><strong>date命令常用操作</strong></p>
+
+<p>获取当前时间</p>
+
+<pre><code>date +%Y-%m-%d    # 2014-02-21
+</code></pre>
+
+<!--more-->
+
+
+<p>几天前(后)，几月前(后)，几年前(后)</p>
+
+<pre><code>date -d "1 day ago"  "+%Y-%m-%d %H:%M:%S"  #一天前的当前时间 2014-02-20 11:11:31
+date -d "2 days ago"  # 或者date-d "-2 days"
+date -d "-8 months"
+date -d "+2 years" # 两年后
+</code></pre>
+
+<p>多少分钟，小时前（后）</p>
+
+<pre><code>date -d "-5 minutes"  "+%Y-%m-%d %H:%M:%S"  #5分钟前
+date -d "5 minutes"  "%H:%M:%S"  #5分钟后
+</code></pre>
+
+<p>时间戳和日期互转，常用于计算</p>
+
+<pre><code>date -d "2014-02-20 11:11:31" +%s  #获取某时间的时间戳
+date +%s   #返回当前时间戳1392954893
+date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[stat命令与文件时间]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/"/>
+    <updated>2014-03-12T15:04:54+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian</id>
+    <content type="html"><![CDATA[<h3>stat命令</h3>
+
+<p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
+
+<pre><code>$ stat access.log
+  File: `access.log'
+  Size: 1559877779  Blocks: 3049624    IO Block: 4096   regular file
+Device: ca20h/51744d    Inode: 16269326    Links: 1
+Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
+Access: 2014-03-09 21:58:33.000000000 +0800
+Modify: 2014-03-07 08:17:36.000000000 +0800
+Change: 2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+<p>通常可以使用<code>-c</code>参数直接获取三个时间</p>
+
+<pre><code>$ stat -c %x access.log   #获取access time
+2014-03-09 21:58:33.000000000 +0800
+$ stat -c %y access.log  #获取modify time
+2014-03-07 08:17:36.000000000 +0800
+$ stat -c %z access.log #获取change time
+2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+<!--more-->
+
+
+<h3>三个时间</h3>
+
+<p><code>access time</code>对应文件访问时间，只要有读操作就会更新这个时间。</p>
+
+<p><code>change time</code>对应文件元信息，比如文件重命名会更新该时间。</p>
+
+<p><code>modify time</code>对应文件内容修改时间，只要修改文件内容就会更新该时间，由于内容改变实际也改变文件元数据，所以写操作也更新<code>change time</code>。</p>
+
+<p>注意：对于文件夹来说，对文件夹下的文件增删，重命名，等操作，会修改文件夹<code>change time</code>和<code>modify time</code>，因为文件名实际是作为目录文件的内容存在的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[shell数组]]></title>
@@ -36,6 +168,20 @@ echo ${colors[@]}  # red green blue black white
 <pre><code># 有两种方法获取数组长度
 echo ${#colors[@]}    # 5
 echo ${#colors[*]}    # 5
+</code></pre>
+
+<p>遍历数组</p>
+
+<pre><code>for e in ${colors[*]};do
+    echo $e
+done
+</code></pre>
+
+<p>或</p>
+
+<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
+    echo ${colors[i]}
+done
 </code></pre>
 
 <p>读写数组</p>
@@ -67,6 +213,16 @@ echo ${c[*]}             # green blue black
 <p>替换也不影响原数组</p>
 
 <pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+
+<h3>字符串转换为数组</h3>
+
+<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
+
+<pre><code>IFS=";"
+str="a;b;c;d;e"
+arr=($str)
+echo ${arr[*]}  # a b c d e
 </code></pre>
 ]]></content>
   </entry>
@@ -1795,241 +1951,6 @@ run Demo::Application.routes
 </code></pre>
 
 <p>现在可以访问<a href="http://localhost:8080/demo">http://localhost:8080/demo</a> ，可以看到rails app的首页了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[初识jruby之安装配置jrubyonrails]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/"/>
-    <updated>2014-02-14T23:49:23+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails</id>
-    <content type="html"><![CDATA[<h3>1. prerequesite</h3>
-
-<p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
-
-<h3>2. 安装rails</h3>
-
-<p>安装rails4.0.0：</p>
-
-<pre><code>C:\&gt;jruby -S gem install rails -V
-</code></pre>
-
-<p>查看安装的rails版本：</p>
-
-<pre><code>C:\&gt;jruby -S rails -v
-Rails 4.0.0
-</code></pre>
-
-<!-- more -->
-
-
-<h3>3. 新建一个rails Apps</h3>
-
-<pre><code>C:\&gt;jruby -S rails new demo
-</code></pre>
-
-<p>并且取消bundle install，因为使用默认安装的ActiveRecord-JDBC-adapter的master分支版本目前，会导致执行rake db:migrate命令时发生wrong number of arguments calling exec_insert (5 for 3) error错误，所以，修改gemfile使用它的1.3.0.beta2版本（这个步骤是现在的权宜之计，以后肯定不必这么麻烦了。后注：此问题目前已修复)：</p>
-
-<p>如果使用的是sqlite数据库，则将：</p>
-
-<pre><code>gem 'activerecord-jdbcsqlite3-adapter'
-</code></pre>
-
-<p>改为：</p>
-
-<pre><code>gem 'activerecord-jdbcsqlite3-adapter', '1.3.0.beta2'
-</code></pre>
-
-<p>如果使用的mysql数据库，则将：</p>
-
-<pre><code>gem 'activerecord-jdbcmysql-adapter'
-</code></pre>
-
-<p>改为：</p>
-
-<pre><code>gem 'activerecord-jdbcmysql-adapter','1.3.0.beta2'
-</code></pre>
-
-<p>然后再进行 jruby -S bundle install 安装gem。</p>
-
-<p>如果使用sqlite数据库，默认配置即可，如果使用mysql数据库，则修改database.yml，以development
-环境为例，这里的username，password，host，port按照具体情况进行具体配置：</p>
-
-<pre><code>development:
-  adapter: mysql
-  encoding: utf8
-  reconnect: false
-  database: demo_development
-  username: user
-  password: user_password
-  host: localhost
-  port: 3306
-</code></pre>
-
-<p>最后，启动rails app：</p>
-
-<pre><code>C:\DEMO&gt;jruby -S rails s
-</code></pre>
-
-<p>然而此时又出错了：</p>
-
-<pre><code>OpenSSL::Cipher::CipherError: Illegal key size: possibly you need to install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for your JRE
-</code></pre>
-
-<p>要求安装JCE，到Oracle 官网上下载一个UnlimitedJCEPolicyJDK7.zip文件，解压缩后包含两个jar文件：local_policy.jar和US_export_policy.jar。将这两个文件替换$JAVA_HOME/jre/lib/security目录下两个同名文件，如，在我的电脑是就是替换C:\Program Files\Java\jdk1.7.0_25\jre\lib\security目录下两个文件。替换后，重启电脑。</p>
-
-<p>此时，再jruby -S rails s启动app则可以正确运行了。</p>
-
-<h3>4. 配置java类路径</h3>
-
-<p>如果需要在rails中使用java外部类，则需要配置一下$CLASSPATH，首先，假设我们将需要的java类都放在rails_root/lib/java文件夹下。那么就在environment.rb文件中require File.expand_path(&lsquo;../
-application&rsquo;, __FILE__)后添加代码：</p>
-
-<pre><code>require 'java'
-$CLASSPATH &lt;&lt; File.join(Rails.root, 'lib','java')
-</code></pre>
-
-<p>这样，如果在该目录下有一个编译好的java类example.MyClass在rails中就可以像这样使用该类：</p>
-
-<pre><code>mc=Java::example.MyClass.new
-</code></pre>
-
-<p>如果还使用了外部jar，则还要添加引用jar的代码，同样在environment.rb文件中添加：</p>
-
-<pre><code>Dir.glob(File.join(Rails.root, 'lib','java',"**","*.jar")).each do |jar| 
-    $CLASSPATH &lt;&lt; jar
-end
-</code></pre>
-
-<p>所以最终environment.rb文件看起来是这样的：</p>
-
-<blockquote><p>environment.rb</p></blockquote>
-
-<pre><code># Load the rails application
-require File.expand_path('../application',__FILE__)
-requrie 'java'
-$CLASSPATH&lt;&lt;File.join(Rails.root,'lib','java')
-Dir.glob(File.join(Rails.root,'lib','java','**','*.jar)).each do |jar|
-    $CLASSPATH &lt;&lt; jar
-end
-
-Demo::Application.initialize!
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在一组方法中共享变量]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/"/>
-    <updated>2014-02-14T23:46:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang</id>
-    <content type="html"><![CDATA[<pre><code>lambda{
-    shared=10
-    Kernel.send :define_method, :counter do
-        shared+=1
-    end
-    Kernel.send :define_method, :show do
-        shared
-    end
-}.call
-
-show #=&gt;10
-3.times{counter}
-show #=&gt;13
-</code></pre>
-
-<!-- more -->
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rails 在javascript中使用ruby对象]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/"/>
-    <updated>2014-02-14T23:40:15+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang</id>
-    <content type="html"><![CDATA[<h3>1.在javascript中使用ruby简单对象</h3>
-
-<p>如，需要将ruby对象转换成javascript的简单变量：</p>
-
-<pre><code>&lt;%= javascript_tag do %&gt;
-  url = '&lt;%= j products_url %&gt;';
-&lt;% end %&gt;
-</code></pre>
-
-<p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
-
-<!-- more -->
-
-
-<h3>2.在javascript中使用ruby复杂对象</h3>
-
-<p>公共桥梁显然是json，但要正确地转义json就需要raw方法：</p>
-
-<pre><code>&lt;%= javascript_tag do %&gt;
-  products = &lt;%= raw Product.limit(10).to_json %&gt;
-&lt;% end %&gt;
-</code></pre>
-
-<p>此时&lt;%= %>无引号包裹。</p>
-
-<h3>3.Gon gem</h3>
-
-<p>如果有大量的ruby对象需要在javascript中使用，这种方法就不好了。Gon就是为了解决这个问题。</p>
-
-<p>首先在gemfile中添加gon：</p>
-
-<pre><code>gem 'gon'
-</code></pre>
-
-<p>然后在/app/views/layouts/application.html.erb文件中包含gon：</p>
-
-<pre><code>&lt;head&gt;
-  &lt;title&gt;Store&lt;/title&gt;
-  &lt;%= include_gon %&gt;
-  &lt;%= stylesheet_link_tag    "application", media: "all" %&gt;
-  &lt;%= javascript_include_tag "application" %&gt;
-  &lt;%= csrf_meta_tag %&gt;
-&lt;/head&gt;
-</code></pre>
-
-<p>然后在controller中就可以以这种形式为javascript对象赋值：</p>
-
-<pre><code>gon.variable_name = variable_value
-# or new syntax
-gon.push({
-  :user_id =&gt; 1,
-  :user_role =&gt; "admin"
-})
-gon.push(any_object) # any_object with respond_to? :each_pair
-</code></pre>
-
-<p>例如：</p>
-
-<pre><code>class ProductsController &lt; ApplicationController
-    def index
-        gon.products = Product.limit(10)
-    end
-end
-</code></pre>
-
-<p>在js中获取变量的方法：</p>
-
-<pre><code>gon.variable_name
-</code></pre>
-
-<p>即：</p>
-
-<pre><code>go.products
-</code></pre>
-
-<h3>参考文献</h3>
-
-<ul>
-<li><a href="https://github.com/gazay/gon">gon</a></li>
-<li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
-</ul>
-
 ]]></content>
   </entry>
   
