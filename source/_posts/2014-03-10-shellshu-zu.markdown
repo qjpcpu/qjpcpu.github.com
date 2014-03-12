@@ -22,6 +22,18 @@ categories: shell
 	echo ${#colors[@]}    # 5
 	echo ${#colors[*]}    # 5
 	
+遍历数组
+	
+	for e in ${colors[*]};do
+		echo $e
+	done
+	
+或
+
+	for((i=0;i<${#colors[*]};i++));do
+		echo ${colors[i]}
+	done
+	
 读写数组
 
 	echo ${colors[0]}    # red
@@ -48,4 +60,13 @@ categories: shell
 替换也不影响原数组
 
 	echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+	
+### 字符串转换为数组
+
+使用`()`操作符和`IFS`指定分隔符
+
+	IFS=";"
+	str="a;b;c;d;e"
+	arr=($str)
+	echo ${arr[*]}  # a b c d e
 

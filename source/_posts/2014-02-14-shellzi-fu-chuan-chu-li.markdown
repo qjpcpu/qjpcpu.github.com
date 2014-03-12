@@ -115,10 +115,11 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 -
 
 	index(substring,string) #返回子字符串substring在字符串string中的位置
-	length(string) #获取字符串的长度
+	length(string) #获取字符串或数组的长度
 	match(string,reg) #获取匹配reg得到的子串在字符串中的位置
 	split(string,array,separator) #将字符串按分隔符separator分割到array数组中
 	sprintf("format",expression) #和c语言的sprintf类似
+	printf("format",expression) #和c语言的printf类似
 	substr(string,position,length)  #获取子字符串
 	tolower(string)
 	toupper(string)
@@ -132,6 +133,15 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 	FS #分隔符
 	FILENAME #文件名
 	
+**定义函数**
+
+在awk中还可以定义函数：
+
+	awk 'function sum(a,b){
+		print "Computing..."
+		return a+b
+	}BEGIN{ print sum(1,2) }' -
+
 **给awk传递shell变量值**
 
 方法一：`awk '{action}' name1=val1 name2=val2 file`，变量值无法在`BEGIN`中获得
@@ -155,6 +165,8 @@ P.S.awk获取环境变量
 
 	$ awk 'BEGIN{print ENVIRON["LANG"]}' -
 	en_US
+	
+P.S.给awk传递数组，可以先将数组转化为字符串再作为参数传递，在awk内部再用`split`函数还原为数组
 
 **awk中调用shell命令**
 	
@@ -162,6 +174,8 @@ awk中调用shell命令，使用`system()`函数，被引号括起来的内容�
 
 	$ awk 'BEGIN{a="AWK";system("echo "a)}' -
 	AWK
+	
+**awk的正则表达式**
 	
 awk中支持的正则表达式是ERES,它包含下列特殊符号：
 
