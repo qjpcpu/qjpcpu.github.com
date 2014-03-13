@@ -87,3 +87,102 @@ demo/models:
 
 demo/views:
 ```
+
+### 利用shell自己来实现
+
+在无法安装软件的情况下，自己写一个tree命令吧，至少基本的bash是可以用的。
+
+```bash tree.sh
+#!/bin/bash
+
+n_char(){
+	ch="$1"
+	cnt=$2
+	for((i=0;i<$cnt;i++));do
+		string="${ch}____$string"
+	done
+	echo $string
+}
+
+dive_into(){
+	ls -1a "$1" | while read f
+	do
+		if [ "$f" == "." ] || [ "$f" == ".." ];then
+			continue
+		fi
+		if [ "$4" = "0" ] && [ "${f:0:1}" = "." ];then
+			continue
+		fi
+		pre=$(n_char '|' $2)
+		line="${pre//_/ }|-- ${f}"
+		[[ -L "$1/$f" ]] && line="${line} -> `readlink "$1/$f"`"
+		if [ "$5" = "1" ];then
+			s=`du -sh "$1/$f"|awk '{print $1}'`
+			line="${line} [$s]"
+		fi
+		echo "$line"
+		if [ -d "$1/${f}" ] && [ ! -L "$1/$f" ] && [ $(($2+1)) -lt $3 ];then
+			dive_into "$1/$f" $(($2+1)) $3 $4 $5
+		fi
+	done
+}
+while getopts "d:l:ahs" args
+do
+	case $args in
+	l) level=$OPTARG
+	;;
+	d) dir="$OPTARG"
+	;;
+	a) all=1
+	;;
+	s) size=1
+	;;
+	h) echo "Must specify directoy with -d"
+	   echo "Usage: tree.sh -d directory "
+	   echo "-l maxdepth, the tree depth"
+	   echo "-s, print file size"
+	   echo "-a, print with hidden files"
+	   exit 1
+	;;
+	?) echo "No such argument"
+	   exit 1
+	;;
+	esac
+done
+
+[[ -z "$dir" ]] && {
+	echo "Must specify directory with -d"
+	exit 1
+}
+[[ -z "$level" ]] && level=100
+[[ -z "$all" ]] && all=0
+[[ -z "$size" ]] && size=0
+
+echo "$dir"
+dive_into "$dir"  0 $level $all $size
+```
+
+试试看好用不：
+
+```bash
+tree.sh -h
+Must specify directoy with -d
+Usage: tree.sh -d directory
+-l maxdepth, the tree depth
+-s, print file size
+-a, print with hidden files
+
+tree.sh -d .
+.
+|-- dir
+|    |-- file
+|    |-- g.css
+|    |-- sub
+|    |    |-- sfile
+|-- g -> dir/g.css
+|-- ldir -> dir/
+|-- m.html -> o.html
+|-- o.html
+|-- s.html
+|-- tree.sh
+```
