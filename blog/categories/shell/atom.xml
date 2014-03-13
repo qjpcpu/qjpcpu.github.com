@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-13T22:37:41+08:00</updated>
+  <updated>2014-03-14T00:11:42+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,26 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[route]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/14/route/"/>
+    <updated>2014-03-14T00:03:30+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/14/route</id>
+    <content type="html"><![CDATA[<p>算是记录一个教训吧。</p>
+
+<p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不大达很有可能是没有路由信息，最后朋友指点发现没有默认网关，外网ip没得路由规则走，添加默认网关后ok：</p>
+
+<p><code>bash
+route add default gw 10.46.148.1
+</code></p>
+
+<p>提醒自己以后把学到的东西利用起来！</p>
+
+<!--more-->
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ls遍历空目录处理]]></title>
@@ -223,93 +243,6 @@ str="a;b;c;d;e"
 arr=($str)
 echo ${arr[*]}  # a b c d e
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[curl]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/03/05/curl/"/>
-    <updated>2014-03-05T23:29:56+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/05/curl</id>
-    <content type="html"><![CDATA[<h3>基本用法</h3>
-
-<p><code>bash
-curl http://www.google.com
-curl --proxy http://proxy.com:8888 http://ww.google.com #使用代理
-curl http://user:password@example.org/  #http验证
-curl -u user:password http://example.org/ #http验证
-</code>
-获取响应头</p>
-
-<p><code>bash
-curl -i http://example.com  #在返回结果中包含响应头
-curl -IL http://example.com  #仅返回响应头
-</code></p>
-
-<!--more-->
-
-
-<h3>REST请求</h3>
-
-<p><strong>GET</strong></p>
-
-<p><code>bash
-curl http://www.google.com
-</code></p>
-
-<p><strong>POST</strong></p>
-
-<p>```bash
-curl &mdash;data &ldquo;birthyear=1905&amp;press=%20OK%20&rdquo;  <a href="http://www.example.com/when.cgi">http://www.example.com/when.cgi</a></p>
-
-<h1>or</h1>
-
-<p>curl &mdash;data-urlencode &ldquo;name=I am Daniel&rdquo; <a href="http://www.example.com">http://www.example.com</a>
-```</p>
-
-<p><strong>PUT</strong></p>
-
-<p><code>bash
-curl --upload-file uploadfile http://www.example.com/receive.cgi #upload a file
-</code></p>
-
-<p><strong>DELETE</strong></p>
-
-<p>实际上，可以用<code>curl -X http_method</code>指定包括GET,POST,PUT内的任意方法</p>
-
-<p><code>bash
-curl -X DELETE http://example.com
-</code></p>
-
-<h3>header</h3>
-
-<p>使用-H或&mdash;header指定请求头部</p>
-
-<p><code>bash
-curl -H "Content-Type: application/json" http:/example.com
-</code></p>
-
-<h3>Cookie</h3>
-
-<p><code>-b,--cookie</code>选项告诉<code>curl</code>使用已有的cookie，可以是键值对也可以是文件</p>
-
-<p><code>bash
-curl -b "name=value" http://host
-curl -b cookie.txt http://host.com
-</code></p>
-
-<p><code>-c,--cookie-jar</code>选项告诉<code>curl</code>将新的cookie保存在文件中</p>
-
-<p><code>bash
-curl -c new.txt http://example.com
-</code></p>
-
-<h3>HTTPS</h3>
-
-<p><code>bash
-curl https://example.com
-curl --cert mycert.pem https://example.com
-</code></p>
 ]]></content>
   </entry>
   

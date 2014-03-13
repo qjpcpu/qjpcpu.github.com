@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-13T22:37:41+08:00</updated>
+  <updated>2014-03-14T00:11:42+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,27 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[route]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/14/route/"/>
+    <updated>2014-03-14T00:03:30+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/14/route</id>
+    <content type="html"><![CDATA[<p>算是记录一个教训吧。</p>
+
+<p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不大达很有可能是没有路由信息，最后朋友指点发现没有默认网关，外网ip没得路由规则走，添加默认网关后ok：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>route add default gw 10.46.148.1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>提醒自己以后把学到的东西利用起来！</p>
+
+<!--more-->
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ls遍历空目录处理]]></title>
@@ -2062,81 +2083,6 @@ run Demo::Application.routes
 <p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
 
 <p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&amp;x=.jpg" alt="image" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[初识jruby之在tomcat上部署jruby-on-rails]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/"/>
-    <updated>2014-02-14T23:58:44+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails</id>
-    <content type="html"><![CDATA[<h3>1. prerequesite</h3>
-
-<p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
-
-<!-- more -->
-
-
-<h3>2. 安装配置Apache Tomcat</h3>
-
-<p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c5fe07e6d343ad4ba22e46c5b2392b92/c995d143ad4bd1136f3d4d7158afa40f4afb0584.jpg?referer=97197c6f8501a18ba9fc267f639b&amp;x=.jpg" alt="image" /></p>
-
-<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080">http://localhost:8080</a> ，如果出现图示页面说明tomcat安装配置正确。</p>
-
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=79626b7c49fbfbedd859367a48cb860b/a50f4bfbfbedab642082b783f536afc378311e84.jpg?referer=24c5e74b1d30e92496b3a8015a9b&amp;x=.jpg" alt="image" /></p>
-
-<h3>3. 下载安装jruby</h3>
-
-<p>安装jruby在前一篇博文讲解较细，这里不再赘述。</p>
-
-<p>安装必要的JDBC。</p>
-
-<pre><code>jruby -S gem install activerecord-jdbcmysql-adapter -v 1.3.0.beta2
-</code></pre>
-
-<p>如果要将jruby on rails工程打包为war发布到tomcat上，就必须要用到warbler Gem：</p>
-
-<pre><code>jruby -S gem install warbler
-</code></pre>
-
-<h3>4. 打包jruby on rails工程</h3>
-
-<p>首先确认database.yml文件production环境配置正确：</p>
-
-<pre><code>production:
-  adapter: mysql
-  encoding: utf8
-  reconnect: false
-  database: demo_production
-  username: user
-  password: password
-  host: localhost
-  port: 3306
-</code></pre>
-
-<p>配置正确的production数据库，及其用户密码。</p>
-
-<p>在数据库中创建production数据库demo_production，并且赋予用户user对该数据库的完全权限。</p>
-
-<p>然后开始打包工程，在rails app根目录下执行：</p>
-
-<pre><code>jruby -S warble
-</code></pre>
-
-<p>该命令会在工程根目录下生成一个war文件，如demo.war，该war会将必要的gem打包进去，使得我们能够像普通java工程war文件那样部署到tomcat中。</p>
-
-<h3>5. 部署war</h3>
-
-<p>将该war复制到tomcat的webapps目录下，等待大约几秒钟，tomcat会自动释放文件完成部署。</p>
-
-<p>最后一步，进入tomcat释放的文件夹demo中，生成数据库schema：</p>
-
-<pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
-</code></pre>
-
-<p>现在可以访问<a href="http://localhost:8080/demo">http://localhost:8080/demo</a> ，可以看到rails app的首页了。</p>
 ]]></content>
   </entry>
   
