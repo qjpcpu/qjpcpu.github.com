@@ -315,6 +315,7 @@ demo
 <span class='line-number'>65</span>
 <span class='line-number'>66</span>
 <span class='line-number'>67</span>
+<span class='line-number'>68</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
 </span><span class='line'>
 </span><span class='line'>n_char<span class="o">(){</span>
@@ -327,6 +328,7 @@ demo
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'>
 </span><span class='line'>dive_into<span class="o">(){</span>
+</span><span class='line'>  <span class="nb">trap</span> <span class="s1">&#39;exit&#39;</span> INT
 </span><span class='line'>  ls -1a <span class="s2">&quot;$1&quot;</span> | <span class="k">while </span><span class="nb">read </span>f
 </span><span class='line'>  <span class="k">do</span>
 </span><span class='line'><span class="k">      if</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;..&quot;</span> <span class="o">]</span>;<span class="k">then</span>

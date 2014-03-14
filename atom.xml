@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-14T00:11:42+08:00</updated>
+  <updated>2014-03-14T11:57:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -20,7 +20,7 @@
     <id>http://qjpcpu.github.io/blog/2014/03/14/route</id>
     <content type="html"><![CDATA[<p>算是记录一个教训吧。</p>
 
-<p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不大达很有可能是没有路由信息，最后朋友指点发现没有默认网关，外网ip没得路由规则走，添加默认网关后ok：</p>
+<p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关，外网ip没得路由规则走，添加默认网关后ok：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>route add default gw 10.46.148.1
@@ -629,6 +629,7 @@ export PATH=$PATH:/ruby/bin
 <span class='line-number'>65</span>
 <span class='line-number'>66</span>
 <span class='line-number'>67</span>
+<span class='line-number'>68</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
 </span><span class='line'>
 </span><span class='line'>n_char<span class="o">(){</span>
@@ -641,6 +642,7 @@ export PATH=$PATH:/ruby/bin
 </span><span class='line'><span class="o">}</span>
 </span><span class='line'>
 </span><span class='line'>dive_into<span class="o">(){</span>
+</span><span class='line'>  <span class="nb">trap</span> <span class="s1">&#39;exit&#39;</span> INT
 </span><span class='line'>  ls -1a <span class="s2">&quot;$1&quot;</span> | <span class="k">while </span><span class="nb">read </span>f
 </span><span class='line'>  <span class="k">do</span>
 </span><span class='line'><span class="k">      if</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;..&quot;</span> <span class="o">]</span>;<span class="k">then</span>
