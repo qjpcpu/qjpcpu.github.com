@@ -105,6 +105,7 @@ n_char(){
 }
 
 dive_into(){
+	trap 'exit' INT
 	ls -1a "$1" | while read f
 	do
 		if [ "$f" == "." ] || [ "$f" == ".." ];then
