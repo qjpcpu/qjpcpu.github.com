@@ -36,13 +36,6 @@ curl http://user:password@example.org/ #http验证 &hellip;">
 	<li><a href="/about">About</a></li>
 </ul>
 
-
-  <form method="get" action="/search.html">
-    <fieldset role="search">
-      <input class="search" name="query" type="text" placeholder="Search..." x-webkit-speech />
-    </fieldset>
-  </form>
-
 </nav>
 <nav id="mobile-nav">
 	<div class="alignleft menu">
@@ -53,13 +46,6 @@ curl http://user:password@example.org/ #http验证 &hellip;">
 	<li><a href="/blog/categories">Categories</a></li>
 	<li><a href="/about">About</a></li>
 </ul>
-
-
-  <form method="get" action="/search.html">
-    <fieldset role="search">
-      <input class="search" name="query" type="text" placeholder="Search..." x-webkit-speech />
-    </fieldset>
-  </form>
 
 </div>
 	</div>
@@ -89,9 +75,10 @@ curl http://user:password@example.org/ #http验证 &hellip;">
 		
     
 	</div>
-	<form class="search" action="http://google.com/search" method="get">
-		<input class="alignright" type="text" name="q" results="0">
-		<input type="hidden" name="q" value="site:qjpcpu.github.io">
+	<form class="search" action="/search.html" method="get">
+		<fieldset role="search">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+		</fieldset>
 	</form>
 </nav>
 
