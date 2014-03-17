@@ -286,4 +286,8 @@
         <loc>http://qjpcpu.github.io/robots.txt</loc>
         <lastmod>2014-02-15T19:40:01+08:00</lastmod>
     </url>
+    <url>
+        <loc>http://qjpcpu.github.io/search.html</loc>
+        <lastmod>2014-03-17T19:20:31+08:00</lastmod>
+    </url>
 </urlset>

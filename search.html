@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>linux日常维护 - Jason's space</title>
+	<title>Search Results - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="某些用户cron任务失败 有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。 解决办法是在crontab任务前先执行source /home/username/. &hellip;">
+	<meta name="description" content="$('#search_results').tapir({ 'token': '5326d9d8bca2df0200000000', 'complete' : function() { document.getElementById('search_loading').style.display &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -93,52 +93,27 @@
 	
 		
 	
-	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Linux日常维护</h2>
-	<div class="entry-content"><h3>某些用户cron任务失败</h3>
-
-<p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
-
-<p>解决办法是在crontab任务前先执行<code>source /home/username/.bash_profile</code>，后面再接用户自己的任务命令即可。</p>
-
-<p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
-
-<ul>
-<li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
-<li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
-<li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
-</ul>
-
-
-<!--more-->
-
+	<div id="content" class="inner"><article class="page">
+    
+    <h1 class="title">Search Results</h1>
+    
+    <div class="entry-content"><div id="search_loading" style="margin: 40px 0">
+    <center><img src="/images/loading.gif"></center>
 </div>
 
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-21T22:58:13+08:00" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/linux/'>linux</a>
-
+<script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<div id="blog-archives">
+<div id="search_results" style="display:none">
 
 </div>
-	
-	<div class="comments"><a href="#disqus_thread">Comments</a></div>
-	
+</div>
+<script>
+    $('#search_results').tapir({
+        'token': '5326d9d8bca2df0200000000',
+        'complete' : function() { document.getElementById('search_loading').style.display="none"; }
+    });
+</script>
+
 </div>
 </article>
 
@@ -156,11 +131,6 @@
 
 
 
-<section id="comment">
-    <h2 class="title">Comments</h2>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-</section>
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 
@@ -180,10 +150,7 @@
       var disqus_shortname = 'qjpcpugithubio';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu/';
-        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
