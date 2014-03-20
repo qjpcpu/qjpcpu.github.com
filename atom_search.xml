@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-17T19:41:14+08:00</updated>
+  <updated>2014-03-20T21:14:52+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -2449,7 +2449,14 @@ end
 
 <p>该语句生成的路由如下：</p>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c9415095dda144de096cb7828ca19f/902397dda144ad34c29c62c4d2a20cf431ad8556.jpg?referer=68c064fc8e5494eede353a29e34c&amp;x=.jpg" alt="image" /></p>
+<pre><code>     profile POST   /profile(.:format)      profiles#create
+ new_profile GET    /profile/new(.:format)  profiles#new
+edit_profile GET    /profile/edit(.:format) profiles#edit
+             GET    /profile(.:format)      profiles#show
+             PATCH  /profile(.:format)      profiles#update
+             PUT    /profile(.:format)      profiles#update
+             DELETE /profile(.:format)      profiles#destroy
+</code></pre>
 
 <h3>3.嵌入的路由</h3>
 
@@ -2460,7 +2467,37 @@ end
 end
 </code></pre>
 
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8d06f6a8b4fd5266a32b3c119b23e616/38dbb6fd5266d01605e9646b952bd40734fa3584.jpg?referer=12da45f1bb014a90d829728d739b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>events_comments GET    /events/comments(.:format)          comments#index
+</span><span class='line'>                POST   /events/comments(.:format)          comments#create
+</span><span class='line'> new_events_comment GET    /events/comments/new(.:format)      comments#new
+</span><span class='line'>edit_events_comment GET    /events/comments/:id/edit(.:format) comments#edit
+</span><span class='line'> events_comment GET    /events/comments/:id(.:format)      comments#show
+</span><span class='line'>                PATCH  /events/comments/:id(.:format)      comments#update
+</span><span class='line'>                PUT    /events/comments/:id(.:format)      comments#update
+</span><span class='line'>                DELETE /events/comments/:id(.:format)      comments#destroy
+</span><span class='line'>         events POST   /events(.:format)                   events#create
+</span><span class='line'>     new_events GET    /events/new(.:format)               events#new
+</span><span class='line'>    edit_events GET    /events/edit(.:format)              events#edit
+</span><span class='line'>                GET    /events(.:format)                   events#show
+</span><span class='line'>                PATCH  /events(.:format)                   events#update
+</span><span class='line'>                PUT    /events(.:format)                   events#update
+</span><span class='line'>                DELETE /events(.:format)                   events#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。</p>
 
@@ -2477,7 +2514,23 @@ end
 
 <p>此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：</p>
 
-<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b8309d15d2160924d825a21ee43c44c7/5366d0160924ab1899e61b7437fae6cd7a890b84.jpg?referer=b7cc85e3f403738d875d3812759b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>admin_posts GET    /admin/posts(.:format)          admin/posts#index
+</span><span class='line'>            POST   /admin/posts(.:format)          admin/posts#create
+</span><span class='line'> new_admin_post GET    /admin/posts/new(.:format)      admin/posts#new
+</span><span class='line'>edit_admin_post GET    /admin/posts/:id/edit(.:format) admin/posts#edit
+</span><span class='line'> admin_post GET    /admin/posts/:id(.:format)      admin/posts#show
+</span><span class='line'>            PATCH  /admin/posts/:id(.:format)      admin/posts#update
+</span><span class='line'>            PUT    /admin/posts/:id(.:format)      admin/posts#update
+</span><span class='line'>            DELETE /admin/posts/:id(.:format)      admin/posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。</p>
 
@@ -2489,7 +2542,23 @@ scope。</p>
 end
 </code></pre>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8e21687d79ec54e745ec1a1b8903ea6d/b90e7bec54e736d18030694b99504fc2d5626956.jpg?referer=7e1763ad9e82d158e2956c81d74c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>posts GET    /posts(.:format)          admin/posts#index
+</span><span class='line'>      POST   /posts(.:format)          admin/posts#create
+</span><span class='line'> new_post GET    /posts/new(.:format)      admin/posts#new
+</span><span class='line'>edit_post GET    /posts/:id/edit(.:format) admin/posts#edit
+</span><span class='line'> post GET    /posts/:id(.:format)      admin/posts#show
+</span><span class='line'>      PATCH  /posts/:id(.:format)      admin/posts#update
+</span><span class='line'>      PUT    /posts/:id(.:format)      admin/posts#update
+</span><span class='line'>      DELETE /posts/:id(.:format)      admin/posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。</p>
 
@@ -2502,7 +2571,23 @@ end
 end
 </code></pre>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6c4451220db30f24319aec06f8aea07e/9f510fb30f2442a7cefe07e6d343ad4bd0130284.jpg?referer=91d5f909d8b44aed00598ad46e9b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>   posts GET    /admin/posts(.:format)          posts#index
+</span><span class='line'>          POST   /admin/posts(.:format)          posts#create
+</span><span class='line'> new_post GET    /admin/posts/new(.:format)      posts#new
+</span><span class='line'>edit_post GET    /admin/posts/:id/edit(.:format) posts#edit
+</span><span class='line'>     post GET    /admin/posts/:id(.:format)      posts#show
+</span><span class='line'>          PATCH  /admin/posts/:id(.:format)      posts#update
+</span><span class='line'>          PUT    /admin/posts/:id(.:format)      posts#update
+</span><span class='line'>          DELETE /admin/posts/:id(.:format)      posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。</p>
 
@@ -2518,7 +2603,23 @@ end
 <pre><code>resources :posts, path: '/articles'
 </code></pre>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=596a1640ca95d143de76e42643cbf33f/d833c895d143ad4bcadebc8380025aafa50f0684.jpg?referer=35be44a7b11c87018fa186d6629b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>posts GET    /articles(.:format)          posts#index
+</span><span class='line'>      POST   /articles(.:format)          posts#create
+</span><span class='line'> new_post GET    /articles/new(.:format)      posts#new
+</span><span class='line'>edit_post GET    /articles/:id/edit(.:format) posts#edit
+</span><span class='line'> post GET    /articles/:id(.:format)      posts#show
+</span><span class='line'>      PATCH  /articles/:id(.:format)      posts#update
+</span><span class='line'>      PUT    /articles/:id(.:format)      posts#update
+</span><span class='line'>      DELETE /articles/:id(.:format)      posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>5.新增RESTful动词</h3>
 
@@ -2544,7 +2645,11 @@ controller中处理该请求的方法，以及自定义url helper：</p>
 end
 </code></pre>
 
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=15e98dd4db33c895a27e987ee12802cd/43a7d933c895d143b7861e6071f082025baf0784.jpg?referer=5020e10089d4b31ca92ba08b619b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  p1_photo GET    /photos/:id/preview1(.:format) photos#pre1
+</span><span class='line'>  p2_photo GET    /photos/:id/preview2(.:format) photos#pre2</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>6.非resourceful路由</h3>
 
@@ -2633,12 +2738,14 @@ end
 
 <p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
 
-<blockquote><p>seeds.rb</p></blockquote>
+<figure class='code'><figcaption><span>seeds.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>  <span class="no">Product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="ss">:&quot;Product #</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span><span class="ss">description</span><span class="p">:</span><span class="s2">&quot;A product&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>5.times do |i|
-    Product.create(name:"Product ##{i}",description:"A product")
-end
-</code></pre>
 
 <p>使用rake命令填充数据：</p>
 
@@ -2974,50 +3081,102 @@ Address.includes(:addressable)
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin</id>
     <content type="html"><![CDATA[<p>以经典的customer-order为例</p>
 
-<ol>
-<li>在创建数据表时直接创建索引</li>
-</ol>
+<h3>1. 在创建数据表时直接创建索引</h3>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d1364df8a41ea8d38e227401a7314173/838ba61ea8d3fd1fa3f85879324e251f94ca5f84.jpg?referer=3f089ea983cb39db98d75366999a&amp;x=.jpg" alt="image" /></p>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 <!-- more -->
 
 
-<ol>
-<li>手动附加索引</li>
-</ol>
-
+<h3>2. 手动附加索引</h3>
 
 <p>此时创建数据表是以普通字段创建的外键</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=84258bc6cbea15ce45eee00c863b4bce/5ab5c9ea15ce36d35227667338f33a87e950b156.jpg?referer=a621687d79ec54e718fb2f2eff4c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer_id:integer
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
 
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d982ea6c97cad1c8d4bbfc224f051634/241f95cad1c8a78620dbb04d6509c93d71cf5084.jpg?referer=e0e8646b952bd4071bd0e7cd909a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g migration add_customer_id_index_to_orders
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>修改migration文件，手动添加index</p>
 
-<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c5064e72cf3bc7ec00cde9e13bcb9c/c83d70cf3bc79f3d08101e73b8a1cd11738b2984.jpg?referer=6e9dc0c00d2442a7f719c995979a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddCustomerIdIndexToOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<ol>
-<li>many-to-many关系中添加index</li>
-</ol>
 
+<h3>3. many-to-many关系中添加index</h3>
 
 <p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b5993923372ac65c63056676cbc9c32c/e850352ac65c1038dc5d2b81b0119313b07e8956.jpg?referer=c0dc05118735e5ddc93b90eff74c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddAddressesMenTable</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:address_men</span><span class="p">,</span><span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:address</span><span class="p">,</span> <span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:man</span><span class="p">,</span><span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:addresses_men</span><span class="p">,</span><span class="o">[</span><span class="ss">:address_id</span><span class="p">,</span><span class="ss">:man_id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<ol>
-<li>建议</li>
-</ol>
 
+<h3>4. 建议</h3>
 
 <p>所有的外键最好都添加索引。</p>
 ]]></content>
@@ -3335,19 +3494,25 @@ end
 
 <p>类似1:1关系，同样添加inverse_of和dependent选项。此处dependent选项的多了一个delete_all，即:dependent=>:delete_all，表示移除customer时会删除其order的所有数据库记录，但不调用这些order的destroy方法销毁对象。</p>
 
-<blockquote><p>customer.rb</p></blockquote>
+<figure class='code'><figcaption><span>customer.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Customer</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:dependent</span> <span class="o">=&gt;</span> <span class="ss">:destory</span><span class="p">,</span> <span class="ss">:inverse_of</span> <span class="o">=&gt;</span> <span class="ss">:customer</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Customer &lt; ActiveRecord::Base
-    has_many :orders, :dependent =&gt; :destory, :inverse_of =&gt; :customer
-end
-</code></pre>
 
-<blockquote><p>order.rb</p></blockquote>
 
-<pre><code>class Order &lt; ActiveRecord::Base
-    belongs_to :customer, :inverse_of =&gt; :orders
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>order.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:customer</span><span class="p">,</span> <span class="ss">:inverse_of</span> <span class="o">=&gt;</span> <span class="ss">:orders</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>操作关系</li>
@@ -3400,13 +3565,16 @@ c.orders.empty?
 $ rake db:migrate
 </code></pre>
 
-<blockquote><p>employee.rb</p></blockquote>
+<figure class='code'><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:subordinates</span><span class="p">,</span> <span class="ss">:class_name</span><span class="o">=&gt;</span><span class="s1">&#39;Employee&#39;</span><span class="p">,</span> <span class="ss">:forgeign_key</span><span class="o">=&gt;</span><span class="s1">&#39;manager_id&#39;</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">:class_name</span><span class="o">=&gt;</span><span class="s1">&#39;Employee&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :subordinates, :class_name=&gt;'Employee', :forgeign_key=&gt;'manager_id'
-    belongs_to :manager, :class_name=&gt;'Employee'
-end
-</code></pre>
 
 <p>建立好model后，和普通1：n关系使用方法并无二致：</p>
 
@@ -3434,26 +3602,36 @@ $ rails g model product
 
 <p>修改model：</p>
 
-<blockquote><p>product.rb</p></blockquote>
+<figure class='code'><figcaption><span>product.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:picture</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:owner</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Product &lt; ActiveRecord::Base
-    has_many :picture, :as=&gt;:owner
-end
-</code></pre>
 
-<blockquote><p>employee.rb</p></blockquote>
 
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :pictures, :as=&gt;:owner
-end
-</code></pre>
 
-<blockquote><p>picture.rb</p></blockquote>
+<figure class='code'><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:owner</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Picture &lt; ActiveRecord:Base
-    belongs_to :owner, :polymorphic =&gt; true
-end
-</code></pre>
+
+
+
+<figure class='code'><figcaption><span>picture.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Picture</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:owner</span><span class="p">,</span> <span class="ss">:polymorphic</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:owner，而picture的model中belongs_to关系添加了:polymorphic=>true选项。这样，如果以后还有新的model和picture是1:n的关系，那么在其中写入has_many :pictures,:as=>:owner即可，不必修改Picture的model及其数据表。</p>
 
@@ -3467,7 +3645,7 @@ e.pictures&lt;&lt;p1
 pro.pictures&lt;&lt;p2
 
 p1.owner.class.name # =&gt; 'Employee'
-p2.owner.class.naem # =&gt; 'Product'
+p2.owner.class.name # =&gt; 'Product'
 </code></pre>
 ]]></content>
   </entry>
@@ -3496,17 +3674,24 @@ $ rails g migration CreateAssembliesAndParts
 
 <p>编辑db/migrate/目录下新建的xxxx_create_assemblies_and_parts.rb文件，在该文件中定义中间表：</p>
 
-<blockquote><p>20130609063804_create_assemblies_and_parts.rb</p></blockquote>
+<figure class='code'><figcaption><span>20130609063804_create_assemblies_and_parts.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateAssembliesAndParts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:assemblies_parts</span><span class="p">,</span> <span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:assembly_id</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:part_id</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class CreateAssembliesAndParts &lt; ActiveRecord::Migration
-    def change
-        create_table :assemblies_parts, :id=&gt;false do |t|
-            t.integer :assembly_id
-            t.integer :part_id
-        end
-    end
-end
-</code></pre>
 
 <p> 注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=>false。</p>
 
@@ -3532,19 +3717,25 @@ end
 
 <p>在关系的两端都需要添加has_and_belongs_to_many。</p>
 
-<blockquote><p>assembly.rb</p></blockquote>
+<figure class='code'><figcaption><span>assembly.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Assembly</span> <span class="o">&lt;</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:parts</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Assembly &lt;ActiveRecord::Base
-    has_and_belongs_to_many :parts
-end
-</code></pre>
 
-<blockquote><p>part.rb</p></blockquote>
 
-<pre><code>class Part &lt; ActiveRecord::Base
-    has_and_belongs_to_many :assemblies
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>part.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Part</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:assemblies</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>操作关系</li>
@@ -3599,19 +3790,25 @@ collection.create(attributes = {})
 
 <p>在这个1:1关系中，accounts拥有外键supplier_id，所以需要在account.rb中添加belongs_to关系，相对应在supplier.rb中添加has_one关系。注意rails的约定，用rails g命令创建model时使用单数形式（首字母大小写无所谓），得到的数据库的表名是小写的复数形式，model的类名是驼峰形式的单数形式，model文件名是小写单数形式。</p>
 
-<blockquote><p>account.rb</p></blockquote>
+<figure class='code'><figcaption><span>account.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:supplier</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Account &lt; ActiveRecord::Base
-  belongs_to :supplier
-end
-</code></pre>
 
-<blockquote><p>supplier.rb</p></blockquote>
 
-<pre><code>class Supplier &lt; ActiveRecord::Base
-    has_one :account
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>supplier.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Supplier</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>    <span class="n">has_one</span> <span class="ss">:account</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>对于1:1关系，有几个常用的可选项：</p>
 
@@ -3628,19 +3825,25 @@ s.name==a.supplier.name #=&gt;false
 
 <p>所以，再次修改model：</p>
 
-<blockquote><p>account.rb</p></blockquote>
+<figure class='code'><figcaption><span>account.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:supplier</span><span class="p">,</span> <span class="ss">:inverse_of</span><span class="o">=&gt;</span><span class="ss">:account</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Account &lt; ActiveRecord::Base
-  belongs_to :supplier, :inverse_of=&gt;:account
-end
-</code></pre>
 
-<blockquote><p>supplier.rb</p></blockquote>
 
-<pre><code>class Supplier &lt; ActiveRecord::Base
-    has_one :account, :dependent=&gt;:destroy, :inverse_of=&gt;:supplier
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>supplier.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Supplier</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>    <span class="n">has_one</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">:dependent</span><span class="o">=&gt;</span><span class="ss">:destroy</span><span class="p">,</span> <span class="ss">:inverse_of</span><span class="o">=&gt;</span><span class="ss">:supplier</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>关系操作</li>

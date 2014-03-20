@@ -7,7 +7,11 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="以经典的customer-order为例 在创建数据表时直接创建索引 查看order的migration文件，rails自动为我们添加了index： 手动附加索引 此时创建数据表是以普通字段创建的外键 如果需要创建索引，就需要手动新建一个migration来添加索引： 修改migration文件， &hellip;">
+	<meta name="description" content="以经典的customer-order为例 1. 在创建数据表时直接创建索引 1
+2
+rails g model customer
+rails g model order customer:references 查看order的migration文件，rails自动为我们添加了index： 1
+2 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -82,50 +86,102 @@
 	<h2 class="title">Rails 创建数据库索引</h2>
 	<div class="entry-content"><p>以经典的customer-order为例</p>
 
-<ol>
-<li>在创建数据表时直接创建索引</li>
-</ol>
+<h3>1. 在创建数据表时直接创建索引</h3>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d1364df8a41ea8d38e227401a7314173/838ba61ea8d3fd1fa3f85879324e251f94ca5f84.jpg?referer=3f089ea983cb39db98d75366999a&amp;x=.jpg" alt="image" /></p>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 <!-- more -->
 
 
-<ol>
-<li>手动附加索引</li>
-</ol>
-
+<h3>2. 手动附加索引</h3>
 
 <p>此时创建数据表是以普通字段创建的外键</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=84258bc6cbea15ce45eee00c863b4bce/5ab5c9ea15ce36d35227667338f33a87e950b156.jpg?referer=a621687d79ec54e718fb2f2eff4c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer_id:integer
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
 
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d982ea6c97cad1c8d4bbfc224f051634/241f95cad1c8a78620dbb04d6509c93d71cf5084.jpg?referer=e0e8646b952bd4071bd0e7cd909a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g migration add_customer_id_index_to_orders
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>修改migration文件，手动添加index</p>
 
-<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c5064e72cf3bc7ec00cde9e13bcb9c/c83d70cf3bc79f3d08101e73b8a1cd11738b2984.jpg?referer=6e9dc0c00d2442a7f719c995979a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddCustomerIdIndexToOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<ol>
-<li>many-to-many关系中添加index</li>
-</ol>
 
+<h3>3. many-to-many关系中添加index</h3>
 
 <p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b5993923372ac65c63056676cbc9c32c/e850352ac65c1038dc5d2b81b0119313b07e8956.jpg?referer=c0dc05118735e5ddc93b90eff74c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddAddressesMenTable</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:address_men</span><span class="p">,</span><span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:address</span><span class="p">,</span> <span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:man</span><span class="p">,</span><span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:addresses_men</span><span class="p">,</span><span class="o">[</span><span class="ss">:address_id</span><span class="p">,</span><span class="ss">:man_id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<ol>
-<li>建议</li>
-</ol>
 
+<h3>4. 建议</h3>
 
 <p>所有的外键最好都添加索引。</p>
 </div>

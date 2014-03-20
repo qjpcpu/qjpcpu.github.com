@@ -106,19 +106,25 @@
 
 <p>类似1:1关系，同样添加inverse_of和dependent选项。此处dependent选项的多了一个delete_all，即:dependent=>:delete_all，表示移除customer时会删除其order的所有数据库记录，但不调用这些order的destroy方法销毁对象。</p>
 
-<blockquote><p>customer.rb</p></blockquote>
+<figure class='code'><figcaption><span>customer.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Customer</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:dependent</span> <span class="o">=&gt;</span> <span class="ss">:destory</span><span class="p">,</span> <span class="ss">:inverse_of</span> <span class="o">=&gt;</span> <span class="ss">:customer</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Customer &lt; ActiveRecord::Base
-    has_many :orders, :dependent =&gt; :destory, :inverse_of =&gt; :customer
-end
-</code></pre>
 
-<blockquote><p>order.rb</p></blockquote>
 
-<pre><code>class Order &lt; ActiveRecord::Base
-    belongs_to :customer, :inverse_of =&gt; :orders
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>order.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:customer</span><span class="p">,</span> <span class="ss">:inverse_of</span> <span class="o">=&gt;</span> <span class="ss">:orders</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>操作关系</li>
@@ -171,13 +177,16 @@ c.orders.empty?
 $ rake db:migrate
 </code></pre>
 
-<blockquote><p>employee.rb</p></blockquote>
+<figure class='code'><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:subordinates</span><span class="p">,</span> <span class="ss">:class_name</span><span class="o">=&gt;</span><span class="s1">&#39;Employee&#39;</span><span class="p">,</span> <span class="ss">:forgeign_key</span><span class="o">=&gt;</span><span class="s1">&#39;manager_id&#39;</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">:class_name</span><span class="o">=&gt;</span><span class="s1">&#39;Employee&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :subordinates, :class_name=&gt;'Employee', :forgeign_key=&gt;'manager_id'
-    belongs_to :manager, :class_name=&gt;'Employee'
-end
-</code></pre>
 
 <p>建立好model后，和普通1：n关系使用方法并无二致：</p>
 
@@ -205,26 +214,36 @@ $ rails g model product
 
 <p>修改model：</p>
 
-<blockquote><p>product.rb</p></blockquote>
+<figure class='code'><figcaption><span>product.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:picture</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:owner</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Product &lt; ActiveRecord::Base
-    has_many :picture, :as=&gt;:owner
-end
-</code></pre>
 
-<blockquote><p>employee.rb</p></blockquote>
 
-<pre><code>class Employee &lt; ActiveRecord::Base
-    has_many :pictures, :as=&gt;:owner
-end
-</code></pre>
 
-<blockquote><p>picture.rb</p></blockquote>
+<figure class='code'><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:owner</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Picture &lt; ActiveRecord:Base
-    belongs_to :owner, :polymorphic =&gt; true
-end
-</code></pre>
+
+
+
+<figure class='code'><figcaption><span>picture.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Picture</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:owner</span><span class="p">,</span> <span class="ss">:polymorphic</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:owner，而picture的model中belongs_to关系添加了:polymorphic=>true选项。这样，如果以后还有新的model和picture是1:n的关系，那么在其中写入has_many :pictures,:as=>:owner即可，不必修改Picture的model及其数据表。</p>
 
@@ -238,7 +257,7 @@ e.pictures&lt;&lt;p1
 pro.pictures&lt;&lt;p2
 
 p1.owner.class.name # =&gt; 'Employee'
-p2.owner.class.naem # =&gt; 'Product'
+p2.owner.class.name # =&gt; 'Product'
 </code></pre>
 </div>
 

@@ -502,16 +502,39 @@ end
 	<div class="entry-content">
 		<p>以经典的customer-order为例</p>
 
-<ol>
-<li>在创建数据表时直接创建索引</li>
-</ol>
+<h3>1. 在创建数据表时直接创建索引</h3>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=d1364df8a41ea8d38e227401a7314173/838ba61ea8d3fd1fa3f85879324e251f94ca5f84.jpg?referer=3f089ea983cb39db98d75366999a&amp;x=.jpg" alt="image" /></p>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a6f85879324e251fe6f7e4fd97bdb82a/960a304e251f95ca360468f5cb177f3e66095284.jpg?referer=b5aa1f650b24ab18b901d5079e9a&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 
 		

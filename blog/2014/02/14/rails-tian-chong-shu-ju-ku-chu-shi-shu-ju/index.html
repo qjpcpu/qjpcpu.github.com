@@ -7,7 +7,10 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据： seeds.rb 5.times do |i| Product.create(name:"Product ##{i &hellip;">
+	<meta name="description" content="利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据： seeds.rb1
+2
+3
+5.times do |i| Product.create(name:&quot; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -85,12 +88,14 @@
 
 <p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
 
-<blockquote><p>seeds.rb</p></blockquote>
+<figure class='code'><figcaption><span>seeds.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>  <span class="no">Product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="ss">:&quot;Product #</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span><span class="ss">description</span><span class="p">:</span><span class="s2">&quot;A product&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>5.times do |i|
-    Product.create(name:"Product ##{i}",description:"A product")
-end
-</code></pre>
 
 <p>使用rake命令填充数据：</p>
 

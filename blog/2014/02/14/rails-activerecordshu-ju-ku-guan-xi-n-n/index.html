@@ -98,17 +98,24 @@ $ rails g migration CreateAssembliesAndParts
 
 <p>编辑db/migrate/目录下新建的xxxx_create_assemblies_and_parts.rb文件，在该文件中定义中间表：</p>
 
-<blockquote><p>20130609063804_create_assemblies_and_parts.rb</p></blockquote>
+<figure class='code'><figcaption><span>20130609063804_create_assemblies_and_parts.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateAssembliesAndParts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:assemblies_parts</span><span class="p">,</span> <span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:assembly_id</span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:part_id</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class CreateAssembliesAndParts &lt; ActiveRecord::Migration
-    def change
-        create_table :assemblies_parts, :id=&gt;false do |t|
-            t.integer :assembly_id
-            t.integer :part_id
-        end
-    end
-end
-</code></pre>
 
 <p> 注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=>false。</p>
 
@@ -134,19 +141,25 @@ end
 
 <p>在关系的两端都需要添加has_and_belongs_to_many。</p>
 
-<blockquote><p>assembly.rb</p></blockquote>
+<figure class='code'><figcaption><span>assembly.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Assembly</span> <span class="o">&lt;</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:parts</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>class Assembly &lt;ActiveRecord::Base
-    has_and_belongs_to_many :parts
-end
-</code></pre>
 
-<blockquote><p>part.rb</p></blockquote>
 
-<pre><code>class Part &lt; ActiveRecord::Base
-    has_and_belongs_to_many :assemblies
-end
-</code></pre>
+
+<figure class='code'><figcaption><span>part.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Part</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:assemblies</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <ol>
 <li>操作关系</li>

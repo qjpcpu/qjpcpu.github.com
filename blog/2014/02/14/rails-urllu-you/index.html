@@ -101,7 +101,14 @@
 
 <p>该语句生成的路由如下：</p>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=97c9415095dda144de096cb7828ca19f/902397dda144ad34c29c62c4d2a20cf431ad8556.jpg?referer=68c064fc8e5494eede353a29e34c&amp;x=.jpg" alt="image" /></p>
+<pre><code>     profile POST   /profile(.:format)      profiles#create
+ new_profile GET    /profile/new(.:format)  profiles#new
+edit_profile GET    /profile/edit(.:format) profiles#edit
+             GET    /profile(.:format)      profiles#show
+             PATCH  /profile(.:format)      profiles#update
+             PUT    /profile(.:format)      profiles#update
+             DELETE /profile(.:format)      profiles#destroy
+</code></pre>
 
 <h3>3.嵌入的路由</h3>
 
@@ -112,7 +119,37 @@
 end
 </code></pre>
 
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8d06f6a8b4fd5266a32b3c119b23e616/38dbb6fd5266d01605e9646b952bd40734fa3584.jpg?referer=12da45f1bb014a90d829728d739b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>events_comments GET    /events/comments(.:format)          comments#index
+</span><span class='line'>                POST   /events/comments(.:format)          comments#create
+</span><span class='line'> new_events_comment GET    /events/comments/new(.:format)      comments#new
+</span><span class='line'>edit_events_comment GET    /events/comments/:id/edit(.:format) comments#edit
+</span><span class='line'> events_comment GET    /events/comments/:id(.:format)      comments#show
+</span><span class='line'>                PATCH  /events/comments/:id(.:format)      comments#update
+</span><span class='line'>                PUT    /events/comments/:id(.:format)      comments#update
+</span><span class='line'>                DELETE /events/comments/:id(.:format)      comments#destroy
+</span><span class='line'>         events POST   /events(.:format)                   events#create
+</span><span class='line'>     new_events GET    /events/new(.:format)               events#new
+</span><span class='line'>    edit_events GET    /events/edit(.:format)              events#edit
+</span><span class='line'>                GET    /events(.:format)                   events#show
+</span><span class='line'>                PATCH  /events(.:format)                   events#update
+</span><span class='line'>                PUT    /events(.:format)                   events#update
+</span><span class='line'>                DELETE /events(.:format)                   events#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>对应的也自动生成了诸如event_comment_path之类的url 帮助方法。对于嵌入式资源，官方建议不要超过两层。最简单的理由，路由层次过深，除了增加逻辑的复杂度外，也得不到任何好处。</p>
 
@@ -129,7 +166,23 @@ end
 
 <p>此时，处理该路由的controller是Admin::PostsController，体现在rails工程中是在controller文件夹下的admin文件夹下的posts_controller.rb文件。而产生的路由全部以/admin开头：</p>
 
-<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=b8309d15d2160924d825a21ee43c44c7/5366d0160924ab1899e61b7437fae6cd7a890b84.jpg?referer=b7cc85e3f403738d875d3812759b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>admin_posts GET    /admin/posts(.:format)          admin/posts#index
+</span><span class='line'>            POST   /admin/posts(.:format)          admin/posts#create
+</span><span class='line'> new_admin_post GET    /admin/posts/new(.:format)      admin/posts#new
+</span><span class='line'>edit_admin_post GET    /admin/posts/:id/edit(.:format) admin/posts#edit
+</span><span class='line'> admin_post GET    /admin/posts/:id(.:format)      admin/posts#show
+</span><span class='line'>            PATCH  /admin/posts/:id(.:format)      admin/posts#update
+</span><span class='line'>            PUT    /admin/posts/:id(.:format)      admin/posts#update
+</span><span class='line'>            DELETE /admin/posts/:id(.:format)      admin/posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>一言以蔽之，由namespace产生的资源路由，controller和url都由该namespace作“前缀”。</p>
 
@@ -141,7 +194,23 @@ scope。</p>
 end
 </code></pre>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8e21687d79ec54e745ec1a1b8903ea6d/b90e7bec54e736d18030694b99504fc2d5626956.jpg?referer=7e1763ad9e82d158e2956c81d74c&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>posts GET    /posts(.:format)          admin/posts#index
+</span><span class='line'>      POST   /posts(.:format)          admin/posts#create
+</span><span class='line'> new_post GET    /posts/new(.:format)      admin/posts#new
+</span><span class='line'>edit_post GET    /posts/:id/edit(.:format) admin/posts#edit
+</span><span class='line'> post GET    /posts/:id(.:format)      admin/posts#show
+</span><span class='line'>      PATCH  /posts/:id(.:format)      admin/posts#update
+</span><span class='line'>      PUT    /posts/:id(.:format)      admin/posts#update
+</span><span class='line'>      DELETE /posts/:id(.:format)      admin/posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>由rake routes输出可以看出，路由url没有了admin前缀，而posts资源都由admin模块下的Admin::PostsController受理。</p>
 
@@ -154,7 +223,23 @@ end
 end
 </code></pre>
 
-<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6c4451220db30f24319aec06f8aea07e/9f510fb30f2442a7cefe07e6d343ad4bd0130284.jpg?referer=91d5f909d8b44aed00598ad46e9b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>   posts GET    /admin/posts(.:format)          posts#index
+</span><span class='line'>          POST   /admin/posts(.:format)          posts#create
+</span><span class='line'> new_post GET    /admin/posts/new(.:format)      posts#new
+</span><span class='line'>edit_post GET    /admin/posts/:id/edit(.:format) posts#edit
+</span><span class='line'>     post GET    /admin/posts/:id(.:format)      posts#show
+</span><span class='line'>          PATCH  /admin/posts/:id(.:format)      posts#update
+</span><span class='line'>          PUT    /admin/posts/:id(.:format)      posts#update
+</span><span class='line'>          DELETE /admin/posts/:id(.:format)      posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <p>此时，资源posts每个url都附加了/admin为前缀，而受理这些url的是PostsController。</p>
 
@@ -170,7 +255,23 @@ end
 <pre><code>resources :posts, path: '/articles'
 </code></pre>
 
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=596a1640ca95d143de76e42643cbf33f/d833c895d143ad4bcadebc8380025aafa50f0684.jpg?referer=35be44a7b11c87018fa186d6629b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>posts GET    /articles(.:format)          posts#index
+</span><span class='line'>      POST   /articles(.:format)          posts#create
+</span><span class='line'> new_post GET    /articles/new(.:format)      posts#new
+</span><span class='line'>edit_post GET    /articles/:id/edit(.:format) posts#edit
+</span><span class='line'> post GET    /articles/:id(.:format)      posts#show
+</span><span class='line'>      PATCH  /articles/:id(.:format)      posts#update
+</span><span class='line'>      PUT    /articles/:id(.:format)      posts#update
+</span><span class='line'>      DELETE /articles/:id(.:format)      posts#destroy</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>5.新增RESTful动词</h3>
 
@@ -196,7 +297,11 @@ controller中处理该请求的方法，以及自定义url helper：</p>
 end
 </code></pre>
 
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=15e98dd4db33c895a27e987ee12802cd/43a7d933c895d143b7861e6071f082025baf0784.jpg?referer=5020e10089d4b31ca92ba08b619b&amp;x=.jpg" alt="image" /></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  p1_photo GET    /photos/:id/preview1(.:format) photos#pre1
+</span><span class='line'>  p2_photo GET    /photos/:id/preview2(.:format) photos#pre2</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>6.非resourceful路由</h3>
 
