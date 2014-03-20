@@ -10,11 +10,11 @@ categories: rails
 
 利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：
 
-> seeds.rb
-
+```ruby seeds.rb
 	5.times do |i|
 		Product.create(name:"Product ##{i}",description:"A product")
 	end
+```
 
 使用rake命令填充数据：
 

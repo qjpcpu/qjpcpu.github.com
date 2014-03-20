@@ -22,8 +22,7 @@ categories: rails
 
 编辑db/migrate/目录下新建的xxxx_create_assemblies_and_parts.rb文件，在该文件中定义中间表：
 
-> 20130609063804_create_assemblies_and_parts.rb
-
+```ruby 20130609063804_create_assemblies_and_parts.rb
 	class CreateAssembliesAndParts < ActiveRecord::Migration
 		def change
 			create_table :assemblies_parts, :id=>false do |t|
@@ -32,6 +31,7 @@ categories: rails
 			end
 		end
 	end
+```
 
  注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=>false。
 
@@ -52,17 +52,17 @@ categories: rails
 
 在关系的两端都需要添加has_and_belongs_to_many。
 
-> assembly.rb
-
+```ruby assembly.rb
 	class Assembly <ActiveRecord::Base
 		has_and_belongs_to_many :parts
 	end
+```
 
-> part.rb
-
+```ruby part.rb
 	class Part < ActiveRecord::Base
 		has_and_belongs_to_many :assemblies
 	end
+```
 
 3. 操作关系
 

@@ -21,17 +21,18 @@ categories: rails
 2. 修改model，添加关系
 
 在这个1:1关系中，accounts拥有外键supplier_id，所以需要在account.rb中添加belongs_to关系，相对应在supplier.rb中添加has_one关系。注意rails的约定，用rails g命令创建model时使用单数形式（首字母大小写无所谓），得到的数据库的表名是小写的复数形式，model的类名是驼峰形式的单数形式，model文件名是小写单数形式。
-> account.rb
 
+```ruby account.rb
 	class Account < ActiveRecord::Base
 	  belongs_to :supplier
 	end
+```
 
-> supplier.rb
-
+```ruby supplier.rb
 	class Supplier < ActiveRecord::Base
 	    has_one :account
 	end
+```
 
 对于1:1关系，有几个常用的可选项：
 
@@ -47,17 +48,17 @@ categories: rails
 
 所以，再次修改model：
 
-> account.rb
-
+```ruby account.rb
 	class Account < ActiveRecord::Base
 	  belongs_to :supplier, :inverse_of=>:account
 	end
+```
 
-> supplier.rb
-
+```ruby supplier.rb
 	class Supplier < ActiveRecord::Base
 	    has_one :account, :dependent=>:destroy, :inverse_of=>:supplier
 	end
+```
 
 3. 关系操作
 

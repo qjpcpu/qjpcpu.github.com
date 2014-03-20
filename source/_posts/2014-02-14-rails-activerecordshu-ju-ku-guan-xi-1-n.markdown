@@ -24,17 +24,17 @@ categories: rails
 
 类似1:1关系，同样添加inverse_of和dependent选项。此处dependent选项的多了一个delete_all，即:dependent=>:delete_all，表示移除customer时会删除其order的所有数据库记录，但不调用这些order的destroy方法销毁对象。
 
-> customer.rb
-
+```ruby customer.rb
 	class Customer < ActiveRecord::Base
 		has_many :orders, :dependent => :destory, :inverse_of => :customer
 	end
-	
-> order.rb
+```
 
+```ruby order.rb
 	class Order < ActiveRecord::Base
 		belongs_to :customer, :inverse_of => :orders
 	end
+```
 
 3. 操作关系
 
@@ -78,12 +78,12 @@ categories: rails
 	$ rails g model employee name:string manager_id:integer
 	$ rake db:migrate
 
-> employee.rb
-
+```ruby employee.rb
 	class Employee < ActiveRecord::Base
 		has_many :subordinates, :class_name=>'Employee', :forgeign_key=>'manager_id'
 		belongs_to :manager, :class_name=>'Employee'
 	end
+```
 
 建立好model后，和普通1：n关系使用方法并无二致：
 
@@ -106,23 +106,23 @@ categories: rails
 
 修改model：
 
-> product.rb
-
+```ruby product.rb
 	class Product < ActiveRecord::Base
 		has_many :picture, :as=>:owner
 	end
+```
 
-> employee.rb
-
+```ruby employee.rb
 	class Employee < ActiveRecord::Base
 		has_many :pictures, :as=>:owner
 	end
-	
-> picture.rb
+```
 
+```ruby picture.rb
 	class Picture < ActiveRecord:Base
 		belongs_to :owner, :polymorphic => true
 	end
+```
 
 所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:owner，而picture的model中belongs_to关系添加了:polymorphic=>true选项。这样，如果以后还有新的model和picture是1:n的关系，那么在其中写入has_many :pictures,:as=>:owner即可，不必修改Picture的model及其数据表。
 
@@ -136,4 +136,4 @@ categories: rails
 	pro.pictures<<p2
 	
 	p1.owner.class.name # => 'Employee'
-	p2.owner.class.naem # => 'Product'
+	p2.owner.class.name # => 'Product'
