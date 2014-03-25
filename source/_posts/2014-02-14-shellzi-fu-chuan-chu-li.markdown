@@ -115,9 +115,9 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 -
 
 	index(substring,string) #返回子字符串substring在字符串string中的位置
-	length(string) #获取字符串或数组的长度
+	length(string) #获取字符串的长度
 	match(string,reg) #获取匹配reg得到的子串在字符串中的位置
-	split(string,array,separator) #将字符串按分隔符separator分割到array数组中
+	split(string,array,separator) #将字符串按分隔符separator分割到array数组中，返回值为数组长度
 	sprintf("format",expression) #和c语言的sprintf类似
 	printf("format",expression) #和c语言的printf类似
 	substr(string,position,length)  #获取子字符串
