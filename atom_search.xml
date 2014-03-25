@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-20T21:14:52+08:00</updated>
+  <updated>2014-03-25T08:56:18+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA['linux下查看线程数']]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/"/>
+    <updated>2014-03-25T08:53:55+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu</id>
+    <content type="html"><![CDATA[<h3>1. cat /proc/${pid}/status</h3>
+
+<h3>2. ps -mp &lt;PID></h3>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[route]]></title>
@@ -4514,9 +4526,9 @@ nAme:jAck;Age:12
 <p>&ndash;</p>
 
 <pre><code>index(substring,string) #返回子字符串substring在字符串string中的位置
-length(string) #获取字符串或数组的长度
+length(string) #获取字符串的长度
 match(string,reg) #获取匹配reg得到的子串在字符串中的位置
-split(string,array,separator) #将字符串按分隔符separator分割到array数组中
+split(string,array,separator) #将字符串按分隔符separator分割到array数组中，返回值为数组长度
 sprintf("format",expression) #和c语言的sprintf类似
 printf("format",expression) #和c语言的printf类似
 substr(string,position,length)  #获取子字符串
