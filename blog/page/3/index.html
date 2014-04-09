@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1.什么是rack rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用： app = lambda do |env| &hellip;">
+	<meta name="description" content="RSpec断言规则 RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty? nil? instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如： [].should be_empty &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,56 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/15/rspec/">
+		
+			Rspec</a>
+	</h2>
+	<div class="entry-content">
+		<h2>RSpec断言规则</h2>
+
+<p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
+
+<pre><code>[].should be_empty =&gt; [].empty? #passes
+[].should_not be_empty =&gt; [].empty? #fails
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/15/rspec/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:14:29+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/15/rspec/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -546,84 +596,6 @@ end
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rails-eagerloading/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/">
-		
-			Rails 创建数据库索引</a>
-	</h2>
-	<div class="entry-content">
-		<p>以经典的customer-order为例</p>
-
-<h3>1. 在创建数据表时直接创建索引</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
-</span><span class='line'>rails g model order customer:references
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>查看order的migration文件，rails自动为我们添加了index：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-
-		
-		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

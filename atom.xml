@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-03-25T08:56:18+08:00</updated>
+  <updated>2014-04-10T00:01:11+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,82 @@
 
   
   <entry>
-    <title type="html"><![CDATA['linux下查看线程数']]></title>
+    <title type="html"><![CDATA[server load]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/27/server-load/"/>
+    <updated>2014-03-27T09:39:14+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/27/server-load</id>
+    <content type="html"><![CDATA[<h3>先看几个处理器</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>grep -c <span class="s1">&#39;model name&#39;</span> /proc/cpuinfo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>比如结果是4</p>
+
+<h3>top查看系统整体情况</h3>
+
+<p>执行<code>top</code>命令查看系统负载情况：
+1. 关注<code>load average</code>系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
+2. 第二行显示系统进程概况
+3. 第四行us用户占用cpu，sy系统占用cpu，ni，id空闲比例，wa io等待，hi，si swap交换
+4. 最后是内存情况和交换分区</p>
+
+<h3>iostat检查io情况</h3>
+
+<p><code>iostat -x</code>，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。</p>
+
+<h3>vmstat查看系统概况</h3>
+
+<pre><code>procs -----------memory---------- ---swap-- -----io---- --system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in    cs us sy id wa
+ 1  0 409548 3317764  56864 39709176    0    0    12    29    0     0  4  1 96  0
+</code></pre>
+
+<p> 主要看r和b，代表当前执行进程和阻塞进程，当r长期大于cpu个数需要注意，还有阻塞进程过多也需要注意</p>
+
+<h3>ps和pstree查看进程</h3>
+
+<p>查看线程个数可以用<code>cat /proc/PID/status|grep Threads</code>，另外对于ps，可以这样查看具体线程</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ps -mp PID -o THREAD,tid,time
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如：</p>
+
+<pre><code>USER     %CPU PRI SCNT WCHAN  USER SYSTEM   TID     TIME
+work      1.8   -    - -         -      -     - 15:08:33
+work      0.0  14    - -         -      - 11750 00:00:00
+work      0.0  23    - -         -      - 11751 00:00:14
+work      0.0  23    - -         -      - 11760 00:03:36
+</code></pre>
+
+<p>关注%CPU占用cpu情况，TID是线程id，TIME是占用cpu的时间长。</p>
+
+<p>对于java进程可以用来调试程序：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># tid 转为16进制</span>
+</span><span class='line'><span class="nb">printf</span> <span class="s2">&quot;%x\n&quot;</span> tid
+</span><span class='line'>jstack PID | grep tid -A 50
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>怎么启动这个程序的</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pmap PID
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[linux下查看线程数]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/"/>
     <updated>2014-03-25T08:53:55+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu</id>
@@ -1901,41 +1976,6 @@ end
 <p>最后给出示例应用的最终目录结构：</p>
 
 <p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8350422bd309b3deefbfe46dfc841dbc/9358d109b3de9c8204461ccc6e81800a19d84356.jpg?referer=16e32c709045d688fa158794ad4c&amp;x=.jpg" alt="image" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[rspec]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/rspec/"/>
-    <updated>2014-02-15T00:14:29+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/rspec</id>
-    <content type="html"><![CDATA[<h2>RSpec断言规则</h2>
-
-<p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
-
-<pre><code>[].should be_empty =&gt; [].empty? #passes
-[].should_not be_empty =&gt; [].empty? #fails
-</code></pre>
-
-<!-- more -->
-
-
-<p>除了用&#8221;be_&ldquo;来前缀断言方法，也可以用&#8221;be_a_&#8221;和&#8221;be_an_&#8221;前缀，使得代码读起来更加自然：</p>
-
-<pre><code>"a string".should be_an_instance_of(String) =&gt;"a string".instance_of?(String)#passes
-3.should be_a_kind_of(Fixnum) =&gt; 3.kind_of?(Numeric) #passes
-3.should be_a_kind_of(Numeric) =&gt; 3.kind_of?(Numeric) #passes
-3.should be_an_instance_of(Fixnum) =&gt; 3.instance_of?(Fixnum) #passes 
-3.should_not be_instance_of(Numeric) =&gt; 3.instance_of?(Numeric) #fails
-</code></pre>
-
-<p>Rspec也会为诸如“has_key?”之类的断言创建匹配器，要使用该特性，在断言对象上使用 should have_key(:key) 就可以了，rspec会自动在对象上调用has_key?(:key)。如：</p>
-
-<pre><code>{:a =&gt; "A"}.should have_key(:a) =&gt; {:a =&gt; "A"}.has_key?(:a) #passes
-{:a =&gt; "A"}.should have_key(:b) =&gt; {:a =&gt; "A"}.has_key?(:b) #fails
-</code></pre>
-
-<p>还有一些常见的断言方法如： be  be_close  change  eql  have  be_true  be_false be_nil include raise_error respond_to throw_symbol   等等</p>
 ]]></content>
   </entry>
   
