@@ -25,6 +25,8 @@ grep -c 'model name' /proc/cpuinfo
 
 `iostat -x`，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。
 
+<!--more-->
+
 ### vmstat查看系统概况
 
 	procs -----------memory---------- ---swap-- -----io---- --system-- ----cpu----
