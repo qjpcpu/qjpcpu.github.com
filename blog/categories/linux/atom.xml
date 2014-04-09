@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-10T00:01:11+08:00</updated>
+  <updated>2014-04-10T00:04:37+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -36,6 +36,9 @@ grep -c 'model name' /proc/cpuinfo
 <h3>iostat检查io情况</h3>
 
 <p><code>iostat -x</code>，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。</p>
+
+<!--more-->
+
 
 <h3>vmstat查看系统概况</h3>
 
