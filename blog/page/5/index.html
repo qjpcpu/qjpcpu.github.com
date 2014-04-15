@@ -7,7 +7,10 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="ruby文件utf-8编码 # -*- coding: UTF-8 -*- 退出ssh登录后继续执行命令 如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令： nohup long_run_cmd &amp; Read on &rarr; Feb &hellip;">
+	<meta name="description" content="1.获取字符串长度 ${#string} &ndash; [jason@localhost ~]$ str="hello,world"
+[jason@localhost ~]$ echo ${#str}
+11 2.获取子串 ${string:position}
+${string:position &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +82,78 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/shellzi-fu-chuan-chu-li/">
+		
+			Shell字符串处理</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1.获取字符串长度</h3>
+
+<pre><code>${#string}
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str="hello,world"
+[jason@localhost ~]$ echo ${#str}
+11
+</code></pre>
+
+<h3>2.获取子串</h3>
+
+<pre><code>${string:position}
+${string:position:length}
+$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>[jason@localhost ~]$ str=ABCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1}
+BCDEFGHIJKLMN
+[jason@localhost ~]$ echo ${str:1:2}
+BC
+[jason@localhost ~]$ echo ${str:(-2)}
+MN
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/shellzi-fu-chuan-chu-li/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:10:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/shellzi-fu-chuan-chu-li/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -518,52 +593,6 @@ man.fall_in_love
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/ruby-webdriver/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/">
-		
-			Rails为paperclip上传文件添加访问控制</a>
-	</h2>
-	<div class="entry-content">
-		<h3>0 前言</h3>
-
-<p>由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。</p>
-
-
-		
-		<a href="/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T15:21:11+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

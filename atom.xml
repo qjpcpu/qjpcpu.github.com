@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-10T00:04:37+08:00</updated>
+  <updated>2014-04-15T21:02:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[sort]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
+    <updated>2014-04-15T20:57:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
+    <content type="html"><![CDATA[<h3>sort排序常用参数</h3>
+
+<p>-n : 按照数值排序</p>
+
+<p>-u : 过滤重复的行</p>
+
+<p>-r : 降序排序，默认升序</p>
+
+<p>-t : 指定分段符号</p>
+
+<p>-k : 按照第几个字段(1&hellip;)排序</p>
+
+<p>默认sort是按照字符排序的。</p>
+
+<h3>sort临时目录</h3>
+
+<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[server load]]></title>
@@ -1848,137 +1878,6 @@ mysql&gt; show slave status\G;
 <p>其中Slave_IO_Running和Slave_SQL_Running是yes就对了。</p>
 
 <p>最后，可以验证一下，在主库修改记录，从库可以看到同步过来的变化。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在rails外单独使用ActiveRecord]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/"/>
-    <updated>2014-02-15T00:20:50+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord</id>
-    <content type="html"><![CDATA[<!-- more -->
-
-
-<h3>单独使用ActiveRecord</h3>
-
-<p>需要在应用根目录demo/下的app.rb文件中写入：</p>
-
-<pre><code>require 'active_record'  
-require 'sqlite3'  
-
-ActiveRecord::Base.establish_connection(  
-    :adapter=&gt;'sqlite3',  
-    :database=&gt;'data.sqlite3',  
-    :pool=&gt;5,  
-    :timeout=&gt;5000  
-    )  
-
-class CreateUsers &lt; ActiveRecord::Migration  
-  def change  
-    create_table :users do |t|  
-      t.string :name  
-      t.integer :age  
-    end 
-  end  
-end  
-
-CreateUsers.new.change
-
-class User &lt; ActiveRecord::Base  
-end  
-
-User.create name:"Jack",age:12
-</code></pre>
-
-<p>首先，使用ActiveRecord::Base.establish_connection建立连接，然后定义数据表迁移，再使迁移生效建立数据表，最后就可以像在rails中一样定义model，然后正常使用ActiveRecord了。</p>
-
-<p>代码可以正常工作了，但可以做的工作还有很多，因为这段代码实在是不美观。</p>
-
-<h3>像样的结构</h3>
-
-<p>大杂烩式的代码文件总是不美的，上面代码中包含了数据库连接，表创建，model定义和实际的应用代码四部分，这么多功能各异的部件还是分开好。首先创建demo/db目录，在这个目录下放置所有数据库连接的定义；创建demo/models目录，在下面放置model定义文件。demo/app.rb文件位置不变。</p>
-
-<h3>model定义</h3>
-
-<p>model定义文件demo/user.rb的内容就是将上面的user类定义复制过来即可。</p>
-
-<pre><code>class User &lt; ActiveRecord::Base
-end
-</code></pre>
-
-<h3>ActiveRecord配置</h3>
-
-<p>新建demo/db/connection.rb文件，该文件里设置数据库连接：</p>
-
-<pre><code>require 'active_record'
-require 'yaml'
-
-dbconfig = YAML::load(File.open('db/database.yml'))
-ActiveRecord::Base.establish_connection(dbconfig)
-</code></pre>
-
-<p>这里模仿rails使用了yaml来配置连接，该文件也在demo/db目录下，内容为：</p>
-
-<pre><code>adapter: sqlite3
-database: data.sqlite3
-pool: 5
-timeout: 5000
-</code></pre>
-
-<p>现在的demo/app.rb清爽多了：</p>
-
-<pre><code>require File.expand_path('../db/connection',__FILE__)
-Dir[File.expand_path('../models',__FILE__)+'/*.rb'].each{|f| require f }
-
-User.create name:"Jack",age:12
-</code></pre>
-
-<h3>数据表迁移</h3>
-
-<p>现在还有一个问题，我也想像rails中那样利用rake来迁移数据表定义。参考我前一篇博客Rake就可以轻松写出数据迁移的rakefile。在demo/根目录下创建rakefile文件：</p>
-
-<pre><code>require 'active_record'
-require 'yaml'
-require 'logger'
-
-task :default =&gt; :migrate
-
-task :migrate =&gt; :environment do
-  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
-end
-
-task :environment do
-  ActiveRecord::Base.establish_connection(YAML::load(File.open('db/database.yml')))
-  ActiveRecord::Base.logger = Logger.new(File.open('db/database.log', 'a'))
-end
-</code></pre>
-
-<p>只要在终端中执行rake命令就可能完成数据迁移：</p>
-
-<pre><code>$ rake
-==  CreateUsers: migrating ====================================================
--- create_table(:users)
-   -&gt; 0.0020s
-==  CreateUsers: migrated (0.0040s) ===========================================
-</code></pre>
-
-<p>实际上现在还无法得出这样的输出，因为还没有编写迁移代码文件。那么迁移文件写在哪儿呢？在demo/db/migrate/目录中专门用来放置数据迁移代码，比如现在我们在该目录下新建一个迁移文件001_create_users.rb，写入迁移代码：</p>
-
-<pre><code>class CreateUsers &lt; ActiveRecord::Migration  
-  def change  
-    create_table :users do |t|  
-      t.string :name  
-      t.integer :age  
-    end 
-  end  
-end  
-</code></pre>
-
-<p>现在执行rake命令才能得出上面给出的正确输出。</p>
-
-<p>最后给出示例应用的最终目录结构：</p>
-
-<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=8350422bd309b3deefbfe46dfc841dbc/9358d109b3de9c8204461ccc6e81800a19d84356.jpg?referer=16e32c709045d688fa158794ad4c&amp;x=.jpg" alt="image" /></p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-10T00:04:37+08:00</updated>
+  <updated>2014-04-15T21:02:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[sort]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
+    <updated>2014-04-15T20:57:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
+    <content type="html"><![CDATA[<h3>sort排序常用参数</h3>
+
+<p>-n : 按照数值排序</p>
+
+<p>-u : 过滤重复的行</p>
+
+<p>-r : 降序排序，默认升序</p>
+
+<p>-t : 指定分段符号</p>
+
+<p>-k : 按照第几个字段(1&hellip;)排序</p>
+
+<p>默认sort是按照字符排序的。</p>
+
+<h3>sort临时目录</h3>
+
+<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[server load]]></title>

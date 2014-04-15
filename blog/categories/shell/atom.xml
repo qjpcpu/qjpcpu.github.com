@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-10T00:04:37+08:00</updated>
+  <updated>2014-04-15T21:02:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[sort]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
+    <updated>2014-04-15T20:57:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
+    <content type="html"><![CDATA[<h3>sort排序常用参数</h3>
+
+<p>-n : 按照数值排序</p>
+
+<p>-u : 过滤重复的行</p>
+
+<p>-r : 降序排序，默认升序</p>
+
+<p>-t : 指定分段符号</p>
+
+<p>-k : 按照第几个字段(1&hellip;)排序</p>
+
+<p>默认sort是按照字符排序的。</p>
+
+<h3>sort临时目录</h3>
+
+<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
+
+<p><code>bash
+sort -T /path/to/tmp_directory
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[linux下查看线程数]]></title>
@@ -128,50 +157,6 @@ date -d "5 minutes"  "%H:%M:%S"  #5分钟后
 date +%s   #返回当前时间戳1392954893
 date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[stat命令与文件时间]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/"/>
-    <updated>2014-03-12T15:04:54+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian</id>
-    <content type="html"><![CDATA[<h3>stat命令</h3>
-
-<p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
-
-<pre><code>$ stat access.log
-  File: `access.log'
-  Size: 1559877779  Blocks: 3049624    IO Block: 4096   regular file
-Device: ca20h/51744d    Inode: 16269326    Links: 1
-Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
-Access: 2014-03-09 21:58:33.000000000 +0800
-Modify: 2014-03-07 08:17:36.000000000 +0800
-Change: 2014-03-07 08:17:36.000000000 +0800
-</code></pre>
-
-<p>通常可以使用<code>-c</code>参数直接获取三个时间</p>
-
-<pre><code>$ stat -c %x access.log   #获取access time
-2014-03-09 21:58:33.000000000 +0800
-$ stat -c %y access.log  #获取modify time
-2014-03-07 08:17:36.000000000 +0800
-$ stat -c %z access.log #获取change time
-2014-03-07 08:17:36.000000000 +0800
-</code></pre>
-
-<!--more-->
-
-
-<h3>三个时间</h3>
-
-<p><code>access time</code>对应文件访问时间，只要有读操作就会更新这个时间。</p>
-
-<p><code>change time</code>对应文件元信息，比如文件重命名会更新该时间。</p>
-
-<p><code>modify time</code>对应文件内容修改时间，只要修改文件内容就会更新该时间，由于内容改变实际也改变文件元数据，所以写操作也更新<code>change time</code>。</p>
-
-<p>注意：对于文件夹来说，对文件夹下的文件增删，重命名，等操作，会修改文件夹<code>change time</code>和<code>modify time</code>，因为文件名实际是作为目录文件的内容存在的。</p>
 ]]></content>
   </entry>
   

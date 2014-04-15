@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>categories - Jason's space</title>
+	<title>sort - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" Life [ 2 ] Ruby [ 18 ] C-sharp [ 1 ] Git [ 2 ] Rails [ 13 ] Jruby [ 3 ] Shell [ 14 ] Go [ 3 ] Linux [ 3 ] ">
+	<meta name="description" content="sort排序常用参数 -n : 按照数值排序 -u : 过滤重复的行 -r : 降序排序，默认升序 -t : 指定分段符号 -k : 按照第几个字段(1&hellip;)排序 默认sort是按照字符排序的。 sort临时目录 默认情况下sort使用/tmp作为临时文件存放目录，如果根分区很小， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,32 +78,57 @@
 	
 		
 	
-	<div id="content" class="inner"><article class="page">
-    
-    <h1 class="title">Categories</h1>
-    
-    <div class="entry-content"><ul>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Sort</h2>
+	<div class="entry-content"><h3>sort排序常用参数</h3>
 
-    <li><a href="/blog/categories/life/">Life</a> [ 2 ]</li>
+<p>-n : 按照数值排序</p>
 
-    <li><a href="/blog/categories/ruby/">Ruby</a> [ 18 ]</li>
+<p>-u : 过滤重复的行</p>
 
-    <li><a href="/blog/categories/c-sharp/">C-sharp</a> [ 1 ]</li>
+<p>-r : 降序排序，默认升序</p>
 
-    <li><a href="/blog/categories/git/">Git</a> [ 2 ]</li>
+<p>-t : 指定分段符号</p>
 
-    <li><a href="/blog/categories/rails/">Rails</a> [ 13 ]</li>
+<p>-k : 按照第几个字段(1&hellip;)排序</p>
 
-    <li><a href="/blog/categories/jruby/">Jruby</a> [ 3 ]</li>
+<p>默认sort是按照字符排序的。</p>
 
-    <li><a href="/blog/categories/shell/">Shell</a> [ 14 ]</li>
+<h3>sort临时目录</h3>
 
-    <li><a href="/blog/categories/go/">Go</a> [ 3 ]</li>
+<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
 
-    <li><a href="/blog/categories/linux/">Linux</a> [ 3 ]</li>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure>
 
-</ul>
+</div>
 
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-15T20:57:34+08:00" pubdate data-updated="true">Apr 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
 </div>
 </article>
 
@@ -122,11 +147,10 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
-
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 
@@ -147,8 +171,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/categories/index.html';
-        var disqus_url = 'http://qjpcpu.github.io/blog/categories/index.html';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/04/15/sort/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/04/15/sort/';
         var disqus_script = 'embed.js';
       
     (function () {
