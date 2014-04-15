@@ -1,0 +1,29 @@
+---
+layout: post
+title: "sort"
+date: 2014-04-15 20:57:34 +0800
+comments: true
+categories: shell
+---
+
+### sort排序常用参数
+
+-n : 按照数值排序
+
+-u : 过滤重复的行
+
+-r : 降序排序，默认升序
+
+-t : 指定分段符号
+
+-k : 按照第几个字段(1...)排序
+
+默认sort是按照字符排序的。
+
+### sort临时目录
+
+默认情况下sort使用`/tmp`作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用`-T`参数来指定sort的临时目录：
+
+```bash
+sort -T /path/to/tmp_directory
+```
