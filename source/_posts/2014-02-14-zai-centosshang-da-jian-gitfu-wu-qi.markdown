@@ -143,7 +143,7 @@ gitolite是一款git服务管理工具，通过公钥对用户进行认证，并
 	[test@localhost ~]$ sudo chmod 775 /home/git
 	[test@localhost ~]$ sudo apachectl restart
 
-最后在浏览器里键入http://the_git_host就可以看到git库了，我在本机测试，使用的是http://localhost来访问服务器。
+最后在浏览器里键入 http://the_git_host 就可以看到git库了，我在本机测试，使用的是http://localhost来访问服务器。
 
 *注：*如果在完成上述操作后，仍然显示404 no project found，那很可能又是SELinux惹的麻烦，尝试更改selinux的状态为permissive后再刷新页面试试：
 
