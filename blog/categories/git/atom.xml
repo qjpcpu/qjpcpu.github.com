@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-15T21:02:46+08:00</updated>
+  <updated>2014-04-15T21:20:58+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -176,7 +176,7 @@ our @git_base_url_list = qw(git://git.the_git_host
 [test@localhost ~]$ sudo apachectl restart
 </code></pre>
 
-<p>最后在浏览器里键入<a href="http://the_git_host%E5%B0%B1%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0git%E5%BA%93%E4%BA%86%EF%BC%8C%E6%88%91%E5%9C%A8%E6%9C%AC%E6%9C%BA%E6%B5%8B%E8%AF%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFhttp://localhost%E6%9D%A5%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%82">http://the_git_host%E5%B0%B1%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0git%E5%BA%93%E4%BA%86%EF%BC%8C%E6%88%91%E5%9C%A8%E6%9C%AC%E6%9C%BA%E6%B5%8B%E8%AF%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AFhttp://localhost%E6%9D%A5%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%82</a></p>
+<p>最后在浏览器里键入<a href="http://the_git_host">http://the_git_host</a> 就可以看到git库了，我在本机测试，使用的是<a href="http://localhost">http://localhost</a> 来访问服务器。</p>
 
 <p><em>注：</em>如果在完成上述操作后，仍然显示404 no project found，那很可能又是SELinux惹的麻烦，尝试更改selinux的状态为permissive后再刷新页面试试：</p>
 
