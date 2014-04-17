@@ -141,6 +141,21 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 		print "Computing..."
 		return a+b
 	}BEGIN{ print sum(1,2) }' -
+	#写个二分搜索
+	awk 'function bsearch(element,arr,low,high){
+		while(low<=high){
+			mid=int((low+high)/2)
+			if(arr[mid]==element)
+				return mid
+			else if(arr[mid]<element)
+				low=mid+1
+			else
+				high=mid-1
+		}
+		print mid
+		return -1
+	}
+	BEGIN{ arr[1]="a";arr[2]="b";print bsearch("a",arr,1,2)}' -
 
 **给awk传递shell变量值**
 
