@@ -239,6 +239,21 @@ FILENAME #文件名
     print "Computing..."
     return a+b
 }BEGIN{ print sum(1,2) }' -
+#写个二分搜索
+awk 'function bsearch(element,arr,low,high){
+    while(low&lt;=high){
+        mid=int((low+high)/2)
+        if(arr[mid]==element)
+            return mid
+        else if(arr[mid]&lt;element)
+            low=mid+1
+        else
+            high=mid-1
+    }
+    print mid
+    return -1
+}
+BEGIN{ arr[1]="a";arr[2]="b";print bsearch("a",arr,1,2)}' -
 </code></pre>
 
 <p><strong>给awk传递shell变量值</strong></p>
