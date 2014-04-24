@@ -190,6 +190,13 @@ awk中调用shell命令，使用`system()`函数，被引号括起来的内容�
 	$ awk 'BEGIN{a="AWK";system("echo "a)}' -
 	AWK
 	
+如果在awk中调用系统命令且希望获取命令的输出可以这样，例如要执行`echo`命令：
+
+	$ awk 'BEGIN{cmd="echo hello"; cmd|getline x; print x}' -
+	hello
+	
+最好是将命令先写到变量如cmd，然后再管道到getline，否则有时可能获取不到输出。
+	
 **awk的正则表达式**
 	
 awk中支持的正则表达式是ERES,它包含下列特殊符号：
