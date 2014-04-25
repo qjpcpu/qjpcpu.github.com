@@ -152,7 +152,6 @@ sed的分组是很好玩的，在替换模式中，“&”代表前面匹配的�
 			else
 				high=mid-1
 		}
-		print mid
 		return -1
 	}
 	BEGIN{ arr[1]="a";arr[2]="b";print bsearch("a",arr,1,2)}' -
