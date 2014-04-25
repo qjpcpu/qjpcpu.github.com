@@ -250,7 +250,6 @@ awk 'function bsearch(element,arr,low,high){
         else
             high=mid-1
     }
-    print mid
     return -1
 }
 BEGIN{ arr[1]="a";arr[2]="b";print bsearch("a",arr,1,2)}' -
