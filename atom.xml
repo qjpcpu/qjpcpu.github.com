@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-04-25T13:59:08+08:00</updated>
+  <updated>2014-05-02T02:00:13+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,132 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[命令行参数]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu/"/>
+    <updated>2014-05-02T01:14:33+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu</id>
+    <content type="html"><![CDATA[<p>阅读docker源码第一个文件<code>DOCKER/docker/docker.go</code>，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。</p>
+
+<!-- more -->
+
+
+<h3>flag</h3>
+
+<p>go语言默认使用flag包来做命令行参数解析，对于这个包的使用可以参考官方文档的说明。但归结起来，使用这个包大概有三个步骤：</p>
+
+<ol>
+<li>使用<code>flag.XXX</code>函数定义参数名及保存参数的变量</li>
+<li>调用<code>flag.Parse()</code>进行参数的解析，解析结果被保存在定义的各个变量里</li>
+<li>读取这些变量值</li>
+</ol>
+
+
+<p>但docker里定义参数的函数和标准库不太一样，docker的flag可以使用参数名数组来定义参数。比如在标准flag库里定义一个显示版本号的参数：</p>
+
+<pre><code>flVersion = flag.Bool("v", false, "Print version information and quit")
+</code></pre>
+
+<p>但在docker里是这样定义的：</p>
+
+<figure class='code'><figcaption><span>docker/docker.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">flVersion</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Bool</span><span class="p">([]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="s">&quot;-version&quot;</span><span class="p">},</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&quot;Print version information and quit&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所以即可以使用<code>docker -v</code>也可以使用<code>docker --version</code>来显示版本号。</p>
+
+<h3>docker的实现</h3>
+
+<p>docker在这里玩了个小trick，首先它重写了标准库的flag，并将包名由<code>flag</code>改成<code>mflag</code>，然后这样导入包：</p>
+
+<pre><code>import flag "github.com/dotcloud/docker/pkg/mflag"
+</code></pre>
+
+<p>所以在docker里造成直接使用flag的假象。</p>
+
+<p>那么，docker是怎样实现多多参数名的支持的？</p>
+
+<p>首先，mflag将<code>Flag</code>的结构体定义参数名<code>Name</code>修改成数组形式<code>Names</code>：</p>
+
+<figure class='code'><figcaption><span>pkg/mflag/flag.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">Flag</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Names</span>    <span class="p">[]</span><span class="kt">string</span> <span class="c1">// name as it appears on command line</span>
+</span><span class='line'>    <span class="nx">Usage</span>    <span class="kt">string</span>   <span class="c1">// help message</span>
+</span><span class='line'>    <span class="nx">Value</span>    <span class="nx">Value</span>    <span class="c1">// value as set</span>
+</span><span class='line'>    <span class="nx">DefValue</span> <span class="kt">string</span>   <span class="c1">// default value (as text); for usage message</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后还利用了flag标准库本身的特性，在同一个变量上可以绑定多个参数名:</p>
+
+<pre><code>var de string
+flag.String(&amp;de,"a","","argument")
+flag.String(&amp;de,"b","","argument")
+</code></pre>
+
+<p>即可以用<code>cmd -a val</code>也可以用<code>cmd -b val</code>来调用，变量de的值都会被绑定为<code>val</code>。</p>
+
+<p>除此之外，docker的<code>mflag</code>包还多定义了一种“隐藏参数”：以<code>#</code>开头来定义参数名：</p>
+
+<pre><code>flag.Bool([]string{"#iptables", "-iptables"}, true, "Enable Docker's addition of iptables rules")
+</code></pre>
+
+<p>即，使用<code>-iptables</code>和<code>--iptables</code>都是有效的，但是在显示<code>Usage</code>时仅显示<code>--iptables</code>参数的使用说明，这是docker在不断升级更新时，所采用的一种兼容策略吧，允许旧参数的使用并给出警告，但以无帮助信息的方式不推荐旧参数。</p>
+
+<p>实际实现也很简单，就是在帮助函数里去除对旧参数的说明：</p>
+
+<figure class='code'><figcaption><span>pkg/mflag/flag.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">FlagSet</span><span class="p">)</span> <span class="nx">PrintDefaults</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">f</span><span class="p">.</span><span class="nx">VisitAll</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">flag</span> <span class="o">*</span><span class="nx">Flag</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">format</span> <span class="o">:=</span> <span class="s">&quot;  -%s=%s: %s\n&quot;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="o">*</span><span class="nx">stringValue</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// put quotes on the value</span>
+</span><span class='line'>            <span class="nx">format</span> <span class="p">=</span> <span class="s">&quot;  -%s=%q: %s\n&quot;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">names</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">name</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Names</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;#&#39;</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">names</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">names</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">out</span><span class="p">(),</span> <span class="nx">format</span><span class="p">,</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Join</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="s">&quot;, -&quot;</span><span class="p">),</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">DefValue</span><span class="p">,</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Usage</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在10-12行，如果参数名定义时以<code>#</code>开头则不打印参数帮助。</p>
+
+<p>好吧，参数解析源码其实和标准库大部分都是一样的，看到不一样的地方就行了，今天就到这里吧。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[sort]]></title>
@@ -1729,155 +1855,6 @@ sheet.add_row ["a', "b"], :style =&gt; header
 <p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
 
 <p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[一步一步搭建mysql主从同步]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
-    <updated>2014-02-15T00:24:49+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu</id>
-    <content type="html"><![CDATA[<h3>下载mysql数据库</h3>
-
-<pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
-tar vzxf mysql-5.1.73.tar.gz
-</code></pre>
-
-<!-- more -->
-
-
-<h3>编译安装</h3>
-
-<p>最好专门创建一个用户mysql来安装数据库。</p>
-
-<pre><code>MYSQL_BASEDIR=$HOME/mysql
-cd mysql-5.1.73
-./configure 
---prefix=${MYSQL_BASEDIR} 
---with-charset=gbk 
---with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
---with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
---with-mysqld-user=mysql     #以哪个用户执行mysqld进程
-make
-make install
-</code></pre>
-
-<h3>初始化数据库</h3>
-
-<p>复制必要的配置文件和启停脚本</p>
-
-<pre><code>cd ${MYSQL_BASEDIR}
-mkdir etc log tmp var
-cp share/mysql/my-medium.cnf  my.cnf
-cp share/mysql/mysql.server  bin/
-</code></pre>
-
-<h3>修改配置文件</h3>
-
-<pre><code>vim ./my.cnf
-</code></pre>
-
-<p>在[mysqld]下添加配置项：</p>
-
-<pre><code>basedir= ${MYSQL_BASEDIR}   # ${MYSQL_BASEDIR}是你的mysql安装目录
-datadir = ${MYSQL_BASEDIR}/var   # mysql数据路径
-tmpdir = ${MYSQL_BASEDIR}/tmp   # 临时文件路径
-slave-load-tmpdir = ${MYSQL_BASEDIR}/tmp   # 从服务器同步LOAD DATA INFILE语句时创建临时文件的目录名
-port = 3306   # 如果修改port，[mysqld] 和 [client]下的port都要修改
-pid-file = ${MYSQL_BASEDIR}/var/mysql.pid  # mysqld PID文件位置
-#以下为可选
-socket = ${MYSQL_BASEDIR}/tmp/mysql.sock  # 用于指定本地连接的Unix套接字文件位置，[mysqld] 和 [client]下的port都要修改
-#skip-name-resolve   # 是否仅使用ip验证客户端
-#skip-symbolic-links  #忽略MyISAM表的数据及索引文件连接到另一个目录下
-max_connect_errors = 10000
-max_connections = 500
-wait-timeout = 30
-</code></pre>
-
-<p>启动数据库</p>
-
-<pre><code>$ ./bin/mysql_install_db  #安装数据库文件
-$ ./bin/mysql.server start    #出现下面这行说数据库启动ok了
-Starting MySQL.                                            [  OK  ]
-</code></pre>
-
-<h3>配置mysql用户</h3>
-
-<p>使用./bin目录下的mysql命令可以登录到数据库，登录后删除匿名用户并且为root设置密码：</p>
-
-<pre><code>$ mysql -u root
-&gt; delete from mysql.user where user='';
-&gt; UPDATE mysql.user SET Password = PASSWORD('password') WHERE user='root';
-</code></pre>
-
-<p>按照以上同样的步骤再搭建一个mysql，注意，如果在同一主机搭建多个mysql实例，那么就需要将端口改成不同才行。</p>
-
-<p>下面开始配置主从同步。</p>
-
-<p>首先在主库新建专门用于同步的数据库账号mysqlsync</p>
-
-<pre><code>&gt; GRANT REPLICATION SLAVE ON *.* TO 'mysqlsync'@'%' IDENTIFIED BY 'password';
-</code></pre>
-
-<h3>主库配置</h3>
-
-<p>所有的配置项还是在my.cnf中的[mysqld]下添加。</p>
-
-<p>首先server-id作为MySQL服务器的标识，具有相关联上下游同步系统需具有全局唯一性。主库我们将server-id配置为1。其他主库需要添加的配置有：</p>
-
-<pre><code>server-id=1
-# 同步过程中需要忽略的表，支持正则表达式。全库同步时，必须屏蔽mysql系统库和test测试库。
-replicate-wild-ignore-table = mysql.%
-replicate-wild-ignore-table = test.%
-# 需要同步的表，多个表需多次指定，这里我们使用全库同步,方便点
-# replicate-do-table = database.table
-log-bin = mysql-bin  #二进制日志，强制开启
-log-bin-index = mysql-bin.index  # 记录二进制日志索引文件
-relay-log-index = relay-log.index # 记录中继日志索引文件
-</code></pre>
-
-<h3>从库配置</h3>
-
-<pre><code>server-id=2
-read-only # 在从库开启该选项，避免在从库上进行写操作，导致主从数据不一致（不过对super权限无效哦）
-skip-slave-start # 在从库开启该选项，启动数据库后，需手动开启同步进程
-relay-log = mysql-relay #中继日志，从库开启
-relay-log-index = relay-log.index
-log-bin = mysql-bin
-log-bin-index = mysql-bin.index
-replicate-wild-ignore-table = mysql.%
-replicate-wild-ignore-table = test.%
-</code></pre>
-
-<h3>同步设置</h3>
-
-<p>启动主数据库，并查看主库状态：</p>
-
-<pre><code>$ ./bin/mysql.server start
-$ mysql -u root -p
-mysql&gt; show master status;
-</code></pre>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=21e536be79899e517c8e3a11729ca80e/e7cd7b899e510fb31b3b92d4db33c895d1430c56.jpg?referer=a44e286a8418367af49e4aed6c4d&amp;x=.jpg" alt="image" /></p>
-
-<p>记下来log文件名和位置，这里是“mysql-bin.000005&#8221;和”106“。</p>
-
-<p>然后启动从库，</p>
-
-<pre><code>$ ./bin/mysql.server start
-$ mysql -u root -p
-mysql&gt; change master to master_host='your_host',master_port=3307,master_user='mysqlsync',master_password='pasword',master_log_file='mysql-bin.000005',master_log_pos=106;
-mysql&gt; startslave;  #启动从库
-mysql&gt; show slave status\G;
-</code></pre>
-
-<p>最后一条sql命令得到如图结果：</p>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a307b4b80846f21fcd345e56c61f1a5d/7acb0a46f21fbe091fae395769600c338644ad85.jpg?referer=781a5e5095dda144831e58820b9b&amp;x=.jpg" alt="image" /></p>
-
-<p>其中Slave_IO_Running和Slave_SQL_Running是yes就对了。</p>
-
-<p>最后，可以验证一下，在主库修改记录，从库可以看到同步过来的变化。</p>
 ]]></content>
   </entry>
   
