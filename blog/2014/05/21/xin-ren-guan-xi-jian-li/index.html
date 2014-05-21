@@ -106,6 +106,43 @@ ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa 添加信任关系 在host2�
 
 
 
+
+<!--more-->
+
+
+<p>下面是一个示例脚本，在一个中控机上（能同时访问a和b）建立a到b的信任关系：</p>
+
+<figure class='code'><figcaption><span>relation_a2b</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$#&quot;</span> -lt 2 <span class="o">]</span>;<span class="k">then</span>
+</span><span class='line'><span class="k">        </span><span class="nb">echo</span> <span class="s2">&quot;Usage: relation_a2b host1 host2&quot;</span>
+</span><span class='line'>        <span class="nb">exit </span>1
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'><span class="nv">from</span><span class="o">=</span><span class="nv">$1</span>
+</span><span class='line'><span class="nv">to</span><span class="o">=</span><span class="nv">$2</span>
+</span><span class='line'><span class="nv">key</span><span class="o">=</span><span class="sb">`</span>ssh <span class="nv">$from</span> <span class="s2">&quot;ssh-keyscan -t rsa $to &gt;&gt; ~/.ssh/known_hosts &amp;&amp; cat ~/.ssh/id_rsa.pub&quot;</span><span class="sb">`</span>
+</span><span class='line'>ssh <span class="nv">$to</span> <span class="s2">&quot;echo $key &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;DONE!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>relation_a2b host1 host2
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-05-21T16:04:22+08:00</updated>
+  <updated>2014-05-21T16:39:52+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -38,6 +38,35 @@ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
 <p><code>bash
 ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</code></p>
+
+<!--more-->
+
+
+<p>下面是一个示例脚本，在一个中控机上（能同时访问a和b）建立a到b的信任关系：</p>
+
+<p>```bash relation_a2b</p>
+
+<h1>!/bin/bash</h1>
+
+<p>if [ &ldquo;$#&rdquo; -lt 2 ];then</p>
+
+<pre><code>    echo "Usage: relation_a2b host1 host2"
+    exit 1
+</code></pre>
+
+<p>fi
+from=$1
+to=$2
+key=<code>ssh $from "ssh-keyscan -t rsa $to &gt;&gt; ~/.ssh/known_hosts &amp;&amp; cat ~/.ssh/id_rsa.pub"</code>
+ssh $to &ldquo;echo $key >> ~/.ssh/authorized_keys&rdquo;
+echo &ldquo;DONE!&rdquo;
+```</p>
+
+<p>使用方法</p>
+
+<p><code>bash
+relation_a2b host1 host2
 </code></p>
 ]]></content>
   </entry>
