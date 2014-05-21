@@ -28,3 +28,26 @@ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 ssh-keyscan host2 >> ~/.ssh/known_hosts
 ```
 
+<!--more-->
+
+下面是一个示例脚本，在一个中控机上（能同时访问a和b）建立a到b的信任关系：
+
+```bash relation_a2b
+#!/bin/bash
+if [ "$#" -lt 2 ];then
+        echo "Usage: relation_a2b host1 host2"
+        exit 1
+fi
+from=$1
+to=$2
+key=`ssh $from "ssh-keyscan -t rsa $to >> ~/.ssh/known_hosts && cat ~/.ssh/id_rsa.pub"`
+ssh $to "echo $key >> ~/.ssh/authorized_keys"
+echo "DONE!"
+```
+
+使用方法
+
+```bash
+relation_a2b host1 host2
+```
+
