@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-05-18T20:19:41+08:00</updated>
+  <updated>2014-05-21T16:04:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[信任关系建立]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
+    <updated>2014-05-21T14:58:28+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
+    <content type="html"><![CDATA[<h3>建立host1到host2的信任关系</h3>
+
+<h4>如果A的rsa文件不存在可以这样建立</h4>
+
+<p>首先在<code>host1</code>上：</p>
+
+<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>添加信任关系</h4>
+
+<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
+
+<h4>避免第一次连接出现添加fingerprint的询问</h4>
+
+<p>在<code>host1</code>上执行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[命令行参数]]></title>
@@ -1793,68 +1826,6 @@ sheet.add_row ["a', "b"], :style =&gt; header
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
-    <updated>2014-02-15T00:34:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
-    <content type="html"><![CDATA[<h3>安装</h3>
-
-<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
-
-<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
-
-<!-- more -->
-
-
-<p>安装axlsx和安装其他gem一样：</p>
-
-<pre><code>$ gem install axlsx
-</code></pre>
-
-<h3>创建第一个报表</h3>
-
-<p>axlsx使用的对象和office文档使用的对象完全一样，workbook代表一个文档，worksheet代表一张表，row和cell代表行和单元格，基本上所有的对象顾名思义即可，而不需要了解文档ECMA规范。</p>
-
-<p>比如要创建一张如图所示的报表：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">p</span> <span class="o">=</span> <span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'><span class="n">wb</span> <span class="o">=</span> <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Basic Worksheet&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First Column&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="p">,</span><span class="s2">&quot;Total&quot;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="s2">&quot;=SUM(A2:C2)&quot;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s1">&#39;This is a very very long sentence.&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span> <span class="s2">&quot;A3:D3&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;basic.xlsx&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
-
-<p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
 ]]></content>
   </entry>
   

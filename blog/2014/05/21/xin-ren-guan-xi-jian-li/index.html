@@ -3,11 +3,12 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>categories - Jason's space</title>
+	<title>信任关系建立 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" Life [ 2 ] Ruby [ 18 ] C-sharp [ 1 ] Git [ 2 ] Rails [ 13 ] Jruby [ 3 ] Shell [ 15 ] Go [ 3 ] Linux [ 3 ] Docker [ 1 ] ">
+	<meta name="description" content="建立host1到host2的信任关系 如果A的rsa文件不存在可以这样建立 首先在host1上： create_rsa.sh 1
+ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa 添加信任关系 在host2上，将host1的~/.ssh/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,34 +79,60 @@
 	
 		
 	
-	<div id="content" class="inner"><article class="page">
-    
-    <h1 class="title">Categories</h1>
-    
-    <div class="entry-content"><ul>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">信任关系建立</h2>
+	<div class="entry-content"><h3>建立host1到host2的信任关系</h3>
 
-    <li><a href="/blog/categories/life/">Life</a> [ 2 ]</li>
+<h4>如果A的rsa文件不存在可以这样建立</h4>
 
-    <li><a href="/blog/categories/ruby/">Ruby</a> [ 18 ]</li>
+<p>首先在<code>host1</code>上：</p>
 
-    <li><a href="/blog/categories/c-sharp/">C-sharp</a> [ 1 ]</li>
+<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure>
 
-    <li><a href="/blog/categories/git/">Git</a> [ 2 ]</li>
 
-    <li><a href="/blog/categories/rails/">Rails</a> [ 13 ]</li>
+<h4>添加信任关系</h4>
 
-    <li><a href="/blog/categories/jruby/">Jruby</a> [ 3 ]</li>
+<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
 
-    <li><a href="/blog/categories/shell/">Shell</a> [ 15 ]</li>
+<h4>避免第一次连接出现添加fingerprint的询问</h4>
 
-    <li><a href="/blog/categories/go/">Go</a> [ 3 ]</li>
+<p>在<code>host1</code>上执行：</p>
 
-    <li><a href="/blog/categories/linux/">Linux</a> [ 3 ]</li>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</span></code></pre></td></tr></table></div></figure>
 
-    <li><a href="/blog/categories/docker/">Docker</a> [ 1 ]</li>
 
-</ul>
 
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-21T14:58:28+08:00" pubdate data-updated="true">May 21<span>st</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
 </div>
 </article>
 
@@ -124,11 +151,10 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
-
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 
@@ -149,8 +175,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/categories/index.html';
-        var disqus_url = 'http://qjpcpu.github.io/blog/categories/index.html';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/';
         var disqus_script = 'embed.js';
       
     (function () {

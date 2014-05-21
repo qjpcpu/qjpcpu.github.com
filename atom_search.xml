@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-05-18T20:19:41+08:00</updated>
+  <updated>2014-05-21T16:04:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[信任关系建立]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
+    <updated>2014-05-21T14:58:28+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
+    <content type="html"><![CDATA[<h3>建立host1到host2的信任关系</h3>
+
+<h4>如果A的rsa文件不存在可以这样建立</h4>
+
+<p>首先在<code>host1</code>上：</p>
+
+<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>添加信任关系</h4>
+
+<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
+
+<h4>避免第一次连接出现添加fingerprint的询问</h4>
+
+<p>在<code>host1</code>上执行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[命令行参数]]></title>
