@@ -40,9 +40,9 @@ if [ "$#" -lt 2 ];then
 fi
 from=$1
 to=$2
-key=`ssh $from "ssh-keyscan -t rsa $to >> ~/.ssh/known_hosts && cat ~/.ssh/id_rsa.pub"`
+key=`ssh $from "ssh-keyscan -t rsa $to >> ~/.ssh/known_hosts 2>/dev/null && cat ~/.ssh/id_rsa.pub"`
 ssh $to "echo $key >> ~/.ssh/authorized_keys"
-echo "DONE!"
+echo "$from --> $to [OK]"
 ```
 
 使用方法
