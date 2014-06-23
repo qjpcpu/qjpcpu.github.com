@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-05-26T14:08:38+08:00</updated>
+  <updated>2014-06-23T14:40:07+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,26 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[你不知道的Go]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
+    <updated>2014-06-23T14:37:47+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
+    <content type="html"><![CDATA[<h3>匿名结构</h3>
+
+<p>```go
+var person struct {</p>
+
+<pre><code>name      string
+age int
+</code></pre>
+
+<p>}
+person.name=&ldquo;jack&rdquo;
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Go学习笔记-类型与接口]]></title>

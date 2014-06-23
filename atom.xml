@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-05-26T14:08:38+08:00</updated>
+  <updated>2014-06-23T14:40:07+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[你不知道的Go]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
+    <updated>2014-06-23T14:37:47+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
+    <content type="html"><![CDATA[<h3>匿名结构</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span>      <span class="kt">string</span>
+</span><span class='line'>    <span class="nx">age</span> <span class="kt">int</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[信任关系建立]]></title>
@@ -1662,207 +1684,6 @@ Content-Type:text/html
 
 
 <p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[axlsx报表工具(二)格式化为美观的表格]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
-    <updated>2014-02-15T00:38:10+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
-    <content type="html"><![CDATA[<h3>基础知识</h3>
-
-<p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
-
-<pre><code>(Integer) add_style(options = {})
-</code></pre>
-
-<!-- more -->
-
-
-<p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
-
-<pre><code>Options Hash (options):
-fg_color (String) — 字体颜色，如：FFFF0000
-sz (Integer) — 字体大小
-b (Boolean) — 是否粗体
-i (Boolean) — 是否斜体
-u (Boolean) — 是否加下划线
-strike (Boolean) — 是否加删除线
-shadow (Boolean) — 是否加阴影
-charset (Integer) — 字符集，可选的字符集列表：
-0   ANSI_CHARSET
-1   DEFAULT_CHARSET
-2   SYMBOL_CHARSET
-77  MAC_CHARSET
-128 SHIFTJIS_CHARSET
-129 HANGUL_CHARSET
-130 JOHAB_CHARSET
-134 GB2312_CHARSET
-136 CHINESEBIG5_CHARSET
-161 GREEK_CHARSET
-162 TURKISH_CHARSET
-163 VIETNAMESE_CHARSET
-177 HEBREW_CHARSET
-178 ARABIC_CHARSET
-186 BALTIC_CHARSET
-204 RUSSIAN_CHARSET
-222 THAI_CHARSET
-238 EASTEUROPE_CHARSET
-255 OEM_CHARSET
-
-
-family (Integer) — 字体，可选字体：
-0 Not applicable.
-1 Roman
-2 Swiss
-3 Modern
-4 Script
-5 Decorative
-6..14 Reserved for future use
-
-
-font_name (String) — 字体名称
-num_fmt (Integer) — 数字格式：可选格式：
-1 0
-2 0.00
-3 #,##0
-4 #,##0.00
-5 $#,##0_);($#,##0)
-6 $#,##0_);[Red]($#,##0)
-7 $#,##0.00_);($#,##0.00)
-8 $#,##0.00_);[Red]($#,##0.00)
-9 0%
-10 0.00%
-11 0.00E+00
-12 # ?/?
-13 # ??/??
-14 m/d/yyyy
-15 d-mmm-yy
-16 d-mmm
-17 mmm-yy
-18 h:mm AM/PM
-19 h:mm:ss AM/PM
-20 h:mm
-21 h:mm:ss
-22 m/d/yyyy h:mm
-37 #,##0_);(#,##0)
-38 #,##0_);[Red](#,##0)
-39 #,##0.00_);(#,##0.00)
-40 #,##0.00_);[Red](#,##0.00)
-45 mm:ss
-46 [h]:mm:ss
-47 mm:ss.0
-48 ##0.0E+0
-49 @
-
-
-format_code (String) — 自定义格式如'yyyy-mm-dd'，如果设置了该值，则num_fmt将被忽略.
-border (Integer|Hash) — 边框样式.
-bg_color (String) — 单元格背景色
-hidden (Boolean) — 是否隐藏单元格
-locked (Boolean) — 是否锁定单元格
-type (Symbol) — 风格类型，可选的类型有[:dxf, :xf]. :xf事默认类型
-alignment (Hash) — 对齐.该hash的包括：
-horizontal (Symbol)，该键对应的值包括有：
-:general
-:left
-:center
-:right
-:fill
-:justify
-:centerContinuous
-:distributed
-vertical (Symbol)，该键对应的值有：
-:top
-:center
-:bottom
-:justify
-:distributed
-textRotation (Integer)
-wrapText (Boolean)
-indent (Integer)
-relativeIndent (Integer)
-justifyLastLine (Boolean)
-shrinkToFit (Boolean)
-readingOrder (Integer)
-</code></pre>
-
-<h3>格式化报表示例</h3>
-
-<p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
-
-<pre><code>sheet.add_row ['a', "b"], :style =&gt; [nil, header] #header是创建好的style
-#or
-sheet.add_row ["a', "b"], :style =&gt; header
-</code></pre>
-
-<p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
-
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9b79859e2c738bd4c021b23491b0f6eb/4bed2e738bd4b31cc6cc6ef885d6277f9f2ff885.jpg?referer=f3368c656f224f4a0e8e4723389b&amp;x=.jpg" alt="image" /></p>
-
-<p>下面是创建如图报表的部分代码：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span> <span class="k">do</span> <span class="o">|</span><span class="n">wb</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">styles</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">styles</span>
-</span><span class='line'>    <span class="n">header</span>     <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFFF33&quot;</span><span class="p">,</span><span class="ss">:fg_color</span><span class="o">=&gt;</span><span class="s2">&quot;0033CC&quot;</span><span class="p">,</span> <span class="ss">:sz</span> <span class="o">=&gt;</span> <span class="mi">16</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span><span class="p">}</span>
-</span><span class='line'>    <span class="n">tbl_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span><span class="o">=&gt;</span><span class="s2">&quot;99FF33&quot;</span><span class="p">,</span><span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">ind_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'>    <span class="n">col_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">label</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">money</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span>
-</span><span class='line'>    <span class="n">t_label</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
-</span><span class='line'>    <span class="n">t_money</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>               <span class="c1">#添加空行</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;College Budget&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">header</span><span class="o">]</span>        <span class="c1">#标题，大字体居中</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;What&#39;s coming in this month.&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;How am I doing&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="n">tbl_header</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="o">]</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Estimated monthly net income&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Monthly income&quot;</span><span class="p">,</span> <span class="s2">&quot;=C9&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="o">]</span>
-</span><span class='line'>      <span class="c1">#省略部分代码</span>
-</span><span class='line'>      <span class="sx">%w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">range</span><span class="o">|</span> <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span><span class="p">(</span><span class="n">range</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">column_widths</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">use_shared_strings</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;styles.xlsx&#39;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   
