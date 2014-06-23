@@ -7,14 +7,22 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="匿名结构 1
+	<meta name="description" content="1.匿名结构 1
 2
 3
 4
 5
 var person struct { name string age int
 }
-person.name=&quot;jack&quot; Jun 23rd, 2014 go Comments ">
+person.name=&quot;jack&quot; 声明时初始化： 1
+2
+3
+4
+5
+6
+7
+8
+st := struct { name string age int &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -87,7 +95,7 @@ person.name=&quot;jack&quot; Jun 23rd, 2014 go Comments ">
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">你不知道的Go</h2>
-	<div class="entry-content"><h3>匿名结构</h3>
+	<div class="entry-content"><h3>1.匿名结构</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -100,6 +108,32 @@ person.name=&quot;jack&quot; Jun 23rd, 2014 go Comments ">
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>声明时初始化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">name</span> <span class="kt">string</span>
+</span><span class='line'>  <span class="nx">age</span>  <span class="kt">int</span>
+</span><span class='line'><span class="p">}{</span>
+</span><span class='line'>  <span class="s">&quot;Jack&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="mi">12</span><span class="p">,</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
 
 </div>
 
