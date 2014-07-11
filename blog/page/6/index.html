@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby， &hellip;">
+	<meta name="description" content="0. 引言 昨天遇到一个问题，就是关于对象状态转移的问题，我姑且这样命名吧。简要描述一下就是：对于一个人，他有进食，帮助他人，恋爱等功能，但是这些功能是有先后顺序的，对于刚出生的人，他要先学会进食，然后随着他的成长，他逐渐学会帮助他人，在这个过程中他学会了爱与被爱，当他遇到一个合适的女孩， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,63 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/">
+		
+			状态转移</a>
+	</h2>
+	<div class="entry-content">
+		<h3>0. 引言</h3>
+
+<p>昨天遇到一个问题，就是关于对象状态转移的问题，我姑且这样命名吧。简要描述一下就是：对于一个人，他有进食，帮助他人，恋爱等功能，但是这些功能是有先后顺序的，对于刚出生的人，他要先学会进食，然后随着他的成长，他逐渐学会帮助他人，在这个过程中他学会了爱与被爱，当他遇到一个合适的女孩，他就坠入了爱河。整个过程反映到程序上就是，必须按照下面的顺序调用方法：</p>
+
+<pre><code>man=Human.new
+man.feed
+man.fall_in_love   # Error
+man.help_people
+man.fall_in_love
+</code></pre>
+
+<p>如果你调用某个功能时没有完成前面的事情，就像上面的例子这样，一个人尚未学会帮助他人的人，我们是不希望他去恋爱的，这样一个不懂得互助互爱的人怎么可能珍惜自己的爱人呢？</p>
+
+<p>所以，对象状态转移就是：某个对象随着状态转移获得调用新方法的能力或权限，未达到某个状态前无法调用该状态下的方法。</p>
+
+
+		
+		<a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:30:39+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/zhuang-tai-zhuan-yi/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -498,59 +555,6 @@ git是为git服务器创建的专有账户。</p>
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/gitchang-yong-cao-zuo/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/">
-		
-			在Linq中使用委托作为相等比较</a>
-	</h2>
-	<div class="entry-content">
-		<p>Linq中的操作符的相等比较都使用IEqualityComparer<T>作为判断依据，常见的使用该接口的操作符有：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">Distinct</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;,</span> <span class="n">IEqualityComparer</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;)</span>
-</span><span class='line'><span class="n">Contains</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;,</span> <span class="n">TSource</span><span class="p">,</span> <span class="n">IEqualityComparer</span><span class="p">&lt;</span><span class="n">TSource</span><span class="p">&gt;)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用该接口固然可以进行自定义的相等比较，但若对同一类型要做多种相等比较则需要继承实现IEqualityComparer<T>接口的多个子类型，这对于像我这样懒惰的程序员是很难接受的。</p>
-
-
-		
-		<a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T14:13:30+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c-sharp/'>c-sharp</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

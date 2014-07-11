@@ -7,10 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="数组定义 定义数组需要用括号把元素包裹起来。 colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]} # red green blue black white
-echo ${colors[@]} # red green &hellip;">
+	<meta name="description" content="stat命令 stat命令常用来获取文件三个时间access time,modify time和change time $ stat access.log File: `access.log' Size: 1559877779 Blocks: 3049624 IO Block: 4096 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -82,6 +79,72 @@ echo ${colors[@]} # red green &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/">
+		
+			Stat命令与文件时间</a>
+	</h2>
+	<div class="entry-content">
+		<h3>stat命令</h3>
+
+<p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
+
+<pre><code>$ stat access.log
+  File: `access.log'
+  Size: 1559877779  Blocks: 3049624    IO Block: 4096   regular file
+Device: ca20h/51744d    Inode: 16269326    Links: 1
+Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
+Access: 2014-03-09 21:58:33.000000000 +0800
+Modify: 2014-03-07 08:17:36.000000000 +0800
+Change: 2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+<p>通常可以使用<code>-c</code>参数直接获取三个时间</p>
+
+<pre><code>$ stat -c %x access.log   #获取access time
+2014-03-09 21:58:33.000000000 +0800
+$ stat -c %y access.log  #获取modify time
+2014-03-07 08:17:36.000000000 +0800
+$ stat -c %z access.log #获取change time
+2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+
+		
+		<a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-12T15:04:54+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -662,54 +725,6 @@ Content-Type:text/html
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/">
-		
-			Axlsx报表工具(三)创建图表</a>
-	</h2>
-	<div class="entry-content">
-		<h3>饼图</h3>
-
-<p>axlsx创建饼状图非常简单，上图：</p>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
-
-
-		
-		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T00:42:48+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
