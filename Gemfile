@@ -1,5 +1,6 @@
 source "http://ruby.taobao.org"
 
+  gem 'rake'
 group :development do
   gem 'rake'
   gem 'jekyll', '~> 0.12'
