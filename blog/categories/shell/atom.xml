@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-07-30T23:35:31+08:00</updated>
+  <updated>2014-08-10T14:28:48+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -97,6 +97,16 @@ relation_a2b host1 host2
 <p><code>bash
 sort -T /path/to/tmp_directory
 </code></p>
+
+<h3>sort不为人知的一个深坑</h3>
+
+<p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
+
+<p><code>bash
+export LC_ALL=C
+</code></p>
+
+<p>为什么这样设置，可以<code>man sort</code>看一下它的warning部分的说明。</p>
 ]]></content>
   </entry>
   
