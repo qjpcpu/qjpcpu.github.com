@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-10T14:28:48+08:00</updated>
+  <updated>2014-08-14T00:32:03+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -486,145 +486,7 @@ end
 
 <p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
 
-<p><div><script src='https://gist.github.com/9017226.js?file=jquery_template.html.erb'></script>
-<noscript><pre><code>&lt;div class=&quot;container&quot;&gt;
-  &lt;h2&gt;Upload file&lt;/h2&gt;
-  &lt;%= form_for Picture.new, :html =&gt; { :multipart =&gt; true, :id =&gt; &quot;fileupload&quot;  } do |f| %&gt;
-    &lt;!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload --&gt;
-    &lt;div class=&quot;row fileupload-buttonbar&quot;&gt;
-      &lt;div class=&quot;span7&quot;&gt;
-        &lt;!-- The fileinput-button span is used to style the file input field as button --&gt;
-        &lt;span class=&quot;btn btn-success fileinput-button&quot;&gt;
-          &lt;i class=&quot;icon-plus icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Add files...&lt;/span&gt;
-          &lt;%= f.file_field :avatar %&gt;
-        &lt;/span&gt;
-        &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary start&quot;&gt;
-          &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Start upload&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type=&quot;reset&quot; class=&quot;btn btn-warning cancel&quot;&gt;
-          &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Cancel upload&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type=&quot;button&quot; class=&quot;btn btn-danger delete&quot;&gt;
-          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;Delete&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;input type=&quot;checkbox&quot; class=&quot;toggle&quot;&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;span5&quot;&gt;
-        &lt;!-- The global progress bar --&gt;
-        &lt;div class=&quot;progress progress-success progress-striped active fade&quot;&gt;
-          &lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;!-- The loading indicator is shown during image processing --&gt;
-    &lt;div class=&quot;fileupload-loading&quot;&gt;&lt;/div&gt;
-    &lt;br&gt;
-    &lt;!-- The table listing the files available for upload/download --&gt;
-    &lt;table class=&quot;table table-striped&quot;&gt;&lt;tbody class=&quot;files&quot; data-toggle=&quot;modal-gallery&quot; data-target=&quot;#modal-gallery&quot;&gt;&lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;% end %&gt;
-
-&lt;/div&gt;
-&lt;script&gt;
-  var fileUploadErrors = {
-  maxFileSize: &#39;File is too big&#39;,
-  minFileSize: &#39;File is too small&#39;,
-  acceptFileTypes: &#39;Filetype not allowed&#39;,
-  maxNumberOfFiles: &#39;Max number of files exceeded&#39;,
-  uploadedBytes: &#39;Uploaded bytes exceed file size&#39;,
-  emptyResult: &#39;Empty file upload result&#39;
-  };
-&lt;/script&gt;
-
-&lt;!-- The template to display files available for upload --&gt;
-&lt;script id=&quot;template-upload&quot; type=&quot;text/x-tmpl&quot;&gt;
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-  &lt;tr class=&quot;template-upload fade&quot;&gt;
-    &lt;td class=&quot;preview&quot;&gt;&lt;span class=&quot;fade&quot;&gt;&lt;/span&gt;&lt;/td&gt;
-    &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
-    &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-    {% if (file.error) { %}
-    &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
-    {% } else if (o.files.valid &amp;&amp; !i) { %}
-    &lt;td&gt;
-      &lt;div class=&quot;progress progress-success progress-striped active&quot;&gt;&lt;div class=&quot;bar&quot; style=&quot;width:0%;&quot;&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;start&quot;&gt;{% if (!o.options.autoUpload) { %}
-      &lt;button class=&quot;btn btn-primary&quot;&gt;
-        &lt;i class=&quot;icon-upload icon-white&quot;&gt;&lt;/i&gt;
-        &lt;span&gt;{%=locale.fileupload.start%}&lt;/span&gt;
-      &lt;/button&gt;
-      {% } %}&lt;/td&gt;
-    {% } else { %}
-    &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
-    {% } %}
-    &lt;td class=&quot;cancel&quot;&gt;{% if (!i) { %}
-      &lt;button class=&quot;btn btn-warning&quot;&gt;
-        &lt;i class=&quot;icon-ban-circle icon-white&quot;&gt;&lt;/i&gt;
-        &lt;span&gt;{%=locale.fileupload.cancel%}&lt;/span&gt;
-      &lt;/button&gt;
-      {% } %}&lt;/td&gt;
-  &lt;/tr&gt;
-  {% } %}
-&lt;/script&gt;
-&lt;!-- The template to display files available for download --&gt;
-&lt;script id=&quot;template-download&quot; type=&quot;text/x-tmpl&quot;&gt;
-  {% for (var i=0, file; file=o.files[i]; i++) { %}
-    &lt;tr class=&quot;template-download fade&quot;&gt;
-      {% if (file.error) { %}
-        &lt;td&gt;&lt;/td&gt;
-        &lt;td class=&quot;name&quot;&gt;&lt;span&gt;{%=file.name%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td class=&quot;error&quot; colspan=&quot;2&quot;&gt;&lt;span class=&quot;label label-important&quot;&gt;{%=locale.fileupload.error%}&lt;/span&gt; {%=locale.fileupload.errors[file.error] || file.error%}&lt;/td&gt;
-        {% } else { %}
-        &lt;td class=&quot;preview&quot;&gt;{% if (file.thumbnail_url) { %}
-          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;gallery&quot; download=&quot;{%=file.name%}&quot;&gt;&lt;img src=&quot;{%=file.thumbnail_url%}&quot;&gt;&lt;/a&gt;
-          {% } %}&lt;/td&gt;
-        &lt;td class=&quot;name&quot;&gt;
-          &lt;a href=&quot;{%=file.url%}&quot; title=&quot;{%=file.name%}&quot; rel=&quot;{%=file.thumbnail_url&amp;&amp;&#39;gallery&#39;%}&quot; download=&quot;{%=file.name%}&quot;&gt;{%=file.name%}&lt;/a&gt;
-        &lt;/td&gt;
-        &lt;td class=&quot;size&quot;&gt;&lt;span&gt;{%=o.formatFileSize(file.size)%}&lt;/span&gt;&lt;/td&gt;
-        &lt;td colspan=&quot;2&quot;&gt;&lt;/td&gt;
-        {% } %}
-      &lt;td class=&quot;delete&quot;&gt;
-        &lt;button class=&quot;btn btn-danger&quot; data-type=&quot;{%=file.delete_type%}&quot; data-url=&quot;{%=file.delete_url%}&quot;&gt;
-          &lt;i class=&quot;icon-trash icon-white&quot;&gt;&lt;/i&gt;
-          &lt;span&gt;{%=locale.fileupload.destroy%}&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;input type=&quot;checkbox&quot; name=&quot;delete&quot; value=&quot;1&quot;&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    {% } %}
-&lt;/script&gt;
-
-&lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;
-  $(function () {
-      // Initialize the jQuery File Upload widget:
-      $(&#39;#fileupload&#39;).fileupload();
-      // 
-      // Load existing files:
-      $.getJSON($(&#39;#fileupload&#39;).prop(&#39;action&#39;), function (files) {
-        var fu = $(&#39;#fileupload&#39;).data(&#39;blueimpFileupload&#39;), 
-          template;
-        fu._adjustMaxNumberOfFiles(-files.length);
-        console.log(files);
-        template = fu._renderDownload(files)
-          .appendTo($(&#39;#fileupload .files&#39;));
-        // Force reflow:
-        fu._reflow = fu._transition &amp;&amp; template.length &amp;&amp;
-          template[0].offsetWidth;
-        template.addClass(&#39;in&#39;);
-        $(&#39;#loading&#39;).remove();
-      });
-
-  });
-&lt;/script&gt;
-</code></pre></noscript></div>
-</p>
+<p>{% gist 9017226 jquery_template.html.erb %}</p>
 
 <h3>6.创建controller</h3>
 
