@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CoffeeScript | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/coffeescript/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T00:32:03+08:00</updated>
+  <updated>2014-08-14T00:32:32+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -20,7 +20,7 @@
     <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<p>```coffee
+<p>```
 chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
 for ch in chars
   setTimeout(&ndash;></p>
@@ -38,7 +38,7 @@ for ch in chars
 
 <p>给出的改进版本也很直观：</p>
 
-<p>```coffee
+<p>```
 chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
 for ch in chars
   do (ch) &ndash;></p>
