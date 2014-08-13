@@ -8,7 +8,7 @@ categories: CoffeeScript
 
 很多地方讲解`CoffeeScript/JavaScript`都用了这么一个例子：
 
-```coffee
+```
 chars = ['A', 'B', 'C']
 for ch in chars
   setTimeout(->
@@ -22,7 +22,7 @@ for ch in chars
 
 给出的改进版本也很直观：
 
-```coffee
+```
 chars = ['A', 'B', 'C']
 for ch in chars
   do (ch) ->
