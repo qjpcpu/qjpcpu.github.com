@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T09:39:29+08:00</updated>
+  <updated>2014-08-14T09:42:11+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[struct tags]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/07/12/struct-tags/"/>
+    <updated>2014-07-12T00:07:11+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/07/12/struct-tags</id>
+    <content type="html"><![CDATA[<h3>结构体标签</h3>
+
+<p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
+
+<p>```go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"reflect"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>type S struct {
+    F string `species:"gopher" color:"blue"`
+}
+
+s := S{}
+st := reflect.TypeOf(s)
+field := st.Field(0)
+fmt.Println(field.Tag.Get("color"), field.Tag.Get("species"))
+</code></pre>
+
+<p>}
+```</p>
+
+<p>输出结果</p>
+
+<p><code>bash
+blue gopher
+</code></p>
+
+<p>结构体<code>S</code>的<code>F</code>成员具有两个属性<code>species</code>和<code>color</code>，其属性的值分别为<code>blue</code>和<code>gopher</code>。如果不使用反射去取这个属性，在定义时写不写属性都是无所谓的。</p>
+
+<!--more-->
+
+
+<p>在go中，tag的定义是有规定的：</p>
+
+<blockquote><p>By convention, tag strings are a concatenation of optionally space-separated key:&ldquo;value&rdquo; pairs. Each key is a non-empty string consisting of non-control characters other than space (U+0020 &lsquo; &rsquo;), quote (U+0022 &lsquo;&ldquo;&rsquo;), and colon (U+003A &lsquo;:&rsquo;). Each value is quoted using U+0022 &lsquo;&rdquo;&rsquo; characters and Go string literal syntax.</p></blockquote>
+
+<p>即：按照go的默认约定，tag以<code>key:value</code>的形式定义，多个<code>key:value</code>以空格分割，<code>key</code>不能是控制字符单引号、双引号和冒号，<code>value</code>需要用引号引起来。</p>
+
+<p>当然，也可以不遵守这个约定，因为具体怎么使用tag还是按照开发者自己的意愿来的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[你不知道的Go]]></title>
