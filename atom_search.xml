@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T09:42:11+08:00</updated>
+  <updated>2014-08-14T11:23:21+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -5718,6 +5718,12 @@ end
 </code></pre>
 
 <p>sidetiq和sidekiq一样，依赖于redis消息来处理消息。当rails项目启动后，这些周期性任务会自动加载执行。</p>
+
+<h3>3.1 sidetiq-cron</h3>
+
+<p>现在可以使用sidetiq-cron，和sidekiq配合更紧密，使用更加简单。</p>
+
+<p><a href="https://github.com/ondrejbartas/sidekiq-cron">sidetiq-cron</a></p>
 
 <h3>4.clockwork</h3>
 
