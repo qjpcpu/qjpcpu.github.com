@@ -3,7 +3,7 @@ layout: post
 title: "js异步回调与闭包"
 date: 2014-08-14 00:20:20 +0800
 comments: true
-categories: CoffeeScript
+categories: coffeescript
 ---
 
 很多地方讲解`CoffeeScript/JavaScript`都用了这么一个例子：

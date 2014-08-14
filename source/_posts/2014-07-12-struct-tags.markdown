@@ -3,7 +3,7 @@ layout: post
 title: "struct tags"
 date: 2014-07-12 00:07:11 +0800
 comments: true
-categories: golang
+categories: go
 ---
 
 ### 结构体标签
