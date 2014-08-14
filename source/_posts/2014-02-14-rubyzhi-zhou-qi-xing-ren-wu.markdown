@@ -97,6 +97,12 @@ sidetiq是sidekiq的亲兄弟，如果在rails项目中使用sidekiq来处理后
 
 sidetiq和sidekiq一样，依赖于redis消息来处理消息。当rails项目启动后，这些周期性任务会自动加载执行。
 
+###3.1 sidetiq-cron
+  
+现在可以使用sidetiq-cron，和sidekiq配合更紧密，使用更加简单。
+
+[sidetiq-cron](https://github.com/ondrejbartas/sidekiq-cron)
+
 ###4.clockwork
 
 clockwork和sidetiq一样，也不必依赖于cron，可以适应”跨平台“要求。下面是代码示例(clock.rb)：
