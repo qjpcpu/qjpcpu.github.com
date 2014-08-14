@@ -8,7 +8,7 @@ categories: CoffeeScript
 
 很多地方讲解`CoffeeScript/JavaScript`都用了这么一个例子：
 
-```coffee-script
+```coffee-script  example.coffee  异步回调中的陷阱
 chars = ['A', 'B', 'C']
 for ch in chars
   setTimeout(->
@@ -22,7 +22,7 @@ for ch in chars
 
 给出的改进版本也很直观：
 
-```coffee-script
+```coffee-script example-v2.coffee 恰当控制闭包环境中的变量
 chars = ['A', 'B', 'C']
 for ch in chars
   do (ch) ->
@@ -39,7 +39,7 @@ for ch in chars
 
 这个问题其实在别的语言同样存在，只不过其他语言很大部分都同步执行闭包，导致看不出差别，实际上是一样的，看下面的go语言示例：
 
-```go
+```go example.go golang的闭包示例
 package main
 
 import (
