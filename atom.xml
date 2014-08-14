@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T00:32:32+08:00</updated>
+  <updated>2014-08-14T09:26:12+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -20,16 +20,17 @@
     <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>chars = ['A', 'B', 'C']
-</span><span class='line'>for ch in chars
-</span><span class='line'>  setTimeout(-&gt;
-</span><span class='line'>    console.log ch
-</span><span class='line'>  ,10)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
+</span><span class='line'>  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 
@@ -41,18 +42,19 @@
 
 <p>给出的改进版本也很直观：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>chars = ['A', 'B', 'C']
-</span><span class='line'>for ch in chars
-</span><span class='line'>  do (ch) -&gt;
-</span><span class='line'>    setTimeout(-&gt;
-</span><span class='line'>      console.log ch
-</span><span class='line'>    ,10)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
+</span><span class='line'>  <span class="nx">do</span> <span class="nf">(ch) -&gt;</span>
+</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
+</span><span class='line'>    <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>为啥这样改呢，其实原因严格来说和闭包有关系。</p>
