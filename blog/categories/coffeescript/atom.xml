@@ -4,7 +4,7 @@
   <title><![CDATA[Category: CoffeeScript | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/coffeescript/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T09:34:14+08:00</updated>
+  <updated>2014-08-14T09:39:29+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -20,7 +20,7 @@
     <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<p>```coffee-script
+<p>```coffee-script  example.coffee  异步回调中的陷阱
 chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
 for ch in chars
   setTimeout(&ndash;></p>
@@ -38,7 +38,7 @@ for ch in chars
 
 <p>给出的改进版本也很直观：</p>
 
-<p>```coffee-script
+<p>```coffee-script example-v2.coffee 恰当控制闭包环境中的变量
 chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
 for ch in chars
   do (ch) &ndash;></p>
@@ -58,7 +58,7 @@ for ch in chars
 
 <p>这个问题其实在别的语言同样存在，只不过其他语言很大部分都同步执行闭包，导致看不出差别，实际上是一样的，看下面的go语言示例：</p>
 
-<p>```go
+<p>```go example.go golang的闭包示例
 package main</p>
 
 <p>import (</p>
