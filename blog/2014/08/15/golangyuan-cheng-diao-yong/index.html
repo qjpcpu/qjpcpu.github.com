@@ -1,0 +1,403 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>golang远程调用 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="go语言的远程调用包net/rpc非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。 服务端 首先定义服务契约： contract.go 服务契约定义1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+package &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Golang远程调用</h2>
+	<div class="entry-content"><p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
+
+<!-- more -->
+
+
+<h3>服务端</h3>
+
+<p>首先定义服务契约：</p>
+
+<figure class='code'><figcaption><span>contract.go  服务契约定义</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">contract</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>    <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">type</span> <span class="nx">Args</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Name</span> <span class="kt">string</span>
+</span><span class='line'>    <span class="nx">Age</span>  <span class="kt">int</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">type</span> <span class="nx">Sign</span> <span class="kt">int</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Sign</span><span class="p">)</span> <span class="nx">Content</span><span class="p">(</span><span class="nx">args</span> <span class="o">*</span><span class="nx">Args</span><span class="p">,</span> <span class="nx">reply</span> <span class="o">*</span><span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class='line'>    <span class="o">*</span><span class="nx">reply</span> <span class="p">=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%s is %v years old.&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">args</span><span class="p">.</span><span class="nx">Age</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>契约的定义规则很简单：服务函数必须满足 <code>func (t *T) MethodName(argType T1, replyType *T2) error</code>的形式，方法的第一个参数是服务接收的传入参数，第二个引用参数是返回值。契约服务的接收者可以随意定义，如此处的<code>Sign</code>，没有特别的用处。</p>
+
+<p>然后看看服务端怎么注册服务：</p>
+
+<figure class='code'><figcaption><span>main.go 服务端</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>    <span class="s">&quot;contract&quot;</span>
+</span><span class='line'>    <span class="s">&quot;log&quot;</span>
+</span><span class='line'>    <span class="s">&quot;net&quot;</span>
+</span><span class='line'>    <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'>    <span class="s">&quot;net/rpc&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">ct</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">contract</span><span class="p">.</span><span class="nx">Sign</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">rpc</span><span class="p">.</span><span class="nx">Register</span><span class="p">(</span><span class="nx">ct</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">rpc</span><span class="p">.</span><span class="nx">HandleHTTP</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">l</span><span class="p">,</span> <span class="nx">e</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Listen</span><span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span> <span class="s">&quot;:8843&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">e</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;listen error:&quot;</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">http</span><span class="p">.</span><span class="nx">Serve</span><span class="p">(</span><span class="nx">l</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>客户端</h3>
+
+<p>在很多其他语言中，实现远程调用的契约，必须共享一套契约代码，比如android的远程调用，必须将服务端定义的契约编译成<code>.class</code>文件然后提供给客户端使用，否则同一个服务类是无法在客户端和服务端对应起来的。</p>
+
+<p>但是，go是不需要的，至于为什么后面再讲。</p>
+
+<p>回头想想也是，既然不支持动态链接，客户端怎么使用契约文件编译结果呢？</p>
+
+<figure class='code'><figcaption><span>main.go 客户端</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>    <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>    <span class="s">&quot;log&quot;</span>
+</span><span class='line'>    <span class="s">&quot;net/rpc&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="kd">func</span> <span class="nx">sync_invoke</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">rpc</span><span class="p">.</span><span class="nx">DialHTTP</span><span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span> <span class="s">&quot;127.0.0.1:8843&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;dialing:&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">args</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Name</span> <span class="kt">string</span>
+</span><span class='line'>        <span class="nx">Age</span>  <span class="kt">int</span>
+</span><span class='line'>    <span class="p">}{</span><span class="s">&quot;jack&quot;</span><span class="p">,</span> <span class="mi">23</span><span class="p">}</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">reply</span> <span class="kt">string</span>
+</span><span class='line'>    <span class="nx">err</span> <span class="p">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">Call</span><span class="p">(</span><span class="s">&quot;Sign.Content&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">reply</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;error:&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">reply</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">func</span> <span class="nx">async_invoke</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">rpc</span><span class="p">.</span><span class="nx">DialHTTP</span><span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span> <span class="s">&quot;127.0.0.1:8843&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;dialing:&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">args</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Name</span> <span class="kt">string</span>
+</span><span class='line'>        <span class="nx">Age</span>  <span class="kt">int</span>
+</span><span class='line'>        <span class="nx">Sex</span> <span class="kt">string</span>
+</span><span class='line'>    <span class="p">}{</span><span class="s">&quot;jack&quot;</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span><span class="s">&quot;male&quot;</span><span class="p">}</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">reply</span> <span class="kt">string</span>
+</span><span class='line'>    <span class="nx">future</span> <span class="o">:=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">Go</span><span class="p">(</span><span class="s">&quot;Sign.Content&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">reply</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1">// wait for call end</span>
+</span><span class='line'>    <span class="nx">futureResult</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">future</span><span class="p">.</span><span class="nx">Done</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">futureResult</span><span class="p">.</span><span class="nx">Error</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="s">&quot;error:&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">c</span> <span class="o">:=</span> <span class="nx">futureResult</span><span class="p">.</span><span class="nx">Reply</span><span class="p">.(</span><span class="o">*</span><span class="kt">string</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">*</span><span class="nx">c</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">c</span> <span class="o">:=</span> <span class="nx">sync_invoke</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;get sync result:&quot;</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">c</span> <span class="p">=</span> <span class="nx">async_invoke</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;get async result:&quot;</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出结果：</p>
+
+<figure class='code'><figcaption><span>main.go 客户端</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">get</span> <span class="nx">sync</span> <span class="nx">result</span><span class="p">:</span> <span class="nx">jack</span> <span class="nx">is</span> <span class="mi">23</span> <span class="nx">years</span> <span class="nx">old</span><span class="p">.</span>
+</span><span class='line'><span class="nx">get</span> <span class="nx">async</span> <span class="nx">result</span><span class="p">:</span> <span class="nx">jack</span> <span class="nx">is</span> <span class="mi">23</span> <span class="nx">years</span> <span class="nx">old</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>go同时提供了同步和异步调用远程服务两种选择。代码自解释性很强，故无须赘述了。</p>
+
+<p><strong>注意</strong>细节的同学可能发现了，上面异步调用部分的代码传递的参数结构体args和服务端定义的参数Args并不一致，那是因为go的远程调用默认采用encoding/gob编码和解码，它是一种类似与json的数据分享方式，但更加结构化，关于gob的详情可以google，这里不细说。由于使用gob，使得go的rpc可以接受<code>相似</code>结构，而不强求服务端和客户端服务参数完全一致。</p>
+
+<p>简单来说，两个结构的<strong>导出成员</strong>完全一致，或者其中一个缺失一部分，或者其中一个多出一部分都算是相似结构。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-15T20:22:34+08:00" pubdate data-updated="true">Aug 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

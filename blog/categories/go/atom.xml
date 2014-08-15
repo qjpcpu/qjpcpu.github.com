@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-14T11:23:21+08:00</updated>
+  <updated>2014-08-15T21:03:02+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,170 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[golang远程调用]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong/"/>
+    <updated>2014-08-15T20:22:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong</id>
+    <content type="html"><![CDATA[<p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
+
+<!-- more -->
+
+
+<h3>服务端</h3>
+
+<p>首先定义服务契约：</p>
+
+<p>```go contract.go  服务契约定义
+package contract</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+</code></pre>
+
+<p>)</p>
+
+<p>type Args struct {</p>
+
+<pre><code>Name string
+Age  int
+</code></pre>
+
+<p>}</p>
+
+<p>type Sign int</p>
+
+<p>func (t <em>Sign) Content(args </em>Args, reply *string) error {</p>
+
+<pre><code>*reply = fmt.Sprintf("%s is %v years old.", args.Name, args.Age)
+return nil
+</code></pre>
+
+<p>}
+```</p>
+
+<p>契约的定义规则很简单：服务函数必须满足 <code>func (t *T) MethodName(argType T1, replyType *T2) error</code>的形式，方法的第一个参数是服务接收的传入参数，第二个引用参数是返回值。契约服务的接收者可以随意定义，如此处的<code>Sign</code>，没有特别的用处。</p>
+
+<p>然后看看服务端怎么注册服务：</p>
+
+<p>```go main.go 服务端
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"contract"
+"log"
+"net"
+"net/http"
+"net/rpc"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>ct := new(contract.Sign)
+rpc.Register(ct)
+rpc.HandleHTTP()
+l, e := net.Listen("tcp", ":8843")
+if e != nil {
+    log.Fatal("listen error:", e)
+}
+http.Serve(l, nil)
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>客户端</h3>
+
+<p>在很多其他语言中，实现远程调用的契约，必须共享一套契约代码，比如android的远程调用，必须将服务端定义的契约编译成<code>.class</code>文件然后提供给客户端使用，否则同一个服务类是无法在客户端和服务端对应起来的。</p>
+
+<p>但是，go是不需要的，至于为什么后面再讲。</p>
+
+<p>回头想想也是，既然不支持动态链接，客户端怎么使用契约文件编译结果呢？</p>
+
+<p>```go main.go 客户端
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"log"
+"net/rpc"
+</code></pre>
+
+<p>)
+func sync_invoke() string {</p>
+
+<pre><code>client, err := rpc.DialHTTP("tcp", "127.0.0.1:8843")
+if err != nil {
+    log.Fatal("dialing:", err)
+}
+args := &amp;struct {
+    Name string
+    Age  int
+}{"jack", 23}
+var reply string
+err = client.Call("Sign.Content", args, &amp;reply)
+if err != nil {
+    log.Fatal("error:", err)
+}
+return reply
+</code></pre>
+
+<p>}
+func async_invoke() string {</p>
+
+<pre><code>client, err := rpc.DialHTTP("tcp", "127.0.0.1:8843")
+if err != nil {
+    log.Fatal("dialing:", err)
+}
+args := &amp;struct {
+    Name string
+    Age  int
+    Sex string
+}{"jack", 23,"male"}
+var reply string
+future := client.Go("Sign.Content", args, &amp;reply, nil)
+// wait for call end
+futureResult := &lt;-future.Done
+if futureResult.Error != nil {
+    log.Fatal("error:", err)
+}
+c := futureResult.Reply.(*string)
+return *c
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>c := sync_invoke() 
+fmt.Println("get sync result:", c)
+c = async_invoke()
+fmt.Println("get async result:", c)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>输出结果：</p>
+
+<p><code>
+get sync result: jack is 23 years old.
+get async result: jack is 23 years old.
+</code></p>
+
+<p>go同时提供了同步和异步调用远程服务两种选择。代码自解释性很强，故无须赘述了。</p>
+
+<p><strong>注意</strong>细节的同学可能发现了，上面异步调用部分的代码传递的参数结构体args和服务端定义的参数Args并不一致，那是因为go的远程调用默认采用encoding/gob编码和解码，它是一种类似与json的数据分享方式，但更加结构化，关于gob的详情可以google，这里不细说。由于使用gob，使得go的rpc可以接受<code>相似</code>结构，而不强求服务端和客户端服务参数完全一致。</p>
+
+<p>简单来说，两个结构的<strong>导出成员</strong>完全一致，或者其中一个缺失一部分，或者其中一个多出一部分都算是相似结构。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[struct tags]]></title>
@@ -408,193 +572,6 @@ default:
 
 <pre><code>c := make(chan int, 1)
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Go学习笔记-函数和包]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/"/>
-    <updated>2014-02-14T18:15:26+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao</id>
-    <content type="html"><![CDATA[<h3>函数定义</h3>
-
-<p>go语言中使用func关键字定义函数，如main函数的定义：</p>
-
-<pre><code>func main() {
-     fmt.Println("main function")
-}
-</code></pre>
-
-<p>定义一个具有参数和返回值的函数：</p>
-
-<pre><code>func sum(a int,b int) int {
-    return a+b
-}
-</code></pre>
-
-<!-- more -->
-
-
-<h3>多值返回</h3>
-
-<p>go语言的函数可以有多个返回值，它是真正的多值返回，这个特性让ruby之父都有些艳羡呢（ruby的多值实际上是返回的列表）。</p>
-
-<pre><code>func sum(a int,b int) (int,bool){
-    s := a+b
-    t := true
-    return s,t
-}
-</code></pre>
-
-<p>调用函数时，可以这样获取多个值：</p>
-
-<pre><code>m,n := sum(1,2)
-//如果，不需要全部的返回值，可以用_来替代
-m,_ := sum(1,2)
-</code></pre>
-
-<p>多值返回还有一个很cool的特性，如果返回值使用了命名参数，那么函数最后可以直接使用空的return语句，go函数会自动寻找匹配返回值的变量返回：</p>
-
-<pre><code>func sum(a int,b int) (s int,t bool){
-    s = a+b
-    t = true
-    return 
-}
-</code></pre>
-
-<h3>闭包</h3>
-
-<p>go语言另一个很cool的特性就是它支持了闭包，虽然这在众多的动态语言中已经被玩坏了，不过go语言明确对它提出了支持，这仍旧是令人十分激动的。</p>
-
-<pre><code>func main() {
-     x := 0
-     increment := func() int {
-           x++
-return x }
-     fmt.Println(increment())
-     fmt.Println(increment())
-}
-</code></pre>
-
-<h3>defer</h3>
-
-<p>go语言的defer延迟执行是一个很有意思的特性，它将defer后的函数推迟到退出函数的最后一刻才执行：</p>
-
-<pre><code>func main() {
-    defer second()
-    first() 
-}
-</code></pre>
-
-<p>main函数里执行的真正顺序是first()，然后才是 second()，defer保证其后的函数会最后执行，甚至在发生运行时异常后，也会保证执行。</p>
-
-<pre><code>package main
-import "fmt"
-func main() {
-     defer func() {
-           str := recover()
-           fmt.Println(str)
-     }()
-     panic("PANIC")
-}
-</code></pre>
-
-<h3>指针</h3>
-
-<p>go的指针和c语言的指针用法非常类似，不再赘述。另外go还提供了另一种创建指针的方式，new关键字，它返回对应类型的地址：</p>
-
-<pre><code>func one(xPtr *int) {
-     *xPtr = 1
-}
-func main() {
-     xPtr := new(int)
-     one(xPtr)
-     fmt.Println(*xPtr) // x is 1
-}
-</code></pre>
-
-<h3>go保留函数</h3>
-
-<blockquote><p>本节内容来自：Go Web编程</p>
-
-<p>Go里面有两个保留的函数:init函数(能够应用于所有的package)和main函数(只能应用于package main)。 这两个函数在定义时不能有任何的参数和返回值。虽然一个package里面可以写任意多个init函数,但这无论是对 于可读性还是以后的可维护性来说,我们都强烈建议用户在一个package中每个文件只写一个init函数。</p>
-
-<p>Go程序会自动调用init()和main(),所以你不需要在任何地方调用这两个函数。每个package中的init函数都是可选的,但package main就必须包含一个main函数。</p>
-
-<p>程序的初始化和执行都起始于main包。如果main包还导入了其它的包,那么就会在编译时将它们依次导入。有时一 个包会被多个包同时导入,那么它只会被导入一次(例如很多包可能都会用到fmt包,但它只会被导入一次,因为没 有必要导入多次)。</p></blockquote>
-
-<h4>包的引入</h4>
-
-<p>我们在写Go代码的时候经常用到import这个命令用来导入包文件,而我们经常看到的方式参考如下:</p>
-
-<pre><code>import(
-   "fmt"
-)
-</code></pre>
-
-<p>然后我们代码里面可以通过如下的方式调用</p>
-
-<pre><code>fmt.Println("hello world")
-</code></pre>
-
-<p>上面这个fmt是Go语言的标准库,其实是去goroot下去加载该模块,当然Go的import还支持如下两种方式来加载自己写的模块:</p>
-
-<ol>
-<li><p>相对路径</p>
-
-<pre><code> import “./model”   //当前文件同一目录的model目录,但是不建议这种方式来import
-</code></pre></li>
-<li><p>绝对路径</p>
-
-<pre><code> import “shorturl/model”   //加载$GOPATH/src/shorturl/model模块
-</code></pre></li>
-</ol>
-
-
-<p>上面展示了一些import常用的几种方式,但是还有一些特殊的import,让很多新手很费解,下面我们来一一讲解一下 到底是怎么一回事</p>
-
-<ol>
-<li>点操作</li>
-</ol>
-
-
-<p>我们有时候会看到如下的方式导入包</p>
-
-<pre><code>import(
-   . "fmt"
-)
-</code></pre>
-
-<p>这个点操作的含义就是这个包导入之后在你调用这个包的函数时,你可以省略前缀的包名,也就是前面你调用的<code>fmt.Println("hello world")</code>可以省略的写成<code>Println("hello world")</code></p>
-
-<ol>
-<li>别名操作</li>
-</ol>
-
-
-<p>别名操作顾名思义我们可以把包命名成另一个我们用起来容易记忆的名字</p>
-
-<pre><code>import(
-   f "fmt"
-)
-</code></pre>
-
-<p>别名操作的话调用包函数时前缀变成了我们的前缀,即 f.Println(&ldquo;hello world&rdquo;)</p>
-
-<ol>
-<li>_操作</li>
-</ol>
-
-
-<p>这个操作经常是让很多人费解的一个操作符,请看下面这个import</p>
-
-<pre><code>import (
-     "database/sql"
-     _ "github.com/ziutek/mymysql/godrv"
-)
-</code></pre>
-
-<p>_操作其实是引入该包,而不直接使用包里面的函数,而是调用了该包里面的init函数</p>
 ]]></content>
   </entry>
   
