@@ -7,12 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="如果这是要使用sendmail命令发送的邮件file内容： Subject:标题
-TO:to@example.com
-From:from@example
-Content-Type:text/html
-&lt;html&gt; &lt;body&gt; 邮件内容 &lt;/body&gt;
-&lt &hellip;">
+	<meta name="description" content="某些用户cron任务失败 有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。 解决办法是在crontab任务前先执行source /home/username/. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,6 +79,63 @@ Content-Type:text/html
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/21/linuxri-chang-wei-hu/">
+		
+			Linux日常维护</a>
+	</h2>
+	<div class="entry-content">
+		<h3>某些用户cron任务失败</h3>
+
+<p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
+
+<p>解决办法是在crontab任务前先执行<code>source /home/username/.bash_profile</code>，后面再接用户自己的任务命令即可。</p>
+
+<p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
+
+<ul>
+<li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
+<li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
+<li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
+</ul>
+
+
+
+		
+		<a href="/blog/2014/02/21/linuxri-chang-wei-hu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-21T22:58:13+08:00" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/linux/'>linux</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/21/linuxri-chang-wei-hu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -561,52 +613,6 @@ run app
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/rake-based-application/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/">
-		
-			初识jruby之在tomcat上部署jruby-on-rails</a>
-	</h2>
-	<div class="entry-content">
-		<h3>1. prerequesite</h3>
-
-<p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
-
-
-		
-		<a href="/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T23:58:44+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/jruby/'>jruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
