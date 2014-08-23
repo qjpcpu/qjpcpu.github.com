@@ -112,11 +112,11 @@ Modify the config/database.yml
 
 #### 9. apply your migrations
 
-	rake db:setup RAILS_ENV=”production”
+	rake db:setup RAILS_ENV='production'
 
 #### 10. precompile the static resources
 
-	bundle exec rake assets:precompile
+	bundle exec rake assets:precompile RAILS_ENV='production'
 
 On centos, we must change selinux’s behavior(Everytime you deploy!)
 
