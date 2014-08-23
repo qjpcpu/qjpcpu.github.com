@@ -201,12 +201,12 @@ mysql&gt;exit;
 
 <h4>9. apply your migrations</h4>
 
-<pre><code>rake db:setup RAILS_ENV=”production”
+<pre><code>rake db:setup RAILS_ENV='production'
 </code></pre>
 
 <h4>10. precompile the static resources</h4>
 
-<pre><code>bundle exec rake assets:precompile
+<pre><code>bundle exec rake assets:precompile RAILS_ENV='production'
 </code></pre>
 
 <p>On centos, we must change selinux’s behavior(Everytime you deploy!)</p>
