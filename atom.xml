@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-25T22:23:07+08:00</updated>
+  <updated>2014-08-25T22:24:19+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -1256,7 +1256,7 @@ echo ${arr[*]}  # a b c d e
 
 <p>假设需要安装的ruby目录为<code>/path/to/ruby_dir</code></p>
 
-<pre><code>export RUBY_DEST=$RUBY_DEST
+<pre><code>export RUBY_DEST=/path/to/ruby_dir
 </code></pre>
 
 <h3>编译openssl</h3>
