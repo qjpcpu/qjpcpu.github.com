@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-25T09:57:02+08:00</updated>
+  <updated>2014-08-25T17:58:53+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -25,6 +25,7 @@
 <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
 <li><a href="https://www.ruby-lang.org">ruby</a></li>
 <li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
+<li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
 </ul>
 
 
@@ -45,6 +46,32 @@ make install
 <pre><code>./configure --prefix=/ruby
 make
 make install
+</code></pre>
+
+<h3>编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in './ruby.tmp.pc'</code>)</h3>
+
+<pre><code>./configure --prefix=/ruby         \
+            --with-internal-glib  \
+            --disable-host-tool
+</code></pre>
+
+<p>如果报错：</p>
+
+<pre><code>gthread-posix.c: In function `g_system_thread_set_name':
+gthread-posix.c:1175: error: `PR_SET_NAME' undeclared (first use in this function)
+gthread-posix.c:1175: error: (Each undeclared identifier is reported only once
+gthread-posix.c:1175: error: for each function it appears in.)
+</code></pre>
+
+<p>就需要在pkg源码目录下glib/glib/gthread.c添加：</p>
+
+<pre><code>#define PR_SET_NAME    15               /* Set process name */
+#define PR_GET_NAME    16               /* Get process name */
+</code></pre>
+
+<p>然后再继续编译</p>
+
+<pre><code>make &amp;&amp; make install
 </code></pre>
 
 <h3>编译ruby</h3>
