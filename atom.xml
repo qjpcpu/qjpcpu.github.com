@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-25T17:58:53+08:00</updated>
+  <updated>2014-08-25T22:23:07+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -1254,25 +1254,28 @@ echo ${arr[*]}  # a b c d e
 <!--more-->
 
 
-<p>假设需要安装的ruby目录为<code>/ruby</code></p>
+<p>假设需要安装的ruby目录为<code>/path/to/ruby_dir</code></p>
+
+<pre><code>export RUBY_DEST=$RUBY_DEST
+</code></pre>
 
 <h3>编译openssl</h3>
 
-<pre><code>./config --prefix=/ruby  shared
+<pre><code>./config --prefix=$RUBY_DEST  shared
 make 
 make install
 </code></pre>
 
 <h3>编译libyaml</h3>
 
-<pre><code>./configure --prefix=/ruby
+<pre><code>./configure --prefix=$RUBY_DEST
 make
 make install
 </code></pre>
 
-<h3>编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in './ruby.tmp.pc'</code>)</h3>
+<h3>编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in '.$RUBY_DEST.tmp.pc'</code>)</h3>
 
-<pre><code>./configure --prefix=/ruby         \
+<pre><code>./configure --prefix=$RUBY_DEST         \
             --with-internal-glib  \
             --disable-host-tool
 </code></pre>
@@ -1300,13 +1303,13 @@ gthread-posix.c:1175: error: for each function it appears in.)
 
 <p>先导入环境变量,否则ruby找不到ssl的链接目录</p>
 
-<pre><code>export LD_LIBRARY_PATH=/ruby/lib
-export C_INCLUDE_PATH=/ruby/include
+<pre><code>export LD_LIBRARY_PATH=$RUBY_DEST/lib
+export C_INCLUDE_PATH=$RUBY_DEST/include
 </code></pre>
 
 <p>开始编译ruby</p>
 
-<pre><code>./configure --prefix=/ruby --with-opt-dir=/ruby
+<pre><code>./configure --prefix=$RUBY_DEST --with-opt-dir=$RUBY_DEST
 make
 make install
 </code></pre>
@@ -1315,8 +1318,8 @@ make install
 
 <h3>测试</h3>
 
-<pre><code>/ruby/bin/ruby -v #打印版本号，说明安装成功
-export PATH=$PATH:/ruby/bin
+<pre><code>$RUBY_DEST/bin/ruby -v #打印版本号，说明安装成功
+export PATH=$PATH:$RUBY_DEST/bin
 </code></pre>
 ]]></content>
   </entry>
