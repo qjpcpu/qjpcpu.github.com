@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-24T02:30:43+08:00</updated>
+  <updated>2014-08-25T09:57:02+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -7462,6 +7462,7 @@ apachectl  –V | grep SERVER_CONFIG_FILE
       ServerName   test.com
       DocumentRoot  /var/www/html/blog/public   
       &lt;Directory  /var/www/html/blog/public&gt;
+         Allow from all
          AllowOverride all
          Options -MultiViews
       &lt;/Directory&gt;
