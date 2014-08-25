@@ -12,6 +12,7 @@ categories: ruby
 * [yaml](http://pyyaml.org/wiki/PyYAML)
 * [ruby](https://www.ruby-lang.org)
 * [sqlite3](http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz)(可选)
+* [pkg-config](http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz)(可选)
 
 <!--more-->
 
@@ -28,6 +29,29 @@ categories: ruby
 	./configure --prefix=/ruby
 	make
 	make install
+
+### 编译pkg-config(如果版本过低需要安装，否则编译ruby会报错`Unknown keyword 'URL' in './ruby.tmp.pc'`)
+
+	./configure --prefix=/ruby         \
+	            --with-internal-glib  \
+	            --disable-host-tool
+	
+如果报错：
+
+	gthread-posix.c: In function `g_system_thread_set_name':
+	gthread-posix.c:1175: error: `PR_SET_NAME' undeclared (first use in this function)
+	gthread-posix.c:1175: error: (Each undeclared identifier is reported only once
+	gthread-posix.c:1175: error: for each function it appears in.)
+
+就需要在pkg源码目录下glib/glib/gthread.c添加：
+
+
+	#define PR_SET_NAME    15               /* Set process name */
+	#define PR_GET_NAME    16               /* Get process name */
+
+然后再继续编译
+
+	make && make install
 	
 ### 编译ruby
 
