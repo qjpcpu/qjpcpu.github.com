@@ -16,23 +16,25 @@ categories: ruby
 
 <!--more-->
 
-假设需要安装的ruby目录为`/ruby`
+假设需要安装的ruby目录为`/path/to/ruby_dir`
+
+    export RUBY_DEST=$RUBY_DEST
 
 ### 编译openssl
 
-	./config --prefix=/ruby  shared
+	./config --prefix=$RUBY_DEST  shared
 	make 
 	make install
 	
 ### 编译libyaml
 
-	./configure --prefix=/ruby
+	./configure --prefix=$RUBY_DEST
 	make
 	make install
 
-### 编译pkg-config(如果版本过低需要安装，否则编译ruby会报错`Unknown keyword 'URL' in './ruby.tmp.pc'`)
+### 编译pkg-config(如果版本过低需要安装，否则编译ruby会报错`Unknown keyword 'URL' in '.$RUBY_DEST.tmp.pc'`)
 
-	./configure --prefix=/ruby         \
+	./configure --prefix=$RUBY_DEST         \
 	            --with-internal-glib  \
 	            --disable-host-tool
 	
@@ -57,12 +59,12 @@ categories: ruby
 
 先导入环境变量,否则ruby找不到ssl的链接目录
 
-	export LD_LIBRARY_PATH=/ruby/lib
-	export C_INCLUDE_PATH=/ruby/include
+	export LD_LIBRARY_PATH=$RUBY_DEST/lib
+	export C_INCLUDE_PATH=$RUBY_DEST/include
 	
 开始编译ruby
 
-	./configure --prefix=/ruby --with-opt-dir=/ruby
+	./configure --prefix=$RUBY_DEST --with-opt-dir=$RUBY_DEST
 	make
 	make install
 	
@@ -70,6 +72,6 @@ categories: ruby
 	
 ### 测试
 
-	/ruby/bin/ruby -v #打印版本号，说明安装成功
-	export PATH=$PATH:/ruby/bin
+	$RUBY_DEST/bin/ruby -v #打印版本号，说明安装成功
+	export PATH=$PATH:$RUBY_DEST/bin
 	
