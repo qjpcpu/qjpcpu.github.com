@@ -18,7 +18,7 @@ categories: ruby
 
 假设需要安装的ruby目录为`/path/to/ruby_dir`
 
-    export RUBY_DEST=$RUBY_DEST
+    export RUBY_DEST=/path/to/ruby_dir
 
 ### 编译openssl
 
