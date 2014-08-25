@@ -69,6 +69,7 @@ Add code snippet below to apache config file
 	      ServerName   test.com
 	      DocumentRoot  /var/www/html/blog/public   
 	      <Directory  /var/www/html/blog/public>
+	         Allow from all
 	         AllowOverride all
 	         Options -MultiViews
 	      </Directory>
