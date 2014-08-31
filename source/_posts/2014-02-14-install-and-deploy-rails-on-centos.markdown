@@ -77,7 +77,7 @@ Add code snippet below to apache config file
 
 If something’s wrong, add line below then try again
 
-	NameVirtualHost*:80
+	NameVirtualHost  *:80
 
 #### 8. config mysql database(if you use sqlite,skip this step)
 
