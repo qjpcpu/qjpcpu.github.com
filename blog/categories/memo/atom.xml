@@ -4,7 +4,7 @@
   <title><![CDATA[Category: memo | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/memo/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-31T17:51:11+08:00</updated>
+  <updated>2014-08-31T17:53:20+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,14 +18,11 @@
     <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
     <updated>2014-08-31T17:36:06+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
-    <content type="html"><![CDATA[<h3>安装git,ruby</h3>
+    <content type="html"><![CDATA[<h2>安装git,ruby</h2>
 
-<p>==============================
-略</p>
+<p>略</p>
 
-<h3>安装octopress并搭建博客</h3>
-
-<p>==============================</p>
+<h2>安装octopress并搭建博客</h2>
 
 <p><code>bash
 git clone git://github.com/imathis/octopress.git octopresscd octopressbundle installrake install
@@ -62,9 +59,7 @@ rake generate      # 生成页面</p>
 <p>git add .git commit -m &lsquo;Added About page and first post!'git push origin source
 ```</p>
 
-<h3>在另外机器编辑博客</h3>
-
-<p>===========================</p>
+<h2>在另外机器编辑博客</h2>
 
 <p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
 
