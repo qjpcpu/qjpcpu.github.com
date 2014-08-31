@@ -6,12 +6,10 @@ comments: true
 categories: memo
 ---
 
-### 安装git,ruby
-==============================
+## 安装git,ruby
 略
 
-### 安装octopress并搭建博客
-==============================
+## 安装octopress并搭建博客
 
 ```bash
 git clone git://github.com/imathis/octopress.git octopresscd octopressbundle installrake install
@@ -43,8 +41,7 @@ git add .git commit -m 'Added About page and first post!'git push origin sourc
 ```
 
 
-### 在另外机器编辑博客
-===========================
+## 在另外机器编辑博客
 
 如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：
 
