@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-08-31T17:30:13+08:00</updated>
+  <updated>2014-08-31T17:51:11+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,101 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用octopress搭建github pages]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
+    <updated>2014-08-31T17:36:06+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
+    <content type="html"><![CDATA[<h3>安装git,ruby</h3>
+
+<p>==============================
+略</p>
+
+<h3>安装octopress并搭建博客</h3>
+
+<p>==============================</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone git://github.com/imathis/octopress.git octopress
+</span><span class='line'><span class="nb">cd </span>octopress
+</span><span class='line'>bundle install
+</span><span class='line'>rake install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<p>初始化博客</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake setup_github_pages
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>编辑<code>_config.yml</code>写入博客名和其他信息</p>
+
+<p>开始书写博客：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake new_page<span class="o">[</span><span class="s2">&quot;About&quot;</span><span class="o">]</span>    <span class="c"># 添加博客页</span>
+</span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;First Post!&quot;</span><span class="o">]</span>  <span class="c"># 新建一篇文章</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发布到github</p>
+
+<figure class='code'><figcaption><span>deploy.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake generate      <span class="c"># 生成页面</span>
+</span><span class='line'><span class="c">#rake preview       # 如果需要在本地预览生成的结果，预览页http://localhost:4000</span>
+</span><span class='line'>rake deploy        <span class="c">#发布到github</span>
+</span><span class='line'><span class="c"># 发布到github的pages在master分支，还要保存源的source分支</span>
+</span><span class='line'>git add .
+</span><span class='line'>git commit -m <span class="s1">&#39;Added About page and first post!&#39;</span>
+</span><span class='line'>git push origin <span class="nb">source</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>在另外机器编辑博客</h3>
+
+<p>===========================</p>
+
+<p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
+
+<figure class='code'><figcaption><span>get_my_blog.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone git@github.com:username/username.github.com.git
+</span><span class='line'><span class="nb">cd </span>username.github.com
+</span><span class='line'>git checkout <span class="nb">source</span>
+</span><span class='line'>mkdir _deploy
+</span><span class='line'><span class="nb">cd </span>_deploy
+</span><span class='line'>git init
+</span><span class='line'>git remote add origin git@github.com:username/username.github.com.git
+</span><span class='line'>git pull origin master
+</span><span class='line'><span class="nb">cd</span> ..
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[mysql常用命令]]></title>

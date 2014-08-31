@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: memo | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/memo/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2014-08-31T17:51:11+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用octopress搭建github pages]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
+    <updated>2014-08-31T17:36:06+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
+    <content type="html"><![CDATA[<h3>安装git,ruby</h3>
+
+<p>==============================
+略</p>
+
+<h3>安装octopress并搭建博客</h3>
+
+<p>==============================</p>
+
+<p><code>bash
+git clone git://github.com/imathis/octopress.git octopresscd octopressbundle installrake install
+</code></p>
+
+<!-- more -->
+
+
+<p>初始化博客</p>
+
+<p><code>bash
+rake setup_github_pages
+</code></p>
+
+<p>编辑<code>_config.yml</code>写入博客名和其他信息</p>
+
+<p>开始书写博客：</p>
+
+<p><code>bash
+rake new_page["About"]    # 添加博客页rake new_post["First Post!"]  # 新建一篇文章
+</code></p>
+
+<p>发布到github</p>
+
+<p>```bash deploy.sh
+rake generate      # 生成页面</p>
+
+<h1>rake preview       # 如果需要在本地预览生成的结果，预览页<a href="http://localhost:4000">http://localhost:4000</a></h1>
+
+<p>rake deploy        #发布到github</p>
+
+<h1>发布到github的pages在master分支，还要保存源的source分支</h1>
+
+<p>git add .git commit -m &lsquo;Added About page and first post!'git push origin source
+```</p>
+
+<h3>在另外机器编辑博客</h3>
+
+<p>===========================</p>
+
+<p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
+
+<p><code>bash get_my_blog.sh
+git clone git@github.com:username/username.github.com.git
+cd username.github.comgit checkout sourcemkdir _deploycd _deploygit initgit remote add origin git@github.com:username/username.github.com.gitgit pull origin mastercd ..
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

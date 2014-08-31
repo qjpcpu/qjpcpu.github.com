@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 学习ruby入门的时候，很容易被其类和模块的小trick给迷惑住了，这里为了整理自己的理解，就写出来看看吧。 Read on &rarr; Feb 14th, 2014 ruby Comments ">
+	<meta name="description" content="0.定义 这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。 localhost即git服务器上有两个账户test和git， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,68 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/">
+		
+			在CentOS上搭建git服务器</a>
+	</h2>
+	<div class="entry-content">
+		<h3>0.定义</h3>
+
+<p>这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。</p>
+
+<p>localhost即git服务器上有两个账户test和git，test是用来搭建git服务器的已存在账户，
+git是为git服务器创建的专有账户。</p>
+
+<p>ubuntu是git服务器管理员的workstation，该管理员在自己的这台workstation上的账户是user。</p>
+
+<p>linux是jason的workstation。</p>
+
+<ul>
+<li>git server:                 [test@localhost]     [git@localhost]</li>
+<li>git administrator:      [user@ubuntu]</li>
+<li>git user:                    [jason@linux]</li>
+</ul>
+
+
+<p>文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。</p>
+
+
+		
+		<a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T15:01:55+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/git/'>git</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
