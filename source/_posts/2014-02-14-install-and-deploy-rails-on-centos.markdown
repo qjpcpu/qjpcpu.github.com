@@ -65,7 +65,7 @@ Next,we talk about deploy on centos
 
 Add code snippet below to apache config file
 
-	<VirtualHost*:80>
+	<VirtualHost  *:80>
 	      ServerName   test.com
 	      DocumentRoot  /var/www/html/blog/public   
 	      <Directory  /var/www/html/blog/public>
