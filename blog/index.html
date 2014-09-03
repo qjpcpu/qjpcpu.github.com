@@ -7,14 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="安装git,ruby 略 安装octopress并搭建博客 1
-2
-3
-4
-git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-bundle install
-rake install Read on & &hellip;">
+	<meta name="description" content="搭建hadoop环境 hadoop环境搭建具体可以参考官方文档。 搭建配置maven map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。 首先编译安装maven，并将MAVEN_HOME/bin加入PATH环境变量， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -86,6 +79,67 @@ rake install Read on & &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/">
+		
+			初识hadoop及map-reduce</a>
+	</h2>
+	<div class="entry-content">
+		<h2>搭建hadoop环境</h2>
+
+<p>hadoop环境搭建具体可以参考<a href="http://hadoop.apache.org/docs/r1.2.1/single_node_setup.html">官方文档</a>。</p>
+
+<h2>搭建配置maven</h2>
+
+<p>map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。</p>
+
+<p>首先编译安装maven，并将<code>MAVEN_HOME/bin</code>加入PATH环境变量，这样就可以直接使用<code>mvn</code>命令了。这里说一下怎么利用maven编译生成我们后续示例中的jar包。</p>
+
+<h3>1. 使用maven新建一个工程</h3>
+
+<p>下面的命令创建一个包含java类<code>org.myorg.WordCount</code>的工程<code>WordCount</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mvn archetype:create -DgroupId<span class="o">=</span>org.myorg -DartifactId<span class="o">=</span>WordCount
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+		
+		<a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-03T20:40:36+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hadoop/'>hadoop</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -684,69 +738,6 @@ rake install Read on & &hellip;">
 </div>
 	
 	<div class="comments"><a href="/blog/2014/04/15/sort/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/27/server-load/">
-		
-			Server Load</a>
-	</h2>
-	<div class="entry-content">
-		<h3>先看几个处理器</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>grep -c <span class="s1">&#39;model name&#39;</span> /proc/cpuinfo
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>比如结果是4</p>
-
-<h3>top查看系统整体情况</h3>
-
-<p>执行<code>top</code>命令查看系统负载情况：
-1. 关注<code>load average</code>系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
-2. 第二行显示系统进程概况
-3. 第四行us用户占用cpu，sy系统占用cpu，ni，id空闲比例，wa io等待，hi，si swap交换
-4. 最后是内存情况和交换分区</p>
-
-<h3>iostat检查io情况</h3>
-
-<p><code>iostat -x</code>，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。</p>
-
-
-		
-		<a href="/blog/2014/03/27/server-load/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-27T09:39:14+08:00" pubdate data-updated="true">Mar 27<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/linux/'>linux</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/03/27/server-load/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
