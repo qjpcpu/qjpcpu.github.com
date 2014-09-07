@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-09-08T01:04:10+08:00</updated>
+  <updated>2014-09-08T01:29:06+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -54,7 +54,7 @@
 <tr>
 <td></td>
 <td>?</td>
-<td>列出所有快捷键，按q返回|</td>
+<td>显示所有快捷键，按q退出|</td>
 </tr>
 <tr>
 <td></td>
