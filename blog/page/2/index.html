@@ -7,10 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="先看几个处理器 1
-grep -c &#39;model name&#39; /proc/cpuinfo 比如结果是4 top查看系统整体情况 执行top命令查看系统负载情况：
-1. 关注load average系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
-2. &hellip;">
+	<meta name="description" content="sort排序常用参数 -n : 按照数值排序 -u : 过滤重复的行 -r : 降序排序，默认升序 -t : 指定分段符号 -k : 按照第几个字段(1&hellip;)排序 默认sort是按照字符排序的。 sort临时目录 默认情况下sort使用/tmp作为临时文件存放目录，如果根分区很小， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -82,6 +79,81 @@ grep -c &#39;model name&#39; /proc/cpuinfo 比如结果是4 top查看系统整�
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/04/15/sort/">
+		
+			Sort</a>
+	</h2>
+	<div class="entry-content">
+		<h3>sort排序常用参数</h3>
+
+<p>-n : 按照数值排序</p>
+
+<p>-u : 过滤重复的行</p>
+
+<p>-r : 降序排序，默认升序</p>
+
+<p>-t : 指定分段符号</p>
+
+<p>-k : 按照第几个字段(1&hellip;)排序</p>
+
+<p>默认sort是按照字符排序的。</p>
+
+<h3>sort临时目录</h3>
+
+<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>sort不为人知的一个深坑</h3>
+
+<p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为什么这样设置，可以<code>man sort</code>看一下它的warning部分的说明。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-15T20:57:34+08:00" pubdate data-updated="true">Apr 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/04/15/sort/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -608,91 +680,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/03/05/curl/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/27/lie-chu-mu-lu-jie-gou/">
-		
-			列出目录结构</a>
-	</h2>
-	<div class="entry-content">
-		<h3>最简单美观的方法tree</h3>
-
-<p>tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>tree demo
-</span><span class='line'>demo
-</span><span class='line'>├── Gemfile
-</span><span class='line'>├── boot.rb
-</span><span class='line'>├── collectors
-</span><span class='line'>├── config
-</span><span class='line'>│   └── mail_config.rb
-</span><span class='line'>├── controllers
-</span><span class='line'>├── db
-</span><span class='line'>│   ├── connection.rb
-</span><span class='line'>│   ├── database.yml
-</span><span class='line'>│   └── migrate
-</span><span class='line'>├── helpers
-</span><span class='line'>├── models
-</span><span class='line'>├── rakefile
-</span><span class='line'>└── views
-</span><span class='line'>
-</span><span class='line'>8 directories, 6 files
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-		
-		<a href="/blog/2014/02/27/lie-chu-mu-lu-jie-gou/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-27T20:52:50+08:00" pubdate data-updated="true">Feb 27<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/27/lie-chu-mu-lu-jie-gou/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

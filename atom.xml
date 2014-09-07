@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-09-03T22:34:27+08:00</updated>
+  <updated>2014-09-08T01:04:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,203 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[tmux]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/09/08/tmux/"/>
+    <updated>2014-09-08T00:37:23+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/09/08/tmux</id>
+    <content type="html"><![CDATA[<h3>基本操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
+</span><span class='line'>tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
+</span><span class='line'>tmux ls <span class="c"># 列出所有会话</span>
+</span><span class='line'>tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+<h3>命令列表</h3>
+
+<p>默认情况下，tmux的前导命令开关是<code>Ctrl+b</code>，按了<code>Ctrl+b</code>后再按下面的命令，即执行相应操作：</p>
+
+<h4>会话类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>?</td>
+<td>列出所有快捷键，按q返回|</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>d</strong> </td>
+<td> <strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>D</td>
+<td>选择要脱离的会话；在同时开启了多个会话时使用|</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>s</strong></td>
+<td> <strong>选择并切换会话；在同时开启了多个会话时使用</strong>|</td>
+</tr>
+<tr>
+<td></td>
+<td>:</td>
+<td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器|</td>
+</tr>
+<tr>
+<td></td>
+<td>[</td>
+<td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>窗口类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <strong>c</strong> </td>
+<td> <strong>创建新窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>&amp;</strong> </td>
+<td> <strong>关闭当前窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>数字键</strong> </td>
+<td> <strong>切换至指定窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>p</td>
+<td>切换至上一窗口|</td>
+</tr>
+<tr>
+<td></td>
+<td>n</td>
+<td>切换至下一窗口|</td>
+</tr>
+<tr>
+<td></td>
+<td>l</td>
+<td>在前后两个窗口间互相切换|</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>w</strong> </td>
+<td> <strong>通过窗口列表切换窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>,</strong> </td>
+<td> <strong>重命名当前窗口；这样便于识别</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>.</strong> </td>
+<td> <strong>修改当前窗口编号；相当于窗口重新排序</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>!</td>
+<td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>面板类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <strong>&ldquo;</strong> </td>
+<td> <strong>将当前面板平分为上下两块</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>%</strong> </td>
+<td> <strong>将当前面板平分为左右两块</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>x</strong> </td>
+<td> <strong>关闭当前面板</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>o</strong> </td>
+<td> <strong>在当前窗口中选择下一面板</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>q</td>
+<td>显示面板编号|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>其他</h3>
+
+<p>如果不想使用默认tmux server，或者同一用户想起多个tmux实例，可以使用<code>-S</code>参数指定不同的unix socket：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux -S /path/to/another/unix/socket-file
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在tmux里使用zsh有时会导致窗口名称会不断变化，这需要修改下<code>~/.zshrc</code>文件：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">DISABLE_AUTO_TITLE</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识hadoop及map-reduce]]></title>
@@ -1919,343 +2116,6 @@ export PATH=$PATH:$RUBY_DEST/bin
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>curl https://example.com
 </span><span class='line'>curl --cert mycert.pem https://example.com
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[列出目录结构]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou/"/>
-    <updated>2014-02-27T20:52:50+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou</id>
-    <content type="html"><![CDATA[<h3>最简单美观的方法tree</h3>
-
-<p>tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>tree demo
-</span><span class='line'>demo
-</span><span class='line'>├── Gemfile
-</span><span class='line'>├── boot.rb
-</span><span class='line'>├── collectors
-</span><span class='line'>├── config
-</span><span class='line'>│   └── mail_config.rb
-</span><span class='line'>├── controllers
-</span><span class='line'>├── db
-</span><span class='line'>│   ├── connection.rb
-</span><span class='line'>│   ├── database.yml
-</span><span class='line'>│   └── migrate
-</span><span class='line'>├── helpers
-</span><span class='line'>├── models
-</span><span class='line'>├── rakefile
-</span><span class='line'>└── views
-</span><span class='line'>
-</span><span class='line'>8 directories, 6 files
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
-
-
-<h3>折衷的方法find</h3>
-
-<p>如果没有权限在机器上安装tree命令，find命令也是一种折衷的选择。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>find demo -type f -o -type d
-</span><span class='line'>demo
-</span><span class='line'>demo/boot.rb
-</span><span class='line'>demo/collectors
-</span><span class='line'>demo/config
-</span><span class='line'>demo/config/.gitkeep
-</span><span class='line'>demo/config/mail_config.rb
-</span><span class='line'>demo/controllers
-</span><span class='line'>demo/db
-</span><span class='line'>demo/db/connection.rb
-</span><span class='line'>demo/db/database.yml
-</span><span class='line'>demo/db/migrate
-</span><span class='line'>demo/db/migrate/.gitkeep
-</span><span class='line'>demo/Gemfile
-</span><span class='line'>demo/helpers
-</span><span class='line'>demo/helpers/.gitkeep
-</span><span class='line'>demo/models
-</span><span class='line'>demo/rakefile
-</span><span class='line'>demo/views
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>虽然没有tree命令那么直观，但却有另一个好处，便于使用管道进一步操作。</p>
-
-<h3>仅仅是一种选择ls</h3>
-
-<p>ls命令也可以罗列出目录结构，但这个仅供娱乐了。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ls -R demo
-</span><span class='line'>Gemfile       collectors  controllers helpers     rakefile
-</span><span class='line'>boot.rb       config      db      models      views
-</span><span class='line'>
-</span><span class='line'>demo/collectors:
-</span><span class='line'>
-</span><span class='line'>demo/config:
-</span><span class='line'>mail_config.rb
-</span><span class='line'>
-</span><span class='line'>demo/controllers:
-</span><span class='line'>
-</span><span class='line'>demo/db:
-</span><span class='line'>connection.rb database.yml    migrate
-</span><span class='line'>
-</span><span class='line'>demo/db/migrate:
-</span><span class='line'>
-</span><span class='line'>demo/helpers:
-</span><span class='line'>
-</span><span class='line'>demo/models:
-</span><span class='line'>
-</span><span class='line'>demo/views:
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>利用shell自己来实现</h3>
-
-<p>在无法安装软件的情况下，自己写一个tree命令吧，至少基本的bash是可以用的。</p>
-
-<figure class='code'><figcaption><span>tree.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'>n_char<span class="o">(){</span>
-</span><span class='line'>  <span class="nv">ch</span><span class="o">=</span><span class="s2">&quot;$1&quot;</span>
-</span><span class='line'>  <span class="nv">cnt</span><span class="o">=</span><span class="nv">$2</span>
-</span><span class='line'>  <span class="k">for</span><span class="o">((</span><span class="nv">i</span><span class="o">=</span>0;i&lt;<span class="nv">$cnt</span>;i++<span class="o">))</span>;<span class="k">do</span>
-</span><span class='line'><span class="k">      </span><span class="nv">string</span><span class="o">=</span><span class="s2">&quot;${ch}____$string&quot;</span>
-</span><span class='line'>  <span class="k">done</span>
-</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="nv">$string</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>dive_into<span class="o">(){</span>
-</span><span class='line'>  <span class="nb">trap</span> <span class="s1">&#39;exit&#39;</span> INT
-</span><span class='line'>  ls -1a <span class="s2">&quot;$1&quot;</span> | <span class="k">while </span><span class="nb">read </span>f
-</span><span class='line'>  <span class="k">do</span>
-</span><span class='line'><span class="k">      if</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&quot;$f&quot;</span> <span class="o">==</span> <span class="s2">&quot;..&quot;</span> <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">          continue</span>
-</span><span class='line'><span class="k">      fi</span>
-</span><span class='line'><span class="k">      if</span> <span class="o">[</span> <span class="s2">&quot;$4&quot;</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&quot;${f:0:1}&quot;</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">          continue</span>
-</span><span class='line'><span class="k">      fi</span>
-</span><span class='line'><span class="k">      </span><span class="nv">pre</span><span class="o">=</span><span class="k">$(</span>n_char <span class="s1">&#39;|&#39;</span> <span class="nv">$2</span><span class="k">)</span>
-</span><span class='line'>      <span class="nv">line</span><span class="o">=</span><span class="s2">&quot;${pre//_/ }|-- ${f}&quot;</span>
-</span><span class='line'>      <span class="o">[[</span> -L <span class="s2">&quot;$1/$f&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nv">line</span><span class="o">=</span><span class="s2">&quot;${line} -&gt; `readlink &quot;</span><span class="nv">$1</span>/<span class="nv">$f</span><span class="s2">&quot;`&quot;</span>
-</span><span class='line'>      <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$5&quot;</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span> <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">          </span><span class="nv">s</span><span class="o">=</span><span class="sb">`</span>du -sh <span class="s2">&quot;$1/$f&quot;</span>|awk <span class="s1">&#39;{print $1}&#39;</span><span class="sb">`</span>
-</span><span class='line'>          <span class="nv">line</span><span class="o">=</span><span class="s2">&quot;${line} [$s]&quot;</span>
-</span><span class='line'>      <span class="k">fi</span>
-</span><span class='line'><span class="k">      </span><span class="nb">echo</span> <span class="s2">&quot;$line&quot;</span>
-</span><span class='line'>      <span class="k">if</span> <span class="o">[</span> -d <span class="s2">&quot;$1/${f}&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> ! -L <span class="s2">&quot;$1/$f&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$((</span><span class="nv">$2</span><span class="o">+</span><span class="m">1</span><span class="k">))</span> -lt <span class="nv">$3</span> <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">          </span>dive_into <span class="s2">&quot;$1/$f&quot;</span> <span class="k">$((</span><span class="nv">$2</span><span class="o">+</span><span class="m">1</span><span class="k">))</span> <span class="nv">$3</span> <span class="nv">$4</span> <span class="nv">$5</span>
-</span><span class='line'>      <span class="k">fi</span>
-</span><span class='line'><span class="k">  done</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="k">while </span><span class="nb">getopts</span> <span class="s2">&quot;d:l:ahs&quot;</span> args
-</span><span class='line'><span class="k">do</span>
-</span><span class='line'><span class="k">  case</span> <span class="nv">$args</span> in
-</span><span class='line'>  l<span class="o">)</span> <span class="nv">level</span><span class="o">=</span><span class="nv">$OPTARG</span>
-</span><span class='line'>  ;;
-</span><span class='line'>  d<span class="o">)</span> <span class="nv">dir</span><span class="o">=</span><span class="s2">&quot;$OPTARG&quot;</span>
-</span><span class='line'>  ;;
-</span><span class='line'>  a<span class="o">)</span> <span class="nv">all</span><span class="o">=</span>1
-</span><span class='line'>  ;;
-</span><span class='line'>  s<span class="o">)</span> <span class="nv">size</span><span class="o">=</span>1
-</span><span class='line'>  ;;
-</span><span class='line'>  h<span class="o">)</span> <span class="nb">echo</span> <span class="s2">&quot;Must specify directoy with -d&quot;</span>
-</span><span class='line'>     <span class="nb">echo</span> <span class="s2">&quot;Usage: tree.sh -d directory &quot;</span>
-</span><span class='line'>     <span class="nb">echo</span> <span class="s2">&quot;-l maxdepth, the tree depth&quot;</span>
-</span><span class='line'>     <span class="nb">echo</span> <span class="s2">&quot;-s, print file size&quot;</span>
-</span><span class='line'>     <span class="nb">echo</span> <span class="s2">&quot;-a, print with hidden files&quot;</span>
-</span><span class='line'>     <span class="nb">exit </span>1
-</span><span class='line'>  ;;
-</span><span class='line'>  ?<span class="o">)</span> <span class="nb">echo</span> <span class="s2">&quot;No such argument&quot;</span>
-</span><span class='line'>     <span class="nb">exit </span>1
-</span><span class='line'>  ;;
-</span><span class='line'>  <span class="k">esac</span>
-</span><span class='line'><span class="k">done</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">[[</span> -z <span class="s2">&quot;$dir&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
-</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;Must specify directory with -d&quot;</span>
-</span><span class='line'>  <span class="nb">exit </span>1
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">[[</span> -z <span class="s2">&quot;$level&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nv">level</span><span class="o">=</span>100
-</span><span class='line'><span class="o">[[</span> -z <span class="s2">&quot;$all&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nv">all</span><span class="o">=</span>0
-</span><span class='line'><span class="o">[[</span> -z <span class="s2">&quot;$size&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nv">size</span><span class="o">=</span>0
-</span><span class='line'>
-</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;$dir&quot;</span>
-</span><span class='line'>dive_into <span class="s2">&quot;$dir&quot;</span>  0 <span class="nv">$level</span> <span class="nv">$all</span> <span class="nv">$size</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>试试看好用不：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>tree.sh -h
-</span><span class='line'>Must specify directoy with -d
-</span><span class='line'>Usage: tree.sh -d directory
-</span><span class='line'>-l maxdepth, the tree depth
-</span><span class='line'>-s, print file size
-</span><span class='line'>-a, print with hidden files
-</span><span class='line'>
-</span><span class='line'>tree.sh -d .
-</span><span class='line'>.
-</span><span class='line'>|-- dir
-</span><span class='line'>|    |-- file
-</span><span class='line'>|    |-- g.css
-</span><span class='line'>|    |-- sub
-</span><span class='line'>|    |    |-- sfile
-</span><span class='line'>|-- g -&gt; dir/g.css
-</span><span class='line'>|-- ldir -&gt; dir/
-</span><span class='line'>|-- m.html -&gt; o.html
-</span><span class='line'>|-- o.html
-</span><span class='line'>|-- s.html
-</span><span class='line'>|-- tree.sh
 </span></code></pre></td></tr></table></div></figure>
 
 ]]></content>

@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-09-03T22:34:27+08:00</updated>
+  <updated>2014-09-08T01:04:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,204 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[tmux]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2014/09/08/tmux/"/>
+    <updated>2014-09-08T00:37:23+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/09/08/tmux</id>
+    <content type="html"><![CDATA[<h3>基本操作</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
+</span><span class='line'>tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
+</span><span class='line'>tmux ls <span class="c"># 列出所有会话</span>
+</span><span class='line'>tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+<h3>命令列表</h3>
+
+<p>默认情况下，tmux的前导命令开关是<code>Ctrl+b</code>，按了<code>Ctrl+b</code>后再按下面的命令，即执行相应操作：</p>
+
+<h4>会话类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>?</td>
+<td>列出所有快捷键，按q返回|</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>d</strong> </td>
+<td> <strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>D</td>
+<td>选择要脱离的会话；在同时开启了多个会话时使用|</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>s</strong></td>
+<td> <strong>选择并切换会话；在同时开启了多个会话时使用</strong>|</td>
+</tr>
+<tr>
+<td></td>
+<td>:</td>
+<td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器|</td>
+</tr>
+<tr>
+<td></td>
+<td>[</td>
+<td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>窗口类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <strong>c</strong> </td>
+<td> <strong>创建新窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>&amp;</strong> </td>
+<td> <strong>关闭当前窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>数字键</strong> </td>
+<td> <strong>切换至指定窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>p</td>
+<td>切换至上一窗口|</td>
+</tr>
+<tr>
+<td></td>
+<td>n</td>
+<td>切换至下一窗口|</td>
+</tr>
+<tr>
+<td></td>
+<td>l</td>
+<td>在前后两个窗口间互相切换|</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>w</strong> </td>
+<td> <strong>通过窗口列表切换窗口</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>,</strong> </td>
+<td> <strong>重命名当前窗口；这样便于识别</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>.</strong> </td>
+<td> <strong>修改当前窗口编号；相当于窗口重新排序</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>!</td>
+<td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>面板类</h4>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>键位</th>
+<th>操作描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td> <strong>&ldquo;</strong> </td>
+<td> <strong>将当前面板平分为上下两块</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>%</strong> </td>
+<td> <strong>将当前面板平分为左右两块</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>x</strong> </td>
+<td> <strong>关闭当前面板</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td> <strong>o</strong> </td>
+<td> <strong>在当前窗口中选择下一面板</strong> |</td>
+</tr>
+<tr>
+<td></td>
+<td>q</td>
+<td>显示面板编号|</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>其他</h3>
+
+<p>如果不想使用默认tmux server，或者同一用户想起多个tmux实例，可以使用<code>-S</code>参数指定不同的unix socket：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux -S /path/to/another/unix/socket-file
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在tmux里使用zsh有时会导致窗口名称会不断变化，这需要修改下<code>~/.zshrc</code>文件：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">DISABLE_AUTO_TITLE</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识hadoop及map-reduce]]></title>
