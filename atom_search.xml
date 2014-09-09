@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-09-10T00:38:35+08:00</updated>
+  <updated>2014-09-10T00:44:48+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -3708,6 +3708,8 @@ run app
 <pre><code>rackup rack_based/simple.ru
 </code></pre>
 
+<blockquote><p>rack默认的rackup文件名是<code>config.ru</code>，使用该文件名在同级目录启动应用直接执行<code>rackup</code>即可启动应用。</p></blockquote>
+
 <p>rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动该应用：</p>
 
 <pre><code>JasondeMacBook-Pro:Projects jason$ rackup rack_based/simple.ru 
@@ -3726,7 +3728,7 @@ require ::File.expand_path('../config/environment',  __FILE__)
 run Rails.application
 </code></pre>
 
-<p>===================</p>
+<blockquote><p>===================</p></blockquote>
 
 <p>另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：</p>
 
