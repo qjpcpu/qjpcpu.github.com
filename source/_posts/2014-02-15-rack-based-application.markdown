@@ -33,6 +33,8 @@ That's all.这个基于rack的应用已经编写完成了，在terminal中键入
 
 	rackup rack_based/simple.ru
 
+> rack默认的rackup文件名是`config.ru`，使用该文件名在同级目录启动应用直接执行`rackup`即可启动应用。
+
 rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动该应用：
 
 	JasondeMacBook-Pro:Projects jason$ rackup rack_based/simple.ru 
@@ -49,7 +51,7 @@ Rails也是基于rack的框架，rails的rackup配置文件是位于应用根目
 	require ::File.expand_path('../config/environment',  __FILE__)
 	run Rails.application
 
-===================
+> ===================
 
 另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：
 
