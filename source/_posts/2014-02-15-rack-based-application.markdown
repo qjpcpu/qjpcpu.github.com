@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "rake based application"
+title: "rack based application"
 date: 2014-02-15 00:04:13 +0800
 comments: true
 categories: ruby
