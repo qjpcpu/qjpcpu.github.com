@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-09-09T21:19:44+08:00</updated>
+  <updated>2014-09-09T21:45:52+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -3828,6 +3828,13 @@ run Demo::Application.routes
 <p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
 
 <p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&amp;x=.jpg" alt="image" /></p>
+
+<h3>4. 其他</h3>
+
+<ul>
+<li>rack based application(比如sinatra)可能会依赖于一个环境变量<code>RACK_ENV</code>，取值<code>production,development,test</code></li>
+</ul>
+
 ]]></content>
   </entry>
   
