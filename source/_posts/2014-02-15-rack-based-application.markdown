@@ -42,14 +42,14 @@ rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动�
 
 在浏览器中访问http://localhost:9292 即可看到页面显示“OK”，说明应用正常工作了。
 
-Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应用根目录下的config.ru：
+Rails也是基于rack的框架，rails的rackup配置文件是位于应用根目录下的config.ru：
 
 	# This file is used by Rack-based servers to start the application.
 	
 	require ::File.expand_path('../config/environment',  __FILE__)
 	run Rails.application
 
-所以，Rails.application也能响应call方法。
+===================
 
 另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：
 
@@ -64,7 +64,22 @@ Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应
 
 启动该应用，则可以看到结果：
 
-![image](http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6bc04cf1d358ccbf1fbcb53f29e3cd03/9d82d158ccbf6c815814c9abbe3eb13533fa4056.jpg?referer=0e96044c8594a4c25334d21ba04c&x=.jpg)
+```
+{
+"GATEWAY_INTERFACE"=>"CGI/1.1",
+"PATH_INFO"=>"/",
+"QUERY_STRING"=>"",
+"REMOTE_ADDR"=>"127.0.0.1",
+"REMOTE_HOST"=>"localhost",
+"REQUEST_METHOD"=>"GET",
+"REQUEST_URI"=>"http://localhost:9292/",
+"SCRIPT_NAME"=>"",
+"SERVER_NAME"=>"localhost",
+"SERVER_PORT"=>"9292",
+"SERVER_PROTOCOL"=>"HTTP/1.1",
+...........
+}
+```
 
 ### 3.middleware
 
@@ -142,6 +157,8 @@ Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应
 	use Rack::ETag
 	use LinkJumbler
 	run Demo::Application.routes
+	
+> 实际上，rails只是利用自己的一套tricky的把戏自动添加了这个middleware，在其他rack based application中，比如sinatra，在config.ru文件里的`run xxx`方法前加上`use LinkJumbler`语句即完成添加middleware.
 
 启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？
 
