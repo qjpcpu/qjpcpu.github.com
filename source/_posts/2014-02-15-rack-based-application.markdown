@@ -146,3 +146,7 @@ Rails也是基于rack的框架，所以，rails的rackup配置文件是位于应
 启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？
 
 ![image](http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&x=.jpg)
+
+### 4. 其他
+
+* rack based application(比如sinatra)可能会依赖于一个环境变量`RACK_ENV`，取值`production,development,test`
