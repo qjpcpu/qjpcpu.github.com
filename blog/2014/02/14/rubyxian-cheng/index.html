@@ -1,0 +1,318 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ruby线程 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="1. 创建线程 Thread.new do 3.times do sleep 3 puts "Thread #{Thread.current.object_id} running..." end end ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Ruby线程</h2>
+	<div class="entry-content"><h3>1. 创建线程</h3>
+
+<pre><code>    Thread.new do
+        3.times do 
+            sleep 3
+            puts "Thread #{Thread.current.object_id} running..."
+        end
+    end
+</code></pre>
+
+<p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
+
+<pre><code>class Book
+    attr_accessor :name
+end
+num = 0
+count = 0
+book = Book.new
+book.name = 'ybur'
+puts "main Thread=#{num} count=#{count} book=#{book.name}"
+
+t.Thread.new(num,book) do |n,b|
+    n+=1
+    count+=1
+    b.name.reverse!
+    puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+end
+t.join
+puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
+#=&gt;main Thread:num=0 count=0 book=ybur
+#=&gt;new Thread:num=1 count=1 book=ruby
+#=&gt;main Thread:num=0 count=1 book=ruby
+</code></pre>
+
+<!-- more -->
+
+
+<p>新线程中保存num的副本，在线程中更改num并不影响外部num值，而新线程对book的修改会直接影响外部book，在新线程中也可打破作用域直接访问外部count并作出修改。</p>
+
+<p>常用方法</p>
+
+<pre><code>Thread.current #获取当前线程
+Thread.list #所有线程列表
+Thread#status #线程状态
+Thread#alive?
+Thread#stop?
+Thread#join
+</code></pre>
+
+<p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
+
+<pre><code>t=Thread.new(1,10) do |a,b|
+    sleep 3
+    Thread.current['plus_result']=a+b
+    "thread result:#{a+b}"
+end
+t.join
+puts "1+10=#{t['plus_result']}"
+puts "#{t.value}"
+#=&gt; 1+10=11
+#=&gt; thread result:11
+</code></pre>
+
+<h3>2. Mutex</h3>
+
+<p>来自ruby-doc的例子</p>
+
+<pre><code>require 'thread'
+mutex=Mutex.new
+count1=count2=0
+difference=0
+counter=Thread.new do
+    loop do
+        mutex.synchronize do
+            count1+=1
+            count2+=1
+        end
+    end
+end
+spy=Thread.new do
+    loop do
+        mutex.synchronize do
+            difference+=(count1-count2).abs
+        end
+    end
+end
+sleep 1
+mutex.lock
+#=&gt; count1 &gt;&gt; 21192
+#=&gt; count2 &gt;&gt; 21192
+#=&gt; difference &gt;&gt;0
+</code></pre>
+
+<h3>3. Condition Variables</h3>
+
+<p>来自ruby-doc</p>
+
+<pre><code>require 'thread'
+mutext=Mutex.new
+cv=ConditionVariable.new
+a=Thread.new {
+    mutex.synchronize {
+        puts "A:I have critical section, but will wait for cv"
+        cv.wait mutex
+        puts "A:I have critical section again! I rule!"
+    }
+}
+puts "(Later, back at the ranch...)"
+b=Thread.new {
+    mutex.synchronize {
+        puts "B: Now I am critical, but am done with cv"
+        cv.signal
+        puts "B: I am still critical, finishing up"
+    }
+}
+a.join
+b.join
+
+produces:
+A:I have critical section, but will wait for cv(Later, back at the ranch...)
+B: Now I am critical,but am done with cv
+B:I am still critical, finishing up
+A: I have critical section again! I Rule!
+</code></pre>
+
+<p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
+
+<h3>4. Queue</h3>
+
+<p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
+
+<pre><code>require 'thread'
+queue=Queue.new
+producer=Thread.new do 
+    5.times do |i|
+        sleep 4
+        queue &lt;&lt; i # operator &lt;&lt; is alias of push
+        puts "#{i} produced"
+    end
+end
+consumer=Thread.new do 
+    5.times do |i|
+        value=queue.pop
+        sleep 2
+        puts "consumed #{value}"
+    end
+end
+</code></pre>
+
+<p>ruby还提供了一个SizedQueue，当达到队列最大长度后，执行push操作时也会导致线程挂起。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:35:53+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

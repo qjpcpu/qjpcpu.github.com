@@ -1,0 +1,253 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>compile ruby from source - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="下载需要的软件包 openssl
+yaml
+ruby
+sqlite3(可选)
+pkg-config(可选) 假设需要安装的ruby目录为/path/to/ruby_dir export RUBY_DEST=/path/to/ruby_dir 编译openssl ./config --prefix &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Compile Ruby From Source</h2>
+	<div class="entry-content"><h3>下载需要的软件包</h3>
+
+<ul>
+<li><a href="http://www.openssl.org/source/">openssl</a></li>
+<li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
+<li><a href="https://www.ruby-lang.org">ruby</a></li>
+<li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
+<li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
+</ul>
+
+
+<!--more-->
+
+
+<p>假设需要安装的ruby目录为<code>/path/to/ruby_dir</code></p>
+
+<pre><code>export RUBY_DEST=/path/to/ruby_dir
+</code></pre>
+
+<h3>编译openssl</h3>
+
+<pre><code>./config --prefix=$RUBY_DEST  shared
+make 
+make install
+</code></pre>
+
+<h3>编译libyaml</h3>
+
+<pre><code>./configure --prefix=$RUBY_DEST
+make
+make install
+</code></pre>
+
+<h3>编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in '.$RUBY_DEST.tmp.pc'</code>)</h3>
+
+<pre><code>./configure --prefix=$RUBY_DEST         \
+            --with-internal-glib  \
+            --disable-host-tool
+</code></pre>
+
+<p>如果报错：</p>
+
+<pre><code>gthread-posix.c: In function `g_system_thread_set_name':
+gthread-posix.c:1175: error: `PR_SET_NAME' undeclared (first use in this function)
+gthread-posix.c:1175: error: (Each undeclared identifier is reported only once
+gthread-posix.c:1175: error: for each function it appears in.)
+</code></pre>
+
+<p>就需要在pkg源码目录下glib/glib/gthread.c添加：</p>
+
+<pre><code>#define PR_SET_NAME    15               /* Set process name */
+#define PR_GET_NAME    16               /* Get process name */
+</code></pre>
+
+<p>然后再继续编译</p>
+
+<pre><code>make &amp;&amp; make install
+</code></pre>
+
+<h3>编译ruby</h3>
+
+<p>先导入环境变量,否则ruby找不到ssl的链接目录</p>
+
+<pre><code>export LD_LIBRARY_PATH=$RUBY_DEST/lib
+export C_INCLUDE_PATH=$RUBY_DEST/include
+</code></pre>
+
+<p>开始编译ruby</p>
+
+<pre><code>./configure --prefix=$RUBY_DEST --with-opt-dir=$RUBY_DEST
+make
+make install
+</code></pre>
+
+<h3>编译sqlite3(可选)</h3>
+
+<h3>测试</h3>
+
+<pre><code>$RUBY_DEST/bin/ruby -v #打印版本号，说明安装成功
+export PATH=$PATH:$RUBY_DEST/bin
+</code></pre>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-07T15:35:02+08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

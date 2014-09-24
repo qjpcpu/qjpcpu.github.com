@@ -1,0 +1,309 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>初识jruby之入门 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">初识jruby之入门</h2>
+	<div class="entry-content"><p>首先，Jruby的官方站点是<a href="http://jruby.org/">http://jruby.org/</a> ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby，java这个词本身先产生了50%的安全感，所以这可能是比较贴近现实的选择。不过我今天想去倒腾倒腾这个东西，则完全是为了了解ruby的方方面面。</p>
+
+<!-- more -->
+
+
+<h3>1. 下载安装</h3>
+
+<p>首先在官方下载页下载安装最新的jruby，这部分内容还是老老实实去下载页照着做，话说配置开发环境不是每个程序员的必修课吗？不过放心，jruby安装起来很方便的，安装完成后，查看jruby版本，验证是否正确安装：</p>
+
+<pre><code>C:\&gt;jruby --version
+jruby 1.7.4 (1.9.3p392) 2013-05-16 2390d3b on Java HotSpot(TM) 64-Bit Server VM 1.6.0_38-b05 [Windows 7-amd64]
+</code></pre>
+
+<h3>2. 在jruby中使用rake,gem等</h3>
+
+<p>在jruby下使用这些命令需要前缀一个jruby -S命令，如：</p>
+
+<pre><code>jruby -S gem list --local
+jruby -S gem install rails mongrel jdbc-mysql activerecord-jdbcmysql-adapter
+jruby -S rails new blog 
+cd blog
+jruby -S rake -T
+jruby -S rake db:create
+jruby -S rake db:migrate
+</code></pre>
+
+<p>另外，jruby的控制台进入命令时jirb而不是irb：</p>
+
+<pre><code>C:\&gt;jirb
+irb(main):001:0&gt;
+</code></pre>
+
+<h3>3. 在jruby中调用java类</h3>
+
+<p>例如，在C:\DEMO文件夹下有一个java类文件JavaMan.java：</p>
+
+<pre><code>package example;
+
+public class JavaMan {
+
+  public JavaMan() {
+  }
+
+  public void hello() {
+      System.out.println("Hello, I am a Java man!");
+  }
+  public void hello(String name){
+     System.out.println("Hello "+name+", I am a Java man!");
+  }
+
+}
+</code></pre>
+
+<p>然后在命令行中编译该java类文件：</p>
+
+<pre><code>C:\DEMO&gt;javac JavaMan.java -d .
+</code></pre>
+
+<p>在C:\DEMO下建立ruby文件demo.rb：</p>
+
+<pre><code>require 'java'
+java_import "example.JavaMan" #导入java类JavaMan
+j=JavaMan.new
+j.hello
+j.hello "Jason"
+</code></pre>
+
+<p>在命令行中执行该ruby脚本使用jruby命令：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+Hello, I am a Java man!
+Hello Jason, I am a Java man!
+</code></pre>
+
+<p>也可以直接在jirb中调试ruby程序：</p>
+
+<pre><code>C:\DEMO&gt;jirb
+irb(main):001:0&gt; java_import 'example.JavaMan'
+=&gt; [Java::Example::JavaMan]
+irb(main):002:0&gt; JavaMan.new.hello "Jason"
+Hello Jason, I am a Java man!
+=&gt; nil
+</code></pre>
+
+<h3>4. 在jruby中实现java接口</h3>
+
+<p>若有一个java接口类：</p>
+
+<pre><code>package example;
+public interface JavaDog{
+    public void runs();
+}
+</code></pre>
+
+<p>那么可以在ruby代码中实现该接口：</p>
+
+<pre><code>require 'java'
+java_import "example.JavaDog" #导入java接口
+
+class FastDog
+    include JavaDog
+    def runs
+        puts "I am running fast!"
+    end
+end
+
+FastDog.new.runs
+</code></pre>
+
+<p>运行结果：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+I am running fast!
+</code></pre>
+
+<h3>5. 在jruby中调用jar中的类</h3>
+
+<p>若在C:\DEMO\some.jar中包含了一个java bean， example.Person，该类包含了四个属性name,age,sex,country，除了country外其他三个属性都有setter和getter，另外该Person bean还有一个方法getProfile()获取简历。</p>
+
+<pre><code>require 'java'
+require 'some.jar'
+java_import "example.Person"
+
+p=Person.new
+p.name="Jason"
+p.age=10
+p.sex="Male"
+begin
+    p.country="China"
+rescue NoMethodError =&gt; e
+    puts "No country setter in Person bean"
+end
+puts p.getProfile
+</code></pre>
+
+<p>运行结果：</p>
+
+<pre><code>C:\DEMO&gt;jruby demo.rb
+No country setter in Person bean
+Name:Jason Sex:Male Age:10
+</code></pre>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:24:21+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jruby/'>jruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

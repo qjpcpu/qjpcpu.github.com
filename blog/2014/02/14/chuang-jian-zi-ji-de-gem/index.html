@@ -1,0 +1,298 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>创建自己的gem - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到rubygems.org上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。 以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤： 1. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">创建自己的gem</h2>
+	<div class="entry-content"><p>如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到<a href="https://rubygems.org">rubygems.org</a>上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。</p>
+
+<!-- more -->
+
+
+<p>以创建一个名为jgem的gem为例，下面就是创建gem的具体步骤：</p>
+
+<h3>1.首先要有<a href="https://rubygems.org">rubygems.org</a>和<a href="https://github.com">github</a>的帐号。</h3>
+
+<h3>2.利用bundler创建新的gem：</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>bundle gem jgem
+</span><span class='line'>      create  jgem/Gemfile
+</span><span class='line'>      create  jgem/Rakefile
+</span><span class='line'>      create  jgem/LICENSE.txt
+</span><span class='line'>      create  jgem/README.md
+</span><span class='line'>      create  jgem/.gitignore
+</span><span class='line'>      create  jgem/jgem.gemspec
+</span><span class='line'>      create  jgem/lib/jgem.rb
+</span><span class='line'>      create  jgem/lib/jgem/version.rb
+</span><span class='line'>      Initializing git repo in /Users/jason/Documents/tmp/jgem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3.修改<code>.gemspec</code>文件，主要修改新gem描述：</h3>
+
+<figure class='code'><figcaption><span>jgem.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="sx">%q{TODO: Write a short summary. Required.}</span>
+</span><span class='line'><span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="sx">%q{TODO: Write a longer description. Optional.}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>添加gem的依赖，包括开发时依赖和运行时依赖：</p>
+
+<figure class='code'><figcaption><span>jgem.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rake&quot;</span>
+</span><span class='line'><span class="n">spec</span><span class="o">.</span><span class="n">add_runtime_dependency</span> <span class="s2">&quot;activerecord&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 编译gem</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem build jgem.gemspec
+</span><span class='line'>WARNING:  no homepage specified
+</span><span class='line'>WARNING:  open-ended dependency on rake <span class="o">(</span>&gt;<span class="o">=</span> 0, development<span class="o">)</span> is not recommended
+</span><span class='line'><span class="k">if </span>rake is semantically versioned, use:
+</span><span class='line'>  add_development_dependency <span class="s1">&#39;rake&#39;</span>, <span class="s1">&#39;~&gt; 0&#39;</span>
+</span><span class='line'>WARNING:  See http://guides.rubygems.org/specification-reference/ <span class="k">for </span><span class="nb">help</span>
+</span><span class='line'>Successfully built RubyGem
+</span><span class='line'>Name: jgem
+</span><span class='line'>Version: 0.0.1
+</span><span class='line'>File: jgem-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>编译后生成jgem-0.0.1.gem。</p>
+
+<p>注意：在每次<code>gem build</code>编译gem前，必须<code>git add .</code>或<code>git commit</code>一次，因为由于gem和git的紧密关系，没有<code>git add</code>到暂存区的文件变更很可能不会被编译进gem。有的朋友说在bin目录下创建的可执行文件始终无法被编译进gem就是这个原因（他们采取的办法是将<code>.gemspec</code>文件的<code>spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }</code>改成<code>spec.executables =['your_executable_file']</code>，实际这是不必要的）</p>
+
+<h3>5. 发布</h3>
+
+<p>发布生成的gem到rubygems.org。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem push jgem-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>根据提示输入用户信息就行了。</p>
+
+<h3>6. 托管代码</h3>
+
+<p>在github上新建一个代码库，名称最好和gem保持一致为jgem。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git remote add origin git@github.com:USERNAME/jgem.git
+</span><span class='line'>git push -u origin master
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>7. 更新gem代码</h3>
+
+<p>如果在本地更新代码，需要先<code>git add .</code>或<code>git commit</code>，然后执行<code>gem build</code>才能正确编译。编译好的gem可以先在本地安装试用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem build jgem.gemspec
+</span><span class='line'><span class="nv">$ </span>gem install --local jgem-0.0.1.gem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>如果要上传到rubygems，则必须更新<code>jgem/lib/jgem/version.rb</code>里的版本号，相同的版本号是不允许重复上传的。到rubygems上传的只是编译好的gem，不要忘了提交代码变更到github。</p>
+
+<p>PS. 如果gem需要添加可执行文件如<code>example_cmd</code>，在jgem目录下创建bin目录来放置这些命令即可(反复提醒，别忘了将新文件添加到git库哦)。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir bin
+</span><span class='line'><span class="nv">$ </span>touch bin/example_cmd
+</span><span class='line'><span class="nv">$ </span>chmod a+x bin/example_cmd
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T09:45:52+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

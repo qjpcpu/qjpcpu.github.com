@@ -1,0 +1,712 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="若存在如下Post model： class Post &lt; ActiveRecord::Base belongs_to :author has_many :comments
+end 使用下面的循环加载数据时产生了N+1查询问题： Post.all.each do |post| puts " &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-eagerloading/">
+		
+			Rails Eagerloading</a>
+	</h2>
+	<div class="entry-content">
+		<p>若存在如下Post model：</p>
+
+<pre><code>class Post &lt; ActiveRecord::Base
+    belongs_to :author
+    has_many :comments
+end
+</code></pre>
+
+<p>使用下面的循环加载数据时产生了N+1查询问题：</p>
+
+<pre><code>Post.all.each do |post|
+  puts "Post:            " + post.title
+  puts "Written by:      " + post.author.name
+  puts "Last comment on: " + post.comments.first.created_on
+end
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/rails-eagerloading/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:05:33+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-eagerloading/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/">
+		
+			Rails 创建数据库索引</a>
+	</h2>
+	<div class="entry-content">
+		<p>以经典的customer-order为例</p>
+
+<h3>1. 在创建数据表时直接创建索引</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
+</span><span class='line'>rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查看order的migration文件，rails自动为我们添加了index：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+
+		
+		<a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:01:32+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/">
+		
+			Rails使用devise验证用户</a>
+	</h2>
+	<div class="entry-content">
+		<h3>安装配置devise</h3>
+
+<p>在gemfile中添加一行：</p>
+
+<pre><code>gem 'devise'
+</code></pre>
+
+<p>执行bundle install后，需要安装devise到工程：</p>
+
+<pre><code>rails generate devise:install
+</code></pre>
+
+<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
+
+<pre><code>rails generate devise user
+rake db:migrate
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:46:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rubyxian-cheng/">
+		
+			Ruby线程</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1. 创建线程</h3>
+
+<pre><code>    Thread.new do
+        3.times do 
+            sleep 3
+            puts "Thread #{Thread.current.object_id} running..."
+        end
+    end
+</code></pre>
+
+<p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
+
+<pre><code>class Book
+    attr_accessor :name
+end
+num = 0
+count = 0
+book = Book.new
+book.name = 'ybur'
+puts "main Thread=#{num} count=#{count} book=#{book.name}"
+
+t.Thread.new(num,book) do |n,b|
+    n+=1
+    count+=1
+    b.name.reverse!
+    puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+end
+t.join
+puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
+#=&gt;main Thread:num=0 count=0 book=ybur
+#=&gt;new Thread:num=1 count=1 book=ruby
+#=&gt;main Thread:num=0 count=1 book=ruby
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/rubyxian-cheng/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:35:53+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rubyxian-cheng/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/">
+		
+			Rails ActiveRecord数据库关系1:n</a>
+	</h2>
+	<div class="entry-content">
+		<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
+
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
+
+<ol>
+<li><p>建立数据表</p>
+
+<pre><code> $ rails g model customer name:string
+ $ rails g model order customer_id:integer order_date:datetime
+ $ rails g model rake db:migrate
+</code></pre></li>
+</ol>
+
+
+
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:05:20+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n/">
+		
+			Rails ActiveRecord数据库关系n:n</a>
+	</h2>
+	<div class="entry-content">
+		<p>如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。</p>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=85dca9420855b31998f982707392f31b/78310a55b319ebc49d5a93da8026cffc1e171656.jpg?referer=378ada0800087bf424fb62d9524d&amp;x=.jpg" alt="n-n" /></p>
+
+
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T21:50:54+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/">
+		
+			Rails ActiveRecord数据库关系1:1</a>
+	</h2>
+	<div class="entry-content">
+		<p>如图所示，在demo数据库中有suppliers和accounts两张表。一个supplier有一个account，一个account属于一个supplier，是一个1:1关系。</p>
+
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e9efbd7d0ef3d7ca08f63f73c224cf34/730e0cf3d7ca7bcb7b8b3d6cbc096b63f724a885.jpg?referer=c1b305f367380cd7bf0996dd089b&amp;x=.jpg" alt="1-1" /></p>
+
+
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T21:25:17+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/">
+		
+			Go学习笔记-类型与接口</a>
+	</h2>
+	<div class="entry-content">
+		<p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
+
+
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:27:36+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/">
+		
+			Go学习笔记-go Routine</a>
+	</h2>
+	<div class="entry-content">
+		<h2>Go routine indeed</h2>
+
+<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
+
+<p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
+
+<p>(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
+
+<p>(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
+
+<p>(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
+
+<p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
+
+<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
+
+<p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
+
+<p>(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
+
+<p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
+
+
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:23:38+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/">
+		
+			Go学习笔记-函数和包</a>
+	</h2>
+	<div class="entry-content">
+		<h3>函数定义</h3>
+
+<p>go语言中使用func关键字定义函数，如main函数的定义：</p>
+
+<pre><code>func main() {
+     fmt.Println("main function")
+}
+</code></pre>
+
+<p>定义一个具有参数和返回值的函数：</p>
+
+<pre><code>func sum(a int,b int) int {
+    return a+b
+}
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T18:15:26+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+<nav id="pagenavi">
+    
+        <a href="/blog/page/4/" class="prev">Prev</a>
+    
+    
+        <a href="/blog/page/6/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

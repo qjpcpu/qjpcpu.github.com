@@ -1,0 +1,220 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ruby webdriver - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="前言 Watir Webdriver是用ruby操作webdriver的很酷的方式，通常被用来做一些rails app的测试。 Example 下面的示例是一个网站的登录示例： require 'watir-webdriver'
+b = Watir::Browser.new
+b.driver. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Ruby Webdriver</h2>
+	<div class="entry-content"><h3>前言</h3>
+
+<p>Watir Webdriver是用ruby操作webdriver的很酷的方式，通常被用来做一些rails app的测试。</p>
+
+<!-- more -->
+
+
+<h3>Example</h3>
+
+<p>下面的示例是一个网站的登录示例：</p>
+
+<pre><code>require 'watir-webdriver'
+b = Watir::Browser.new
+b.driver.manage.window.maximize
+b.goto "http://xx.com"
+b.link(:text =&gt; 'Create Account').click
+b.text_field(:id =&gt; 'signupEmail').focus!.set "some@example.com"
+b.text_field(:id =&gt; 'signupPassword').focus!.set "1234"
+b.text_field(:id =&gt; 'passwordConfirm').focus!.set "1234"
+b.checkbox(:id=&gt; 'notifyOptin').focus!.set true
+b.button(:id =&gt; 'signupSubmit').focus!.click
+# or you can use:
+# b.send_keys :enter
+b.text.include? 'Welcome to XX website'
+b.close
+</code></pre>
+
+<p>上面的示例中，很多text_field或button等元素使用了focus！方法，这是因为webdriver无法和浏览器中未显示的元素交互，否则会发生异常，当你拥有一个很长的列表在当前浏览器窗口中无法显示时，如果去和未显示的列表项交互就会发生这种异常。解决办法是调用元素的focus方法，focus方法会将该元素滚动到视野中，但focus方法默认返回nil，如果调用该方法多次就不是一个hacky way。所以需要为webdriver打个补丁，添加一个focus！方法：</p>
+
+<pre><code>class Watir::Element
+    def focus!
+        self.focus unless self.visible?
+        self
+    end
+end
+</code></pre>
+
+<p>有的网站登录会使用一个frame来呈现登录窗口，webdriver可以很方便地和frame交互：</p>
+
+<pre><code>b.frame(:id =&gt; "content_ifr").text_field(:id=&gt;'signinEmail').set "s@gmail.com"
+b.frame(:id =&gt; "content_ifr").text_field(:id=&gt;'signinEmail').set "234"
+</code></pre>
+
+<p>更多html元素的交互请看elements。
+发送特定的按键：</p>
+
+<pre><code>b.send_keys :enter
+b.element.send_keys [:control, 'a'], :backspace
+b.element.click(:shift, :control)
+</code></pre>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:13:12+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/ruby-webdriver/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/ruby-webdriver/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

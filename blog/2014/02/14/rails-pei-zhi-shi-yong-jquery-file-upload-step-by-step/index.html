@@ -1,0 +1,285 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>rails 配置使用jquery-file-upload  step by step - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="一步步安装使用jquery-file-upload 1.安装Gem 在gemfile中添加jquery-fileupload-rails和paperclip的gem： gem "jquery-fileupload-rails"
+gem 'paperclip' 2.在app/assets/ &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Rails 配置使用jquery-file-upload Step by Step</h2>
+	<div class="entry-content"><p>一步步安装使用jquery-file-upload</p>
+
+<!-- more -->
+
+
+<h3>1.安装Gem</h3>
+
+<p>在gemfile中添加jquery-fileupload-rails和paperclip的gem：</p>
+
+<pre><code>gem "jquery-fileupload-rails"
+gem 'paperclip'
+</code></pre>
+
+<h3>2.在app/assets/application.js添加</h3>
+
+<pre><code>//= require jquery-fileupload
+</code></pre>
+
+<h3>3.在app/assets/stylesheets/application.css添加</h3>
+
+<pre><code>*= require jquery.fileupload-ui
+</code></pre>
+
+<h3>4.创建Picture数据表</h3>
+
+<pre><code>rails g model Picture avatar:attachment
+rake db:migrate
+</code></pre>
+
+<p>pictures表的avatar属性代表上传的文件对象。</p>
+
+<p>修改picture.rb的内容：</p>
+
+<pre><code>class Picture &lt; ActiveRecord::Base
+    has_attached_file :avatar
+
+    include Rails.application.routes.url_helpers
+
+    def to_json_picture
+        {
+            'name'=&gt;read_attribute(:avatar_file_name),
+            'size'=&gt;read_attribute(:avatar_file_size),
+            'url'=&gt;avatar.url(:original),
+            'delete_url'=&gt;picture_path(self),
+            'delete_type'=&gt;'DELETE'
+        }
+    end
+end
+</code></pre>
+
+<p>在model中，使用类方法has_attached_file指明文件对象是avatar，并且定义了to_json_picture方法，该方法将picture对象转换成一个hash，在jquery-fileupload和server的交互中被转变为json数据。</p>
+
+<h3>5.创建view</h3>
+
+<p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
+
+<p><a href="https://gist.github.com/qjpcpu/9017226">源码地址</a></p>
+
+<h3>6.创建controller</h3>
+
+<pre><code>rails g controller pictures index create destroy
+</code></pre>
+
+<p>&ndash;</p>
+
+<pre><code>class PicturesController &lt; ApplicationController
+  def index
+    @pictures = Picture.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @pictures.map{|picuture| picuture.to_json_picture } }
+    end
+  end
+
+  # POST /picture
+  # POST /picture.json
+  def create
+    @picture = Picture.new(params[:picture])
+
+    respond_to do |format|
+      if @picture.save
+        format.html {
+          render :json =&gt; [@picture.to_json_picture].to_json,
+          :content_type =&gt; 'text/html',
+          :layout =&gt; false
+        }
+        format.json { render json: {files: [@picture.to_json_picture]}, status: :created, location: @picture }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @picture.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /picture/1
+  # DELETE /picture/1.json
+  def destroy
+    @picture = Picture.find(params[:id])
+    @picture.destroy
+
+    respond_to do |format|
+      format.html { redirect_to picture_url }
+      format.json { head :no_content }
+    end
+  end
+end
+</code></pre>
+
+<h3>7.效果图</h3>
+
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=794ee559c45c1038207ecec7822ae22e/342ac65c103853436bec62629113b07eca808856.jpg?referer=457c5546e7dde711bec576c6e84c&amp;x=.jpg" alt="image" /></p>
+
+<p>这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。</p>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff26dca4932397ddd279980169b9c38a/0dd7912397dda144372a89f1b0b7d0a20cf48656.jpg?referer=354f23adb68f8c54bac4f01fe24c&amp;x=.jpg" alt="image" /></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:11:06+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

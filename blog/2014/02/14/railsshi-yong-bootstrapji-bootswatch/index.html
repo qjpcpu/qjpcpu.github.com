@@ -1,0 +1,236 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>rails使用bootstrap及bootswatch - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="1.简介 Twitter-bootstrap是一个功能强大的前端web框架，使用它可以快速地开发出漂亮的web UI。而thomas-mcdonald/bootstrap-sass是rails sass版本的bootstrap。其他类似的gem还有jlong/sass-twitter- &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Rails使用bootstrap及bootswatch</h2>
+	<div class="entry-content"><h3>1.简介</h3>
+
+<p>Twitter-bootstrap是一个功能强大的前端web框架，使用它可以快速地开发出漂亮的web UI。而thomas-mcdonald/bootstrap-sass是rails sass版本的bootstrap。其他类似的gem还有jlong/sass-twitter-bootstrap，metaskills/less-rails-bootstrap，seyhunak/twitter-bootstrap-rails，前一个也是sass版本，后两个是less版本的。另外，jasny-twitter-bootstrap是bootstrap的一个很好的拓展，添加了文件上传等漂亮的插件。</p>
+
+<p>而Bootswatch是基于bootstrap的主题资源站，提供了很多收费和免费的主题，利用这些现成的主题能够在bootstrap的基础上更进一步加快网站开发，制作出精美的页面。</p>
+
+<!-- more -->
+
+
+<h3>2.安装twitter-bootstrap</h3>
+
+<p>这里推荐使用tomas-macdonald/bootstrap-sass。首先在gemfile中添加：</p>
+
+<pre><code>gem 'sass-rails', '~&gt; 3.2'
+gem 'bootstrap-sass', '~&gt; 2.3.2.0'
+</code></pre>
+
+<p>然后执行bundle install安装需要的gem。
+在app/assets/javascripts/application.js文件中添加需要的javascript引用：</p>
+
+<pre><code>//= require jquery
+//= require jquery_ujs
+//= require bootstrap
+//= require_tree .
+</code></pre>
+
+<p>将app/assets/stylesheets/application.css重命名为app/assets/stylesheets/application.css.scss。</p>
+
+<p>现在可以调整app/views/layouts/application.html.erb模板布局，然后就可以浏览twitter-bootstrap网站按照example美化自己的rails站点了。</p>
+
+<h3>3.安装bootswatch主题</h3>
+
+<p>如果还想利用bootswatch的主题，就可以使用maxim/bootswatch-rails来方便地继承bootswatch的免费主题。</p>
+
+<p>在gemfile中添加：</p>
+
+<pre><code>gem 'bootswatch-rails'
+</code></pre>
+
+<p>然后执行bundle install安装该gem。在application.css.scss文件中require语句后添加：</p>
+
+<pre><code>// 示例：使用bootswatch免费主题： 'Cerulean' bootswatch
+// 首先导入变量
+@import "bootswatch/cerulean/variables";
+
+// 导入bootstrap
+@import "bootstrap";
+
+// 修改bootstrapbody边距
+body { padding-top: 60px; }
+
+// 导入bootstrap Responsive styles
+@import "bootstrap-responsive";
+
+// 最后导入需要的bootswatch主题
+@import "bootswatch/cerulean/bootswatch";
+
+// 你还可以在base.css.scss文件中添加更多自定义设置
+@import "base";
+</code></pre>
+
+<p>你需要在application.css.scss文件相同目录下创建base.css.scss文件，如果需要就在其中添加更多自定义选择。</p>
+
+<h3>4.Bug fix</h3>
+
+<p>在rails中使用bootswatch可能导致某些css设置失效，通常的可能就是在/app/assets/stylesheets目录下，某些css设置覆盖了bootswatch的配置。比如，按照上述方法配置的bootswatch主题就有可能无法显示主题背景色（body背景色始终是白色）。而rails自动产生的scaffolds.css.sass文件中就覆盖了body的背景色配置，故而导致该bug。所以删除scaffolds.css.scss中除.field_with_errors  和 #error_explanation 其余内容即可。</p>
+
+<p>另外，使用一些其他的rails gem也可能无法使用bootswatch的主题，比如jQuery-modal-rails，它是一个简单的模态对话框gem，但它的对话框就是白底，无法使用bootswatch的主题配置，此时手工配置一下即可，如在需要的页面的.css.sass文件中配置.modal {background-color: green;}，就可以显示绿色的模态对话框。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T15:14:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-bootstrapji-bootswatch/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-bootstrapji-bootswatch/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

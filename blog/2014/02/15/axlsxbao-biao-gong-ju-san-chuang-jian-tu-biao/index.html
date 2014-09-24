@@ -1,0 +1,313 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>axlsx报表工具(三)创建图表 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="饼图 axlsx创建饼状图非常简单，上图： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+wb.add_worksheet(:name =&gt; &quot;Pie Chart&quot;) do |sheet| sheet.add_row [&quot;First&quot;, &quot; &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Axlsx报表工具(三)创建图表</h2>
+	<div class="entry-content"><h3>饼图</h3>
+
+<p>axlsx创建饼状图非常简单，上图：</p>
+
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Pie Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="p">,</span> <span class="s2">&quot;Fourth&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Pie3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span><span class="o">=&gt;</span> <span class="s1">&#39;dark corner here&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span>    <span class="c1">#数据点序列及其名称</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>       <span class="c1">#是否在饼状图中显示数值</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_percent</span> <span class="o">=</span> <span class="kp">true</span>    <span class="c1">#是否在饼状图中显示所占百分比</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>    <span class="c1">#图例位于图标外部</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_leader_lines</span> <span class="o">=</span> <span class="kp">true</span>  <span class="c1">#是否显示数据和数值间的指示线</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在add_chart方法中，第一个参数指定图标的类型Aslsx::Pie3DChart，而start_at和end_at分别指定图表的左上角单元格和右下角+1单元格，注意图中饼图的右下角单元格是E15即[4,14]，而end_at是[5,15]，所以称为右下角+1单元格，此外注意和excel编号不同，这里单元格序号是从0开始的。</p>
+
+<ul>
+<li>chart.add_series方法是创建图表的主要方法，用来添加点序列的值及其名称。</li>
+<li>chart.d_lbls是Data Lables的缩写，顾名思义就是数据标签。</li>
+</ul>
+
+
+<p>饼图中每块扇形的颜色是自动生成的，如果想要手动指定也是可以的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:colors</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;00FF00&#39;</span><span class="p">,</span> <span class="s1">&#39;0000FF&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>折线图</h3>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&amp;x=.jpg" alt="image" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Line Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span><span class="s1">&#39;l3&#39;</span><span class="p">,</span><span class="s1">&#39;l4&#39;</span><span class="o">]</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;=sum(A2:C2)&#39;</span><span class="o">]</span>
+</span><span class='line'> <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Line3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:D2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1:D1&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s1">&#39;bob&#39;</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_cat_name</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>   <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>   <span class="c1">#不在横轴上显示坐标</span>
+</span><span class='line'> <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显示每个数值的名称。</p>
+
+<h3>柱形图</h3>
+
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&amp;x=.jpg" alt="image" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Bar Chart&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;A Simple Bar Chart&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="s2">&quot;First&quot;</span><span class="p">,</span> <span class="s2">&quot;Second&quot;</span><span class="p">,</span> <span class="s2">&quot;Third&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Bar3DChart</span><span class="p">,</span> <span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;F17&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A3:C3&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:C2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">valAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">sheet</span><span class="o">.</span><span class="n">add_chart</span><span class="p">(</span><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Bar3DChart</span><span class="p">,</span> <span class="ss">:barDir</span> <span class="o">=&gt;</span> <span class="ss">:col</span><span class="p">,</span><span class="ss">:start_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;A17&quot;</span><span class="p">,</span> <span class="ss">:end_at</span> <span class="o">=&gt;</span> <span class="s2">&quot;F30&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">chart</span><span class="o">|</span> <span class="c1">#barDir指定方向:bar或:col</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">add_series</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A3:C3&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:labels</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A2:C2&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">sheet</span><span class="o">[</span><span class="s2">&quot;A1&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">valAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">label_rotation</span> <span class="o">=</span> <span class="mi">45</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">d_lbl_pos</span> <span class="o">=</span> <span class="ss">:outEnd</span>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">d_lbls</span><span class="o">.</span><span class="n">show_val</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chart</span><span class="o">.</span><span class="n">catAxis</span><span class="o">.</span><span class="n">tick_lbl_pos</span> <span class="o">=</span> <span class="ss">:none</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:42:48+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

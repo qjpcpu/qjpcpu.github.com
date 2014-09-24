@@ -1,0 +1,280 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>rails使用devise验证用户 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="安装配置devise 在gemfile中添加一行： gem 'devise' 执行bundle install后，需要安装devise到工程： rails generate devise:install 创建验证用户model，通常用user，也可以使用其他名称： rails generate &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Rails使用devise验证用户</h2>
+	<div class="entry-content"><h3>安装配置devise</h3>
+
+<p>在gemfile中添加一行：</p>
+
+<pre><code>gem 'devise'
+</code></pre>
+
+<p>执行bundle install后，需要安装devise到工程：</p>
+
+<pre><code>rails generate devise:install
+</code></pre>
+
+<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
+
+<pre><code>rails generate devise user
+rake db:migrate
+</code></pre>
+
+<!-- more -->
+
+
+<p>查看models文件夹下devise创建了user.rb文件：</p>
+
+<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=f2f25a60612762d0843ea4ba90d779c7/8b13632762d0f703ca91709f0afa513d2697c556.jpg?referer=7e3304592a34349b2d115bb5234c&amp;x=.jpg" alt="image" /></p>
+
+<p>devise方法来自Devise gem，其中默认启用了database_authenticatable,registerable等模块，注释部分列出了其他模块默认未启用，根据devise文档按需要使能。</p>
+
+<p>attr_accessible定义的属性可以被create, update_attributes使用，未在这里定义的属性会引发这两个方法的 mass-assignment异常。</p>
+
+<p>查看路由文件 routes.rb，devise gem在创建model时在路由文件中添加了： <code>devise_for :users</code></p>
+
+<p>执行rake routes可以看到devise创建的url：</p>
+
+<p><img src="http://g.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4a985b9df21f3a295ec8d5cba91ecd0c/95eef01f3a292df526325656be315c6035a87384.jpg?referer=0fdbb04d6509c93d5ee53ac7bd9a&amp;x=.jpg" alt="image" /></p>
+
+<p>注意devise gem提供的账户注销和用户退出登陆都是默认使用的DELETE方法，该url设计常导致编码出错，但它确是遵循了RESTful规范，留意下即可。</p>
+
+<p>在需要的页面上添加注册、登陆的代码（我添加在application.html.erb中yield语句上方）：</p>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=6ae4814e249759ee4e5060ce82c0322b/503d269759ee3d6d37e5628841166d224f4ade56.jpg?referer=77d0e6a0d739b60014d93a871a4c&amp;x=.jpg" alt="image" /></p>
+
+<p>rails server启动服务器，即可查看注册登陆页面：</p>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e7392f8d9b25bc312f5d019d6ee4fc8c/e1fe9925bc315c60fe6491ac8fb1cb1348547784.jpg?referer=ba03f4b49d3df8dcff2abba1b19a&amp;x=.jpg" alt="image" /></p>
+
+<h3>devise提供的常用method</h3>
+
+<pre><code>* authenticate_user!，验证用户是否登陆，常用于before_filter: `before_filter :authenticate_user!`. 另，如果你创建的devise model叫admin，那么该方法就是authenticate_admin!，以下方法同理。这又是ruby玩的一个小把戏了。
+* user_signed_in?，当前是否有登陆用户
+* current_user， 获取当前登陆用户
+* user_session, 用户session，类似于session，也是一个hash表，可以用来保存用户特有的数据
+* after_sign_in_path_for和after_sign_out_path_for方法指定用户登入/登出后的跳转url.
+</code></pre>
+
+<h3>自定义views</h3>
+
+<p>devise gem提供了足够功能的用户验证，但是由上图可见，其自带的view未免太过简单。如果需要自定义视图，就需要将devise默认的view拷贝到rails工程：</p>
+
+<pre><code>rails generate devise:views
+</code></pre>
+
+<p><img src="http://h.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff4c4851700e0cf3a4f74efe3a7d8322/9922720e0cf3d7ca14d5da35f01fbe096b63a956.jpg?referer=fc0d600dc880653822fd9123174c&amp;x=.jpg" alt="image" /></p>
+
+<p>该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。</p>
+
+<h3>自定义controller</h3>
+
+<ul>
+<li><p>如果需要自定义controller，如Devise::SessionController：</p>
+
+<pre><code>  class Admins::SessionsController &lt; Devise::SessionsController
+  end
+</code></pre></li>
+<li><p>在路由文件routes.rb中更新配置，告诉devise使用新的controller</p>
+
+<pre><code>  devise_for :users, :controllers =&gt; { :sessions =&gt; "admins/sessions" }
+</code></pre></li>
+<li><p>更新了controller后，在app/views/devise/sessions下的views不会再被使用，所以，还需要将这部分views复制到app/views/admins/sessions下，或者在该目录下建立新的views。</p></li>
+</ul>
+
+
+<h3>邮件确认</h3>
+
+<p>如果需要更安全一点的注册验证，可以使用邮件确认方式。</p>
+
+<p>首先，修改user.rb文件，启用devise的confirmable模块：</p>
+
+<p><img src="http://f.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7f58226cbc096b6385195e553c08f679/f31fbe096b63f6241e7edc408544ebf81a4ca356.jpg?referer=e2c37137af3459829c9dd0a20d4c&amp;x=.jpg" alt="image" /></p>
+
+<p>在数据表users中新加字段：</p>
+
+<pre><code>rails g migration add_confirmable_fields_to_users
+</code></pre>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=117edc408544ebf86971643ae9c2a617/0d338744ebf81a4c2b11098ad52a6059252da656.jpg?referer=aabcdc8733adcbef58234b36024c&amp;x=.jpg" alt="image" /></p>
+
+<p>新用户是以邮件的方式确认，所以，需要更改rails的环境配置。rails的环境配置位于config/environments/xxx.rb文件，xx代表develepment/test/production，三个文件的配置选项都十分类似，下面以production环境为例，打开config/environments/production.rb，在最后的end前添加：</p>
+
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=464e1e2bcebf6c81f3372ced8c05c008/d058ccbf6c81800ac314734db33533fa838b4784.jpg?referer=0ef348e7a6c27d1efc310ff4a19a&amp;x=.jpg" alt="image" /></p>
+
+<p>配置邮件帐户，在production时rails建议使用邮件服务如Mandrill，这里为了简单，使用gmail帐户示例。</p>
+
+<p>在改文件中继续添加smtp配置，新添加的内容最终如下：</p>
+
+<p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=5cf27e4631fa828bd5239de6cd243009/b03533fa828ba61e481f326c4334970a314e5984.jpg?referer=fb19621ddfc451daafe138dba79a&amp;x=.jpg" alt="image" /></p>
+
+<p>最后，修改devise.rb文件</p>
+
+<pre><code>config.mailer_sender = "replyme@126.com" 
+</code></pre>
+
+<p>现在，当新用户new@test.com注册后，它会收到一封确认邮件，邮件from: your_gmail_username@gmail.com, to: new@test.com, reply_to: replyme@126.com，邮件包含一个链接，指向用户激活地址。用户点击该链接激活帐户后才能登陆网站。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:46:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

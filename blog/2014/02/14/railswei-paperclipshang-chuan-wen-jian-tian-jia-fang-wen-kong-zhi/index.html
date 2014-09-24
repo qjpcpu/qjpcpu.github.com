@@ -1,0 +1,212 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>rails为paperclip上传文件添加访问控制 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="0 前言 由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。 1 更改paperclip默认的上传位置 若有一个story类， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Rails为paperclip上传文件添加访问控制</h2>
+	<div class="entry-content"><h3>0 前言</h3>
+
+<p>由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。</p>
+
+<!-- more -->
+
+
+<h3>1 更改paperclip默认的上传位置</h3>
+
+<p>若有一个story类，每个story有一个封面cover，该cover是一张图片，就可以这样更改model定义：</p>
+
+<pre><code>class Story &lt; ActiveRecord::Base
+  has_attached_file :cover,
+  :styles=&gt;{:small=&gt;"32x32"}, 
+  :path =&gt; ":rails_root/paperclip/:class/:attachment/:id/:style/:filename",
+  :url =&gt; "/paperclip/:class/:attachment/:id/:style/:filename"
+end
+</code></pre>
+
+<p>要同时修改path和url，url是相对于rails工程而言，被rails app用来获取图片渲染页面；而path是相对于rails app服务器而言，在整个宿主文件系统中的路径。必须同时修改path和url。</p>
+
+<p>这里，将保存paperclip的上传文件的目录设置为rails工程根目录下的paperclip目录。</p>
+
+<h3>2 添加controller</h3>
+
+<p>在routes.rb中添加路由：</p>
+
+<pre><code>get "/paperclip/:class/:attachment/:id/:style/:filename",to:"assets#show"
+</code></pre>
+
+<p>添加assets_controller.rb文件：</p>
+
+<pre><code>class AssetsController &lt; ApplicationController
+  def show
+    cls=params[:class].singularize.capitalize.constantize
+    asset=cls.find params[:id]
+    send_file asset.send(params[:attachment].singularize).path(params[:style])
+  end
+end
+</code></pre>
+
+<p>在提交的参数中params[:class]是复数形式，而通常类定义都是单数如Story，params[:attachment]是也复数形式而类定义中cover为单数，所以都要将他们变成单数，如果类中定义的attachment是复数形式，那么这里attachment就不必转换为单数，否则会引发NoMethod异常。</p>
+
+<p>现在，所有的paperclip资源都由AssetsController控制，所以在其中添加诸如身份登录验证等before_filter就很方便了。在加入身份验证后，即便用户得到该cover的URL，在未登录的情况下，也无法直接访问该图片了。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T15:21:11+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>
