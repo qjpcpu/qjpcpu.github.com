@@ -57,6 +57,12 @@ Next,we talk about deploy on centos
 
 	gem  install passenger
 	passenger-install-apache2-module
+	
+P.S. ==>install passenger & compile nginx
+
+	passenger-install-nginx-module
+
+P.S. install passenger & compile nginx<==
 
 #### 7. find the apache configure
 
@@ -74,7 +80,24 @@ Add code snippet below to apache config file
 	         Options -MultiViews
 	      </Directory>
 	</VirtualHost>
+	
+P.S. ==>for nginx
 
+```
+   server {
+      listen 80;
+      server_name www.yourhost.com;
+      root /somewhere/public;   # <--- be sure to point to 'public'!
+      passenger_enabled on;
+   }
+```
+
+Add this for development mode in `http{` node.
+
+	passenger_app_env development;
+
+P.S. for nginx end<==
+	
 If something’s wrong, add line below then try again
 
 	NameVirtualHost  *:80
