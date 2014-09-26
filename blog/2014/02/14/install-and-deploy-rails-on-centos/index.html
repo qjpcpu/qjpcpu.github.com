@@ -140,6 +140,13 @@ gem install rails –V  #It really costs a longtime, enjoy a coffee now
 passenger-install-apache2-module
 </code></pre>
 
+<p>P.S. ==>install passenger &amp; compile nginx</p>
+
+<pre><code>passenger-install-nginx-module
+</code></pre>
+
+<p>P.S. install passenger &amp; compile nginx&lt;==</p>
+
 <h4>7. find the apache configure</h4>
 
 <pre><code>apachectl  –V | grep HTTPD_ROOT
@@ -158,6 +165,29 @@ apachectl  –V | grep SERVER_CONFIG_FILE
       &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
 </code></pre>
+
+<p>P.S. ==>for nginx</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>   server {
+</span><span class='line'>      listen 80;
+</span><span class='line'>      server_name www.yourhost.com;
+</span><span class='line'>      root /somewhere/public;   # &lt;--- be sure to point to 'public'!
+</span><span class='line'>      passenger_enabled on;
+</span><span class='line'>   }</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add this for development mode in <code>http{</code> node.</p>
+
+<pre><code>passenger_app_env development;
+</code></pre>
+
+<p>P.S. for nginx end&lt;==</p>
 
 <p>If something’s wrong, add line below then try again</p>
 
