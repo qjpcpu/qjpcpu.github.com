@@ -34,12 +34,12 @@ categories: linux
 
 	cd ${MYSQL_BASEDIR}
 	mkdir etc log tmp var
-	cp share/mysql/my-medium.cnf  my.cnf
+	cp share/mysql/my-medium.cnf  etc/my.cnf
 	cp share/mysql/mysql.server  bin/
 
 ### 修改配置文件
 
-	vim ./my.cnf
+	vim etc/my.cnf
 
 在[mysqld]下添加配置项：
 
