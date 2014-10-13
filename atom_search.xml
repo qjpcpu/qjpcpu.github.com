@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-10-10T21:17:08+08:00</updated>
+  <updated>2014-10-13T18:00:51+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -3389,13 +3389,13 @@ make install
 
 <pre><code>cd ${MYSQL_BASEDIR}
 mkdir etc log tmp var
-cp share/mysql/my-medium.cnf  my.cnf
+cp share/mysql/my-medium.cnf  etc/my.cnf
 cp share/mysql/mysql.server  bin/
 </code></pre>
 
 <h3>修改配置文件</h3>
 
-<pre><code>vim ./my.cnf
+<pre><code>vim etc/my.cnf
 </code></pre>
 
 <p>在[mysqld]下添加配置项：</p>
