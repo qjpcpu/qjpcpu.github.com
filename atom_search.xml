@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-10-13T18:00:51+08:00</updated>
+  <updated>2014-10-15T20:43:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -3375,7 +3375,7 @@ tar vzxf mysql-5.1.73.tar.gz
 cd mysql-5.1.73
 ./configure 
 --prefix=${MYSQL_BASEDIR} 
---with-charset=gbk 
+--with-charset=utf8 
 --with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
 --with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
 --with-mysqld-user=mysql     #以哪个用户执行mysqld进程

@@ -98,7 +98,7 @@ tar vzxf mysql-5.1.73.tar.gz
 cd mysql-5.1.73
 ./configure 
 --prefix=${MYSQL_BASEDIR} 
---with-charset=gbk 
+--with-charset=utf8 
 --with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
 --with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
 --with-mysqld-user=mysql     #以哪个用户执行mysqld进程
