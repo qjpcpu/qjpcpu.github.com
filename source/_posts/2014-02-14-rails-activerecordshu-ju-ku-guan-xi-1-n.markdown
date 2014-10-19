@@ -26,7 +26,7 @@ categories: rails
 
 ```ruby customer.rb
 	class Customer < ActiveRecord::Base
-		has_many :orders, :dependent => :destory, :inverse_of => :customer
+		has_many :orders, :dependent => :destroy, :inverse_of => :customer
 	end
 ```
 
