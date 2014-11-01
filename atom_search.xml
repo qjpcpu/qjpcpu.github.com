@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-10-19T21:06:05+08:00</updated>
+  <updated>2014-11-01T17:34:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -7160,6 +7160,12 @@ end
     end
 end
 </code></pre>
+
+<h3>7. 后记</h3>
+
+<p>现在回来看这篇文章，感觉那时的思考和视野的局限。其实我需要的是一个状态机，而那时我还不知道这个名词，自己闭门思考实现的这个东西，状态的转移非常局限，无法适应灵活的需求，而且使用方法链的方式本身也局限了进一步升级。同时，<code>alias_method</code>这种技术也可以使用2.0的<code>prepend</code>关键字来更优美地完成。</p>
+
+<p>Anyway,这篇文章还是留着，写这个后记，也说明进不了。</p>
 ]]></content>
   </entry>
   
