@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: angularjs | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2014-11-25T11:47:29+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[新建angular项目]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu/"/>
+    <updated>2014-11-25T10:54:31+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu</id>
+    <content type="html"><![CDATA[<h2>需要的工具</h2>
+
+<ul>
+<li><a href="http://bower.io/">bower</a> 前端包管理器</li>
+<li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
+<li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
+<li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
+</ul>
+
+
+<p>这里我使用了yeoman的一个angularJS的生成器<a href="https://github.com/yeoman/generator-angular">yo</a>，方便生成需要的全部零部件</p>
+
+<h2>新建工程</h2>
+
+<p>我们要建立的angularjs工程的项目名称叫<code>MyAngularApp</code></p>
+
+<p>```bash
+mkdir MyAngularApp
+cd MyAngularApp</p>
+
+<h1>这里我习惯用coffee来写代码，如果直接用javascript可以去掉后面的参数&mdash;coffee</h1>
+
+<p>yo angular &mdash;coffee
+```</p>
+
+<p>生成的目录结构如下：</p>
+
+<p>```
+MyAngularApp
+├── Gruntfile.js
+├── README.md
+├── app
+│   ├── 404.html
+│   ├── favicon.ico
+│   ├── images
+│   ├── index.html
+│   ├── robots.txt
+│   ├── scripts
+│   ├── styles
+│   └── views
+├── bower.json
+├── bower_components
+│   ├── angular
+│   ├── angular-animate
+│   └── &hellip;&hellip;
+├── node_modules
+│   ├── coffee-script
+│   └── &hellip;&hellip;
+├── package.json
+└── test</p>
+
+<pre><code>├── karma.conf.coffee
+└── spec
+</code></pre>
+
+<p>```</p>
+
+<p>其中，<code>Gruntfile.js</code>是grunt的makefile文件，里面定义了各种编译任务，如常用的<code>grunt serve</code>和<code>grunt build</code>。</p>
+
+<p><code>app</code>目录是主要的工作目录，下面的<code>scripts</code>目录放置所有的controller，<code>styles</code>放置各种css文件，<code>views</code>放置视图模板；也可以在<code>app</code>下防止自己的资源文件夹如<code>vendor</code>目录，放置第三方库。</p>
+
+<p><code>bower.json</code>中定义了需要安装的库，功能类似于ruby的Gemfile文件，在工程根目录执行<code>bower install</code>安装依赖。所有的依赖库都会被安装到<code>bower_components</code>目录中。</p>
+
+<p><code>node_modules</code>是项目工具如coffee或者grunt的依赖工具。</p>
+
+<p><code>package.json</code>是grunt的依赖工具。</p>
+
+<p><code>test</code>是测试文件所在。</p>
+
+<h2>index.html</h2>
+
+<p>yo的常用操作可以参考其github文档。这里需要补充说一下的是<code>app/index.html</code>文件，该文件是angular项目的起始文件。注意其中类似下面这样的语句：</p>
+
+<p>```html</p>
+
+<!-- build:css({.tmp,app}) styles/main.css -->
+
+
+<p><link rel="stylesheet" href="styles/main.css"></p>
+
+<!-- endbuild -->
+
+
+
+
+<!-- build:js(.) scripts/vendor.js -->
+
+
+<!-- bower:js -->
+
+
+<script src="bower_components/angular/angular.js"></script>
+
+
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+
+
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+
+
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+
+
+<script src="bower_components/angular-route/angular-route.js"></script>
+
+
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+
+
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+
+
+<!-- endbower -->
+
+
+<!-- endbuild -->
+
+
+<p>```</p>
+
+<p>要注意的是<code>&lt;!-- build:css(DIRECTORY) OUT_FILE --&gt;</code>和<code>&lt;!-- build:js(DIRECTORY) OUTFILE --&gt;</code>，它们并不是普通的html注释，而是grunt的指令。</p>
+
+<p>比如第一段，grunt会将<code>build:css</code>到<code>endbuild</code>之间的css文件找到，查找路径是<code>build:css(DIRECTORY)</code>中的目录加上<code>link</code>标签里的<code>href</code>指定的文件路径所在文件，即<code>.tmp/styles/main.css</code>和<code>app/styles/main.css</code>,然后grunt将它们合并压缩为一个css文件<code>styles/main.css</code>，这个文件被生成在输入目录，通常是<code>dist/styles/main.css</code>。</p>
+
+<p>类似的，下面的js编译将当前目录<code>.</code>下指定的<code>bower_components</code>下的一些js合并压缩后变成<code>dist/scripts/vendor.js</code>。</p>
+
+<p>所以，自己引入的一些第三方库怎么弄也就清楚了：</p>
+
+<p>```html</p>
+
+<!-- build:css(app) assets/css/vendor.css -->
+
+
+<p><link href="assets/css/animate.min.css" rel="stylesheet" />
+<link href="assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" /></p>
+
+<!-- endbuild -->
+
+
+<p>```</p>
+
+<h2>grunt</h2>
+
+<p>最后说一下grunt的任务，如果在app目录有个<code>assets/img</code>目录，里面放了一些图片，希望执行<code>grunt build</code>后将这些资源复制到输出目录，那么可以对<code>Gruntfile.js</code>做简单修改，如：</p>
+
+<p>```javascript</p>
+
+<pre><code>// Copies remaining files to places other tasks can use
+copy: {
+  dist: {
+    files: [{
+      expand: true,
+      dot: true,
+      cwd: '&lt;%= yeoman.app %&gt;',
+      dest: '&lt;%= yeoman.dist %&gt;',
+      src: [
+        '*.{ico,png,txt}',
+        '.htaccess',
+        '*.html',
+        'views/{,*/}*.html',
+        'images/{,*/}*.{webp}',
+        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行
+        'fonts/{,*/}*.*'
+      ]
+    }
+},
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>

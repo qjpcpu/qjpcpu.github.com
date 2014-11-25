@@ -7,14 +7,10 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="基本操作 1
-2
-3
-4
-tmux new -s SESSION_NAME # 新建会话
-tmux new -s SESSION_NAME -d # 新建会话并放入后台
-tmux ls # 列出所有会话
-tmux attach -t SESSION_NAME # 进入某会话 Read on & &hellip;">
+	<meta name="description" content="需要的工具 bower 前端包管理器
+grunt javascript的makefile工具
+yeoman webapp的流行脚手架
+karma 测试套件 这里我使用了yeoman的一个angularJS的生成器yo，方便生成需要的全部零部件 新建工程 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -86,6 +82,240 @@ tmux attach -t SESSION_NAME # 进入某会话 Read on & &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/11/25/xin-jian-angularxiang-mu/">
+		
+			新建angular项目</a>
+	</h2>
+	<div class="entry-content">
+		<h2>需要的工具</h2>
+
+<ul>
+<li><a href="http://bower.io/">bower</a> 前端包管理器</li>
+<li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
+<li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
+<li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
+</ul>
+
+
+<p>这里我使用了yeoman的一个angularJS的生成器<a href="https://github.com/yeoman/generator-angular">yo</a>，方便生成需要的全部零部件</p>
+
+<h2>新建工程</h2>
+
+<p>我们要建立的angularjs工程的项目名称叫<code>MyAngularApp</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir MyAngularApp
+</span><span class='line'><span class="nb">cd </span>MyAngularApp
+</span><span class='line'><span class="c"># 这里我习惯用coffee来写代码，如果直接用javascript可以去掉后面的参数--coffee</span>
+</span><span class='line'>yo angular --coffee
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成的目录结构如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>MyAngularApp
+</span><span class='line'>├── Gruntfile.js
+</span><span class='line'>├── README.md
+</span><span class='line'>├── app
+</span><span class='line'>│   ├── 404.html
+</span><span class='line'>│   ├── favicon.ico
+</span><span class='line'>│   ├── images
+</span><span class='line'>│   ├── index.html
+</span><span class='line'>│   ├── robots.txt
+</span><span class='line'>│   ├── scripts
+</span><span class='line'>│   ├── styles
+</span><span class='line'>│   └── views
+</span><span class='line'>├── bower.json
+</span><span class='line'>├── bower_components
+</span><span class='line'>│   ├── angular
+</span><span class='line'>│   ├── angular-animate
+</span><span class='line'>│   └── ......
+</span><span class='line'>├── node_modules
+</span><span class='line'>│   ├── coffee-script
+</span><span class='line'>│   └── ......
+</span><span class='line'>├── package.json
+</span><span class='line'>└── <span class="nb">test</span>
+</span><span class='line'>    ├── karma.conf.coffee
+</span><span class='line'>    └── spec
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中，<code>Gruntfile.js</code>是grunt的makefile文件，里面定义了各种编译任务，如常用的<code>grunt serve</code>和<code>grunt build</code>。</p>
+
+<p><code>app</code>目录是主要的工作目录，下面的<code>scripts</code>目录放置所有的controller，<code>styles</code>放置各种css文件，<code>views</code>放置视图模板；也可以在<code>app</code>下防止自己的资源文件夹如<code>vendor</code>目录，放置第三方库。</p>
+
+<p><code>bower.json</code>中定义了需要安装的库，功能类似于ruby的Gemfile文件，在工程根目录执行<code>bower install</code>安装依赖。所有的依赖库都会被安装到<code>bower_components</code>目录中。</p>
+
+<p><code>node_modules</code>是项目工具如coffee或者grunt的依赖工具。</p>
+
+<p><code>package.json</code>是grunt的依赖工具。</p>
+
+<p><code>test</code>是测试文件所在。</p>
+
+<h2>index.html</h2>
+
+<p>yo的常用操作可以参考其github文档。这里需要补充说一下的是<code>app/index.html</code>文件，该文件是angular项目的起始文件。注意其中类似下面这样的语句：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- build:css({.tmp,app}) styles/main.css --&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;styles/main.css&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- endbuild --&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- build:js(.) scripts/vendor.js --&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- bower:js --&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular/angular.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-animate/angular-animate.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-cookies/angular-cookies.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-resource/angular-resource.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-route/angular-route.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-sanitize/angular-sanitize.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-touch/angular-touch.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- endbower --&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- endbuild --&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要注意的是<code>&lt;!-- build:css(DIRECTORY) OUT_FILE --&gt;</code>和<code>&lt;!-- build:js(DIRECTORY) OUTFILE --&gt;</code>，它们并不是普通的html注释，而是grunt的指令。</p>
+
+<p>比如第一段，grunt会将<code>build:css</code>到<code>endbuild</code>之间的css文件找到，查找路径是<code>build:css(DIRECTORY)</code>中的目录加上<code>link</code>标签里的<code>href</code>指定的文件路径所在文件，即<code>.tmp/styles/main.css</code>和<code>app/styles/main.css</code>,然后grunt将它们合并压缩为一个css文件<code>styles/main.css</code>，这个文件被生成在输入目录，通常是<code>dist/styles/main.css</code>。</p>
+
+<p>类似的，下面的js编译将当前目录<code>.</code>下指定的<code>bower_components</code>下的一些js合并压缩后变成<code>dist/scripts/vendor.js</code>。</p>
+
+<p>所以，自己引入的一些第三方库怎么弄也就清楚了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- build:css(app) assets/css/vendor.css --&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;assets/css/animate.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;assets/plugins/gritter/css/jquery.gritter.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- endbuild --&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>grunt</h2>
+
+<p>最后说一下grunt的任务，如果在app目录有个<code>assets/img</code>目录，里面放了一些图片，希望执行<code>grunt build</code>后将这些资源复制到输出目录，那么可以对<code>Gruntfile.js</code>做简单修改，如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Copies remaining files to places other tasks can use</span>
+</span><span class='line'><span class="nx">copy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">dist</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">files</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>      <span class="nx">expand</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">dot</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">cwd</span><span class="o">:</span> <span class="s1">&#39;&lt;%= yeoman.app %&gt;&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;&lt;%= yeoman.dist %&gt;&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">src</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;*.{ico,png,txt}&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;.htaccess&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;*.html&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;views/{,*/}*.html&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;images/{,*/}*.{webp}&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;assets/{,img/*.*,fonts/*.*}&#39;</span><span class="p">,</span>   <span class="c1">//这里添加了一行</span>
+</span><span class='line'>        <span class="s1">&#39;fonts/{,*/}*.*&#39;</span>
+</span><span class='line'>      <span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-25T10:54:31+08:00" pubdate data-updated="true">Nov 25<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/11/25/xin-jian-angularxiang-mu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -683,50 +913,6 @@ tmux attach -t SESSION_NAME # 进入某会话 Read on & &hellip;">
 </div>
 	
 	<div class="comments"><a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/05/02/ming-ling-xing-can-shu/">
-		
-			命令行参数</a>
-	</h2>
-	<div class="entry-content">
-		<p>阅读docker源码第一个文件<code>DOCKER/docker/docker.go</code>，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。</p>
-
-
-		
-		<a href="/blog/2014/05/02/ming-ling-xing-can-shu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-02T01:14:33+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/docker/'>docker</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/05/02/ming-ling-xing-can-shu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
