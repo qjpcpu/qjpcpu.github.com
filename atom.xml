@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-11-25T11:47:29+08:00</updated>
+  <updated>2014-11-25T11:58:29+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -29,6 +29,9 @@
 
 
 <p>这里我使用了yeoman的一个angularJS的生成器<a href="https://github.com/yeoman/generator-angular">yo</a>，方便生成需要的全部零部件</p>
+
+<!-- more -->
+
 
 <h2>新建工程</h2>
 
