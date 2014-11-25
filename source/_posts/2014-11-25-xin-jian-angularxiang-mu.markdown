@@ -15,6 +15,8 @@ categories: angularjs
 
 这里我使用了yeoman的一个angularJS的生成器[yo](https://github.com/yeoman/generator-angular)，方便生成需要的全部零部件
 
+<!-- more -->
+
 ## 新建工程
 
 我们要建立的angularjs工程的项目名称叫`MyAngularApp`
