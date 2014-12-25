@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-11-25T11:58:29+08:00</updated>
+  <updated>2014-12-25T18:44:49+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -182,7 +182,7 @@ copy: {
         '*.html',
         'views/{,*/}*.html',
         'images/{,*/}*.{webp}',
-        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行
+        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行,也可以直接复制整个文件夹 'assets/**'
         'fonts/{,*/}*.*'
       ]
     }

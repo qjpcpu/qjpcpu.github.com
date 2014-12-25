@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-11-25T11:58:29+08:00</updated>
+  <updated>2014-12-25T18:44:49+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -207,7 +207,7 @@
 </span><span class='line'>        <span class="s1">&#39;*.html&#39;</span><span class="p">,</span>
 </span><span class='line'>        <span class="s1">&#39;views/{,*/}*.html&#39;</span><span class="p">,</span>
 </span><span class='line'>        <span class="s1">&#39;images/{,*/}*.{webp}&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;assets/{,img/*.*,fonts/*.*}&#39;</span><span class="p">,</span>   <span class="c1">//这里添加了一行</span>
+</span><span class='line'>        <span class="s1">&#39;assets/{,img/*.*,fonts/*.*}&#39;</span><span class="p">,</span>   <span class="c1">//这里添加了一行,也可以直接复制整个文件夹 &#39;assets/**&#39;</span>
 </span><span class='line'>        <span class="s1">&#39;fonts/{,*/}*.*&#39;</span>
 </span><span class='line'>      <span class="p">]</span>
 </span><span class='line'>    <span class="p">}</span>
