@@ -125,7 +125,7 @@ yo的常用操作可以参考其github文档。这里需要补充说一下的是
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-	        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行
+	        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行,也可以直接复制整个文件夹 'assets/**'
             'fonts/{,*/}*.*'
           ]
         }
