@@ -7,10 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="需要的工具 bower 前端包管理器
-grunt javascript的makefile工具
-yeoman webapp的流行脚手架
-karma 测试套件 这里我使用了yeoman的一个angularJS的生成器yo，方便生成需要的全部零部件 Read on &rarr; Nov 25th, &hellip;">
+	<meta name="description" content="简介 AngularUI Router是AngularJS的路由框架，和默认的$route不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -82,6 +79,52 @@ karma 测试套件 这里我使用了yeoman的一个angularJS的生成器yo，�
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/">
+		
+			angularJS路由框架ui-router</a>
+	</h2>
+	<div class="entry-content">
+		<h1>简介</h1>
+
+<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
+
+
+		
+		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-29T17:32:53+08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -665,74 +708,6 @@ karma 测试套件 这里我使用了yeoman的一个angularJS的生成器yo，�
 </div>
 	
 	<div class="comments"><a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/">
-		
-			信任关系建立</a>
-	</h2>
-	<div class="entry-content">
-		<h3>建立host1到host2的信任关系</h3>
-
-<h4>如果A的rsa文件不存在可以这样建立</h4>
-
-<p>首先在<code>host1</code>上：</p>
-
-<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>添加信任关系</h4>
-
-<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
-
-<h4>避免第一次连接出现添加fingerprint的询问</h4>
-
-<p>在<code>host1</code>上执行：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-
-		
-		<a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-21T14:58:28+08:00" pubdate data-updated="true">May 21<span>st</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
