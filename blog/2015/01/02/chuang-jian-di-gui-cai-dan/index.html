@@ -1,0 +1,350 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>创建递归菜单 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？ 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+menuItems = [ { &quot;label&quot;: &quot;level1 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">创建递归菜单</h2>
+	<div class="entry-content"><p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="err">menuItems</span> <span class="err">=</span> <span class="p">[</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A/a1&quot;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B/b1&quot;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!-- more -->
+
+
+<h2>需要的ng指令</h2>
+
+<h3>script</h3>
+
+<p>将<code>&lt;script&gt;</code>的内容加载到$templateCache,这样就能够在ngInclude, ngView或指令中使用。<code>&lt;script&gt;</code>的类型必须是<code>text/ng-template</code>，并用<code>id</code>指定id。如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/ng-template&quot;</span> <span class="na">id=</span><span class="s">&quot;tpl-1&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nx">Content</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">template</span><span class="p">.</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ngInit</h3>
+
+<p>在当前scope内重命名某属性</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>  <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;initExample&#39;</span><span class="p">,</span> <span class="p">[])</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;ExampleController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">$scope</span><span class="p">.</span><span class="nx">list</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}]);</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;ExampleController&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div</span> <span class="na">ng-repeat=</span><span class="s">&quot;innerList in list&quot;</span> <span class="na">ng-init=</span><span class="s">&quot;outerIndex = $index&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">ng-repeat=</span><span class="s">&quot;value in innerList&quot;</span> <span class="na">ng-init=</span><span class="s">&quot;innerIndex = $index&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>       <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;example-init&quot;</span><span class="nt">&gt;</span>list[  ][  ] = ;<span class="nt">&lt;/span&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出：</p>
+
+<pre><code>list[ 0 ][ 0 ] = a;
+list[ 0 ][ 1 ] = b;
+list[ 1 ][ 0 ] = c;
+list[ 1 ][ 1 ] = d; 
+</code></pre>
+
+<h2>示例</h2>
+
+<p>下面的示例代码就利用这些指令，将递归的菜单分割成扁平的模板，避免html模板过深的层次。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/ng-template&quot;</span> <span class="na">id=</span><span class="s">&quot;menu-item-link-tpl&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">span</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="o">&gt;</span><span class="p"></span><span class="o">&lt;</span><span class="err">/span&gt;            </span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">span</span> <span class="nx">ng</span><span class="o">-</span><span class="k">if</span><span class="o">=</span><span class="s2">&quot;item.label&quot;</span><span class="o">&gt;</span><span class="p"></span><span class="o">&lt;</span><span class="err">/span&gt;</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/ng-template&quot;</span> <span class="na">id=</span><span class="s">&quot;menu-items-tpl&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">repeat</span><span class="o">=</span><span class="s2">&quot;item in menuItems&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">include</span><span class="o">=</span><span class="s2">&quot;&#39;menu-item-link-tpl&#39;&quot;</span><span class="o">&gt;&lt;</span><span class="err">/a&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">ng</span><span class="o">-</span><span class="k">if</span><span class="o">=</span><span class="s2">&quot;item.menuItems.length&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">init</span><span class="o">=</span><span class="s2">&quot;subItems = item.menuItems&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">include</span><span class="o">=</span><span class="s2">&quot;&#39;menu-items-recursive-tpl&#39;&quot;</span><span class="o">&gt;&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/ng-template&quot;</span> <span class="na">id=</span><span class="s">&quot;menu-items-recursive-tpl&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">repeat</span><span class="o">=</span><span class="s2">&quot;item in subItems&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">include</span><span class="o">=</span><span class="s2">&quot;&#39;menu-item-link-tpl&#39;&quot;</span><span class="o">&gt;&lt;</span><span class="err">/a&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">ng</span><span class="o">-</span><span class="k">if</span><span class="o">=</span><span class="s2">&quot;item.menuItems.length&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">init</span><span class="o">=</span><span class="s2">&quot;subItems = item.menuItems&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">include</span><span class="o">=</span><span class="s2">&quot;&#39;menu-items-recursive-tpl&#39;&quot;</span><span class="o">&gt;&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ul</span> <span class="na">ng-include=</span><span class="s">&quot;&#39;menu-items-tpl&#39;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-02T12:44:07+08:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2014-11-25T11:58:29+08:00</updated>
+  <updated>2015-01-02T13:08:36+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,137 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[创建递归菜单]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/"/>
+    <updated>2015-01-02T12:44:07+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan</id>
+    <content type="html"><![CDATA[<p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
+
+<p>```json
+menuItems = [
+  {</p>
+
+<pre><code>"label": "level1",
+"link": "/A",
+"menuItems": [
+  {
+    "label": "level2",
+    "link": "/A/a1"
+  }
+]
+</code></pre>
+
+<p>  },
+  {</p>
+
+<pre><code>"label": "level1",
+"link": "/B",
+"menuItems": [
+  {
+    "label": "level2",
+    "link": "/B/b1"
+  }
+]
+</code></pre>
+
+<p>  }
+]
+```</p>
+
+<!-- more -->
+
+
+<h2>需要的ng指令</h2>
+
+<h3>script</h3>
+
+<p>将<code>&lt;script&gt;</code>的内容加载到$templateCache,这样就能够在ngInclude, ngView或指令中使用。<code>&lt;script&gt;</code>的类型必须是<code>text/ng-template</code>，并用<code>id</code>指定id。如：</p>
+
+<p>```html</p>
+
+<script type="text/ng-template" id="tpl-1">
+  Content of the template.
+</script>
+
+
+<p>```</p>
+
+<h3>ngInit</h3>
+
+<p>在当前scope内重命名某属性</p>
+
+<p>```html</p>
+
+<script>
+  angular.module('initExample', [])
+    .controller('ExampleController', ['$scope', function($scope) {
+      $scope.list = [['a', 'b'], ['c', 'd']];
+    }]);
+</script>
+
+
+<div ng-controller="ExampleController">
+  <div ng-repeat="innerList in list" ng-init="outerIndex = $index">
+    <div ng-repeat="value in innerList" ng-init="innerIndex = $index">
+       <span class="example-init">list[  ][  ] = ;</span>
+    </div>
+  </div>
+</div>
+
+
+<p>```</p>
+
+<p>输出：</p>
+
+<pre><code>list[ 0 ][ 0 ] = a;
+list[ 0 ][ 1 ] = b;
+list[ 1 ][ 0 ] = c;
+list[ 1 ][ 1 ] = d; 
+</code></pre>
+
+<h2>示例</h2>
+
+<p>下面的示例代码就利用这些指令，将递归的菜单分割成扁平的模板，避免html模板过深的层次。</p>
+
+<p>```html</p>
+
+<script type="text/ng-template" id="menu-item-link-tpl">
+    <span class="title"></span>           
+    <span ng-if="item.label"></span>
+</script>
+
+
+
+
+<script type="text/ng-template" id="menu-items-tpl">
+    <li ng-repeat="item in menuItems">
+    <a href="#" ng-include="'menu-item-link-tpl'"></a>
+    <ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+    </li>
+</script>
+
+
+
+
+<script type="text/ng-template" id="menu-items-recursive-tpl">
+    <li ng-repeat="item in subItems">
+    <a href="#" ng-include="'menu-item-link-tpl'"></a>
+    <ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+    </li>
+</script>
+
+
+
+
+<ul ng-include="'menu-items-tpl'">
+</ul>
+
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[新建angular项目]]></title>
