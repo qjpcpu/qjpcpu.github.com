@@ -4,7 +4,11 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
+<<<<<<< HEAD
   <updated>2015-01-02T13:14:54+08:00</updated>
+=======
+  <updated>2014-12-29T18:50:06+08:00</updated>
+>>>>>>> 4b6f378f76a04a93bdb7f1ee0a24855750657007
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,6 +18,7 @@
 
   
   <entry>
+<<<<<<< HEAD
     <title type="html"><![CDATA[创建递归菜单]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/"/>
     <updated>2015-01-02T12:44:07+08:00</updated>
@@ -182,6 +187,8 @@ list[ 1 ][ 1 ] = d;
   </entry>
   
   <entry>
+=======
+>>>>>>> 4b6f378f76a04a93bdb7f1ee0a24855750657007
     <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
     <updated>2014-12-29T17:32:53+08:00</updated>
@@ -2491,4 +2498,89 @@ $ stat -c %z access.log #获取change time
 ]]></content>
   </entry>
   
+<<<<<<< HEAD
+=======
+  <entry>
+    <title type="html"><![CDATA[shell数组]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/"/>
+    <updated>2014-03-10T00:22:25+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu</id>
+    <content type="html"><![CDATA[<h3>数组定义</h3>
+
+<p>定义数组需要用括号把元素包裹起来。</p>
+
+<pre><code>colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]}  # red green blue black white
+echo ${colors[@]}  # red green blue black white
+</code></pre>
+
+<!--more-->
+
+
+<h3>基本操作</h3>
+
+<pre><code># 有两种方法获取数组长度
+echo ${#colors[@]}    # 5
+echo ${#colors[*]}    # 5
+</code></pre>
+
+<p>遍历数组</p>
+
+<pre><code>for e in ${colors[*]};do
+    echo $e
+done
+</code></pre>
+
+<p>或</p>
+
+<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
+    echo ${colors[i]}
+done
+</code></pre>
+
+<p>读写数组</p>
+
+<pre><code>echo ${colors[0]}    # red
+colors[0]=RED
+echo ${colors[0]}    # RED
+</code></pre>
+
+<p>移除元素</p>
+
+<pre><code>unset colors[1]
+echo ${colors[*]}    # red blue black white
+echo ${#colors[*]}   # 4
+</code></pre>
+
+<h3>切片</h3>
+
+<p>切片不影响原数组</p>
+
+<pre><code>echo ${colors[*]:1:3}    # green blue black
+# 获取切片得到的新数组
+c=(${colors[*]:1:3})
+echo ${c[*]}             # green blue black
+</code></pre>
+
+<h3>替换</h3>
+
+<p>替换也不影响原数组</p>
+
+<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+
+<h3>字符串转换为数组</h3>
+
+<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
+
+<pre><code>IFS=";"
+str="a;b;c;d;e"
+arr=($str)
+echo ${arr[*]}  # a b c d e
+</code></pre>
+]]></content>
+  </entry>
+  
+>>>>>>> 4b6f378f76a04a93bdb7f1ee0a24855750657007
 </feed>
