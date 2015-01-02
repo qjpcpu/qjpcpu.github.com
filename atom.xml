@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-01-02T13:08:36+08:00</updated>
+  <updated>2015-01-02T13:12:38+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -177,6 +177,280 @@ list[ 1 ][ 1 ] = d;
 </span></code></pre></td></tr></table></div></figure>
 
 
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
+    <updated>2014-12-29T17:32:53+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
+    <content type="html"><![CDATA[<h1>简介</h1>
+
+<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
+
+<!-- more -->
+
+
+<h1>Demo</h1>
+
+<p>直接使用<code>ui-router</code>的方式可以参考其github文档，这里以yeoman为例简单展示下ui-router的使用。</p>
+
+<p>在<code>bower.json</code>中加入ui-router依赖包,然后<code>bower install</code>执行安装</p>
+
+<figure class='code'><figcaption><span>bower.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;learn-angular&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">/*省略其他*/</span>
+</span><span class='line'>    <span class="nt">&quot;angular-ui-router&quot;</span><span class="p">:</span> <span class="s2">&quot;^0.2.13&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'> <span class="err">/*省略其他*/</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>index.html</code>中添加引用：</p>
+
+<figure class='code'><figcaption><span>app/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-ui-router/release/angular-ui-router.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在app.coffee中设置路由：</p>
+
+<figure class='code'><figcaption><span>app/scripts/app.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="s">&#39;use strict&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">angular</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;learnAngularApp&#39;</span><span class="p">,</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s">&#39;ui.router&#39;</span>    <span class="c1"># 添加模块依赖</span>
+</span><span class='line'>  <span class="p">])</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">run</span> <span class="p">[</span><span class="s">&#39;$rootScope&#39;</span><span class="p">,</span> <span class="s">&#39;$state&#39;</span><span class="p">,</span> <span class="s">&#39;$stateParams&#39;</span><span class="p">,</span> <span class="nf">($rootScope,   $state,   $stateParams) -&gt;</span>
+</span><span class='line'>    <span class="nv">$rootScope.$state = </span><span class="nx">$state</span>
+</span><span class='line'>    <span class="nv">$rootScope.$stateParams = </span><span class="nx">$stateParams</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">config</span> <span class="nf">($stateProvider,$urlRouterProvider) -&gt;</span>
+</span><span class='line'>    <span class="nx">$urlRouterProvider</span><span class="p">.</span><span class="nx">otherwise</span> <span class="s">&quot;/&quot;</span>
+</span><span class='line'>    <span class="nx">$stateProvider</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;home&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nv">url: </span><span class="s">&#39;/&#39;</span>                      <span class="c1"># 可见默认路由状态是home</span>
+</span><span class='line'>        <span class="nv">templateUrl: </span><span class="s">&#39;views/home.html&#39;</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state1&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nv">url: </span><span class="s">&#39;/state1&#39;</span>
+</span><span class='line'>        <span class="nv">templateUrl: </span><span class="s">&#39;views/state1.html&#39;</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state1.list&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nv">url: </span><span class="s">&#39;/list&#39;</span>
+</span><span class='line'>        <span class="nv">templateUrl: </span><span class="s">&#39;views/state1.list.html&#39;</span>
+</span><span class='line'>        <span class="nv">controller: </span><span class="nf">($scope) -&gt;</span>
+</span><span class='line'>          <span class="nv">$scope.items = </span><span class="p">[</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="s">&quot;Of&quot;</span><span class="p">,</span> <span class="s">&quot;Items&quot;</span><span class="p">]</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state2&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nv">url: </span><span class="s">&#39;/state2&#39;</span>
+</span><span class='line'>        <span class="nv">templateUrl: </span><span class="s">&#39;views/state2.html&#39;</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state2.list&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nv">url: </span><span class="s">&#39;/list&#39;</span>
+</span><span class='line'>        <span class="nv">templateUrl: </span><span class="s">&#39;views/state2.list.html&#39;</span>
+</span><span class='line'>        <span class="nv">controller: </span><span class="nf">($scope) -&gt;</span>
+</span><span class='line'>          <span class="nv">$scope.things = </span><span class="p">[</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;Set&quot;</span><span class="p">,</span> <span class="s">&quot;Of&quot;</span><span class="p">,</span> <span class="s">&quot;Things&quot;</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ui-router最重要的三个服务<code>$state</code>,<code>$stateProvider</code>,<code>$urlRouterProvider</code>。在<code>$stateProvider</code>上配置所有的状态，state方法的第一个参数是状态名，第二个参数是一个hash对象，里面可以配置<code>url</code>,<code>templateUrl</code>,<code>controller</code>等。</p>
+
+<p>注意其中类似<code>state1.list</code>和<code>state1</code>的状态，<code>state1.list</code>是<code>state1</code>的子状态，所以触发<code>state1.list</code>的url是父子状态的联合，即<code>/state1</code>+<code>/list</code> => <code>/state1/list</code>,所以当浏览器导航到<code>/state1/list</code>（或手动触发<code>$state.go()</code>）时，<code>state1.list.html</code>才被插入父模板渲染。</p>
+
+<p>下图非常清晰反映了ui-router的渲染逻辑：</p>
+
+<ul>
+<li>绿色 = 初始状态</li>
+<li>黄色 = 即时渲染</li>
+<li>蓝色 = 最终状态</li>
+</ul>
+
+
+<p><img src="https://camo.githubusercontent.com/15b1f1780e3a88cc1d6e0055dda298279d66fad7/68747470733a2f2f7261772e6769746875622e636f6d2f77696b692f616e67756c61722d75692f75692d726f757465722f5374617465476f4578616d706c65732e706e67" alt="渲染逻辑" /></p>
+
+<p>主模板index.html:</p>
+
+<figure class='code'><figcaption><span>app/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;home&quot;</span><span class="nt">&gt;</span>home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span> <span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state1&quot;</span><span class="nt">&gt;</span>state1<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state2&quot;</span><span class="nt">&gt;</span>state2<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里出现了两个ui-router的指令，<code>ui-sref</code>类似于angularjs的<code>ng-href</code>，只不过后面指定的是路由状态。</p>
+
+<p>另一个指令就是<code>ui-view</code>，ui-router根据激活的状态向该指令中插入子模板。ui-router插入模板的规则是：<code>ui-router会将激活状态的模板插入父状态模板的ui-view处</code>。home状态是根状态，所以<code>app/index.html</code>的<code>ui-view</code>中插入的就是home状态的模板片段<code>app/views/home.html</code>。</p>
+
+<p>其他模板：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- app/views/state1.html --&gt;</span>
+</span><span class='line'><span class="nt">&lt;h1&gt;</span>State 1<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'><span class="nt">&lt;hr/&gt;</span>
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state1.list&quot;</span><span class="nt">&gt;</span>Show List<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- app/views/state1.list.html --&gt;</span>
+</span><span class='line'><span class="nt">&lt;h3&gt;</span>List of State 1 Items<span class="nt">&lt;/h3&gt;</span>
+</span><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">&quot;item in items&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- app/views/state2.html --&gt;</span>
+</span><span class='line'><span class="nt">&lt;h1&gt;</span>State 2<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'><span class="nt">&lt;hr/&gt;</span>
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state2.list&quot;</span><span class="nt">&gt;</span>Show List<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- app/views/state2.list.html --&gt;</span>
+</span><span class='line'><span class="nt">&lt;h3&gt;</span>List of State 2 Things<span class="nt">&lt;/h3&gt;</span>
+</span><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">&quot;thing in things&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由上面的规则可以同理推出，当url为<code>/state1/list</code>时，会渲染主模板<code>state1.html</code>，并且会将子模板<code>state1.list.html</code>嵌入<code>state1.html</code>的<code>ui-view</code>中一起渲染出来。cool，路由渲染的灵活性非常高！</p>
+
+<p>另外还有一个常用指令<code>ui-sref-active="classname"</code>,它通常和<code>ui-sref</code>一起使用，含义是当前状态被激活则会在所属html标签上class属性添加classname,如果不再是激活状态则去除classname。</p>
+
+<p>另外，ui-router还支持多模板：</p>
+
+<figure class='code'><figcaption><span>app/views/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;viewA&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;viewB&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!-- Also a way to navigate --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;route1&quot;</span><span class="nt">&gt;</span>Route 1<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;route2&quot;</span><span class="nt">&gt;</span>Route 2<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/scripts/app.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">myApp</span><span class="p">.</span><span class="nx">config</span> <span class="nf">($stateProvider) -&gt;</span>
+</span><span class='line'>  <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nv">url: </span><span class="s">&quot;&quot;</span>
+</span><span class='line'>    <span class="nv">views:</span>
+</span><span class='line'>      <span class="nv">viewA:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;index.viewA&quot;</span>
+</span><span class='line'>      <span class="nv">viewB:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;index.viewB&quot;</span>
+</span><span class='line'>  <span class="p">).</span><span class="nx">state</span><span class="p">(</span><span class="s">&quot;route1&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nv">url: </span><span class="s">&quot;/route1&quot;</span>
+</span><span class='line'>    <span class="nv">views:</span>
+</span><span class='line'>      <span class="nv">viewA:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;route1.viewA&quot;</span>
+</span><span class='line'>      <span class="nv">viewB:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;route1.viewB&quot;</span>
+</span><span class='line'>  <span class="p">).</span><span class="nx">state</span> <span class="s">&quot;route2&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nv">url: </span><span class="s">&quot;/route2&quot;</span>
+</span><span class='line'>    <span class="nv">views:</span>
+</span><span class='line'>      <span class="nv">viewA:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;route2.viewA&quot;</span>
+</span><span class='line'>      <span class="nv">viewB:</span>
+</span><span class='line'>        <span class="nv">template: </span><span class="s">&quot;route2.viewB&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>
@@ -374,7 +648,7 @@ list[ 1 ][ 1 ] = d;
 </span><span class='line'>        <span class="s1">&#39;*.html&#39;</span><span class="p">,</span>
 </span><span class='line'>        <span class="s1">&#39;views/{,*/}*.html&#39;</span><span class="p">,</span>
 </span><span class='line'>        <span class="s1">&#39;images/{,*/}*.{webp}&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;assets/{,img/*.*,fonts/*.*}&#39;</span><span class="p">,</span>   <span class="c1">//这里添加了一行</span>
+</span><span class='line'>        <span class="s1">&#39;assets/{,img/*.*,fonts/*.*}&#39;</span><span class="p">,</span>   <span class="c1">//这里添加了一行,也可以直接复制整个文件夹 &#39;assets/**&#39;</span>
 </span><span class='line'>        <span class="s1">&#39;fonts/{,*/}*.*&#39;</span>
 </span><span class='line'>      <span class="p">]</span>
 </span><span class='line'>    <span class="p">}</span>
@@ -2214,88 +2488,6 @@ $ stat -c %z access.log #获取change time
 <p><code>modify time</code>对应文件内容修改时间，只要修改文件内容就会更新该时间，由于内容改变实际也改变文件元数据，所以写操作也更新<code>change time</code>。</p>
 
 <p>注意：对于文件夹来说，对文件夹下的文件增删，重命名，等操作，会修改文件夹<code>change time</code>和<code>modify time</code>，因为文件名实际是作为目录文件的内容存在的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[shell数组]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/"/>
-    <updated>2014-03-10T00:22:25+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu</id>
-    <content type="html"><![CDATA[<h3>数组定义</h3>
-
-<p>定义数组需要用括号把元素包裹起来。</p>
-
-<pre><code>colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]}  # red green blue black white
-echo ${colors[@]}  # red green blue black white
-</code></pre>
-
-<!--more-->
-
-
-<h3>基本操作</h3>
-
-<pre><code># 有两种方法获取数组长度
-echo ${#colors[@]}    # 5
-echo ${#colors[*]}    # 5
-</code></pre>
-
-<p>遍历数组</p>
-
-<pre><code>for e in ${colors[*]};do
-    echo $e
-done
-</code></pre>
-
-<p>或</p>
-
-<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
-    echo ${colors[i]}
-done
-</code></pre>
-
-<p>读写数组</p>
-
-<pre><code>echo ${colors[0]}    # red
-colors[0]=RED
-echo ${colors[0]}    # RED
-</code></pre>
-
-<p>移除元素</p>
-
-<pre><code>unset colors[1]
-echo ${colors[*]}    # red blue black white
-echo ${#colors[*]}   # 4
-</code></pre>
-
-<h3>切片</h3>
-
-<p>切片不影响原数组</p>
-
-<pre><code>echo ${colors[*]:1:3}    # green blue black
-# 获取切片得到的新数组
-c=(${colors[*]:1:3})
-echo ${c[*]}             # green blue black
-</code></pre>
-
-<h3>替换</h3>
-
-<p>替换也不影响原数组</p>
-
-<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
-</code></pre>
-
-<h3>字符串转换为数组</h3>
-
-<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
-
-<pre><code>IFS=";"
-str="a;b;c;d;e"
-arr=($str)
-echo ${arr[*]}  # a b c d e
-</code></pre>
 ]]></content>
   </entry>
   

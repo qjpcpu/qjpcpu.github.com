@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-01-02T13:08:36+08:00</updated>
+  <updated>2015-01-02T13:12:38+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -139,6 +139,241 @@ list[ 1 ][ 1 ] = d;
 <ul ng-include="'menu-items-tpl'">
 </ul>
 
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
+    <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
+    <updated>2014-12-29T17:32:53+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
+    <content type="html"><![CDATA[<h1>简介</h1>
+
+<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
+
+<!-- more -->
+
+
+<h1>Demo</h1>
+
+<p>直接使用<code>ui-router</code>的方式可以参考其github文档，这里以yeoman为例简单展示下ui-router的使用。</p>
+
+<p>在<code>bower.json</code>中加入ui-router依赖包,然后<code>bower install</code>执行安装</p>
+
+<p>```json bower.json
+{
+  &ldquo;name&rdquo;: &ldquo;learn-angular&rdquo;,
+  &ldquo;version&rdquo;: &ldquo;0.0.0&rdquo;,
+  &ldquo;dependencies&rdquo;: {</p>
+
+<pre><code>/*省略其他*/ 
+"angular-ui-router": "^0.2.13"
+</code></pre>
+
+<p>  },
+ /<em>省略其他</em>/
+}
+```</p>
+
+<p>在<code>index.html</code>中添加引用：</p>
+
+<p>```html app/index.html</p>
+
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+
+
+<p>```
+在app.coffee中设置路由：</p>
+
+<p>```coffeescript  app/scripts/app.coffee
+&lsquo;use strict&rsquo;</p>
+
+<p>angular
+  .module(&lsquo;learnAngularApp&rsquo;, [</p>
+
+<pre><code>'ui.router'    # 添加模块依赖
+</code></pre>
+
+<p>  ])
+  .run [&lsquo;$rootScope&rsquo;, &lsquo;$state&rsquo;, &lsquo;$stateParams&rsquo;, ($rootScope,   $state,   $stateParams) &ndash;></p>
+
+<pre><code>$rootScope.$state = $state
+$rootScope.$stateParams = $stateParams
+]
+</code></pre>
+
+<p>  .config ($stateProvider,$urlRouterProvider) &ndash;></p>
+
+<pre><code>$urlRouterProvider.otherwise "/"
+$stateProvider
+  .state 'home',
+    url: '/'                      # 可见默认路由状态是home
+    templateUrl: 'views/home.html'
+  .state 'state1',
+    url: '/state1'
+    templateUrl: 'views/state1.html'
+  .state 'state1.list',
+    url: '/list'
+    templateUrl: 'views/state1.list.html'
+    controller: ($scope) -&gt;
+      $scope.items = ["A", "List", "Of", "Items"]
+  .state 'state2',
+    url: '/state2'
+    templateUrl: 'views/state2.html'
+  .state 'state2.list',
+    url: '/list'
+    templateUrl: 'views/state2.list.html'
+    controller: ($scope) -&gt;
+      $scope.things = ["A", "Set", "Of", "Things"]
+</code></pre>
+
+<p>```</p>
+
+<p>ui-router最重要的三个服务<code>$state</code>,<code>$stateProvider</code>,<code>$urlRouterProvider</code>。在<code>$stateProvider</code>上配置所有的状态，state方法的第一个参数是状态名，第二个参数是一个hash对象，里面可以配置<code>url</code>,<code>templateUrl</code>,<code>controller</code>等。</p>
+
+<p>注意其中类似<code>state1.list</code>和<code>state1</code>的状态，<code>state1.list</code>是<code>state1</code>的子状态，所以触发<code>state1.list</code>的url是父子状态的联合，即<code>/state1</code>+<code>/list</code> => <code>/state1/list</code>,所以当浏览器导航到<code>/state1/list</code>（或手动触发<code>$state.go()</code>）时，<code>state1.list.html</code>才被插入父模板渲染。</p>
+
+<p>下图非常清晰反映了ui-router的渲染逻辑：</p>
+
+<ul>
+<li>绿色 = 初始状态</li>
+<li>黄色 = 即时渲染</li>
+<li>蓝色 = 最终状态</li>
+</ul>
+
+
+<p><img src="https://camo.githubusercontent.com/15b1f1780e3a88cc1d6e0055dda298279d66fad7/68747470733a2f2f7261772e6769746875622e636f6d2f77696b692f616e67756c61722d75692f75692d726f757465722f5374617465476f4578616d706c65732e706e67" alt="渲染逻辑" /></p>
+
+<p>主模板index.html:</p>
+
+<p>```html app/index.html</p>
+
+<div>
+    <ul>
+      <li ui-sref-active="active"><a ui-sref="home">home</a></li>
+      <li ui-sref-active="active" ><a ui-sref="state1">state1</a></li>
+      <li ui-sref-active="active"><a ui-sref="state2">state2</a></li>
+    </ul>
+</div>
+
+
+<div ui-view></div>
+
+
+<p>```</p>
+
+<p>这里出现了两个ui-router的指令，<code>ui-sref</code>类似于angularjs的<code>ng-href</code>，只不过后面指定的是路由状态。</p>
+
+<p>另一个指令就是<code>ui-view</code>，ui-router根据激活的状态向该指令中插入子模板。ui-router插入模板的规则是：<code>ui-router会将激活状态的模板插入父状态模板的ui-view处</code>。home状态是根状态，所以<code>app/index.html</code>的<code>ui-view</code>中插入的就是home状态的模板片段<code>app/views/home.html</code>。</p>
+
+<p>其他模板：</p>
+
+<p>```html</p>
+
+<!-- app/views/state1.html -->
+
+
+<h1>State 1</h1>
+
+
+<hr/>
+
+
+<p><a ui-sref="state1.list">Show List</a></p>
+
+<div ui-view></div>
+
+
+<!-- app/views/state1.list.html -->
+
+
+<h3>List of State 1 Items</h3>
+
+
+<ul>
+  <li ng-repeat="item in items"></li>
+</ul>
+
+
+<!-- app/views/state2.html -->
+
+
+<h1>State 2</h1>
+
+
+<hr/>
+
+
+<p><a ui-sref="state2.list">Show List</a></p>
+
+<div ui-view></div>
+
+
+<!-- app/views/state2.list.html -->
+
+
+<h3>List of State 2 Things</h3>
+
+
+<ul>
+  <li ng-repeat="thing in things"></li>
+</ul>
+
+
+<p>```</p>
+
+<p>由上面的规则可以同理推出，当url为<code>/state1/list</code>时，会渲染主模板<code>state1.html</code>，并且会将子模板<code>state1.list.html</code>嵌入<code>state1.html</code>的<code>ui-view</code>中一起渲染出来。cool，路由渲染的灵活性非常高！</p>
+
+<p>另外还有一个常用指令<code>ui-sref-active="classname"</code>,它通常和<code>ui-sref</code>一起使用，含义是当前状态被激活则会在所属html标签上class属性添加classname,如果不再是激活状态则去除classname。</p>
+
+<p>另外，ui-router还支持多模板：</p>
+
+<p>```html app/views/index.html
+<body></p>
+
+<pre><code>&lt;div ui-view="viewA"&gt;&lt;/div&gt;
+&lt;div ui-view="viewB"&gt;&lt;/div&gt;
+&lt;!-- Also a way to navigate --&gt;
+&lt;a ui-sref="route1"&gt;Route 1&lt;/a&gt;
+&lt;a ui-sref="route2"&gt;Route 2&lt;/a&gt;
+</code></pre>
+
+<p></body>
+```</p>
+
+<p>```coffeescript app/scripts/app.coffee
+myApp.config ($stateProvider) &ndash;>
+  $stateProvider.state(&ldquo;index&rdquo;,</p>
+
+<pre><code>url: ""
+views:
+  viewA:
+    template: "index.viewA"
+  viewB:
+    template: "index.viewB"
+</code></pre>
+
+<p>  ).state(&ldquo;route1&rdquo;,</p>
+
+<pre><code>url: "/route1"
+views:
+  viewA:
+    template: "route1.viewA"
+  viewB:
+    template: "route1.viewB"
+</code></pre>
+
+<p>  ).state &ldquo;route2&rdquo;,</p>
+
+<pre><code>url: "/route2"
+views:
+  viewA:
+    template: "route2.viewA"
+  viewB:
+    template: "route2.viewB"
+</code></pre>
 
 <p>```</p>
 ]]></content>
@@ -313,7 +548,7 @@ copy: {
         '*.html',
         'views/{,*/}*.html',
         'images/{,*/}*.{webp}',
-        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行
+        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行,也可以直接复制整个文件夹 'assets/**'
         'fonts/{,*/}*.*'
       ]
     }
