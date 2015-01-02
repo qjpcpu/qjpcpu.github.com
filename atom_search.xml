@@ -4,11 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-<<<<<<< HEAD
-  <updated>2015-01-02T13:14:54+08:00</updated>
-=======
-  <updated>2014-12-29T18:50:06+08:00</updated>
->>>>>>> 4b6f378f76a04a93bdb7f1ee0a24855750657007
+  <updated>2015-01-02T13:21:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,7 +14,6 @@
 
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[创建递归菜单]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/"/>
@@ -188,8 +183,6 @@ list[ 1 ][ 1 ] = d;
   </entry>
   
   <entry>
-=======
->>>>>>> 4b6f378f76a04a93bdb7f1ee0a24855750657007
     <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
