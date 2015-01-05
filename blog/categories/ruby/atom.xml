@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-01-02T13:28:38+08:00</updated>
+  <updated>2015-01-05T18:16:01+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,59 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[rvm和rbenv环境变量冲突导致无法安装gem包]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/"/>
+    <updated>2015-01-05T18:11:47+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
+
+<!-- more -->
+
+
+<h2>resolve</h2>
+
+<p>这种情况是rvm强制设置了<code>GEM_HOME</code>导致的，可以<code>gem env</code>查看：</p>
+
+<pre><code>jason@mac:~$ gem env
+RubyGems Environment:
+  - RUBYGEMS VERSION: 2.0.14
+  - RUBY VERSION: 2.0.0 (2014-11-13 patchlevel 598) [x86_64-linux]
+  - INSTALLATION DIRECTORY: /usr/local/rvm/gems/ruby-2.0.0-p353
+  - RUBY EXECUTABLE: /home/jason/.rbenv/versions/2.0.0-p598/bin/ruby
+  - EXECUTABLE DIRECTORY: /usr/local/rvm/gems/ruby-2.0.0-p353/bin
+  - RUBYGEMS PLATFORMS:
+    - ruby
+    - x86_64-linux
+  - GEM PATHS:
+     - /usr/local/rvm/gems/ruby-2.0.0-p353
+     - /home/jason/.rbenv/versions/2.0.0-p598/lib/ruby/gems/2.0.0/
+  - GEM CONFIGURATION:
+     - :update_sources =&gt; true
+     - :verbose =&gt; true
+     - :backtrace =&gt; false
+     - :bulk_threshold =&gt; 1000
+  - REMOTE SOURCES:
+     - https://rubygems.org/
+</code></pre>
+
+<p>可见GEM PATHS里优先选择了rvm的gem路径，所以需要重设GEM_HOME</p>
+
+<pre><code>export GEM_HOME=$HOME/.rbenv/versions/2.0.0-p598/lib/ruby/gems/2.0.0/
+</code></pre>
+
+<p>但是，最好的办法是在~/.bash_profile(centos,ubuntu中是.bashrc)中<code>eval "$(rbenv init -)"</code>前加上：</p>
+
+<pre><code>unset GEM_PATH
+unset GEM_HOME
+</code></pre>
+
+<p>这样也可以清除rvm的设置，使rbenv的变量被正确设置.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[compile ruby from source]]></title>
@@ -509,55 +562,6 @@ end
   p.serialize &lsquo;styles.xlsx&rsquo;
 end
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
-    <updated>2014-02-15T00:34:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
-    <content type="html"><![CDATA[<h3>安装</h3>
-
-<p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
-
-<p><img src="https://raw.github.com/randym/axlsx/master/examples/sample.png" alt="axlsx" /></p>
-
-<!-- more -->
-
-
-<p>安装axlsx和安装其他gem一样：</p>
-
-<pre><code>$ gem install axlsx
-</code></pre>
-
-<h3>创建第一个报表</h3>
-
-<p>axlsx使用的对象和office文档使用的对象完全一样，workbook代表一个文档，worksheet代表一张表，row和cell代表行和单元格，基本上所有的对象顾名思义即可，而不需要了解文档ECMA规范。</p>
-
-<p>比如要创建一张如图所示的报表：</p>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=0b461ccc6e81800a6ae5890b810e42c7/cdbf6c81800a19d86620614631fa828ba61e4656.jpg?referer=5d8a74b17f1ed21b20de1bd5a24c&amp;x=.jpg" alt="image" /></p>
-
-<p>``` ruby
-require &lsquo;axlsx&rsquo;</p>
-
-<p>p = Axlsx::Package.new
-wb = p.workbook</p>
-
-<p>wb.add_worksheet(:name => &ldquo;Basic Worksheet&rdquo;) do |sheet|
-  sheet.add_row [&ldquo;First Column&rdquo;, &ldquo;Second&rdquo;, &ldquo;Third&rdquo;,&ldquo;Total&rdquo;]
-  sheet.add_row [1, 2, 3,&ldquo;=SUM(A2:C2)&rdquo;]
-  sheet.add_row [&lsquo;This is a very very long sentence.&rsquo;]
-  sheet.merge_cells &ldquo;A3:D3&rdquo;
-end</p>
-
-<p>p.serialize &lsquo;basic.xlsx&rsquo;
-```</p>
-
-<p>代码非常简单明了，创建worksheet，再一行行添加数据，在添加第二行数据时甚至使用了一个求和函数，所以我们使用过的Excel的知识完全可以直接拿过来使用，甚至对于较长的内容可以合并单元格，但这里没有居中显示所以还不够美观，美观的事情可以格式化来解决，不过这是下一篇的内容了。</p>
-
-<p>最后一行是将报表序列化到xlsx格式的文件，该文件可以用MSOffice直接打开查看。</p>
 ]]></content>
   </entry>
   

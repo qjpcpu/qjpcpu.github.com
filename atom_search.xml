@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-01-02T13:28:38+08:00</updated>
+  <updated>2015-01-05T18:16:01+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[rvm和rbenv环境变量冲突导致无法安装gem包]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/"/>
+    <updated>2015-01-05T18:11:47+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
+
+<!-- more -->
+
+
+<h2>resolve</h2>
+
+<p>这种情况是rvm强制设置了<code>GEM_HOME</code>导致的，可以<code>gem env</code>查看：</p>
+
+<pre><code>jason@mac:~$ gem env
+RubyGems Environment:
+  - RUBYGEMS VERSION: 2.0.14
+  - RUBY VERSION: 2.0.0 (2014-11-13 patchlevel 598) [x86_64-linux]
+  - INSTALLATION DIRECTORY: /usr/local/rvm/gems/ruby-2.0.0-p353
+  - RUBY EXECUTABLE: /home/jason/.rbenv/versions/2.0.0-p598/bin/ruby
+  - EXECUTABLE DIRECTORY: /usr/local/rvm/gems/ruby-2.0.0-p353/bin
+  - RUBYGEMS PLATFORMS:
+    - ruby
+    - x86_64-linux
+  - GEM PATHS:
+     - /usr/local/rvm/gems/ruby-2.0.0-p353
+     - /home/jason/.rbenv/versions/2.0.0-p598/lib/ruby/gems/2.0.0/
+  - GEM CONFIGURATION:
+     - :update_sources =&gt; true
+     - :verbose =&gt; true
+     - :backtrace =&gt; false
+     - :bulk_threshold =&gt; 1000
+  - REMOTE SOURCES:
+     - https://rubygems.org/
+</code></pre>
+
+<p>可见GEM PATHS里优先选择了rvm的gem路径，所以需要重设GEM_HOME</p>
+
+<pre><code>export GEM_HOME=$HOME/.rbenv/versions/2.0.0-p598/lib/ruby/gems/2.0.0/
+</code></pre>
+
+<p>但是，最好的办法是在~/.bash_profile(centos,ubuntu中是.bashrc)中<code>eval "$(rbenv init -)"</code>前加上：</p>
+
+<pre><code>unset GEM_PATH
+unset GEM_HOME
+</code></pre>
+
+<p>这样也可以清除rvm的设置，使rbenv的变量被正确设置.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[创建递归菜单]]></title>
