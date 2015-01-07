@@ -125,3 +125,22 @@ categories: rails
 	end
 ```
 所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:box，而picture的model中has_many关系添加了:polymorphic=>true选项。
+
+关系的使用：
+
+	p=Picture.create
+	e=Employee.create
+	pro=Product.create
+	employee.pictures << a_picture
+	product.pictures <<  b_picture
+	picture.e
+	
+	p1.owner.class.name # => 'Employee'
+	p2.owner.class.name # => 'Product'
+
+
+
+
+
+
+
