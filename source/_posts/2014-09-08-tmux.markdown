@@ -71,3 +71,38 @@ tmux -S /path/to/another/unix/socket-file
 DISABLE_AUTO_TITLE=true
 ```
 
+#### 可编程
+
+tmux最强大的地方还在于他的可编程性，用`tmux list-commands`可以看到tmux所有支持的命令。以我自己常执行的一个脚本为例，我开机后常常需要启动一系列服务便于开发, 但当我不开发时开电脑又不需要启动，所以放到开机自启动脚本里是不合适的，所以这里用tmux来批量起最合适了：
+
+```bash
+#!/bin/zsh
+# start tmux
+session=MAC
+tmux new -s "$session" -d
+tmux rename-window -t "$session:0" daemon
+# start redis-server
+tmux send -t "$session:daemon" 'redis-server' Enter
+tmux split-window -h -t "$session:daemon"
+# start mongo
+tmux send -t "$session:daemon" 'mongod --dbpath /Users/jason/local/var/mongodb-data' Enter
+# start nginx
+tmux split-window  -t "$session:daemon" '/Users/jason/local/nginx/sbin/nginx'
+tmux select-pane -L -t "$session:daemon"
+tmux split-window -t "$session:daemon"
+# start firefox with pentadactyl
+tmux send -t "$session:daemon" '/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE' Enter
+tmux select-pane -R -t "$session:daemon"
+
+# for develop project
+tmux neww -a -n dev -t "$session"
+tmux send -t "$session:dev" 'cd /Users/jason/repository/backend' Enter
+tmux split-window -t "$session:dev"
+tmux send -t "$session:dev" 'cd /Users/jason/repository/frontend' Enter
+```
+
+这个脚本启动一个名为`MAC`的tmux session，并新建了两个窗口，在第一个窗口里开了4个面板，分别启动了nginx, redis, mongo， firefox。其中，开启窗口/面板时同时执行命令，该窗口/面板会在命令执行结束后自动关闭，所以第一个窗口最后实际只有3个面板；第二个窗口启动并切换到我正则开发的工程。
+
+具体命令的使用可以参照该示例和man手册理解。
+
+enjoy tmux!
