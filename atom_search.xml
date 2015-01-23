@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-01-07T12:34:42+08:00</updated>
+  <updated>2015-01-23T09:44:31+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -909,7 +909,64 @@ list[ 1 ][ 1 ] = d;
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h4>可编程</h4>
 
+<p>tmux最强大的地方还在于他的可编程性，用<code>tmux list-commands</code>可以看到tmux所有支持的命令。以我自己常执行的一个脚本为例，我开机后常常需要启动一系列服务便于开发, 但当我不开发时开电脑又不需要启动，所以放到开机自启动脚本里是不合适的，所以这里用tmux来批量起最合适了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/zsh</span>
+</span><span class='line'><span class="c"># start tmux</span>
+</span><span class='line'><span class="nv">session</span><span class="o">=</span>MAC
+</span><span class='line'>tmux new -s <span class="s2">&quot;$session&quot;</span> -d
+</span><span class='line'>tmux rename-window -t <span class="s2">&quot;$session:0&quot;</span> daemon
+</span><span class='line'><span class="c"># start redis-server</span>
+</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;redis-server&#39;</span> Enter
+</span><span class='line'>tmux split-window -h -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class='line'><span class="c"># start mongo</span>
+</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;mongod --dbpath /Users/jason/local/var/mongodb-data&#39;</span> Enter
+</span><span class='line'><span class="c"># start nginx</span>
+</span><span class='line'>tmux split-window  -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Users/jason/local/nginx/sbin/nginx&#39;</span>
+</span><span class='line'>tmux <span class="k">select</span>-pane -L -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class='line'>tmux split-window -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class='line'><span class="c"># start firefox with pentadactyl</span>
+</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE&#39;</span> Enter
+</span><span class='line'>tmux <span class="k">select</span>-pane -R -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># for develop project</span>
+</span><span class='line'>tmux neww -a -n dev -t <span class="s2">&quot;$session&quot;</span>
+</span><span class='line'>tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/backend&#39;</span> Enter
+</span><span class='line'>tmux split-window -t <span class="s2">&quot;$session:dev&quot;</span>
+</span><span class='line'>tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/frontend&#39;</span> Enter
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个脚本启动一个名为<code>MAC</code>的tmux session，并新建了两个窗口，在第一个窗口里开了4个面板，分别启动了nginx, redis, mongo， firefox。其中，开启窗口/面板时同时执行命令，该窗口/面板会在命令执行结束后自动关闭，所以第一个窗口最后实际只有3个面板；第二个窗口启动并切换到我正则开发的工程。</p>
+
+<p>具体命令的使用可以参照该示例和man手册理解。</p>
+
+<p>enjoy tmux!</p>
 ]]></content>
   </entry>
   
