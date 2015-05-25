@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-25T15:23:51+08:00</updated>
+  <updated>2015-05-25T15:39:15+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -46,7 +46,7 @@
 </span><span class='line'><span class="p">]).</span><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
 </span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
 </span><span class='line'>  <span class="nv">scope: customerInfo: </span><span class="s">&#39;=info&#39;</span>
-</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name:  Address: &#39;</span>
+</span><span class='line'>  <span class="nv">template: </span><span class="s">&quot;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -85,7 +85,7 @@
 </pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
 </span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
 </span><span class='line'>  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
-</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name:  Address: &#39;</span>
+</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -101,14 +101,14 @@
 <figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class='line'><span class="s">  scope: attributeFoo: &#39;</span><span class="nx">@</span><span class="s">&#39; </span>
+</span><span class='line'><span class="s">  scope: attributeFoo: &#39;</span><span class="nx">@</span><span class="s">&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 
 
 <figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;my</span><span class="na">-component</span> <span class="na">attribute-foo=</span><span class="s">&quot;&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-component&gt;
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;my</span><span class="na">-component</span> <span class="na">attribute-foo=</span><span class="s">&quot;{ {foo} }&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-component&gt;
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -121,7 +121,7 @@
 <figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class='line'><span class="s">  scope: bindingFoo: &#39;</span><span class="o">=</span><span class="s">&#39; </span>
+</span><span class='line'><span class="s">  scope: bindingFoo: &#39;</span><span class="o">=</span><span class="s">&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
