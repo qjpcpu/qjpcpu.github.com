@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-25T12:47:34+08:00</updated>
+  <updated>2015-05-25T15:23:51+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope/"/>
+    <updated>2015-05-25T14:12:42+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope</id>
+    <content type="html"><![CDATA[<h3>分离式scope（Isolated Scope）</h3>
+
+<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的"环境",这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
+
+<blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
+
+<p>```coffeescript script.coffee
+angular.module(&lsquo;docsIsolateScopeDirective&rsquo;, []).controller(&lsquo;Controller&rsquo;, [&lsquo;$scope&rsquo;,($scope) &ndash;>
+  $scope.naomi =</p>
+
+<pre><code>name: 'Naomi'
+address: '1600 Amphitheatre'
+</code></pre>
+
+<p>  $scope.igor =</p>
+
+<pre><code>name: 'Igor'
+address: '123 Somewhere'
+</code></pre>
+
+<p>]).directive &lsquo;myCustomer&rsquo;, &ndash;>
+  restrict: &lsquo;E&rsquo;
+  scope: customerInfo: &lsquo;=info&rsquo;
+  template: &lsquo;Name:  Address: &rsquo;
+```</p>
+
+<p>```html index.html</p>
+
+<div ng-controller="Controller">
+  <my-customer info="naomi"></my-customer>
+  <hr>
+  <my-customer info="igor"></my-customer>
+</div>
+
+
+<p>```</p>
+
+<p><code>text 输出为
+Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
+</code></p>
+
+<p>由输出可以看出，指令<code>my-customer</code>中的<code>info</code>属性被分别绑定到了外部scope的两个变量<code>naomi</code>和<code>igor</code>，虽然是同一指令，但相互之间没有干扰或污染。这样<code>my-customer</code>指令可以非常漂亮的被重用。</p>
+
+<p>其实，如果不需要特意在指令间共享scope，最好都使用分离式scope来写指令。</p>
+
+<p>另外，指令内属性名如果和绑定的外部属性相同，可以采用简写模式，如这里<code>my-customer</code>的<code>info</code>属性映射到内部也用<code>info</code>引用的化:</p>
+
+<p><code>coffeescript script.coffee
+directive 'myCustomer', -&gt;
+  restrict: 'E'
+  scope: info: '='
+  template: 'Name:  Address: '
+</code></p>
+
+<!--more-->
+
+
+<h3>@单向绑定</h3>
+
+<p>对于仅仅需要在指令中反应外部scope变量变化的情况下，可以仅使用单向绑定，将controller的变量映射到指令中，一旦在controller中修改变量，指令中可以立即看到变化，然而反过来则不可，即外部scope中看不到指令内部对变量的修改。</p>
+
+<p><code>coffeescript script.coffee
+.directive 'myDirective, -&gt;
+  scope: attributeFoo: '@'
+</code></p>
+
+<p><code>html index.html
+&lt;my-component attribute-foo=""&gt;&lt;/my-component&gt;
+</code></p>
+
+<p>即，在控制器里修改foo，在<code>my-directive</code>中可以感知到。通常单向绑定对于取字符串值很常见，所以这里的html中使用双花括号插值。因此，单向绑定的官方名称其实是叫属性绑定。</p>
+
+<h3>=双向绑定</h3>
+
+<p>看名称就知道用途了，双向绑定使用<code>=</code>定义，直接看例子:</p>
+
+<p><code>coffeescript script.coffee
+.directive 'myDirective, -&gt;
+  scope: bindingFoo: '='
+</code></p>
+
+<h3>&amp;表达式绑定</h3>
+
+<p>或者换个更human的名称，函数绑定，如果需要在指令内调用controler的函数，这就是说我们可以在指令内部定义接口，controller定义具体实现，这样指令就能够变得非常灵活，用在分离式scope中，既避免了变量污染又达到了灵活性，太cool了。</p>
+
+<p><code>coffeescript my-directive.coffee
+.directive 'myDirective, -&gt;
+  scope: myHandler: '&amp;'
+  template: '&lt;button type="button" ng-click="myHandler({$count: 123})"&gt;&lt;/button&gt;'
+</code></p>
+
+<p>```coffeescript my-controller.coffee
+.controller &lsquo;MyCtrl&rsquo;, [&lsquo;$scope&rsquo;,($scope) &ndash;></p>
+
+<pre><code>$scope.getCounts = (countNum) -&gt; console.log "Button click count: #{countNum}"
+</code></pre>
+
+<p>]
+```</p>
+
+<p><code>html index.html
+&lt;my-directive my-handler="getCounts($count)"&gt;&lt;/my-directive&gt;
+</code></p>
+
+<h4>非常重要:函数传参</h4>
+
+<p>对于无参函数的绑定，没什么好说的。但对应上例中的情况，需要把参数从指令中传到外部函数，则需要注意了。</p>
+
+<ul>
+<li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
+<li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[创建递归菜单]]></title>

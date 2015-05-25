@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 前面介绍ruby写excel文件的一个很cool的gem包axlsx,这里介绍另一个高效读取excel的包creek。 一个读一个写，ruby轻松搞定execel处理。 Read on &rarr; May 25th, 2015 ruby Comments ">
+	<meta name="description" content="分离式scope（Isolated Scope） 在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,120 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/25/angularjszhi-isolated-scope/">
+		
+			AngularJs之Isolated Scope</a>
+	</h2>
+	<div class="entry-content">
+		<h3>分离式scope（Isolated Scope）</h3>
+
+<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
+
+<blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
+
+<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;docsIsolateScopeDirective&#39;</span><span class="p">,</span> <span class="p">[]).</span><span class="nx">controller</span><span class="p">(</span><span class="s">&#39;Controller&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
+</span><span class='line'>  <span class="nv">$scope.naomi =</span>
+</span><span class='line'>    <span class="nv">name: </span><span class="s">&#39;Naomi&#39;</span>
+</span><span class='line'>    <span class="nv">address: </span><span class="s">&#39;1600 Amphitheatre&#39;</span>
+</span><span class='line'>  <span class="nv">$scope.igor =</span>
+</span><span class='line'>    <span class="nv">name: </span><span class="s">&#39;Igor&#39;</span>
+</span><span class='line'>    <span class="nv">address: </span><span class="s">&#39;123 Somewhere&#39;</span>
+</span><span class='line'><span class="p">]).</span><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+</span><span class='line'>  <span class="nv">scope: customerInfo: </span><span class="s">&#39;=info&#39;</span>
+</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name:  Address: &#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;Controller&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;naomi&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
+</span><span class='line'>  <span class="nt">&lt;hr&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;igor&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>输出为</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由输出可以看出，指令<code>my-customer</code>中的<code>info</code>属性被分别绑定到了外部scope的两个变量<code>naomi</code>和<code>igor</code>，虽然是同一指令，但相互之间没有干扰或污染。这样<code>my-customer</code>指令可以非常漂亮的被重用。</p>
+
+<p>其实，如果不需要特意在指令间共享scope，最好都使用分离式scope来写指令。</p>
+
+<p>另外，指令内属性名如果和绑定的外部属性相同，可以采用简写模式，如这里<code>my-customer</code>的<code>info</code>属性映射到内部也用<code>info</code>引用的化:</p>
+
+<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+</span><span class='line'>  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
+</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name:  Address: &#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+
+		
+		<a href="/blog/2015/05/25/angularjszhi-isolated-scope/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-25T14:12:42+08:00" pubdate data-updated="true">May 25<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2015/05/25/angularjszhi-isolated-scope/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -616,50 +730,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2014/08/21/mysqlchang-yong-ming-ling/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/">
-		
-			Golang远程调用</a>
-	</h2>
-	<div class="entry-content">
-		<p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
-
-
-		
-		<a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-08-15T20:22:34+08:00" pubdate data-updated="true">Aug 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/go/'>go</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

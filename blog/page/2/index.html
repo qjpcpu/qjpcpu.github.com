@@ -7,13 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="很多地方讲解CoffeeScript/JavaScript都用了这么一个例子： example.coffee 异步回调中的陷阱1
-2
-3
-4
-5
-chars = [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]
-for ch in chars setTimeout &hellip;">
+	<meta name="description" content=" go语言的远程调用包net/rpc非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。 Read on &rarr; Aug 15th, 2014 go Comments ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -85,6 +79,50 @@ for ch in chars setTimeout &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/">
+		
+			Golang远程调用</a>
+	</h2>
+	<div class="entry-content">
+		<p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
+
+
+		
+		<a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-15T20:22:34+08:00" pubdate data-updated="true">Aug 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/08/15/golangyuan-cheng-diao-yong/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -663,79 +701,6 @@ for ch in chars setTimeout &hellip;">
 </div>
 	
 	<div class="comments"><a href="/blog/2014/03/14/route/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/">
-		
-			Ls遍历空目录处理</a>
-	</h2>
-	<div class="entry-content">
-		<p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
-
-<pre><code>centence="Linux is cool"
-for word in $centence;do
-    echo $word
-done
-</code></pre>
-
-<p>有时用ls命令遍历目录会遇到空目录：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
-</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>处理办法是：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -1 | <span class="k">while </span><span class="nb">read </span>d
-</span><span class='line'><span class="k">do</span>
-</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-12T23:18:02+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

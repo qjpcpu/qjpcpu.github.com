@@ -4,7 +4,7 @@
   <title><![CDATA[Category: memo | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/memo/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-25T12:47:34+08:00</updated>
+  <updated>2015-05-25T15:23:51+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -197,6 +197,54 @@ tmux -S /path/to/another/unix/socket-file
 <p><code>bash
 DISABLE_AUTO_TITLE=true
 </code></p>
+
+<h4>可编程</h4>
+
+<p>tmux最强大的地方还在于他的可编程性，用<code>tmux list-commands</code>可以看到tmux所有支持的命令。以我自己常执行的一个脚本为例，我开机后常常需要启动一系列服务便于开发, 但当我不开发时开电脑又不需要启动，所以放到开机自启动脚本里是不合适的，所以这里用tmux来批量起最合适了：</p>
+
+<p>```bash</p>
+
+<h1>!/bin/zsh</h1>
+
+<h1>start tmux</h1>
+
+<p>session=MAC
+tmux new -s &ldquo;$session&rdquo; -d
+tmux rename-window -t &ldquo;$session:0&rdquo; daemon</p>
+
+<h1>start redis-server</h1>
+
+<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;redis-server&rsquo; Enter
+tmux split-window -h -t &ldquo;$session:daemon&rdquo;</p>
+
+<h1>start mongo</h1>
+
+<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;mongod &mdash;dbpath /Users/jason/local/var/mongodb-data&rsquo; Enter</p>
+
+<h1>start nginx</h1>
+
+<p>tmux split-window  -t &ldquo;$session:daemon&rdquo; &lsquo;/Users/jason/local/nginx/sbin/nginx&rsquo;
+tmux select-pane -L -t &ldquo;$session:daemon&rdquo;
+tmux split-window -t &ldquo;$session:daemon&rdquo;</p>
+
+<h1>start firefox with pentadactyl</h1>
+
+<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE&rsquo; Enter
+tmux select-pane -R -t &ldquo;$session:daemon&rdquo;</p>
+
+<h1>for develop project</h1>
+
+<p>tmux neww -a -n dev -t &ldquo;$session&rdquo;
+tmux send -t &ldquo;$session:dev&rdquo; &lsquo;cd /Users/jason/repository/backend&rsquo; Enter
+tmux split-window -t &ldquo;$session:dev&rdquo;
+tmux send -t &ldquo;$session:dev&rdquo; &lsquo;cd /Users/jason/repository/frontend&rsquo; Enter
+```</p>
+
+<p>这个脚本启动一个名为<code>MAC</code>的tmux session，并新建了两个窗口，在第一个窗口里开了4个面板，分别启动了nginx, redis, mongo， firefox。其中，开启窗口/面板时同时执行命令，该窗口/面板会在命令执行结束后自动关闭，所以第一个窗口最后实际只有3个面板；第二个窗口启动并切换到我正则开发的工程。</p>
+
+<p>具体命令的使用可以参照该示例和man手册理解。</p>
+
+<p>enjoy tmux!</p>
 ]]></content>
   </entry>
   
