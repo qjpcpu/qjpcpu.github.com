@@ -22,7 +22,7 @@ angular.module('docsIsolateScopeDirective', []).controller('Controller', ['$scop
 ]).directive 'myCustomer', ->
   restrict: 'E'
   scope: customerInfo: '=info'
-  template: 'Name: {{customerInfo.name}} Address: {{customerInfo.address}}'
+  template: "Name: { {customerInfo.name} } Address: { {customerInfo.address} }"
 ```
 
 ```html index.html
@@ -47,7 +47,7 @@ Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
 directive 'myCustomer', ->
   restrict: 'E'
   scope: info: '='
-  template: 'Name: {{customerInfo.name}} Address: {{customerInfo.address}}'
+  template: 'Name: { {customerInfo.name} } Address: { {customerInfo.address} }'
 ```
 
 <!--more-->
@@ -57,11 +57,11 @@ directive 'myCustomer', ->
 
 ```coffeescript script.coffee
 .directive 'myDirective, ->
-  scope: attributeFoo: '@' 
+  scope: attributeFoo: '@'
 ```
 
 ```html index.html
-<my-component attribute-foo="{{foo}}"></my-component>
+<my-component attribute-foo="{ {foo} }"></my-component>
 ```
 
 即，在控制器里修改foo，在`my-directive`中可以感知到。通常单向绑定对于取字符串值很常见，所以这里的html中使用双花括号插值。因此，单向绑定的官方名称其实是叫属性绑定。
@@ -71,7 +71,7 @@ directive 'myCustomer', ->
 
 ```coffeescript script.coffee
 .directive 'myDirective, ->
-  scope: bindingFoo: '=' 
+  scope: bindingFoo: '='
 ```
 
 ### &表达式绑定
@@ -98,4 +98,3 @@ directive 'myCustomer', ->
 
 * 参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的`{$count: 123}`
 * html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是`$count`，那么html中指令绑定的函数接受的参数必须是`$count`，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。
-
