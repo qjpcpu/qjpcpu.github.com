@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-04-13T19:54:50+08:00</updated>
+  <updated>2015-05-25T12:47:34+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[高效读取excel]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel/"/>
+    <updated>2015-05-25T11:11:02+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel</id>
+    <content type="html"><![CDATA[<p>前面介绍ruby写excel文件的一个很cool的gem包<code>axlsx</code>,这里介绍另一个高效读取excel的包<code>creek</code>。</p>
+
+<p>一个读一个写，ruby轻松搞定execel处理。</p>
+
+<!-- more -->
+
+
+<h4>安装</h4>
+
+<p><code>bash
+gem install creek
+</code></p>
+
+<h4>使用</h4>
+
+<p><code>creek</code>本身的使用非常简单:</p>
+
+<p>```ruby creek_demo.rb
+require &lsquo;creek&rsquo;
+creek = Creek::Book.new &ldquo;specs/fixtures/sample.xlsx&rdquo;
+sheet= creek.sheets[0]</p>
+
+<h1>注:获取行数不能用size方法</h1>
+
+<p>puts sheet.rows.count # => 100</p>
+
+<p>sheet.rows.each do |row|
+  puts row # => {&ldquo;A1&rdquo;=>&ldquo;Content 1&rdquo;, &ldquo;B1&rdquo;=>nil, C1"=>nil, &ldquo;D1&rdquo;=>&ldquo;Content 3&rdquo;}
+end</p>
+
+<p>sheet.rows_with_meta_data.each do |row|
+  puts row # => {&ldquo;collapsed&rdquo;=>&ldquo;false&rdquo;, &ldquo;customFormat&rdquo;=>&ldquo;false&rdquo;, &ldquo;customHeight&rdquo;=>&ldquo;true&rdquo;, &ldquo;hidden&rdquo;=>&ldquo;false&rdquo;, &ldquo;ht&rdquo;=>&ldquo;12.1&rdquo;, &ldquo;outlineLevel&rdquo;=>&ldquo;0&rdquo;, &ldquo;r&rdquo;=>&ldquo;1&rdquo;, &ldquo;cells&rdquo;=>{&ldquo;A1&rdquo;=>&ldquo;Content 1&rdquo;, &ldquo;B1&rdquo;=>nil, C1"=>nil, &ldquo;D1&rdquo;=>&ldquo;Content 3&rdquo;}}
+end</p>
+
+<p>sheet.state   # => &lsquo;visible&rsquo;
+sheet.name    # => &lsquo;Sheet1&rsquo;
+sheet.rid     # => &lsquo;rId2&rsquo;
+```</p>
+
+<h4>性能</h4>
+
+<p>读取并遍历一个16M左右17608行的xlsx文件，benchmark:</p>
+
+<p><code>bash
+--------------- total: 84.040000sec   ----------------
+  user     system      total        real
+ 84.920000   0.680000  85.600000 ( 86.084133)
+</code></p>
+
+<p>P.S. 无法和其他读取excel的gem做对比，因为试着做对比测试时发现其他gem根本卡在读取操作那不动了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[rvm和rbenv环境变量冲突导致无法安装gem包]]></title>
@@ -387,181 +445,6 @@ chart.catAxis.tick_lbl_pos = :none
 ```</p>
 
 <p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[axlsx报表工具(二)格式化为美观的表格]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
-    <updated>2014-02-15T00:38:10+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
-    <content type="html"><![CDATA[<h3>基础知识</h3>
-
-<p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
-
-<pre><code>(Integer) add_style(options = {})
-</code></pre>
-
-<!-- more -->
-
-
-<p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
-
-<pre><code>Options Hash (options):
-fg_color (String) — 字体颜色，如：FFFF0000
-sz (Integer) — 字体大小
-b (Boolean) — 是否粗体
-i (Boolean) — 是否斜体
-u (Boolean) — 是否加下划线
-strike (Boolean) — 是否加删除线
-shadow (Boolean) — 是否加阴影
-charset (Integer) — 字符集，可选的字符集列表：
-0   ANSI_CHARSET
-1   DEFAULT_CHARSET
-2   SYMBOL_CHARSET
-77  MAC_CHARSET
-128 SHIFTJIS_CHARSET
-129 HANGUL_CHARSET
-130 JOHAB_CHARSET
-134 GB2312_CHARSET
-136 CHINESEBIG5_CHARSET
-161 GREEK_CHARSET
-162 TURKISH_CHARSET
-163 VIETNAMESE_CHARSET
-177 HEBREW_CHARSET
-178 ARABIC_CHARSET
-186 BALTIC_CHARSET
-204 RUSSIAN_CHARSET
-222 THAI_CHARSET
-238 EASTEUROPE_CHARSET
-255 OEM_CHARSET
-
-
-family (Integer) — 字体，可选字体：
-0 Not applicable.
-1 Roman
-2 Swiss
-3 Modern
-4 Script
-5 Decorative
-6..14 Reserved for future use
-
-
-font_name (String) — 字体名称
-num_fmt (Integer) — 数字格式：可选格式：
-1 0
-2 0.00
-3 #,##0
-4 #,##0.00
-5 $#,##0_);($#,##0)
-6 $#,##0_);[Red]($#,##0)
-7 $#,##0.00_);($#,##0.00)
-8 $#,##0.00_);[Red]($#,##0.00)
-9 0%
-10 0.00%
-11 0.00E+00
-12 # ?/?
-13 # ??/??
-14 m/d/yyyy
-15 d-mmm-yy
-16 d-mmm
-17 mmm-yy
-18 h:mm AM/PM
-19 h:mm:ss AM/PM
-20 h:mm
-21 h:mm:ss
-22 m/d/yyyy h:mm
-37 #,##0_);(#,##0)
-38 #,##0_);[Red](#,##0)
-39 #,##0.00_);(#,##0.00)
-40 #,##0.00_);[Red](#,##0.00)
-45 mm:ss
-46 [h]:mm:ss
-47 mm:ss.0
-48 ##0.0E+0
-49 @
-
-
-format_code (String) — 自定义格式如'yyyy-mm-dd'，如果设置了该值，则num_fmt将被忽略.
-border (Integer|Hash) — 边框样式.
-bg_color (String) — 单元格背景色
-hidden (Boolean) — 是否隐藏单元格
-locked (Boolean) — 是否锁定单元格
-type (Symbol) — 风格类型，可选的类型有[:dxf, :xf]. :xf事默认类型
-alignment (Hash) — 对齐.该hash的包括：
-horizontal (Symbol)，该键对应的值包括有：
-:general
-:left
-:center
-:right
-:fill
-:justify
-:centerContinuous
-:distributed
-vertical (Symbol)，该键对应的值有：
-:top
-:center
-:bottom
-:justify
-:distributed
-textRotation (Integer)
-wrapText (Boolean)
-indent (Integer)
-relativeIndent (Integer)
-justifyLastLine (Boolean)
-shrinkToFit (Boolean)
-readingOrder (Integer)
-</code></pre>
-
-<h3>格式化报表示例</h3>
-
-<p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
-
-<pre><code>sheet.add_row ['a', "b"], :style =&gt; [nil, header] #header是创建好的style
-#or
-sheet.add_row ["a', "b"], :style =&gt; header
-</code></pre>
-
-<p>如果style是一个列表，那么列表里每一个格式对应于行内每个单元格，也可以像第二行代码那样为整行指定同一种格式。</p>
-
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=9b79859e2c738bd4c021b23491b0f6eb/4bed2e738bd4b31cc6cc6ef885d6277f9f2ff885.jpg?referer=f3368c656f224f4a0e8e4723389b&amp;x=.jpg" alt="image" /></p>
-
-<p>下面是创建如图报表的部分代码：</p>
-
-<p>``` ruby
-require &lsquo;axlsx&rsquo;</p>
-
-<p>Axlsx::Package.new do |p|
-  p.workbook do |wb|</p>
-
-<pre><code>styles = wb.styles
-header     = styles.add_style :bg_color =&gt; "FFFF33",:fg_color=&gt;"0033CC", :sz =&gt; 16, :b =&gt; true, :alignment =&gt; {:horizontal =&gt; :center}
-tbl_header = styles.add_style :bg_color=&gt;"99FF33",:b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
-ind_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; {:indent =&gt; 1}
-col_header = styles.add_style :bg_color =&gt; "FFDFDEDF", :b =&gt; true, :alignment =&gt; { :horizontal =&gt; :center }
-label      = styles.add_style :alignment =&gt; { :indent =&gt; 1 }
-money      = styles.add_style :num_fmt =&gt; 5
-t_label    = styles.add_style :b =&gt; true, :bg_color =&gt; "FFDFDEDF"
-t_money    = styles.add_style :b =&gt; true, :num_fmt =&gt; 5, :bg_color =&gt; "FFDFDEDF"
-
-wb.add_worksheet do |sheet|
-  sheet.add_row               #添加空行
-  sheet.add_row [nil, "College Budget"], :style =&gt; [nil, header]        #标题，大字体居中
-  sheet.add_row
-  sheet.add_row [nil, "What's coming in this month.", nil, nil, "How am I doing"], :style =&gt; tbl_header
-  sheet.add_row [nil, "Item", "Amount", nil, "Item", "Amount"], :style =&gt; [nil, ind_header, col_header, nil, ind_header, col_header]
-  sheet.add_row [nil, "Estimated monthly net income", 500, nil, "Monthly income", "=C9"], :style =&gt; [nil, label, money, nil, label, money]
-  #省略部分代码
-  %w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2).each { |range| sheet.merge_cells(range) }
-  sheet.column_widths 2, nil, nil, 2, nil, nil, 2
-end
-</code></pre>
-
-<p>  end
-  p.use_shared_strings = true
-  p.serialize &lsquo;styles.xlsx&rsquo;
-end
-```</p>
 ]]></content>
   </entry>
   
