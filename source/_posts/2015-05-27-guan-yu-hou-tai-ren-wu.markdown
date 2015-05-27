@@ -36,11 +36,10 @@ end
 
 简述: UnzipWorker会解压文件，然后将解压得到的每个文件分发给ImageThumbnailWorker去创建压缩图，等待所有压缩完成后再发送通知邮件，非常简洁漂亮。
 
-将worker里的`include Sidekiq::Worker`替换成`include Sidekiq::Promise`即可。
+* 将worker里的`include Sidekiq::Worker`替换成`include Sidekiq::Promise`即可。
+* 如果要获取worker的输出，则调用`ProcessWorker.as_promise(arguments)`即可，在then block中获取执行结果，这个结果即`perform`方法的返回值。
 
-如果要获取worker的输出，则调用`ProcessWorker.as_promise(arguments)`即可，在then block中获取执行结果，这个结果即`perform`方法的返回值。
-
-`sidekiq-promise`使用了`MrDarcy`，所以提供了一个很有意思的方法
+* `sidekiq-promise`使用了`MrDarcy`，所以提供了一个很有意思的方法
 
 ```ruby
 MrDarcy.all_promises do

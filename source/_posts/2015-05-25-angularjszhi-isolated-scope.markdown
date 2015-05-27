@@ -9,6 +9,8 @@ categories:  angularjs
 ### 分离式scope（Isolated Scope）
 在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的"环境",这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。
 
+<!--more-->
+
 > 注意，下面的示例为了突出重点，使用CoffeeScript展示代码
 
 ```coffeescript script.coffee
@@ -49,8 +51,6 @@ directive 'myCustomer', ->
   scope: info: '='
   template: 'Name: { {customerInfo.name} } Address: { {customerInfo.address} }'
 ```
-
-<!--more-->
 
 ### @单向绑定
 对于仅仅需要在指令中反应外部scope变量变化的情况下，可以仅使用单向绑定，将controller的变量映射到指令中，一旦在controller中修改变量，指令中可以立即看到变化，然而反过来则不可，即外部scope中看不到指令内部对变量的修改。
