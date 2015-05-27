@@ -84,6 +84,9 @@
 
 <p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
 
+<!--more-->
+
+
 <blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
 
 <figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -148,11 +151,6 @@
 </span><span class='line'>  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
 </span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!--more-->
 
 
 <h3>@单向绑定</h3>

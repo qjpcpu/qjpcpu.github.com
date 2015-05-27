@@ -128,11 +128,12 @@
 
 <p>简述: UnzipWorker会解压文件，然后将解压得到的每个文件分发给ImageThumbnailWorker去创建压缩图，等待所有压缩完成后再发送通知邮件，非常简洁漂亮。</p>
 
-<p>将worker里的<code>include Sidekiq::Worker</code>替换成<code>include Sidekiq::Promise</code>即可。</p>
+<ul>
+<li>将worker里的<code>include Sidekiq::Worker</code>替换成<code>include Sidekiq::Promise</code>即可。</li>
+<li><p>如果要获取worker的输出，则调用<code>ProcessWorker.as_promise(arguments)</code>即可，在then block中获取执行结果，这个结果即<code>perform</code>方法的返回值。</p></li>
+<li><p><code>sidekiq-promise</code>使用了<code>MrDarcy</code>，所以提供了一个很有意思的方法</p></li>
+</ul>
 
-<p>如果要获取worker的输出，则调用<code>ProcessWorker.as_promise(arguments)</code>即可，在then block中获取执行结果，这个结果即<code>perform</code>方法的返回值。</p>
-
-<p><code>sidekiq-promise</code>使用了<code>MrDarcy</code>，所以提供了一个很有意思的方法</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

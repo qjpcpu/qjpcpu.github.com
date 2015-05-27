@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-27T17:35:50+08:00</updated>
+  <updated>2015-05-27T17:39:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<h3>分离式scope（Isolated Scope）</h3>
 
 <p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的"环境",这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
+
+<!--more-->
+
 
 <blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
 
@@ -71,9 +74,6 @@ directive 'myCustomer', -&gt;
   scope: info: '='
   template: 'Name: { {customerInfo.name} } Address: { {customerInfo.address} }'
 </code></p>
-
-<!--more-->
-
 
 <h3>@单向绑定</h3>
 
