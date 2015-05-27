@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="算是记录一个教训吧。 下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示connect: Network is unreachable，nslookup查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(route - &hellip;">
+	<meta name="description" content=" 1. cat /proc/${pid}/status 2. ps -mp &lt;PID> Mar 25th, 2014 shell Comments ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,51 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/">
+		
+			Linux下查看线程数</a>
+	</h2>
+	<div class="entry-content">
+		<h3>1. cat /proc/${pid}/status</h3>
+
+<h3>2. ps -mp &lt;PID></h3>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-25T08:53:55+08:00" pubdate data-updated="true">Mar 25<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -649,76 +694,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/27/findming-ling/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/">
-		
-			使用expect实现自动登录</a>
-	</h2>
-	<div class="entry-content">
-		<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
-我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
-
-<h3>利用expect命令实现自动登录并执行命令</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>expect -c <span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
-</span><span class='line'><span class="s1">expect {</span>
-</span><span class='line'><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
-</span><span class='line'><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
-</span><span class='line'><span class="s1">}</span>
-</span><span class='line'><span class="s1">expect eof</span>
-</span><span class='line'><span class="s1">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
-
-
-		
-		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-25T20:13:57+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

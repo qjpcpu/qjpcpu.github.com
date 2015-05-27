@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-27T17:39:22+08:00</updated>
+  <updated>2015-05-27T18:45:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,136 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[分享你的Angular指令]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling/"/>
+    <updated>2015-05-27T17:47:56+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling</id>
+    <content type="html"><![CDATA[<h3>Angular directive on bower</h3>
+
+<p>用Angular做web开发不但听起来是非常炫酷的事情，而且从我实际的开发体验来看，它确实是极大减轻了开发者的痛苦。我可以把精力都花在组织业务逻辑，创建更为流畅和漂亮的UI上，而完全不用去反复沦陷在事件绑定数据更新这些无趣的事情上。此外，angular框架本身依照设计模式上定义出了一套MVC漂亮的实现,了解其controller,server,directive后，写出大型web app已经不是难事了。</p>
+
+<p>Angular中最漂亮的两个组件是service和directive，简单说来，service是逻辑代码的抽象和封装，它将应用中重复使用的逻辑代码抽象为公共服务，便于打造瘦controller；而directive则是对UI组件的抽象，其对directive的封装和接口设计简直刷新了我对前端的认识。</p>
+
+<p>这里我就不准备详细介绍怎么写指令了，google的文档和我之前的博客都可供参考，这里说一下，如果你写出来非常cool的指令，怎么分享给大家呢？答案是bower。</p>
+
+<!--more-->
+
+
+<h3>Bower</h3>
+
+<p><a href="http://bower.io/">Bower</a>是一个js的客户端管理工具，可以称之为客户端的npm，其作者是twitter的几个家伙(<a href="https://github.com/fat">@fat</a>,<a href="https://github.com/maccman">@maccman</a>)。根据你配置的<code>bower.json</code>文件，Bower可以自动查找、下载和安装js库，极大节约开发时间。</p>
+
+<h4>简单介绍</h4>
+
+<p>```bash 安装使用
+npm install -g bower</p>
+
+<h1>registered package</h1>
+
+<p>bower install jquery</p>
+
+<h1>GitHub shorthand</h1>
+
+<p>bower install desandro/masonry</p>
+
+<h1>Git endpoint</h1>
+
+<p>bower install git://github.com/user/package.git</p>
+
+<h1>URL</h1>
+
+<p>bower install <a href="http://example.com/script.js">http://example.com/script.js</a>
+```</p>
+
+<h3>创建一个基于bower的angular指令angular-dropzone</h3>
+
+<p><a href="http://www.dropzonejs.com/">Dropzone</a>是一个漂亮的文件上传组件，下面就演示怎么把它集成为一个angular指令并分享到github。</p>
+
+<h4>1.创建指令工程</h4>
+
+<p><code>bash
+mkdir angular-dropzone &amp;&amp; cd $_
+touch angular-dropzone.js #  写入指令实现
+bower init # 初始化bower工程
+</code>
+回答完一系列问题后，生成的<code>bower.json</code>文件应该类似：</p>
+
+<p>```
+{
+  name: &lsquo;angular-dropzone&rsquo;,
+  main: &lsquo;angular-dropzone.js&rsquo;,
+  version: &lsquo;0.0.0&rsquo;,
+  authors: [</p>
+
+<pre><code>'qujianping &lt;qjpcpu@gmail.com&gt;'
+</code></pre>
+
+<p>  ],
+  description: &lsquo;dropzone for angular&rsquo;,
+  keywords: [</p>
+
+<pre><code>'angular',
+'dropzone'
+</code></pre>
+
+<p>  ],
+  license: &lsquo;MIT&rsquo;,
+  ignore: [</p>
+
+<pre><code>'**/.*',
+'node_modules',
+'bower_components',
+'test',
+'tests'
+</code></pre>
+
+<p>  ],
+  dependencies: {</p>
+
+<pre><code>angular: '~1.3.0',
+dropzone: '~4.0.1'
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<h4>2.编辑指令代码</h4>
+
+<p>现在开始编写指令的实现。指令代码最好遵守一定命名规范，如：以github名称作为命名空间。
+```javascript angular-dropzone.js
+angular.module(&lsquo;qjpcpu.angular-dropzone&rsquo;, []).
+  directive(&lsquo;qjp-dropzone&rsquo;, function () {</p>
+
+<pre><code>// implementation goes here
+</code></pre>
+
+<p>  });
+```
+具体代码实现可以参考<a href="https://github.com/qjpcpu/angular-dropzone">angular-dropzone</a></p>
+
+<h4>3.发布指令</h4>
+
+<p>编写完成后，就可以推送到github。</p>
+
+<p><code>bash
+git init .
+git add bower.json angular-dropzone.js
+git commit -m 'v0.0.0'
+git tag v0.0.0
+git remote add origin git@github.com:qjpcpu/angular-dropzone.git
+git push -u origin master
+</code>
+注意，bower使用git的tag确定版本号。</p>
+
+<p>这样其他人就可以拉去使用你的angular指令了：
+<code>
+bower install qjpcpu/angular-dropzone
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>
