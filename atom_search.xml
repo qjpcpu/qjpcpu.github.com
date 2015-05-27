@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-25T15:39:15+08:00</updated>
+  <updated>2015-05-27T17:35:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,79 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[关于后台任务]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu/"/>
+    <updated>2015-05-27T17:16:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu</id>
+    <content type="html"><![CDATA[<h3>关于sidekiq</h3>
+
+<p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
+
+<!--more-->
+
+
+<p>sidekiq的wiki上也贴出了很多相关执行管理工具，sidekiq-promise是个人最喜欢的一个，其异步回调的风格和js的风格非常像，使用起来非常友好。</p>
+
+<h3>sidekiq-promise</h3>
+
+<p>这里的例子直接来源于其github的readme:</p>
+
+<figure class='code'><figcaption><span>demo.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ProcessWorker</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Sidekiq</span><span class="p">:</span><span class="ss">:Promise</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">perform</span> <span class="n">file_to_process</span>
+</span><span class='line'>    <span class="no">UnzipWorker</span><span class="o">.</span><span class="n">as_promise</span><span class="p">(</span><span class="n">file_to_process</span><span class="p">)</span><span class="o">.</span><span class="n">then</span> <span class="k">do</span> <span class="o">|</span><span class="n">dir</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">MrDarcy</span><span class="o">.</span><span class="n">all_promises</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">dir</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+</span><span class='line'>          <span class="no">ImageThumbnailWorker</span><span class="o">.</span><span class="n">as_promise</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span><span class="o">.</span><span class="n">then</span> <span class="k">do</span>
+</span><span class='line'>      <span class="no">UserNotificationMailer</span><span class="o">.</span><span class="n">all_images_processed</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>简述: UnzipWorker会解压文件，然后将解压得到的每个文件分发给ImageThumbnailWorker去创建压缩图，等待所有压缩完成后再发送通知邮件，非常简洁漂亮。</p>
+
+<p>将worker里的<code>include Sidekiq::Worker</code>替换成<code>include Sidekiq::Promise</code>即可。</p>
+
+<p>如果要获取worker的输出，则调用<code>ProcessWorker.as_promise(arguments)</code>即可，在then block中获取执行结果，这个结果即<code>perform</code>方法的返回值。</p>
+
+<p><code>sidekiq-promise</code>使用了<code>MrDarcy</code>，所以提供了一个很有意思的方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">MrDarcy</span><span class="o">.</span><span class="n">all_promises</span> <span class="k">do</span>
+</span><span class='line'>  <span class="o">[</span><span class="n">promise1</span><span class="p">,</span><span class="n">promise2</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>MrDarcy.all_promises</code>的块会等待其中列表的每一个promise完成。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>

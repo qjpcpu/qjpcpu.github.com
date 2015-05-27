@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-05-25T15:39:15+08:00</updated>
+  <updated>2015-05-27T17:35:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,63 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[关于后台任务]]></title>
+    <link href="http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu/"/>
+    <updated>2015-05-27T17:16:34+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu</id>
+    <content type="html"><![CDATA[<h3>关于sidekiq</h3>
+
+<p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
+
+<!--more-->
+
+
+<p>sidekiq的wiki上也贴出了很多相关执行管理工具，sidekiq-promise是个人最喜欢的一个，其异步回调的风格和js的风格非常像，使用起来非常友好。</p>
+
+<h3>sidekiq-promise</h3>
+
+<p>这里的例子直接来源于其github的readme:</p>
+
+<p>```ruby demo.rb
+class ProcessWorker
+  include Sidekiq::Promise</p>
+
+<p>  def perform file_to_process</p>
+
+<pre><code>UnzipWorker.as_promise(file_to_process).then do |dir|
+  MrDarcy.all_promises do
+    dir.entries.map do |file|
+      ImageThumbnailWorker.as_promise(file)
+    end
+  end
+end.then do
+  UserNotificationMailer.all_images_processed
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>简述: UnzipWorker会解压文件，然后将解压得到的每个文件分发给ImageThumbnailWorker去创建压缩图，等待所有压缩完成后再发送通知邮件，非常简洁漂亮。</p>
+
+<p>将worker里的<code>include Sidekiq::Worker</code>替换成<code>include Sidekiq::Promise</code>即可。</p>
+
+<p>如果要获取worker的输出，则调用<code>ProcessWorker.as_promise(arguments)</code>即可，在then block中获取执行结果，这个结果即<code>perform</code>方法的返回值。</p>
+
+<p><code>sidekiq-promise</code>使用了<code>MrDarcy</code>，所以提供了一个很有意思的方法</p>
+
+<p><code>ruby
+MrDarcy.all_promises do
+  [promise1,promise2]
+end
+</code></p>
+
+<p><code>MrDarcy.all_promises</code>的块会等待其中列表的每一个promise完成。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[高效读取excel]]></title>
@@ -341,110 +398,6 @@ book.add_worksheet(:name => &ldquo;Icon Set&rdquo;) do |ws|
   ws.add_conditional_formatting(&ldquo;B3:B100&rdquo;, { :type => :iconSet, :dxfId => profitable, :priority => 1, :icon_set => icon_set })
 end
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[axlsx报表工具(三)创建图表]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/"/>
-    <updated>2014-02-15T00:42:48+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao</id>
-    <content type="html"><![CDATA[<h3>饼图</h3>
-
-<p>axlsx创建饼状图非常简单，上图：</p>
-
-<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4ccd2d6c4334970a4373102aa5f1a0f5/fc1f4134970a304ec10145b9d3c8a786c9175c56.jpg?referer=ddc5668e5066d016270eab189c4c&amp;x=.jpg" alt="image" /></p>
-
-<!-- more -->
-
-
-<p>```ruby
-wb.add_worksheet(:name => &ldquo;Pie Chart&rdquo;) do |sheet|
-  sheet.add_row [&ldquo;First&rdquo;, &ldquo;Second&rdquo;, &ldquo;Third&rdquo;, &ldquo;Fourth&rdquo;]
-  sheet.add_row [1, 2, 3, 4]
-  sheet.add_chart(Axlsx::Pie3DChart, :start_at => [0,2], :end_at => [5, 15], :title=> &lsquo;dark corner here&rsquo;) do |chart|</p>
-
-<pre><code>chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"]    #数据点序列及其名称
-chart.d_lbls.show_val = true       #是否在饼状图中显示数值
-chart.d_lbls.show_percent = true    #是否在饼状图中显示所占百分比
-chart.d_lbls.d_lbl_pos = :outEnd    #图例位于图标外部
-chart.d_lbls.show_leader_lines = true  #是否显示数据和数值间的指示线
-</code></pre>
-
-<p>  end
-end
-```</p>
-
-<p>在add_chart方法中，第一个参数指定图标的类型Aslsx::Pie3DChart，而start_at和end_at分别指定图表的左上角单元格和右下角+1单元格，注意图中饼图的右下角单元格是E15即[4,14]，而end_at是[5,15]，所以称为右下角+1单元格，此外注意和excel编号不同，这里单元格序号是从0开始的。</p>
-
-<ul>
-<li>chart.add_series方法是创建图表的主要方法，用来添加点序列的值及其名称。</li>
-<li>chart.d_lbls是Data Lables的缩写，顾名思义就是数据标签。</li>
-</ul>
-
-
-<p>饼图中每块扇形的颜色是自动生成的，如果想要手动指定也是可以的：</p>
-
-<p><code>ruby
-chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; ["A1:D1"], :colors =&gt; ['FF0000', '00FF00', '0000FF']
-</code></p>
-
-<h3>折线图</h3>
-
-<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=7fd401bba586c9170c03523cf90601f2/d0c8a786c9177f3e8d17194e72cf3bc79f3d5656.jpg?referer=7d35047437fae6cd55a39e51924c&amp;x=.jpg" alt="image" /></p>
-
-<p><code>ruby
-wb.add_worksheet(:name =&gt; "Line Chart") do |sheet|
- sheet.add_row ['l1','l2','l3','l4']
- sheet.add_row [1, 2, 100, '=sum(A2:C2)']
- sheet.add_chart(Axlsx::Line3DChart, :start_at =&gt; [0,2], :end_at =&gt; [8, 17], :title =&gt; "Chart") do |chart|
-   chart.add_series :data =&gt; sheet["A2:D2"], :labels =&gt; sheet["A1:D1"], :title =&gt; 'bob'
-   chart.d_lbls.show_val = true
-   chart.d_lbls.show_cat_name = true
-   chart.catAxis.tick_lbl_pos = :none   #不在横轴上显示坐标
- end
-end
-</code></p>
-
-<p>chart.d_lbls.show_val表示显示数值，而chart.d_lbls.show_cat_name表示显示每个数值的名称。</p>
-
-<h3>柱形图</h3>
-
-<p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=4cc5e74b1d30e924cba49c347c331f3b/29381f30e924b899e2cc837b6c061d950b7bf685.jpg?referer=473e18b979cb0a46dc35bf09329b&amp;x=.jpg" alt="image" /></p>
-
-<p>``` ruby
-wb.add_worksheet(:name => &ldquo;Bar Chart&rdquo;) do |sheet|
-  sheet.add_row [&ldquo;A Simple Bar Chart&rdquo;]
-  sheet.add_row [&ldquo;First&rdquo;, &ldquo;Second&rdquo;, &ldquo;Third&rdquo;]
-  sheet.add_row [1, 2, 3]
-  sheet.add_chart(Axlsx::Bar3DChart, :start_at => &ldquo;A4&rdquo;, :end_at => &ldquo;F17&rdquo;) do |chart|</p>
-
-<pre><code>chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
-chart.valAxis.label_rotation = -45
-chart.catAxis.label_rotation = 45
-chart.d_lbls.d_lbl_pos = :outEnd
-chart.d_lbls.show_val = true
-
-chart.catAxis.tick_lbl_pos = :none
-</code></pre>
-
-<p>  end
-  sheet.add_chart(Axlsx::Bar3DChart, :barDir => :col,:start_at => &ldquo;A17&rdquo;, :end_at => &ldquo;F30&rdquo;) do |chart| #barDir指定方向:bar或:col</p>
-
-<pre><code>chart.add_series :data =&gt; sheet["A3:C3"], :labels =&gt; sheet["A2:C2"], :title =&gt; sheet["A1"]
-chart.valAxis.label_rotation = -45
-chart.catAxis.label_rotation = 45
-chart.d_lbls.d_lbl_pos = :outEnd
-chart.d_lbls.show_val = true
-
-chart.catAxis.tick_lbl_pos = :none
-</code></pre>
-
-<p>  end
- end
-```</p>
-
-<p>这里的图表位置start_at和end_at使用了和上面不同的方式，直接使用单元格名称如A4，F17，但end_at仍然是右下角单元格+1。其他代码的自解释性很强，无须赘述了。</p>
 ]]></content>
   </entry>
   

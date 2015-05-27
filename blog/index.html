@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="分离式scope（Isolated Scope） 在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量， &hellip;">
+	<meta name="description" content="关于sidekiq 在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。 Read on &rarr; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,52 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/">
+		
+			关于后台任务</a>
+	</h2>
+	<div class="entry-content">
+		<h3>关于sidekiq</h3>
+
+<p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
+
+
+		
+		<a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-27T17:16:34+08:00" pubdate data-updated="true">May 27<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -652,84 +698,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/08/21/mysqlchang-yong-ming-ling/">
-		
-			Mysql常用命令</a>
-	</h2>
-	<div class="entry-content">
-		<h3>1.远程链接mysql</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mysql -h主机地址 -u用户名 －p用户密码 －P 端口号
-</span><span class='line'>grant all on *.* to ‘用户名’@’主机地址’ identified by ‘密码’
-</span><span class='line'>grant select on 数据库.* to 用户名@登录主机 identified by \"密码\"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2.修改密码</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mysqladmin -u用户名 -p旧密码 password 新密码</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3.显示数据库列表。</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>show databases</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4.显示库中的数据表</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>show tables</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>5.显示数据表的结构</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>describe 表名</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-
-		
-		<a href="/blog/2014/08/21/mysqlchang-yong-ming-ling/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-08-21T11:05:13+08:00" pubdate data-updated="true">Aug 21<span>st</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/mysql/'>mysql</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/08/21/mysqlchang-yong-ming-ling/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
