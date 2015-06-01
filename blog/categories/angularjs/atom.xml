@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-06-01T09:35:00+08:00</updated>
+  <updated>2015-06-02T00:49:37+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -113,7 +113,7 @@ dropzone: '~4.0.1'
 <p>现在开始编写指令的实现。指令代码最好遵守一定命名规范，如：以github名称作为命名空间。
 ```javascript angular-dropzone.js
 angular.module(&lsquo;qjpcpu.angular-dropzone&rsquo;, []).
-  directive(&lsquo;qjp-dropzone&rsquo;, function () {</p>
+  directive(&lsquo;qjpDropzone&rsquo;, function () {</p>
 
 <pre><code>// implementation goes here
 </code></pre>
@@ -136,10 +136,42 @@ git push -u origin master
 </code>
 注意，bower使用git的tag确定版本号。</p>
 
-<p>这样其他人就可以拉去使用你的angular指令了：
+<h4>4.在你的应用中使用该指令</h4>
+
+<p>现在可以拉取使用你的angular指令了：
 <code>
 bower install qjpcpu/angular-dropzone
 </code></p>
+
+<p>在<code>index.html</code>文件添加加载的文件:</p>
+
+<p>```html index.html
+<link rel="stylesheet" href="bower_components/dropzone/dist/dropzone.css"></p>
+
+<script src="bower_components/dropzone/dist/dropzone.js"></script>
+
+
+<script src="bower_components/angular-dropzone/angular-dropzone.js"></script>
+
+
+<p>```</p>
+
+<p>需要添加模块依赖:
+<code>coffeescript app.coffee
+app = angular.module("my-app", [
+  'qjpcpu.angular-dropzone'
+])
+</code>
+这样在html片段里就可以使用指令了,关于该指令具体参数参考<a href="https://github.com/qjpcpu/angular-dropzone">angular-dropzone</a>:</p>
+
+<p>```html p.html</p>
+
+<div qjp-dropzone class="droppable-area" url="'/url/to-upload'">
+    Drop file here
+</div>
+
+
+<p>```</p>
 ]]></content>
   </entry>
   

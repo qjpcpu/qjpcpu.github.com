@@ -197,7 +197,7 @@
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;qjpcpu.angular-dropzone&#39;</span><span class="p">,</span> <span class="p">[]).</span>
-</span><span class='line'>  <span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;qjp-dropzone&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;qjpDropzone&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="c1">// implementation goes here</span>
 </span><span class='line'>  <span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -226,10 +226,45 @@
 
 <p>注意，bower使用git的tag确定版本号。</p>
 
-<p>这样其他人就可以拉去使用你的angular指令了：</p>
+<h4>4.在你的应用中使用该指令</h4>
+
+<p>现在可以拉取使用你的angular指令了：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>bower install qjpcpu/angular-dropzone
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>index.html</code>文件添加加载的文件:</p>
+
+<figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;bower_components/dropzone/dist/dropzone.css&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/dropzone/dist/dropzone.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-dropzone/angular-dropzone.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要添加模块依赖:</p>
+
+<figure class='code'><figcaption><span>app.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">app = </span><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&quot;my-app&quot;</span><span class="p">,</span> <span class="p">[</span>
+</span><span class='line'>  <span class="s">&#39;qjpcpu.angular-dropzone&#39;</span>
+</span><span class='line'><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在html片段里就可以使用指令了,关于该指令具体参数参考<a href="https://github.com/qjpcpu/angular-dropzone">angular-dropzone</a>:</p>
+
+<figure class='code'><figcaption><span>p.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">qjp-dropzone</span> <span class="na">class=</span><span class="s">&quot;droppable-area&quot;</span> <span class="na">url=</span><span class="s">&quot;&#39;/url/to-upload&#39;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  Drop file here
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
