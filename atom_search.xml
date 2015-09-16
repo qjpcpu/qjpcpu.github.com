@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-06-02T00:49:37+08:00</updated>
+  <updated>2015-09-17T01:14:08+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,270 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[gulp js的构建工具]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile/"/>
+    <updated>2015-09-16T21:56:17+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile</id>
+    <content type="html"><![CDATA[<h3>0. 简介</h3>
+
+<p>gulp是javascript世界的构建工具，它并不是js世界第一个构建工具，但由于它小而快的特点，一出现就快速赶超它的前辈grunt，在npm的下载榜上一直高居前列。</p>
+
+<!-- more -->
+
+
+<p><img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" alt="gulp logo" /></p>
+
+<h3>1. gulp的特性</h3>
+
+<p><strong><code>小</code></strong></p>
+
+<p>gulp的第一个特点应该是小，不仅仅是源码小，更重要的是gulp编写的出的构建代码非常短小明了。这是因为gulp基本上完全是基于流式的构建处理，可以理解为由源码文件流经过一系列的中间加工处理直接将结果灌入到输出文件，没有了中间的临时文件读写，自然就减少了处理代码，出来的构建workflow同样也就十分清理简捷。</p>
+
+<p>gulp构建流程的小固然有使用了流式处理的原因，但更重要的一种设计思路的不同。这里我想聊一下工程上的设计理念，通常我们设计程序的时候，遵守<code>配置优于代码</code>的原则。就是说，一些程序依赖的外置参数，尽量不要硬编码进代码文件里，而是将这些参数放在配置文件中。遵循这条原则可以极大增加工程的可维护性，比如java语言的某些著名框架就严格践行了这条原则，所以工程中就可能出现描述工程信息的各种xml配置文件。然后很多时候宣扬这条规律的书籍都没有将他的缺点，虽然缺点和优点相比有点微不足道，那就是一旦大量抽离程序的配置参数，将导致配置的碎片化，反面教材仍然是java框架里的xml配置泛滥。</p>
+
+<p>所以后来的编程框架如rails开始强调<code>约定优于配置</code>的概念，就是如果大家经验约定这样做(放置配置的方式，命名的方式，搜索的方式等），那么程序工程里就不必显式声明这些规则，即不必要用一大堆配置文件去描述我们大家都约定遵守的东西。这样出来的结果工程上非常干净同时也满足了约定内高维护性。</p>
+
+<p>那么在这里为什么要说这个呢，因为grunt其实可以说是一个基于<code>配置由于代码</code>的构建工具，而且很多其他编程语言的构建工具都是基于这个理念的。这类构建工具在执行大工程的构建时，配置的碎片化非常严重，为了描述构建需要在构建代码里编写大量的元信息片段，甚至于需要分立诸多构建小文件来描述子构建单元，那么维护构建流程本身也变成一件令人头疼的事情。</p>
+
+<p>而gulp可以说某种程度上的回归，将更多的东西又返回到了原始的地方&mdash;&mdash;&mdash;-代码。gulp的构建文件里配置信息非常少，一个构建task包含的所有信息都在这个task里，你不需要跳到其他文件里查阅这个task的配置信息。是的，程序员喜欢代码，把构建所有的东西都在task这块代码里完成，这样的构建流程自然就很清晰了。所以，gulp非常适合中小型程序的构建，我私自揣度这也是gulp快速流行起来的原因。</p>
+
+<p><strong><code>快</code></strong></p>
+
+<p>gulp的快主要是因为它的核心是<code>流</code>,从源文件的读取到构建结束，整个加工过程都在内存流里完成，上一道工序和下一道加工工序间完全是流与流之间的管道连接，类似shell管道命令的流式操作，免去了大量中间文件的读写，少了文件io，自然快了很多。不过我并没有专门对这个做过benchmark，直观的感受是我重构某个包含数百个coffee文件的构建流程时，从grunt迁移为gulp后整个构建流程节省了大概一半的时间。</p>
+
+<p><strong><code>简单</code></strong></p>
+
+<p>在阅读了gulp的一些资料后，我本来打算花一个下午的时间来学习的，结果10分钟左右就读完了gulp的文档，因为它实在太简单了，总共只有<strong>4个</strong>API.</p>
+
+<h3>2. gulp入门</h3>
+
+<p>对于gulp的基础，我不打算在这里讲，因为它的<a href="https://github.com/gulpjs/gulp/tree/master/docs">官方文档</a>非常简单易读，如果想读中文，这里也有<a href="https://github.com/lisposter/gulp-docs-zh-cn">gulp中文文档</a>。花个10分钟读一下，你就可以向身边的小伙伴炫耀： Hi，让我给你展示下一种很cool的构建工具。</p>
+
+<h3>3. gulp流</h3>
+
+<p><code>流</code>是gulp重中之重的概念，理解了流才可以玩转gulp。可以看下<a href="https://github.com/substack/stream-handbook">nodejs流</a>深入理解下nodejs流的概念。这里仅简单介绍下gulp中广泛使用的<code>pipe()</code>函数。</p>
+
+<p><code>src.pipe(dest)</code>函数是nodejs的流的一个函数，它的作用非常简单，就是将流进行管道连接，将src可读流和dest可写流连接起来，使得数据从src流入dest。</p>
+
+<p>同时<code>src.pipe(dest)</code>的返回对象也是<code>dest</code>，所以在nodejs很容易看到这种链式编程风格。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">a</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">b</span><span class="p">).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">c</span><span class="p">).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码等价于</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">a</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+</span><span class='line'><span class="nx">b</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'><span class="nx">c</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个操作和shell编程的管道非常相似: <code>a | b | c | d</code></p>
+
+<h3>4. gulp任务的编写准则</h3>
+
+<p>gulp的核心是流，构建单元是一个个<code>task</code>，那么编写这些task的时候需要注意什么呢？</p>
+
+<p>gulp的task做到了最大限度的并发，那么这些task间的同步就成了问题，怎么样判断一个task完成了以便于可以安全执行另一个依赖task呢,为了正确调度任务，gulp的task设计有三个原则:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">1</span><span class="p">.</span> <span class="err">在任务定义的</span><span class="kd">function</span><span class="err">中返回一个数据流，当该数据流的</span><span class="nx">end</span><span class="err">事件触发时，任务结束</span>
+</span><span class='line'><span class="mi">2</span><span class="p">.</span> <span class="err">在任务定义的</span><span class="kd">function</span><span class="err">中返回一个</span><span class="nx">promise</span><span class="err">对象，当该</span><span class="nx">promise</span><span class="err">对象</span><span class="nx">resolve</span><span class="err">时，任务结束</span>
+</span><span class='line'><span class="mi">3</span><span class="p">.</span> <span class="err">在任务定义的</span><span class="kd">function</span><span class="err">中传入</span><span class="nx">callback</span><span class="err">变量，当</span><span class="nx">callback</span><span class="p">()</span><span class="err">执行时，任务结束</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当发现task没有按预期执行时，就需要仔细检查是否每个task都遵循了这3条规则。</p>
+
+<p>此外，当需要写出一些高阶的gulp玩法时，不理解并执行这几条规则，就很难办到。另外，可以思考个额外的问题，为什么gulp的task需要有这三条规则? 根据这3条规则，是否都可以猜测出gulp的实现机制呢?</p>
+
+<p>在这里我顺便申明我对学习新东西的一个观点，就是<code>seize the key</code>，学习一种新东西就要理解她的核心。有的人秉持一种观念是说，语言只是工具，学习了一种其他都差不多，当有切换需求要学习新语言or新工具，就草草将以前的经验套上去，完成任务后还以为学会了新语言。所以有时候会看到一些四不像的代码，比如长得像shell的ruby代码，长得像java的python代码，一脸C长相的golang&hellip;</p>
+
+<p>那么，怎样一学习新东西就能抓住其核心呢，很简单，多想想<code>why</code>。实际操作起来就几点经验：</p>
+
+<ul>
+<li>如果有作者对这个语言/工具的创作初衷的相关文章，一定要看！</li>
+<li>看这个新东西是为了解决什么问题</li>
+<li>这个语言解决的是什么问题，更重要的是解决的思路或方式是什么！</li>
+<li>如果涉及新的概念或思路，一定要看足够多的文档直到理解这个概念</li>
+<li>如果学习的是新语言，必须<strong>理解</strong>这个语言的<strong>key feature</strong>，了解语言的生态圈，语言的编码规范、构建工具、测试工具、包管理工具，该语言里著名的库/框架，这些框架的设计理念，如果有余力可以看下这些库/框架的源码，告诉自己用这种语言写出的代码也应该是这个水平</li>
+</ul>
+
+
+<p>比如对于gulp:</p>
+
+<ul>
+<li><strong>创作初衷</strong>: 看文档FAQ,作者twitter</li>
+<li><strong>需要解决的问题</strong>: grunt复杂庞大的插件配置</li>
+<li><strong>解决思路</strong>: nodejs流式处理=>什么是nodejs流=>解决什么问题，带来什么问题</li>
+</ul>
+
+
+<p>方方面面的东西了解了之后，你就能真正把控你的新玩意儿，有时候你甚至能预测这个语言或工具的未来动向。</p>
+
+<h3>5. 常用gulp插件</h3>
+
+<p>关于gulp的插件，需要的时候去github上找一下基本都能找到，这里提几个可能是通用构建流程里很可能用到的。</p>
+
+<h4><a href="https://www.npmjs.com/package/run-sequence">run-sequence</a></h4>
+
+<p>鉴于流程控制对javascript这种纯异步编程的重要性，gulp的异步任务控制需求同样强烈，run-sequence就是为了解决这个问题。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">runSequence</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;run-sequence&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">clean</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-clean&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// This will run in this order: </span>
+</span><span class='line'><span class="c1">// * build-clean </span>
+</span><span class='line'><span class="c1">// * build-scripts and build-styles in parallel </span>
+</span><span class='line'><span class="c1">// * build-html </span>
+</span><span class='line'><span class="c1">// * Finally call the callback function </span>
+</span><span class='line'><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">runSequence</span><span class="p">(</span><span class="s1">&#39;build-clean&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">[</span><span class="s1">&#39;build-scripts&#39;</span><span class="p">,</span> <span class="s1">&#39;build-styles&#39;</span><span class="p">],</span>
+</span><span class='line'>              <span class="s1">&#39;build-html&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">callback</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// configure build-clean, build-scripts, build-styles, build-html as you </span>
+</span><span class='line'><span class="c1">// wish, but make sure they either return a stream or handle the callback </span>
+</span><span class='line'><span class="c1">// Example: </span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;build-clean&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="nx">BUILD_DIRECTORY</span><span class="p">).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">clean</span><span class="p">());</span>
+</span><span class='line'><span class="c1">//  ^^^^^^ </span>
+</span><span class='line'><span class="c1">//   This is the key here, to make sure tasks run asynchronously! </span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;build-scripts&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="nx">SCRIPTS_SRC</span><span class="p">).</span><span class="nx">pipe</span><span class="p">(...)...</span>
+</span><span class='line'><span class="c1">//  ^^^^^^ </span>
+</span><span class='line'><span class="c1">//   This is the key here, to make sure tasks run asynchronously! </span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4><a href="https://www.npmjs.com/package/del">del</a></h4>
+
+<p>删除文件，这是个再频繁不过的需求了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">del</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;del&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">del</span><span class="p">([</span><span class="s1">&#39;tmp/*.js&#39;</span><span class="p">,</span> <span class="s1">&#39;!tmp/unicorn.js&#39;</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">paths</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Deleted files/folders:\n&#39;</span><span class="p">,</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>主要，del函数返回的是一个promise对象。</p>
+
+<h4><a href="https://www.npmjs.com/package/merge-stream">merge-stream</a></h4>
+
+<p>当一个task里有多条流时，怎么办? merge-stream就是为了解决流的合并问题的。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">merge</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;merge-stream&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">bootstrap</span> <span class="o">=</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;bootstrap/js/*.js&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;public/bootstrap&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">jquery</span> <span class="o">=</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;jquery.cookie/jquery.cookie.js&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;public/jquery&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">merge</span><span class="p">(</span><span class="nx">bootstrap</span><span class="p">,</span> <span class="nx">jquery</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当<code>bootstrap</code>和<code>jquery</code>这两条流都完成时，合并后的流才算完成。</p>
+
+<h4>用户代码</h4>
+
+<p>还有一种情况，如果task的流处理完成时，我希望执行一些用户代码，比如仅仅打印一些信息，这要怎么做呢? 使用task依赖固然可以完成，但是仅仅因为这个需求就增加一个<code>空</code>task是不是有点杀鸡用牛刀了，如果真正理解了nodejs流和gulp的task规则，其实也很好办:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;cli&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;coffee&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;*.coffee&#39;</span><span class="p">).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">coffee</span><span class="p">()).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;js/&#39;</span><span class="p">)).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">doSomething</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">cb</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意task的返回值及task回调cb。</p>
+
+<h3>6. 结束</h3>
+
+<p>gulp是一个很cool的构建工具，学习她，在合适的时候使用她。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[分享你的Angular指令]]></title>
@@ -513,6 +777,33 @@
 
 
 <p>P.S. 无法和其他读取excel的gem做对比，因为试着做对比测试时发现其他gem根本卡在读取操作那不动了。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[脚下的路]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu/"/>
+    <updated>2015-02-16T09:22:38+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu</id>
+    <content type="html"><![CDATA[<p>本来之前就想写写关于2014年的经历，但一直心里都是满满的负能量，所以一直没有下笔。今天其实也是，和家人闹得不开心，然后愤懑地来公司上班，没想到在路上反而突然想明白了，所以就回顾一下过去的2014，还有现在心里的想法吧。</p>
+
+<p>在<code>life</code>分类下，之前的两篇文字都是非常积极的，我之前耕耘多年，凭着自己的努力进入了百度，我自己其实是非常自豪的。即便进入了百度后，能力也被非常认可。所以在2014上半年，其实我是感觉意气风发的，在工作中，也做出了一些很cool的事情。那时候的我，感觉自己离梦想只有一步之遥，仿佛站在天梯之巅，拨开云层再踏一步，可能我就能出去，去Google朝圣。那是在朋友们眼中，我就是个疯子，什么都可以不要。那时，我是幸福的，虽然在别人眼里，那时的我是一个不负责任，狂热的人。</p>
+
+<p>但是在下半年，我逐渐感受到狂热背后的东西，尽管在百度，也要做很多机械重复的事情，此外更重要的是，我发现自己很孤独，除开工作，我一无所有，独自在上海漂泊，心里非常寂寞。再加上后来家人生病，我选择了离开，回到成都。</p>
+
+<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过&hellip;&hellip;</p>
+
+<p><code>people must pay for their choices</code>，每个人必须为他的选择付出代价。</p>
+
+<!-- more -->
+
+
+<p>回来的好长日子里，我无法适应。逐渐地，我开始怀念在百度的那段日子。这时我才体会到，百度真正优秀的地方，不在于她的大公司地位和光环，在于百度的人，在于那些身上深深烙上了百度刻印而不自知的优秀同学。不论懂的多少，总是怀着一种谦逊求知的态度，对技术和知识的真正渴望，塑造了百度人自己的气质。</p>
+
+<p><code>怀疑和迷茫</code>，占据了我。我不知道自己要干什么，不知道下一步的路在哪里。每天回到家，和家人在一起，其实也挺开心的，上班也能尽情雕琢自己的代码，这不是我以前想要的吗？曾经有人问我毕业后想要什么样的工作，我说能写代码就行。但现在我发现，其实我远远不能满足于这些，我需要舞台，需要一个大的舞台展示自己，希望被听到。</p>
+
+<p>我告诉自己：我是优秀的人，到哪里我都必须要优秀!</p>
 ]]></content>
   </entry>
   
