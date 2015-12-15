@@ -125,7 +125,7 @@ categories: life
 ### 操作系统
 
 * 2年以上linux运维经验, 长期linux使用经验
-* 自己编译过linux系统，并翻译过，译本见[Linux from scratch](https://github.com/qjpcpu/LFS)
+* 自己编译过linux系统，并翻译过LFS，译本见[Linux from scratch](https://github.com/qjpcpu/LFS)
 
 #### 数据库
 
