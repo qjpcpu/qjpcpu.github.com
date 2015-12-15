@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-12-15T22:04:27+08:00</updated>
+  <updated>2015-12-15T22:06:04+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -1315,7 +1315,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x6e;&#x69;&#x6c;&#113;&#117;&#106;&#x69;&#97;&#110;&#112;&#x69;&#x6e;&#x67;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#110;&#105;&#x6c;&#x71;&#117;&#106;&#x69;&#97;&#x6e;&#112;&#x69;&#x6e;&#x67;&#64;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;</a></p></li>
+<li><p>邮箱: <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#58;&#x6e;&#x69;&#108;&#113;&#117;&#x6a;&#105;&#x61;&#110;&#x70;&#x69;&#x6e;&#x67;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;">&#x6e;&#105;&#108;&#x71;&#x75;&#x6a;&#x69;&#x61;&#110;&#x70;&#105;&#x6e;&#x67;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;</a></p></li>
 <li><p>微信:</p></li>
 </ul>
 
@@ -1469,7 +1469,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li>2年以上linux运维经验, 长期linux使用经验</li>
-<li>自己编译过linux系统，并翻译过，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
+<li>自己编译过linux系统，并翻译过LFS，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
 </ul>
 
 
