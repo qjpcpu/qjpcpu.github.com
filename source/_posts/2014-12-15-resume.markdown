@@ -12,7 +12,7 @@ categories: life
 
 * 邮箱: nilqujianping@gmail.com
 
-* 微信: ![qrcode]()
+* 微信: ![qrcode](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg)
 
 <!-- more -->
 
@@ -123,7 +123,7 @@ categories: life
 ### 操作系统
 
 * 2年以上linux运维经验, 长期linux使用经验
-* 自己编译过linux系统，并翻译过[Linux from scratch]()
+* 自己编译过linux系统，并翻译过[Linux from scratch](https://github.com/qjpcpu/LFS)
 
 #### 数据库
 
@@ -133,4 +133,10 @@ categories: life
 
 * 熟悉ruby及js的web开发技术
 * 熟悉前端新技术angularJS
+
+### 自我评价
+
+* 好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向
+* 自我激励，一旦认定目标，会投入100%精力完成
+* 崇拜Google
 
