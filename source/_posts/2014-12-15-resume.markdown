@@ -119,7 +119,7 @@ categories: life
 * ruby; 精通ruby,5年+经验
 * coffee-script; 熟悉coffee，能熟练用来开发前端页面或后端node程序
 * golang; 熟悉go语言，有小型项目经验
-* shell; 2年以上linux运维，能数量使用shell管理linux
+* shell; 2年以上linux运维，能熟练使用shell管理linux
 * java/C#/C/Python; 基本了解
 
 ### 操作系统
