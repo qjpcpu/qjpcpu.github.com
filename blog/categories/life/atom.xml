@@ -4,7 +4,7 @@
   <title><![CDATA[Category: life | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-12-15T21:56:12+08:00</updated>
+  <updated>2015-12-15T21:58:23+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -48,10 +48,12 @@
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#110;&#105;&#x6c;&#x71;&#x75;&#x6a;&#x69;&#97;&#x6e;&#112;&#x69;&#x6e;&#103;&#x40;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;">&#x6e;&#105;&#108;&#x71;&#x75;&#x6a;&#105;&#x61;&#110;&#112;&#105;&#x6e;&#103;&#x40;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;</a></p></li>
-<li><p>微信: <img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p></li>
+<li><p>邮箱: <a href="&#109;&#x61;&#105;&#108;&#116;&#x6f;&#58;&#x6e;&#x69;&#x6c;&#x71;&#x75;&#106;&#x69;&#x61;&#110;&#112;&#105;&#x6e;&#x67;&#64;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;">&#x6e;&#105;&#x6c;&#x71;&#x75;&#x6a;&#105;&#x61;&#x6e;&#112;&#105;&#110;&#x67;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></p></li>
+<li><p>微信:</p></li>
 </ul>
 
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
 
 <!-- more -->
 
@@ -200,7 +202,7 @@
 
 <ul>
 <li>2年以上linux运维经验, 长期linux使用经验</li>
-<li>自己编译过linux系统，并翻译过<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
+<li>自己编译过linux系统，并翻译过，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
 </ul>
 
 
