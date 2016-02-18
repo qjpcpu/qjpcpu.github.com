@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-02-18T17:12:16+08:00</updated>
+  <updated>2016-02-18T17:16:56+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -79,7 +79,7 @@ url = http://tt.single-bit.org
 
 <h3>3. 执行任务</h3>
 
-<p>在配置好的两天客户端上同时执行命令:</p>
+<p>在配置好的两台客户端上同时执行命令:</p>
 
 <p><code>
 tt -n demo 'echo "from `head -1 ~/.tt.conf`";sleep 2;echo "sleep for a while";sleep 5;echo done'
