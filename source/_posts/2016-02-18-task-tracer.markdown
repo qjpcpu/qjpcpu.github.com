@@ -62,7 +62,7 @@ url = http://tt.single-bit.org
 
 ### 3. 执行任务
 
-在配置好的两天客户端上同时执行命令:
+在配置好的两台客户端上同时执行命令:
 
 ```
 tt -n demo 'echo "from `head -1 ~/.tt.conf`";sleep 2;echo "sleep for a while";sleep 5;echo done'
