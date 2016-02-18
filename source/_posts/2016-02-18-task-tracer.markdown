@@ -14,6 +14,8 @@ categories: linux
 
 <!-- more -->
 
+![tt preview](https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/tt-preview.png)
+
 ## 工作原理
 
 tt其实是一个shell命令包裹器，它将要执行的命令以子进程的方式执行起来，实时地将该子进程的输出发送到tt Server，这样用户(api client)就能够从tt Server实时读取到该进程的输出；使用到的技术其实也很简单，就是nodejs+socket.io。
