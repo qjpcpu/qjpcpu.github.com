@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-02-18T17:24:05+08:00</updated>
+  <updated>2016-02-18T17:44:42+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -26,6 +26,8 @@
 
 <!-- more -->
 
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/tt-preview.png" alt="tt preview" /></p>
 
 <h2>工作原理</h2>
 
