@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-02-18T21:53:30+08:00</updated>
+  <updated>2016-02-18T22:08:02+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -122,8 +122,9 @@
 
 <h2>附录: github地址</h2>
 
-<p><a href="https://github.com/qjpcpu/task-tracer-server">tt Server</a>
-<a href="https://github.com/qjpcpu/task-tracer-client">tt Client</a></p>
+<p><a href="https://github.com/qjpcpu/task-tracer-server">tt Server</a></p>
+
+<p><a href="https://github.com/qjpcpu/task-tracer-client">tt Client</a></p>
 ]]></content>
   </entry>
   
@@ -1419,7 +1420,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x6e;&#x69;&#108;&#113;&#117;&#106;&#105;&#x61;&#110;&#112;&#105;&#110;&#x67;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#111;&#x6d;">&#110;&#105;&#108;&#113;&#x75;&#106;&#x69;&#97;&#110;&#112;&#105;&#110;&#103;&#x40;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;</a></p></li>
+<li><p>邮箱: <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x6e;&#105;&#x6c;&#113;&#117;&#x6a;&#105;&#x61;&#110;&#x70;&#x69;&#x6e;&#x67;&#64;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#99;&#x6f;&#109;">&#x6e;&#105;&#x6c;&#x71;&#117;&#x6a;&#105;&#x61;&#110;&#112;&#105;&#x6e;&#103;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></p></li>
 <li><p>电话: 158-8454-2238</p></li>
 <li><p>微信:</p></li>
 </ul>
