@@ -44,7 +44,7 @@ token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiY2xpZW50X3Rva2VuIiwibnM
 url = http://tt.single-bit.org
 ```
 
-同样的方法再配置一台客户端，注意其配置文件中id和另一台不同
+同样的方法再配置一台客户端，注意其配置文件中id和另一台不同（可以根据需要配置任意多台客户端,注意其配置文件中id需要各不相同）。
 
 ```
 id = tanya
