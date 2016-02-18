@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2015-12-17T17:01:02+08:00</updated>
+  <updated>2016-02-18T17:12:16+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,113 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[task tracer -- 实时任务追踪系统]]></title>
+    <link href="http://qjpcpu.github.io/blog/2016/02/18/task-tracer/"/>
+    <updated>2016-02-18T14:43:27+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2016/02/18/task-tracer</id>
+    <content type="html"><![CDATA[<h2>产生背景</h2>
+
+<p><strong>Task Tracer(以下简称tt)</strong>的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出，任务的发起者无法知道任务当前的执行状态,唯一能做的仅仅能够判断该任务是否在running,而不能实时获取其进程输出；其次，当该salt任务执行完成后，需要独立获取其任务标准输出和进程退出状态(exit code)，无法一次性获取其输出和退出状态。salt社区也意识到这个问题，在逐步开发VT模块以求解决，不过这个特性截止到目前仍在实验阶段。</p>
+
+<p>所以，为了消除salt任务执行阶段的黑洞焦虑，我决定开发tt。 虽然tt是为了解决salt的一个问题，但在开发时，我决定将其和salt分离开来，使得tt其实是能够解决这样一类问题: <strong>如果需要实时获取命令执行输出，就可以将命令包裹到tt中执行,从而利用tt Server实时获取其执行输出及结果</strong></p>
+
+<!-- more -->
+
+
+<h2>工作原理</h2>
+
+<p>tt其实是一个shell命令包裹器，它将要执行的命令以子进程的方式执行起来，实时地将该子进程的输出发送到tt Server，这样用户(api client)就能够从tt Server实时读取到该进程的输出；使用到的技术其实也很简单，就是nodejs+socket.io。
+<img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/data-flow.png" alt="tt" /></p>
+
+<p>从这张原理图可以看到，tt的数据流是单向的，也就是说这里的任务发起需要第三方来做，比如salt-stack甚至手动的shell登录后发起。当任务发起后，tt client会吐出一个输出结果查看的url，使用你的浏览器访问该url就可以实时查看任务的输出，另外，相同任务名下执行的所有tt client都会将输出发布出来，均可以查看。</p>
+
+<p>另外，tt是一个实时输出查看跟踪系统，所以不会持久化任务的输出。</p>
+
+<h2>Try our live demo</h2>
+
+<h3>1. 配置客户端</h3>
+
+<p>根据你的系统类型(osx/linux)下载客户端可执行文件tt</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># for osx
+</span><span class='line'>wget https://raw.githubusercontent.com/qjpcpu/task-tracer-client/master/dist/tt.darwin -O tt
+</span><span class='line'># for linux
+</span><span class='line'>wget https://raw.githubusercontent.com/qjpcpu/task-tracer-client/master/dist/tt.linux -O tt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>客户端会读取配置文件<code>$HOME/.tt.conf</code>，将其内容配置为:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>id = natasha
+</span><span class='line'>token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiY2xpZW50X3Rva2VuIiwibnMiOiJ0ZXN0IiwiaWF0IjoxNDU1NzgwNDU0LCJleHAiOjE0ODczMzgwNTR9.hk96PzocFTSGogl1evyWa4UGjDpQ4nAWppIMCl6lnlo
+</span><span class='line'>url = http://tt.single-bit.org</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同样的方法再配置一台客户端，注意其配置文件中id和另一台不同</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>id = tanya
+</span><span class='line'>token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiY2xpZW50X3Rva2VuIiwibnMiOiJ0ZXN0IiwiaWF0IjoxNDU1NzgwNDU0LCJleHAiOjE0ODczMzgwNTR9.hk96PzocFTSGogl1evyWa4UGjDpQ4nAWppIMCl6lnlo
+</span><span class='line'>url = http://tt.single-bit.org</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. 访问任务追踪页面</h3>
+
+<p>打开浏览器访问<a href="http://tt.single-bit.org/?accessToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYnJvd3Nlcl90b2tlbiIsIm5zIjoidGVzdCIsImlhdCI6MTQ1NTc4MDQ1NCwiZXhwIjoxNDg3MzM4MDU0fQ.AuhXIVNxk5LYoamU2ziSBqvn0tEqyrszAvsCom3OmgI">tt Server live demo</a></p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/live-demo-index.png" alt="live demo index page" /></p>
+
+<p>填入我们需要追踪的任务名称，如: <strong>demo</strong>并确定，进入到任务监听状态。</p>
+
+<h3>3. 执行任务</h3>
+
+<p>在配置好的两天客户端上同时执行命令:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>tt -n demo 'echo "from `head -1 ~/.tt.conf`";sleep 2;echo "sleep for a while";sleep 5;echo done'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在浏览器上可以看到实时输出: 在<code>tanya</code>和<code>natasha</code>分别输出各自的id，然后等待一会儿后进程执行结束.</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/live-demo-output.png" alt="live demo output page" /></p>
+
+<p>你也可以在执行过程中在某个客户端上执行<code>kill</code>命令或<code>Ctrl+C</code>终止进程，并查看浏览器实时反馈的结果。</p>
+
+<h2>As a sevice &mdash; 搭建自己的tt Server</h2>
+
+<p>如果tt仅仅是作为一个web页面查看机器上的进程输出，那其实也没多大存在意义，关键是对于一个devops来说，它需要能够比较容易地嵌入你的系统工具里。</p>
+
+<h3>1. 系统接口</h3>
+
+<p>ttServer对外提供了若干<a href="http://socket.io/">socket.io</a>事件接口，基于你的需求，可以非常容易地接入到你自己的系统中，这样一来，怎样在UI上展示就完全取决于自己的实现。至于socket.io也有很多语言已经实现了该规范，所以使用起来应该也很简单。</p>
+
+<p>详细接口定义及实现方式请查看<a href="https://github.com/qjpcpu/task-tracer-server">tt Server github文档</a></p>
+
+<h3>2. 客户端安装配置</h3>
+
+<p>tt的客户端安装配置非常简单，仅仅包含一个可执行文件tt和一份简单的ini格式的配置文件,令人愉悦的是该客户端没有环境依赖，不需要安装node等执行环境。</p>
+
+<p>如果下载的二进制文件无法执行，请从源码编译。</p>
+
+<p>具体的客户端安装配置可以查看<a href="https://github.com/qjpcpu/task-tracer-client">tt Client github文档</a></p>
+
+<h2>相关系统: log.io</h2>
+
+<p><a href="http://logio.org/">log.io</a>是一个实时日志监控系统，其系统架构和实现方式都和tt非常相似。不过其应用场景是实时的日志采集监控，另外，logio的客户端有node环境依赖，个人觉得有点部署不完美。</p>
+
+<p><img src="http://logio.org/screenshot3.png" alt="log.io" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[gulp js的构建工具]]></title>
@@ -1305,7 +1412,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x6e;&#x69;&#x6c;&#x71;&#117;&#x6a;&#105;&#97;&#x6e;&#112;&#105;&#110;&#x67;&#x40;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;">&#x6e;&#105;&#108;&#113;&#x75;&#106;&#x69;&#97;&#x6e;&#112;&#x69;&#110;&#x67;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p></li>
+<li><p>邮箱: <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#x6e;&#x69;&#x6c;&#x71;&#117;&#x6a;&#105;&#97;&#110;&#x70;&#105;&#x6e;&#x67;&#x40;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x6e;&#x69;&#108;&#x71;&#x75;&#x6a;&#105;&#x61;&#x6e;&#112;&#x69;&#110;&#103;&#64;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;</a></p></li>
 <li><p>电话: 158-8454-2238</p></li>
 <li><p>微信:</p></li>
 </ul>
@@ -3101,76 +3208,6 @@ list[ 1 ][ 1 ] = d;
 <blockquote><p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p></blockquote>
 
 <p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[信任关系建立]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
-    <updated>2014-05-21T14:58:28+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
-    <content type="html"><![CDATA[<h3>建立host1到host2的信任关系</h3>
-
-<h4>如果A的rsa文件不存在可以这样建立</h4>
-
-<p>首先在<code>host1</code>上：</p>
-
-<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>添加信任关系</h4>
-
-<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
-
-<h4>避免第一次连接出现添加fingerprint的询问</h4>
-
-<p>在<code>host1</code>上执行：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!--more-->
-
-
-<p>下面是一个示例脚本，在一个中控机上（能同时访问a和b）建立a到b的信任关系：</p>
-
-<figure class='code'><figcaption><span>relation_a2b</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$#&quot;</span> -lt 2 <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">        </span><span class="nb">echo</span> <span class="s2">&quot;Usage: relation_a2b host1 host2&quot;</span>
-</span><span class='line'>        <span class="nb">exit </span>1
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'><span class="nv">from</span><span class="o">=</span><span class="nv">$1</span>
-</span><span class='line'><span class="nv">to</span><span class="o">=</span><span class="nv">$2</span>
-</span><span class='line'><span class="nv">key</span><span class="o">=</span><span class="sb">`</span>ssh <span class="nv">$from</span> <span class="s2">&quot;ssh-keyscan -t rsa $to &gt;&gt; ~/.ssh/known_hosts 2&gt;/dev/null &amp;&amp; cat ~/.ssh/id_rsa.pub&quot;</span><span class="sb">`</span>
-</span><span class='line'>ssh <span class="nv">$to</span> <span class="s2">&quot;echo $key &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
-</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;$from --&gt; $to [OK]&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用方法</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>relation_a2b host1 host2
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

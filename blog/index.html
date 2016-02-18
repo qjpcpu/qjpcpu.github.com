@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 0. 简介 gulp是javascript世界的构建工具，它并不是js世界第一个构建工具，但由于它小而快的特点，一出现就快速赶超它的前辈grunt，在npm的下载榜上一直高居前列。 Read on &rarr; Sep 16th, 2015 nodejs Comments ">
+	<meta name="description" content="产生背景 Task Tracer(以下简称tt)的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,54 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2016/02/18/task-tracer/">
+		
+			Task Tracer &#8211; 实时任务追踪系统</a>
+	</h2>
+	<div class="entry-content">
+		<h2>产生背景</h2>
+
+<p><strong>Task Tracer(以下简称tt)</strong>的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出，任务的发起者无法知道任务当前的执行状态,唯一能做的仅仅能够判断该任务是否在running,而不能实时获取其进程输出；其次，当该salt任务执行完成后，需要独立获取其任务标准输出和进程退出状态(exit code)，无法一次性获取其输出和退出状态。salt社区也意识到这个问题，在逐步开发VT模块以求解决，不过这个特性截止到目前仍在实验阶段。</p>
+
+<p>所以，为了消除salt任务执行阶段的黑洞焦虑，我决定开发tt。 虽然tt是为了解决salt的一个问题，但在开发时，我决定将其和salt分离开来，使得tt其实是能够解决这样一类问题: <strong>如果需要实时获取命令执行输出，就可以将命令包裹到tt中执行,从而利用tt Server实时获取其执行输出及结果</strong></p>
+
+
+		
+		<a href="/blog/2016/02/18/task-tracer/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-18T14:43:27+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2016</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/linux/'>linux</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2016/02/18/task-tracer/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -551,60 +599,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/12/15/resume/">
-		
-			我的简历</a>
-	</h2>
-	<div class="entry-content">
-		<h4>联系方式</h4>
-
-<ul>
-<li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x6e;&#x69;&#x6c;&#x71;&#117;&#x6a;&#105;&#97;&#x6e;&#112;&#105;&#110;&#x67;&#x40;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;">&#x6e;&#105;&#108;&#113;&#x75;&#106;&#x69;&#97;&#x6e;&#112;&#x69;&#110;&#x67;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p></li>
-<li><p>电话: 158-8454-2238</p></li>
-<li><p>微信:</p></li>
-</ul>
-
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
-
-
-		
-		<a href="/blog/2014/12/15/resume/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-15T20:20:58+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/life/'>life</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/12/15/resume/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
     
@@ -612,7 +606,7 @@
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner">Copyright &copy; 2016
 
     Jason
 
