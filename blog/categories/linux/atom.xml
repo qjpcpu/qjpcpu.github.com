@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-02-18T17:44:42+08:00</updated>
+  <updated>2016-02-18T21:53:30+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -116,6 +116,11 @@ tt -n demo 'echo "from `head -1 ~/.tt.conf`";sleep 2;echo "sleep for a while";sl
 <p><a href="http://logio.org/">log.io</a>是一个实时日志监控系统，其系统架构和实现方式都和tt非常相似。不过其应用场景是实时的日志采集监控，另外，logio的客户端有node环境依赖，个人觉得有点部署不完美。</p>
 
 <p><img src="http://logio.org/screenshot3.png" alt="log.io" /></p>
+
+<h2>附录: github地址</h2>
+
+<p><a href="https://github.com/qjpcpu/task-tracer-server">tt Server</a>
+<a href="https://github.com/qjpcpu/task-tracer-client">tt Client</a></p>
 ]]></content>
   </entry>
   
