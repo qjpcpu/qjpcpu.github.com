@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-03-08T13:02:54+08:00</updated>
+  <updated>2016-03-15T19:22:05+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,306 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[http原理]]></title>
+    <link href="http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li/"/>
+    <updated>2016-03-15T14:10:51+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li</id>
+    <content type="html"><![CDATA[<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
+
+<p>ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法<strong>ServeHTTP</strong>:</p>
+
+<p>```go src/net/http/server.go
+type Handler interface {</p>
+
+<pre><code>ServeHTTP(ResponseWriter, *Request)
+</code></pre>
+
+<p>}
+```</p>
+
+<!-- more -->
+
+
+<h3>基本原理</h3>
+
+<p>下面我们创建一个简单的HTTP服务，该服务仅返回一个文本页面:</p>
+
+<p>```go main.go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"net/http"
+</code></pre>
+
+<p>)</p>
+
+<p>type TextHandler struct {</p>
+
+<pre><code>word string
+</code></pre>
+
+<p>}</p>
+
+<p>func (th <em>TextHandler) ServeHTTP(w http.ResponseWriter, r </em>http.Request) {</p>
+
+<pre><code>w.Write([]byte("I wanna say: " + th.word))
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>mux := http.NewServeMux()
+th := &amp;TextHandler{word: "cool"}
+mux.Handle("/", th)
+
+fmt.Println("Server started...")
+
+http.ListenAndServe(":3000", mux)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>访问<a href="http://localhost:3000">http://localhost:3000</a>，页面返回<code>I wanna say: cool</code>。</p>
+
+<p><code>http.NewServeMux</code>创建出新的路由容器，<code>http.NewServeMux#Handle</code>方法将路由及其处理函数注册到路由容器，ServeMux内部包含一个map结构，用来存取http URL对应的处理器。</p>
+
+<p>而<code>http.ListenAndServe</code>需要指定服务监听地址和一个Handler对象，及方法签名如下:</p>
+
+<p><code>go src/net/http/server.go
+func ListenAndServe(addr string, handler Handler) error
+</code></p>
+
+<p>而ServeMux对象其实也定义了一个ServeHTTP的对象方法，所以ServeMux is a Handler，能够传入ListenAndServe方法启动服务。</p>
+
+<p><strong>综上，使用ServeMux组装路由,再将它作为一个Handler交给http启动服务。当服务接收到一个http请求后，就根据路由中配置的规则选择对应的handler进行处理，实际的处理逻辑则由该handler的ServeHTTP方法实现。</strong></p>
+
+<blockquote><p>路由分发的逻辑具体实现可以查看<a href="https://golang.org/src/net/http/server.go">http包源码</a></p></blockquote>
+
+<h3>标准用法</h3>
+
+<h4>1.简化代码</h4>
+
+<p>基本原理中的例子足以展示出golang的http处理原理，由于自定义的handler均必须实现http.Handler接口,这样会导致多余声明代码的产生。所以http包提供了一个帮助方法<code>http.HandlerFunc</code>将方法参数和<code>ServeHTTP</code>相同的方法转换为<code>http.Handler</code>。</p>
+
+<p>```go main.go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"net/http"
+</code></pre>
+
+<p>)</p>
+
+<p>func saySomething(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>word := "cool"
+w.Write([]byte("I wanna say: " + word))
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>mux := http.NewServeMux()
+th := http.HandlerFunc(saySomething)
+mux.Handle("/", th)
+fmt.Println("Server started...")
+http.ListenAndServe(":3000", mux)
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>实际上，<code>http.HandlerFunc</code>不是一个方法调用，仅仅是一个类型转换。</p>
+
+<p>```go 源码src/net/http/server.go
+type HandlerFunc func(ResponseWriter, <em>Request)
+// ServeHTTP calls f(w, r).
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r </em>Request) {</p>
+
+<pre><code>f(w, r)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>所以，自定义的请求处理函数(<code>saySomething</code>)仅需要保持参数定义和<code>http.Handler</code>接口相同即可，将该自定义函数做类型转换为<code>HandlerFunc</code>即可。另外，由源码可以看出，函数类型<code>HandlerFunc</code>同时也实现了<code>http.Handler</code>，所以能够注册到<code>ServeMux</code>中。</p>
+
+<h4>2.保持封装</h4>
+
+<p>代码看起来缺失简单了一些，然而这样却破坏了逻辑的封装性：<code>saySomething</code>中包含了硬编码的参数<code>word</code>。这可以使用闭包来解决:</p>
+
+<p>```go main.go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"net/http"
+</code></pre>
+
+<p>)</p>
+
+<p>func saySomething(word string) http.Handler {</p>
+
+<pre><code>// 闭包装入变量word
+f := func(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("I wanna say: " + word))
+}
+return http.HandlerFunc(f)
+</code></pre>
+
+<p>}</p>
+
+<p>func main() {</p>
+
+<pre><code>mux := http.NewServeMux()
+th := saySomething("cool")
+mux.Handle("/", th)
+fmt.Println("Server started...")
+http.ListenAndServe(":3000", mux)
+</code></pre>
+
+<p>}
+```</p>
+
+<p><strong>http服务中出现了很多名称，命名比较相近，这里汇总解释下:</strong></p>
+
+<ul>
+<li><strong>ServeMux</strong>，路由容器，http服务中的路由规则统一在这里定义，启动服务后路由的分发自然也由其处理</li>
+<li><strong>http.Handler</strong>,请求处理器，每个处理http请求的处理器均需要实现该接口<code>ServeHTTP</code></li>
+<li><strong>http.HandlerFunc</strong>,帮助"方法"(实际是一个函数类型声明),将参数和<code>ServeHTTP</code>相同的普通函数转换为一个<code>http.Handler</code></li>
+</ul>
+
+
+<h3>http中间件</h3>
+
+<p>golang中http处理流程是这样的:</p>
+
+<pre><code>ServeMux ==&gt;  Middleware Handler ==&gt; Application Handler
+</code></pre>
+
+<p><strong>中间件</strong>:</p>
+
+<ul>
+<li>中间件也是一个http.Handler，所以必须实现<code>ServeHTTP</code></li>
+<li>构建完整的中间件调用链，保证覆盖上图的中间件调用关系，并作为handler注册到<code>http.ServeMux</code></li>
+</ul>
+
+
+<p>一个中间件示例:</p>
+
+<p>```go
+func exampleMiddleware(next http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>// 中间件逻辑在这里实现
+next.ServeHTTP(w, r)
+</code></pre>
+
+<p>  })
+}
+```</p>
+
+<p>由这个中间件定义可以看出中间件链的构建方式: 函数嵌套。</p>
+
+<p><code>go
+http.Handle("/", middlewareOne(middlewareTwo(finalHandler)))
+</code></p>
+
+<p>看一个实际的例子:</p>
+
+<p>```go main.go
+package main</p>
+
+<p>import (
+  &ldquo;log&rdquo;
+  &ldquo;net/http&rdquo;
+)</p>
+
+<p>func middlewareOne(next http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>log.Println("Executing middlewareOne")
+next.ServeHTTP(w, r)
+log.Println("Executing middlewareOne again")
+</code></pre>
+
+<p>  })
+}</p>
+
+<p>func middlewareTwo(next http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>log.Println("Executing middlewareTwo")
+if r.URL.Path != "/" {
+  return
+}
+next.ServeHTTP(w, r)
+log.Println("Executing middlewareTwo again")
+</code></pre>
+
+<p>  })
+}</p>
+
+<p>func final(w http.ResponseWriter, r *http.Request) {
+  log.Println(&ldquo;Executing finalHandler&rdquo;)
+  w.Write([]byte(&ldquo;OK&rdquo;))
+}</p>
+
+<p>func main() {
+  finalHandler := http.HandlerFunc(final)</p>
+
+<p>  http.Handle(&ldquo;/&rdquo;, middlewareOne(middlewareTwo(finalHandler)))
+  http.ListenAndServe(&ldquo;:3000&rdquo;, nil)
+}
+```</p>
+
+<p>访问<a href="http://localhost:3000">http://localhost:3000</a>可以从日志看出中间件调用顺序:</p>
+
+<pre><code>$ go run main.go
+2014/10/13 20:27:36 Executing middlewareOne
+2014/10/13 20:27:36 Executing middlewareTwo
+2014/10/13 20:27:36 Executing finalHandler
+2014/10/13 20:27:36 Executing middlewareTwo again
+2014/10/13 20:27:36 Executing middlewareOne again
+</code></pre>
+
+<h4>中间件链构造方式</h4>
+
+<p>上面例子的中间件链是比较常见的构造方式，然而多少有些可怕。而<a href="https://github.com/justinas/alice">Alice</a>将中间件链的构造简化了许多:</p>
+
+<pre><code>Middleware1(Middleware2(Middleware3(App)))
+</code></pre>
+
+<p>转化为</p>
+
+<pre><code>alice.New(Middleware1, Middleware2, Middleware3).Then(AppHandler)
+// or 
+alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
+</code></pre>
+
+<h3>参考文献</h3>
+
+<p>文中主要内容来自参考文献第一、二条</p>
+
+<ul>
+<li><a href="http://www.alexedwards.net/blog/a-recap-of-request-handling">A Recap of Request Handling in Go</a></li>
+<li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
+<li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[golang远程调用]]></title>
@@ -451,132 +751,6 @@ s := "Hello world"
 
 <pre><code>t := reflect.TypeOf(i) //得到类型的元数据,通过t我们能获取类型定义里面的所有元素
 v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面的值,还可以去改变值
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Go学习笔记-go routine]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine/"/>
-    <updated>2014-02-14T18:23:38+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine</id>
-    <content type="html"><![CDATA[<h2>Go routine indeed</h2>
-
-<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
-
-<p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
-
-<p>(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
-
-<p>(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
-
-<p>(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
-
-<p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
-
-<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
-
-<p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
-
-<p>(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
-
-<p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
-
-<!-- more -->
-
-
-<h3>启动一个go routine</h3>
-
-<p>go关键字+函数名即可启动一个go routine:</p>
-
-<pre><code>package main
-import (
-    "fmt"
-    "time"
-)
-func p() {
-     for i := 0; i &lt; 100; i++ {
-           fmt.Println(i)
-           time.Sleep(time.Second * 1)
-       } 
-}
-func main() {
-     go p()
-     var input string
-     fmt.Scanln(&amp;input)
-     fmt.Println("End")
-}
-</code></pre>
-
-<h3>goroutine通信：Channel</h3>
-
-<p>go routine使用channel来进行routine间的通信：</p>
-
-<pre><code>package main
-import (
-    "fmt"
-    "time"
-    "math/rand"
-)
-func sell(c chan int) {
-    for {
-    num := &lt;- c
-    fmt.Println("Sell ",num," bread")
-}
-}
-func produce(c chan int){
-    for {
-    num := rand.Intn(10)
-    t := time.Duration(num)
-    fmt.Println("Product ",num," bread")
-    c &lt;- num
-    time.Sleep(time.Second* t)
-    }
-}
-func main() {
-    var c chan int = make(chan int)
-     go sell(c)
-     go produce(c)
-     var input string
-     fmt.Scanln(&amp;input)
-     fmt.Println("End")
-}
-//输出结果：
-Product  1  bread
-Sell  1  bread
-Product  7  bread
-Sell  7  bread
-Product  7  bread
-Sell  7  bread
-Product  9  bread
-Sell  9  bread
-</code></pre>
-
-<p>默认channel是双向的，在函数入口也可以定义为单向：</p>
-
-<pre><code>func sell(c &lt;-chan int)  //只能从通道取出
-func produce(c chan&lt;- int) //通道只能放入
-</code></pre>
-
-<p>select语句用于在多个channel中选择已经ready的通道，如：</p>
-
-<pre><code>select {
-case msg1 := &lt;- c1:
-     fmt.Println("Message 1", msg1)
-case msg2 := &lt;- c2:
-     fmt.Println("Message 2", msg2)
-case &lt;- time.After(time.Second):
-     fmt.Println("timeout")
-default:
-     fmt.Println("nothing ready")
-}
-</code></pre>
-
-<p>time.After会在指定时间后创建一个匿名通道，用来进行等待超时。如果所有channel都没有准备妥当，则立即执行default块。</p>
-
-<p>在make channel时指定第二个参数可以创建一个缓冲通道，类似其他高级语言中的定长队列：</p>
-
-<pre><code>c := make(chan int, 1)
 </code></pre>
 ]]></content>
   </entry>

@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="产生背景 Task Tracer(以下简称tt)的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出， &hellip;">
+	<meta name="description" content="Go语言中处理http请求主要涉及两个对象: ServeMux和http.Handler接口。 ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法ServeHTTP: src/net/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,61 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2016/03/15/httpyuan-li/">
+		
+			Http原理</a>
+	</h2>
+	<div class="entry-content">
+		<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
+
+<p>ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法<strong>ServeHTTP</strong>:</p>
+
+<figure class='code'><figcaption><span>src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">Handler</span> <span class="kd">interface</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+		
+		<a href="/blog/2016/03/15/httpyuan-li/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-15T14:10:51+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2016</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2016/03/15/httpyuan-li/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -549,52 +604,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2015/01/02/chuang-jian-di-gui-cai-dan/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/">
-		
-			angularJS路由框架ui-router</a>
-	</h2>
-	<div class="entry-content">
-		<h1>简介</h1>
-
-<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
-
-
-		
-		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-29T17:32:53+08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

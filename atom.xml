@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2016-03-08T13:02:54+08:00</updated>
+  <updated>2016-03-15T19:22:05+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,378 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[http原理]]></title>
+    <link href="http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li/"/>
+    <updated>2016-03-15T14:10:51+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li</id>
+    <content type="html"><![CDATA[<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
+
+<p>ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法<strong>ServeHTTP</strong>:</p>
+
+<figure class='code'><figcaption><span>src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">Handler</span> <span class="kd">interface</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<h3>基本原理</h3>
+
+<p>下面我们创建一个简单的HTTP服务，该服务仅返回一个文本页面:</p>
+
+<figure class='code'><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">type</span> <span class="nx">TextHandler</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">word</span> <span class="kt">string</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="p">(</span><span class="nx">th</span> <span class="o">*</span><span class="nx">TextHandler</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">th</span><span class="p">.</span><span class="nx">word</span><span class="p">))</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">th</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">TextHandler</span><span class="p">{</span><span class="nx">word</span><span class="p">:</span> <span class="s">&quot;cool&quot;</span><span class="p">}</span>
+</span><span class='line'>  <span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>访问<a href="http://localhost:3000">http://localhost:3000</a>，页面返回<code>I wanna say: cool</code>。</p>
+
+<p><code>http.NewServeMux</code>创建出新的路由容器，<code>http.NewServeMux#Handle</code>方法将路由及其处理函数注册到路由容器，ServeMux内部包含一个map结构，用来存取http URL对应的处理器。</p>
+
+<p>而<code>http.ListenAndServe</code>需要指定服务监听地址和一个Handler对象，及方法签名如下:</p>
+
+<figure class='code'><figcaption><span>src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">func</span> <span class="nx">ListenAndServe</span><span class="p">(</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="nx">Handler</span><span class="p">)</span> <span class="kt">error</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而ServeMux对象其实也定义了一个ServeHTTP的对象方法，所以ServeMux is a Handler，能够传入ListenAndServe方法启动服务。</p>
+
+<p><strong>综上，使用ServeMux组装路由,再将它作为一个Handler交给http启动服务。当服务接收到一个http请求后，就根据路由中配置的规则选择对应的handler进行处理，实际的处理逻辑则由该handler的ServeHTTP方法实现。</strong></p>
+
+<blockquote><p>路由分发的逻辑具体实现可以查看<a href="https://golang.org/src/net/http/server.go">http包源码</a></p></blockquote>
+
+<h3>标准用法</h3>
+
+<h4>1.简化代码</h4>
+
+<p>基本原理中的例子足以展示出golang的http处理原理，由于自定义的handler均必须实现http.Handler接口,这样会导致多余声明代码的产生。所以http包提供了一个帮助方法<code>http.HandlerFunc</code>将方法参数和<code>ServeHTTP</code>相同的方法转换为<code>http.Handler</code>。</p>
+
+<figure class='code'><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">saySomething</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">word</span> <span class="o">:=</span> <span class="s">&quot;cool&quot;</span>
+</span><span class='line'>  <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">word</span><span class="p">))</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">th</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">saySomething</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实际上，<code>http.HandlerFunc</code>不是一个方法调用，仅仅是一个类型转换。</p>
+
+<figure class='code'><figcaption><span>源码src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">type</span> <span class="nx">HandlerFunc</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// ServeHTTP calls f(w, r).</span>
+</span><span class='line'><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="nx">HandlerFunc</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">f</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所以，自定义的请求处理函数(<code>saySomething</code>)仅需要保持参数定义和<code>http.Handler</code>接口相同即可，将该自定义函数做类型转换为<code>HandlerFunc</code>即可。另外，由源码可以看出，函数类型<code>HandlerFunc</code>同时也实现了<code>http.Handler</code>，所以能够注册到<code>ServeMux</code>中。</p>
+
+<h4>2.保持封装</h4>
+
+<p>代码看起来缺失简单了一些，然而这样却破坏了逻辑的封装性：<code>saySomething</code>中包含了硬编码的参数<code>word</code>。这可以使用闭包来解决:</p>
+
+<figure class='code'><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">saySomething</span><span class="p">(</span><span class="nx">word</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 闭包装入变量word</span>
+</span><span class='line'>  <span class="nx">f</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">word</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">th</span> <span class="o">:=</span> <span class="nx">saySomething</span><span class="p">(</span><span class="s">&quot;cool&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>http服务中出现了很多名称，命名比较相近，这里汇总解释下:</strong></p>
+
+<ul>
+<li><strong>ServeMux</strong>，路由容器，http服务中的路由规则统一在这里定义，启动服务后路由的分发自然也由其处理</li>
+<li><strong>http.Handler</strong>,请求处理器，每个处理http请求的处理器均需要实现该接口<code>ServeHTTP</code></li>
+<li><strong>http.HandlerFunc</strong>,帮助&#8221;方法&#8221;(实际是一个函数类型声明),将参数和<code>ServeHTTP</code>相同的普通函数转换为一个<code>http.Handler</code></li>
+</ul>
+
+
+<h3>http中间件</h3>
+
+<p>golang中http处理流程是这样的:</p>
+
+<pre><code>ServeMux ==&gt;  Middleware Handler ==&gt; Application Handler
+</code></pre>
+
+<p><strong>中间件</strong>:</p>
+
+<ul>
+<li>中间件也是一个http.Handler，所以必须实现<code>ServeHTTP</code></li>
+<li>构建完整的中间件调用链，保证覆盖上图的中间件调用关系，并作为handler注册到<code>http.ServeMux</code></li>
+</ul>
+
+
+<p>一个中间件示例:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">func</span> <span class="nx">exampleMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 中间件逻辑在这里实现</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由这个中间件定义可以看出中间件链的构建方式: 函数嵌套。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">http</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">finalHandler</span><span class="p">)))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看一个实际的例子:</p>
+
+<figure class='code'><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;log&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareOne&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareOne again&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareTwo&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span> <span class="o">!=</span> <span class="s">&quot;/&quot;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareTwo again&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">final</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing finalHandler&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">))</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">finalHandler</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">final</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">http</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">finalHandler</span><span class="p">)))</span>
+</span><span class='line'>  <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>访问<a href="http://localhost:3000">http://localhost:3000</a>可以从日志看出中间件调用顺序:</p>
+
+<pre><code>$ go run main.go
+2014/10/13 20:27:36 Executing middlewareOne
+2014/10/13 20:27:36 Executing middlewareTwo
+2014/10/13 20:27:36 Executing finalHandler
+2014/10/13 20:27:36 Executing middlewareTwo again
+2014/10/13 20:27:36 Executing middlewareOne again
+</code></pre>
+
+<h4>中间件链构造方式</h4>
+
+<p>上面例子的中间件链是比较常见的构造方式，然而多少有些可怕。而<a href="https://github.com/justinas/alice">Alice</a>将中间件链的构造简化了许多:</p>
+
+<pre><code>Middleware1(Middleware2(Middleware3(App)))
+</code></pre>
+
+<p>转化为</p>
+
+<pre><code>alice.New(Middleware1, Middleware2, Middleware3).Then(AppHandler)
+// or 
+alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
+</code></pre>
+
+<h3>参考文献</h3>
+
+<p>文中主要内容来自参考文献第一、二条</p>
+
+<ul>
+<li><a href="http://www.alexedwards.net/blog/a-recap-of-request-handling">A Recap of Request Handling in Go</a></li>
+<li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
+<li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[task tracer -- 实时任务追踪系统]]></title>
@@ -1420,7 +1792,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x71;&#106;&#x70;&#99;&#x70;&#117;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;">&#113;&#x6a;&#112;&#99;&#x70;&#x75;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;</a></p></li>
+<li><p>邮箱: <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x71;&#106;&#x70;&#99;&#x70;&#117;&#64;&#x67;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;">&#x71;&#106;&#x70;&#x63;&#x70;&#x75;&#x40;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#109;</a></p></li>
 <li><p>电话: 158-8454-2238</p></li>
 <li><p>微信:</p></li>
 </ul>
@@ -3169,60 +3541,6 @@ list[ 1 ][ 1 ] = d;
 <p>即：按照go的默认约定，tag以<code>key:value</code>的形式定义，多个<code>key:value</code>以空格分割，<code>key</code>不能是控制字符单引号、双引号和冒号，<code>value</code>需要用引号引起来。</p>
 
 <p>当然，也可以不遵守这个约定，因为具体怎么使用tag还是按照开发者自己的意愿来的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[你不知道的Go]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
-    <updated>2014-06-23T14:37:47+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
-    <content type="html"><![CDATA[<h3>1.匿名结构</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">name</span>      <span class="kt">string</span>
-</span><span class='line'>    <span class="nx">age</span> <span class="kt">int</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>声明时初始化：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">name</span> <span class="kt">string</span>
-</span><span class='line'>  <span class="nx">age</span>  <span class="kt">int</span>
-</span><span class='line'><span class="p">}{</span>
-</span><span class='line'>  <span class="s">&quot;Jack&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="mi">12</span><span class="p">,</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!-- more -->
-
-
-<h3>2.抢占式调度器</h3>
-
-<blockquote><p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p></blockquote>
-
-<p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
 ]]></content>
   </entry>
   
