@@ -43,10 +43,11 @@ categories: shell
 
 ###4.字符串正则提取
 
-	echo $string | grep -oE "regexpression”
+	echo $string | grep -oE "regexpression"
 	
 	#awk的match方法利用RSTART和RLENGTH分别保存匹配的起点(从1开始)和匹配到的长度,RSTART同时也是match方法的返回值，如果没找到则RSTART==0,RLENGHT==-1
-	echo $string | awk '{ match($0,"reg"); print substr(RSTART,RLENGTH)}'
+	echo $string | awk '{ match($0,"reg"); print substr($0,RSTART,RLENGTH)}'
+
 -
 
 	[jason@localhost ~]$ str="I am 12 years old"
