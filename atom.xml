@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2017-05-19T17:03:15+08:00</updated>
+  <updated>2017-08-03T00:15:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,182 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[浅谈元编程]]></title>
+    <link href="http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng/"/>
+    <updated>2017-08-02T17:54:41+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng</id>
+    <content type="html"><![CDATA[<p>为什么会突然想到写这篇文章呢？其实是因为我曾经向一位朋友推荐学习一下ruby/lisp这类支持元编程的语言,尽管可能永远不会在生产环境中用到,但是可以让人学习用另一种思路思考问题,然后友人就要求我解释我学了之后思考问题的角度有何不同,当时确实把我难住了,因为这个问题的确不好描述。</p>
+
+<p>对于这个问题,我思前想后好几周后,我还是决定从理性和感性两个方面,稍微描述一下,什么是元编程?学习了元编程之后你的思考到底可能在什么地方和别人产生差异?</p>
+
+<p>P.S. 鉴于ruby在元编程领域的强大能力,本文将用ruby来辅助我的描述,即便是没有ruby基础,我也会尽量描述清楚不影响理解;至于为什么不用lisp,那是因为它在这行当走得太彻底了,彻底到我觉得自己现阶段没有能力描述清楚</p>
+
+<!-- more -->
+
+
+<h2>结论放在前面</h2>
+
+<p>虽然我将要尝试向你描述下元编程,但还是有几条规则要写在前面,如果你觉得无法接受这几条规则,那么提早关闭页面比较明智。</p>
+
+<h5>1. 心态放谦卑,无论何时,先尝试去理解而不是拒绝</h5>
+
+<h5>2. 元编程并不是黑魔法, 元编程也是编程</h5>
+
+<h5>3. 和学习游泳一样,如果不亲身去尝试,永远也无法真正理解</h5>
+
+<h5>4. 即便你花时间精力取弄懂了一两门元编程语言,但你的工作环境可能永远都用不到,冷静两秒钟,确认自己并不是那么功利主义</h5>
+
+<h5>5. 再次深呼吸,确认自己还是有兴趣了解下去</h5>
+
+<h2>元编程的魔力</h2>
+
+<p>元编程的学院解释是:运行时操作程序构件的能力。这个类似于物理公理定义的说法比较令人费解,其实他的意思是这样的,通常,我们的程序写完进行编译链接后,它的运行规则就固定了,很难在运行时再去做任何修改。比如对于C语言来说,一个方法或者函数要执行的逻辑已经固定下来了,无法在不改动代码的情况下修改这个方法的逻辑;或者对于java这种语言也是一样的,一个类拥有的方法和属性是固定的,虽然java拥有了反射的能力(这可以看做已经具备了初步元编程能力),可以在运行时进行自省,但是也无法进一步拓展自身的逻辑和功能。可以看出,这些编程语言里,&ldquo;程序逻辑&#8221;和&#8221;数据&#8221;是完全分割开来的,数据可以修改变动,而逻辑是冰冷凝固的,它们之间泾渭分明,区分十分明显。 而所谓元编程,就是抹除这种界限的能力。</p>
+
+<h3>改变宇宙公理</h3>
+
+<p>假设我们所处的世界真的是被AI控制,整个人类文明作为一枚电池被<code>Matrix</code>控制(电影《黑客帝国》),而AI构建的<code>Matrix</code>系统也的确是基于人类的数学公理构建起来的,而我们最基础的数学公理不外乎就是<code>1 + 1 = 2</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">puts</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># =&gt; 显而易见输出2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>假如AI的上帝<code>建筑师</code>某一天想更改这个系统升级为<code>Matruix2</code>,这次升级仅仅是想看看更改最简单的宇宙公理让<code>1 + 1 = 3</code>,他想看看这会对人类社会造成什么影响;试想如果<code>建筑师</code>不懂得元编程的能力,那么意味着<code>Matrix2</code>是一次彻底的重构:他必须重建所有数学公理,并且基于这些公理重新构建<code>Matrix</code>,这个工作量想想都觉得可怕。</p>
+
+<p>那如果<code>建筑师</code>懂得元编程,他要做的事情就是给<code>Matrix</code>打个系统补丁,补丁文件内容只有简单几行代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Patch</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">+</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">super</span><span class="o">.</span><span class="n">succ</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="no">Fixnum</span><span class="o">.</span><span class="n">prepend</span> <span class="no">Patch</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码的含义是对所有整数加法添加了一个补丁,每个加法运算都多加1,所以基于加法的公理均自动采纳这项变更。</p>
+
+<p>当<code>Matrix</code>应用这个补丁后,所有系统中加法都会多加1</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">puts</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">4</span> <span class="c1"># =&gt; 输出为6</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这就是元编程,你可以运用他修改程序逻辑,漆黑的运行时在你面前变得明朗起来了。</p>
+
+<h3>调用链</h3>
+
+<p>如果你觉得改变宇宙公理这个场景太过虚幻,并且你碰巧也没看过黑客帝国(oops,真是不幸,在学习各种编程技巧前我建议您真应该取看下这部电影),那么你肯定会质疑:好像我永远遇不到元编程的应用场景。那么好吧,我来举一个真实世界可能真会遇到的场景:</p>
+
+<p>在当前分布式系统大行其道的今天,可能我们需要将系统每个函数调用时间记录下来,即<code>函数A--&gt;函数B--&gt;函数C--&gt;函数n</code>我们想在每个函数入口和出口打点,这样我们就能够将这个调用栈串联起来</p>
+
+<p>假设说我们的原系统是这样的:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyClass</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="n">to</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">talk</span> <span class="n">to</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">talk</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;Talk to </span><span class="si">#{</span><span class="n">to</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">MyClass</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">hello</span> <span class="s2">&quot;jason&quot;</span>
+</span><span class='line'><span class="c1"># 输出为:</span>
+</span><span class='line'><span class="c1"># Hello jason</span>
+</span><span class='line'><span class="c1"># Talk to jason</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很简单,我们也可以利用元编程的技术,用打点进出逻辑将所有函数包裹起来即可,也打这么一个补丁:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">MyClass</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">mtd</span><span class="o">|</span>
+</span><span class='line'>   <span class="n">alias_method</span> <span class="s2">&quot;old_</span><span class="si">#{</span><span class="n">mtd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">mtd</span>
+</span><span class='line'>   <span class="n">define_method</span> <span class="n">mtd</span> <span class="k">do</span> <span class="o">|*</span><span class="n">args</span><span class="o">|</span>
+</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;==========Enter </span><span class="si">#{</span><span class="n">mtd</span><span class="si">}</span><span class="s2">@</span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="si">}</span><span class="s2">==========&quot;</span>
+</span><span class='line'>     <span class="nb">send</span> <span class="s2">&quot;old_</span><span class="si">#{</span><span class="n">mtd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="o">*</span><span class="n">args</span>
+</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;==========Leave </span><span class="si">#{</span><span class="n">mtd</span><span class="si">}</span><span class="s2">@</span><span class="si">#{</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="si">}</span><span class="s2">==========&quot;</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再次运行原程序,输出则变成:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">==========</span><span class="no">Enter</span> <span class="n">hello</span><span class="err">@</span><span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mo">02</span> <span class="mi">23</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">25</span> <span class="o">+</span><span class="mi">0800</span><span class="o">==========</span>
+</span><span class='line'><span class="no">Hello</span> <span class="n">jason</span>
+</span><span class='line'><span class="o">==========</span><span class="no">Enter</span> <span class="n">talk</span><span class="err">@</span><span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mo">02</span> <span class="mi">23</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">25</span> <span class="o">+</span><span class="mi">0800</span><span class="o">==========</span>
+</span><span class='line'><span class="no">Talk</span> <span class="n">to</span> <span class="n">jason</span>
+</span><span class='line'><span class="o">==========</span><span class="no">Leave</span> <span class="n">talk</span><span class="err">@</span><span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mo">02</span> <span class="mi">23</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">25</span> <span class="o">+</span><span class="mi">0800</span><span class="o">==========</span>
+</span><span class='line'><span class="o">==========</span><span class="no">Leave</span> <span class="n">hello</span><span class="err">@</span><span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mo">02</span> <span class="mi">23</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">25</span> <span class="o">+</span><span class="mi">0800</span><span class="o">==========</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>毫无疑问,不借助元编程的能力,也有各种解决这个问题的办法,但是如果你懂得这项技术,那么你会发现问题可以被解决得如此优雅,不用侵入到原代码的任何逻辑,就可以修改代码逻辑。试想下如果你想修改的逻辑是第三方库的代码, 而你甚至没有他们的源码,此时如果没有元编程的能力,是很难做出逻辑调整的。</p>
+
+<h2>元编程改变了什么</h2>
+
+<p>回到感性的部分,为什么向没有接触过元编程的人那么难以解释这个概念呢?其实正是因为这个概念本身就处于受众知识网络之外,所以当试图使用类比推导来描述时很容易使得这个概念越发让人迷惑。</p>
+
+<p>那么了解这个概念之后,它到底改变了我什么思考角度呢?其实是看问题不再那么理所当然,面临一个问题时亦或者是已经拿到解决方案了,还会反向质疑自己,是否存在一种可能性,这种可能性甚至是超越自身知识范畴的,或者是和自己思维习惯相悖离的,而这种可能性很可能就是更优雅的解决方案。</p>
+
+<p>除了思考的角度,对编码工作本身有什么实质性的作用吗?很遗憾,可能并没有。生产环境中的C,java,golang等等开发,很难用到这项技术,甚至于即便你处在某个非常极客的公司,使用了ruby/lisp作为生产语言,泛滥使用元编程也会直接导致项目的不可维护,导致最终项目leader将元编程作为禁术封印起来。但这些都不应该成为阻碍你了解它的理由,拓宽自身的视野,这更重要。</p>
+
+<h2>写在最后</h2>
+
+<p>最后,我还是以元编程界一个禅语论道结束吧:</p>
+
+<p>编程弟子在跟随元编程大师一年后,终于掌握了所有的元编程能力。秋意微凉,师徒二人于树下盘坐,弟子回想所学,愈发迷惑,问道: 师傅, 我还是不明白,到底什么是元编程?</p>
+
+<p>树上飘落最后一片秋叶,老禅师睁开眼,轻声一叹:孩子,这世上哪有什么元编程,就是编程啊。</p>
+
+<p>弟子顿悟,乃成&hellip;</p>
+
+<p>P.S. 你真的不觉得人工智能的基础之一就是元编程吗? 机器学习总结规律,元编程再将这些规律内化,自身改变自身逻辑,这不就是AI进化的基础吗。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[http原理]]></title>
@@ -1792,7 +1968,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#113;&#x6a;&#112;&#x63;&#x70;&#117;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;">&#113;&#x6a;&#112;&#99;&#x70;&#117;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;</a></p></li>
+<li><p>邮箱: <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#113;&#x6a;&#x70;&#x63;&#x70;&#x75;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;">&#113;&#x6a;&#x70;&#x63;&#112;&#x75;&#x40;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></p></li>
 <li><p>电话: 158-8454-2238</p></li>
 <li><p>微信:</p></li>
 </ul>
@@ -3471,76 +3647,6 @@ list[ 1 ][ 1 ] = d;
 <p>输出会是1而不是0.</p>
 
 <p>所以记住一句话，使用闭包，要注意它包裹起来的环境。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[struct tags]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/07/12/struct-tags/"/>
-    <updated>2014-07-12T00:07:11+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/07/12/struct-tags</id>
-    <content type="html"><![CDATA[<h3>结构体标签</h3>
-
-<p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
-</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
-</span><span class='line'>  <span class="s">&quot;reflect&quot;</span>
-</span><span class='line'><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">type</span> <span class="nx">S</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">F</span> <span class="kt">string</span> <span class="s">`species:&quot;gopher&quot; color:&quot;blue&quot;`</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">s</span> <span class="o">:=</span> <span class="nx">S</span><span class="p">{}</span>
-</span><span class='line'>  <span class="nx">st</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
-</span><span class='line'>  <span class="nx">field</span> <span class="o">:=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">Field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;species&quot;</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>输出结果</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>blue gopher
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>结构体<code>S</code>的<code>F</code>成员具有两个属性<code>species</code>和<code>color</code>，其属性的值分别为<code>blue</code>和<code>gopher</code>。如果不使用反射去取这个属性，在定义时写不写属性都是无所谓的。</p>
-
-<!--more-->
-
-
-<p>在go中，tag的定义是有规定的：</p>
-
-<blockquote><p>By convention, tag strings are a concatenation of optionally space-separated key:&ldquo;value&rdquo; pairs. Each key is a non-empty string consisting of non-control characters other than space (U+0020 &lsquo; &rsquo;), quote (U+0022 &lsquo;&ldquo;&rsquo;), and colon (U+003A &lsquo;:&rsquo;). Each value is quoted using U+0022 &lsquo;&rdquo;&rsquo; characters and Go string literal syntax.</p></blockquote>
-
-<p>即：按照go的默认约定，tag以<code>key:value</code>的形式定义，多个<code>key:value</code>以空格分割，<code>key</code>不能是控制字符单引号、双引号和冒号，<code>value</code>需要用引号引起来。</p>
-
-<p>当然，也可以不遵守这个约定，因为具体怎么使用tag还是按照开发者自己的意愿来的。</p>
 ]]></content>
   </entry>
   
