@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2017-08-03T00:23:18+08:00</updated>
+  <updated>2018-01-26T23:06:57+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,341 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[p2p之UDP打洞]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/"/>
+    <updated>2018-01-26T22:03:15+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong</id>
+    <content type="html"><![CDATA[<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
+
+<p>在中间件为常见的NAPT的情况下（也是本文主要讨论的），内网中的客户端没有单独的公网IP地址， 而是通过NAPT转换，和其他同一内网用户共享一个公网IP。这种内网主机隐藏在中间件后的不可访问性对于一些客户端软件如浏览器来说 并不是一个问题，因为其只需要初始化对外的链接，从某方面来看反而还对隐私保护有好处。然而在P2P应用中， 内网主机（客户端）需要对另外的终端（Peer）直接建立链接，但是发起者和响应者可能在不同的中间件后面， 两者都没有公网IP地址。而外部对NAT公网IP和端口主动的链接或数据都会因内网未请求被丢弃掉。本文讨论的就是如何跨越NAT实现内网主机直接通讯的问题。</p>
+
+<!-- more -->
+
+
+<h1>网络模型</h1>
+
+<p>假设客户端A和客户端B的地址都是内网地址，且在不同的NAT后面。A、B上运行的P2P应用程序和服务器S都使用了UDP端口9982，A和B分别初始化了 与Server的UDP通信，地址映射如图所示:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>                        Server S
+</span><span class='line'>                    207.148.70.129:9981
+</span><span class='line'>                           |
+</span><span class='line'>                           |
+</span><span class='line'>    +----------------------|----------------------+
+</span><span class='line'>    |                                             |
+</span><span class='line'>  NAT A                                         NAT B
+</span><span class='line'>120.27.209.161:6000                            120.26.10.118:3000
+</span><span class='line'>    |                                             |
+</span><span class='line'>    |                                             |
+</span><span class='line'> Client A                                      Client B
+</span><span class='line'>  10.0.0.1:9982                                 192.168.0.1:9982</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在假设客户端A打算与客户端B直接建立一个UDP通信会话。如果A直接给B的公网地址120.26.10.118:3000发送UDP数据，NAT B将很可能会无视进入的 数据（除非是Full Cone NAT），因为源地址和端口与S不匹配，而最初只与S建立过会话。B往A直接发信息也类似。</p>
+
+<p>假设A开始给B的公网地址发送UDP数据的同时，给服务器S发送一个中继请求，要求B开始给A的公网地址发送UDP信息。A往B的输出信息会导致NAT A打开 一个A的内网地址与与B的外网地址之间的新通讯会话，B往A亦然。一旦新的UDP会话在两个方向都打开之后，客户端A和客户端B就能直接通讯， 而无须再通过引导服务器S了。</p>
+
+<p>UDP打洞技术有许多有用的性质。一旦一个的P2P链接建立，链接的双方都能反过来作为“引导服务器”来帮助其他中间件后的客户端进行打洞， 极大减少了服务器的负载。应用程序不需要知道中间件具体是什么（如果有的话），因为以上的过程在没有中间件或者有多个中间件的情况下 也一样能建立通信链路。</p>
+
+<h1>打洞流程</h1>
+
+<p>假设A现在希望建立一条到B的udp会话，那么这个建立基本流程是:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1. A,B分别建立到Server S的udp会话,那么Server S此时是知道A,B各自的外网ip+端口
+</span><span class='line'>2. Server S在和B的udp会话里告诉A的地址(外网ip+端口: 120.27.209.161:6000),同理把B的地址(120.26.10.118:3000)告诉A
+</span><span class='line'>3. B向A地址(120.27.209.161:6000)发送一个"握手"udp包,打通A-&gt;B的udp链路
+</span><span class='line'>4. 此时A可以向B(120.26.10.118:3000)发送udp包,A-&gt;B的会话建立成功</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>先决条件</h1>
+
+<p>能够完成打洞有几个先决条件:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1. A,B所在的nat网络类型(Full cone, Restricted cone, Port-restricted cone, Symmetric NAT)
+</span><span class='line'>2. 在一次udp会话期间,nat设备(路由器)会保持内网进程 inner_ip:inner_port &lt;-&gt; share_public_ip:share_port的映射关系,一般根据具体路由器实现,这个映射关系可以维持几分钟到几个小时不等
+</span><span class='line'>3. 流程中第3步,nat A收到这个握手包后并不会转发给A,因为它发现自己的没有保存过B的地址,认为这是一个来历不明的包而直接丢弃,然而这个包的作用在于在nat B留下了A的记录,使得nat B认为A是可达或者说可通过了,这样当A-&gt;B再发送udp包时就可以真正到达B了。所以这个"握手"包的作用是可以打通A-&gt;B的通路,是必要的</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>上源码示例</h1>
+
+<p>使用三台设备模拟,外网设备207.148.70.129模拟Server S,执行server.go代码:</p>
+
+<figure class='code'><figcaption><span>server.go </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;log&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net&quot;</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">listener</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">ListenUDP</span><span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">{</span><span class="nx">IP</span><span class="p">:</span> <span class="nx">net</span><span class="p">.</span><span class="nx">IPv4zero</span><span class="p">,</span> <span class="nx">Port</span><span class="p">:</span> <span class="mi">9981</span><span class="p">})</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;本地地址: &lt;%s&gt; \n&quot;</span><span class="p">,</span> <span class="nx">listener</span><span class="p">.</span><span class="nx">LocalAddr</span><span class="p">().</span><span class="nx">String</span><span class="p">())</span>
+</span><span class='line'>  <span class="nx">peers</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">data</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">n</span><span class="p">,</span> <span class="nx">remoteAddr</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">listener</span><span class="p">.</span><span class="nx">ReadFromUDP</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;error during read: %s&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;&lt;%s&gt; %s\n&quot;</span><span class="p">,</span> <span class="nx">remoteAddr</span><span class="p">.</span><span class="nx">String</span><span class="p">(),</span> <span class="nx">data</span><span class="p">[:</span><span class="nx">n</span><span class="p">])</span>
+</span><span class='line'>      <span class="nx">peers</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">peers</span><span class="p">,</span> <span class="o">*</span><span class="nx">remoteAddr</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">peers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;进行UDP打洞,建立 %s &lt;--&gt; %s 的连接\n&quot;</span><span class="p">,</span> <span class="nx">peers</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">String</span><span class="p">(),</span> <span class="nx">peers</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">String</span><span class="p">())</span>
+</span><span class='line'>          <span class="nx">listener</span><span class="p">.</span><span class="nx">WriteToUDP</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">peers</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">String</span><span class="p">()),</span> <span class="o">&amp;</span><span class="nx">peers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>          <span class="nx">listener</span><span class="p">.</span><span class="nx">WriteToUDP</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">peers</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">String</span><span class="p">()),</span> <span class="o">&amp;</span><span class="nx">peers</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span class='line'>          <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+</span><span class='line'>          <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;中转服务器退出,仍不影响peers间通信&quot;</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">return</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外两台分别位于不同内网后的设备,均运行相同代码peer.go:</p>
+
+<figure class='code'><figcaption><span>peer.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;log&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net&quot;</span>
+</span><span class='line'>  <span class="s">&quot;os&quot;</span>
+</span><span class='line'>  <span class="s">&quot;strconv&quot;</span>
+</span><span class='line'>  <span class="s">&quot;strings&quot;</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">tag</span> <span class="kt">string</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">const</span> <span class="nx">HAND_SHAKE_MSG</span> <span class="p">=</span> <span class="s">&quot;我是打洞消息&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// 当前进程标记字符串,便于显示</span>
+</span><span class='line'>  <span class="nx">tag</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>  <span class="nx">srcAddr</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">{</span><span class="nx">IP</span><span class="p">:</span> <span class="nx">net</span><span class="p">.</span><span class="nx">IPv4zero</span><span class="p">,</span> <span class="nx">Port</span><span class="p">:</span> <span class="mi">9982</span><span class="p">}</span> <span class="c1">// 注意端口必须固定</span>
+</span><span class='line'>  <span class="nx">dstAddr</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">{</span><span class="nx">IP</span><span class="p">:</span> <span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="s">&quot;207.148.70.129&quot;</span><span class="p">),</span> <span class="nx">Port</span><span class="p">:</span> <span class="mi">9981</span><span class="p">}</span>
+</span><span class='line'>  <span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">DialUDP</span><span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="nx">srcAddr</span><span class="p">,</span> <span class="nx">dstAddr</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;hello, I&#39;m new peer:&quot;</span> <span class="o">+</span> <span class="nx">tag</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">log</span><span class="p">.</span><span class="nx">Panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">data</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">n</span><span class="p">,</span> <span class="nx">remoteAddr</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">ReadFromUDP</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;error during read: %s&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">conn</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">anotherPeer</span> <span class="o">:=</span> <span class="nx">parseAddr</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">data</span><span class="p">[:</span><span class="nx">n</span><span class="p">]))</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;local:%s server:%s another:%s\n&quot;</span><span class="p">,</span> <span class="nx">srcAddr</span><span class="p">,</span> <span class="nx">remoteAddr</span><span class="p">,</span> <span class="nx">anotherPeer</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// 开始打洞</span>
+</span><span class='line'>  <span class="nx">bidirectionHole</span><span class="p">(</span><span class="nx">srcAddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">anotherPeer</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">parseAddr</span><span class="p">(</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">t</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Split</span><span class="p">(</span><span class="nx">addr</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">port</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nx">Atoi</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">{</span>
+</span><span class='line'>      <span class="nx">IP</span><span class="p">:</span>   <span class="nx">net</span><span class="p">.</span><span class="nx">ParseIP</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span><span class='line'>      <span class="nx">Port</span><span class="p">:</span> <span class="nx">port</span><span class="p">,</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">bidirectionHole</span><span class="p">(</span><span class="nx">srcAddr</span> <span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">,</span> <span class="nx">anotherAddr</span> <span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">DialUDP</span><span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="nx">srcAddr</span><span class="p">,</span> <span class="nx">anotherAddr</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">defer</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</span><span class='line'>  <span class="c1">// 向另一个peer发送一条udp消息(对方peer的nat设备会丢弃该消息,非法来源),用意是在自身的nat设备打开一条可进入的通道,这样对方peer就可以发过来udp消息</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">HAND_SHAKE_MSG</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;send handshake:&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;from [&quot;</span> <span class="o">+</span> <span class="nx">tag</span> <span class="o">+</span> <span class="s">&quot;]&quot;</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;send msg fail&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}()</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">data</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">n</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">ReadFromUDP</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;error during read: %s\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;收到数据:%s\n&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">[:</span><span class="nx">n</span><span class="p">])</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意代码仅模拟打洞基础流程,如果读者测试网络情况较差发生udp丢包,可能看不到预期结果,此时简单重启server,peer即可.</p>
+
+<p>完整代码参考<a href="https://github.com/qjpcpu/p2pbyudp">github</a></p>
+
+<h1>udp打洞转tcp通信</h1>
+
+<p>通常,由于udp打洞实现简单,p2p的实现采用udp打洞较多,然而当通路建立起来后使用tcp进行节点间通信可以获取更好的通信效果。因为udp打洞完成后形成的nat映射是和tcp/udp无关的,所以此时可以转为使用tcp建立连接,达到最终的p2p的tcp通信.由于代码较简单,这里就不给出示例了。</p>
+
+<h1>参考文献</h1>
+
+<ul>
+<li><a href="https://yq.aliyun.com/articles/227421">UDP用打洞技术穿透NAT的原理与实现</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/26796476">P2P通信原理与实现</a></li>
+<li><a href="https://github.com/jtriley/pystun">NAT类型检测工具</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浅谈元编程]]></title>
@@ -1968,7 +2303,7 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
 <li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x71;&#106;&#x70;&#99;&#x70;&#x75;&#64;&#x67;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;">&#x71;&#x6a;&#112;&#x63;&#x70;&#x75;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></p></li>
+<li><p>邮箱: <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x71;&#106;&#x70;&#x63;&#112;&#117;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;">&#x71;&#106;&#x70;&#x63;&#112;&#117;&#x40;&#103;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a></p></li>
 <li><p>电话: 158-8454-2238</p></li>
 <li><p>微信:</p></li>
 </ul>
@@ -3548,105 +3883,6 @@ list[ 1 ][ 1 ] = d;
 <p><strong>注意</strong>细节的同学可能发现了，上面异步调用部分的代码传递的参数结构体args和服务端定义的参数Args并不一致，那是因为go的远程调用默认采用encoding/gob编码和解码，它是一种类似与json的数据分享方式，但更加结构化，关于gob的详情可以google，这里不细说。由于使用gob，使得go的rpc可以接受<code>相似</code>结构，而不强求服务端和客户端服务参数完全一致。</p>
 
 <p>简单来说，两个结构的<strong>导出成员</strong>完全一致，或者其中一个缺失一部分，或者其中一个多出一部分都算是相似结构。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[js异步回调与闭包]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao/"/>
-    <updated>2014-08-14T00:20:20+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
-    <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
-
-<figure class='code'><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
-</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
-</span><span class='line'>  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!--more-->
-
-
-<p>这个结果会输出<code>C C C</code>而不是<code>A B C</code>，为什么会这样是因为js的异步机制，在普通代码执行完毕后才会处理事件，而在处理时间打印console时<code>ch</code>已经是<code>C</code>了，所以三个回调都会打印<code>C</code>。</p>
-
-<p>给出的改进版本也很直观：</p>
-
-<figure class='code'><figcaption><span>example-v2.coffee 恰当控制闭包环境中的变量</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
-</span><span class='line'>  <span class="nx">do</span> <span class="nf">(ch) -&gt;</span>
-</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
-</span><span class='line'>    <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>为啥这样改呢，其实原因严格来说和闭包有关系。</p>
-
-<p>在第一个版本里，我们用了一个匿名函数把变量ch作为环境放入闭包，但是注意这个变量的作用域在for循环所在的整个范围内可见，闭包复制了这个变量的引用，所以当匿名函数实际调用时，变量的值已经被改变，导致得不到想要的输出。</p>
-
-<p>而第二个版本将ch以函数参数的形式复制到了闭包内，这个匿名函数里的ch作用域仅在这个闭包匿名函数小环境内，外部for循环仅改变外部的ch，所以复制到闭包内的ch是不变的；不信可以把do后面函数改成无参的，结果肯定还是打印三个C。</p>
-
-<p>这个问题其实在别的语言同样存在，只不过其他语言很大部分都同步执行闭包，导致看不出差别，实际上是一样的，看下面的go语言示例：</p>
-
-<figure class='code'><figcaption><span>example.go golang的闭包示例</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
-</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
-</span><span class='line'>  <span class="s">&quot;time&quot;</span>
-</span><span class='line'><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">func</span> <span class="nx">example</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">}()</span>
-</span><span class='line'>  <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">example</span><span class="p">()</span>
-</span><span class='line'>  <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>输出会是1而不是0.</p>
-
-<p>所以记住一句话，使用闭包，要注意它包裹起来的环境。</p>
 ]]></content>
   </entry>
   

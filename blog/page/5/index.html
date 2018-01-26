@@ -7,7 +7,11 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 饼图 axlsx创建饼状图非常简单，上图： Read on &rarr; Feb 15th, 2014 ruby Comments ">
+	<meta name="description" content="定义格式化操作 条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。 1
+2
+3
+# define the style for conditional formatting
+profitable = book.styles.add_style( : &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +83,63 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/">
+		
+			Axlsx报表工具(四)——条件格式化</a>
+	</h2>
+	<div class="entry-content">
+		<h3>定义格式化操作</h3>
+
+<p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># define the style for conditional formatting</span>
+</span><span class='line'><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span><span class='line'><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
+
+
+		
+		<a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T00:47:04+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -529,63 +590,6 @@ Rails 4.0.0
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/">
-		
-			在一组方法中共享变量</a>
-	</h2>
-	<div class="entry-content">
-		<pre><code>lambda{
-    shared=10
-    Kernel.send :define_method, :counter do
-        shared+=1
-    end
-    Kernel.send :define_method, :show do
-        shared
-    end
-}.call
-
-show #=&gt;10
-3.times{counter}
-show #=&gt;13
-</code></pre>
-
-
-		
-		<a href="/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T23:46:19+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/4/" class="prev">Prev</a>
@@ -595,7 +599,7 @@ show #=&gt;13
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2017
+	<footer id="footer" class="inner">Copyright &copy; 2018
 
     Jason
 

@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="为什么会突然想到写这篇文章呢？其实是因为我曾经向一位朋友推荐学习一下ruby/lisp这类支持元编程的语言,尽管可能永远不会在生产环境中用到,但是可以让人学习用另一种思路思考问题,然后友人就要求我解释我学了之后思考问题的角度有何不同,当时确实把我难住了,因为这个问题的确不好描述。 对于这个问题, &hellip;">
+	<meta name="description" content="当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,52 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2018/01/26/p2pzhi-udpda-dong/">
+		
+			p2p之UDP打洞</a>
+	</h2>
+	<div class="entry-content">
+		<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
+
+<p>在中间件为常见的NAPT的情况下（也是本文主要讨论的），内网中的客户端没有单独的公网IP地址， 而是通过NAPT转换，和其他同一内网用户共享一个公网IP。这种内网主机隐藏在中间件后的不可访问性对于一些客户端软件如浏览器来说 并不是一个问题，因为其只需要初始化对外的链接，从某方面来看反而还对隐私保护有好处。然而在P2P应用中， 内网主机（客户端）需要对另外的终端（Peer）直接建立链接，但是发起者和响应者可能在不同的中间件后面， 两者都没有公网IP地址。而外部对NAT公网IP和端口主动的链接或数据都会因内网未请求被丢弃掉。本文讨论的就是如何跨越NAT实现内网主机直接通讯的问题。</p>
+
+
+		
+		<a href="/blog/2018/01/26/p2pzhi-udpda-dong/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-01-26T22:03:15+08:00" pubdate data-updated="true">Jan 26<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qu-kuai-lian/'>区块链</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2018/01/26/p2pzhi-udpda-dong/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -517,52 +563,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/">
-		
-			Rvm和rbenv环境变量冲突导致无法安装gem包</a>
-	</h2>
-	<div class="entry-content">
-		<h2>背景</h2>
-
-<p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
-
-
-		
-		<a href="/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-05T18:11:47+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2015</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
     
@@ -570,7 +570,7 @@
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2017
+	<footer id="footer" class="inner">Copyright &copy; 2018
 
     Jason
 

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 区块链 | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/qu-kuai-lian/atom.xml" rel="self"/>
+  <link href="http://qjpcpu.github.io/"/>
+  <updated>2018-01-26T23:06:57+08:00</updated>
+  <id>http://qjpcpu.github.io/</id>
+  <author>
+    <name><![CDATA[Jason]]></name>
+    <email><![CDATA[qjpcpu@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[p2p之UDP打洞]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/"/>
+    <updated>2018-01-26T22:03:15+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong</id>
+    <content type="html"><![CDATA[<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
+
+<p>在中间件为常见的NAPT的情况下（也是本文主要讨论的），内网中的客户端没有单独的公网IP地址， 而是通过NAPT转换，和其他同一内网用户共享一个公网IP。这种内网主机隐藏在中间件后的不可访问性对于一些客户端软件如浏览器来说 并不是一个问题，因为其只需要初始化对外的链接，从某方面来看反而还对隐私保护有好处。然而在P2P应用中， 内网主机（客户端）需要对另外的终端（Peer）直接建立链接，但是发起者和响应者可能在不同的中间件后面， 两者都没有公网IP地址。而外部对NAT公网IP和端口主动的链接或数据都会因内网未请求被丢弃掉。本文讨论的就是如何跨越NAT实现内网主机直接通讯的问题。</p>
+
+<!-- more -->
+
+
+<h1>网络模型</h1>
+
+<p>假设客户端A和客户端B的地址都是内网地址，且在不同的NAT后面。A、B上运行的P2P应用程序和服务器S都使用了UDP端口9982，A和B分别初始化了 与Server的UDP通信，地址映射如图所示:</p>
+
+<p>```</p>
+
+<pre><code>                        Server S
+                    207.148.70.129:9981
+                           |
+                           |
+    +----------------------|----------------------+
+    |                                             |
+  NAT A                                         NAT B
+</code></pre>
+
+<p>120.27.209.161:6000                            120.26.10.118:3000</p>
+
+<pre><code>    |                                             |
+    |                                             |
+ Client A                                      Client B
+</code></pre>
+
+<p>  10.0.0.1:9982                                 192.168.0.1:9982
+```</p>
+
+<p>现在假设客户端A打算与客户端B直接建立一个UDP通信会话。如果A直接给B的公网地址120.26.10.118:3000发送UDP数据，NAT B将很可能会无视进入的 数据（除非是Full Cone NAT），因为源地址和端口与S不匹配，而最初只与S建立过会话。B往A直接发信息也类似。</p>
+
+<p>假设A开始给B的公网地址发送UDP数据的同时，给服务器S发送一个中继请求，要求B开始给A的公网地址发送UDP信息。A往B的输出信息会导致NAT A打开 一个A的内网地址与与B的外网地址之间的新通讯会话，B往A亦然。一旦新的UDP会话在两个方向都打开之后，客户端A和客户端B就能直接通讯， 而无须再通过引导服务器S了。</p>
+
+<p>UDP打洞技术有许多有用的性质。一旦一个的P2P链接建立，链接的双方都能反过来作为“引导服务器”来帮助其他中间件后的客户端进行打洞， 极大减少了服务器的负载。应用程序不需要知道中间件具体是什么（如果有的话），因为以上的过程在没有中间件或者有多个中间件的情况下 也一样能建立通信链路。</p>
+
+<h1>打洞流程</h1>
+
+<p>假设A现在希望建立一条到B的udp会话，那么这个建立基本流程是:</p>
+
+<p><code>
+1. A,B分别建立到Server S的udp会话,那么Server S此时是知道A,B各自的外网ip+端口
+2. Server S在和B的udp会话里告诉A的地址(外网ip+端口: 120.27.209.161:6000),同理把B的地址(120.26.10.118:3000)告诉A
+3. B向A地址(120.27.209.161:6000)发送一个"握手"udp包,打通A-&gt;B的udp链路
+4. 此时A可以向B(120.26.10.118:3000)发送udp包,A-&gt;B的会话建立成功
+</code></p>
+
+<h1>先决条件</h1>
+
+<p>能够完成打洞有几个先决条件:</p>
+
+<p><code>
+1. A,B所在的nat网络类型(Full cone, Restricted cone, Port-restricted cone, Symmetric NAT)
+2. 在一次udp会话期间,nat设备(路由器)会保持内网进程 inner_ip:inner_port &lt;-&gt; share_public_ip:share_port的映射关系,一般根据具体路由器实现,这个映射关系可以维持几分钟到几个小时不等
+3. 流程中第3步,nat A收到这个握手包后并不会转发给A,因为它发现自己的没有保存过B的地址,认为这是一个来历不明的包而直接丢弃,然而这个包的作用在于在nat B留下了A的记录,使得nat B认为A是可达或者说可通过了,这样当A-&gt;B再发送udp包时就可以真正到达B了。所以这个"握手"包的作用是可以打通A-&gt;B的通路,是必要的
+</code></p>
+
+<h1>上源码示例</h1>
+
+<p>使用三台设备模拟,外网设备207.148.70.129模拟Server S,执行server.go代码:</p>
+
+<p>```go server.go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"log"
+"net"
+"time"
+</code></pre>
+
+<p>)</p>
+
+<p>func main() {</p>
+
+<pre><code>listener, err := net.ListenUDP("udp", &amp;net.UDPAddr{IP: net.IPv4zero, Port: 9981})
+if err != nil {
+    fmt.Println(err)
+    return
+}
+log.Printf("本地地址: &lt;%s&gt; \n", listener.LocalAddr().String())
+peers := make([]net.UDPAddr, 0, 2)
+data := make([]byte, 1024)
+for {
+    n, remoteAddr, err := listener.ReadFromUDP(data)
+    if err != nil {
+        fmt.Printf("error during read: %s", err)
+    }
+    log.Printf("&lt;%s&gt; %s\n", remoteAddr.String(), data[:n])
+    peers = append(peers, *remoteAddr)
+    if len(peers) == 2 {
+
+        log.Printf("进行UDP打洞,建立 %s &lt;--&gt; %s 的连接\n", peers[0].String(), peers[1].String())
+        listener.WriteToUDP([]byte(peers[1].String()), &amp;peers[0])
+        listener.WriteToUDP([]byte(peers[0].String()), &amp;peers[1])
+        time.Sleep(time.Second * 8)
+        log.Println("中转服务器退出,仍不影响peers间通信")
+        return
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>另外两台分别位于不同内网后的设备,均运行相同代码peer.go:</p>
+
+<p>```go peer.go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"log"
+"net"
+"os"
+"strconv"
+"strings"
+"time"
+</code></pre>
+
+<p>)</p>
+
+<p>var tag string</p>
+
+<p>const HAND_SHAKE_MSG = &ldquo;我是打洞消息&rdquo;</p>
+
+<p>func main() {</p>
+
+<pre><code>// 当前进程标记字符串,便于显示
+tag = os.Args[1]
+srcAddr := &amp;net.UDPAddr{IP: net.IPv4zero, Port: 9982} // 注意端口必须固定
+dstAddr := &amp;net.UDPAddr{IP: net.ParseIP("207.148.70.129"), Port: 9981}
+conn, err := net.DialUDP("udp", srcAddr, dstAddr)
+if err != nil {
+    fmt.Println(err)
+}
+if _, err = conn.Write([]byte("hello, I'm new peer:" + tag)); err != nil {
+    log.Panic(err)
+}
+data := make([]byte, 1024)
+n, remoteAddr, err := conn.ReadFromUDP(data)
+if err != nil {
+    fmt.Printf("error during read: %s", err)
+}
+conn.Close()
+anotherPeer := parseAddr(string(data[:n]))
+fmt.Printf("local:%s server:%s another:%s\n", srcAddr, remoteAddr, anotherPeer.String())
+
+// 开始打洞
+bidirectionHole(srcAddr, &amp;anotherPeer)
+</code></pre>
+
+<p>}</p>
+
+<p>func parseAddr(addr string) net.UDPAddr {</p>
+
+<pre><code>t := strings.Split(addr, ":")
+port, _ := strconv.Atoi(t[1])
+return net.UDPAddr{
+    IP:   net.ParseIP(t[0]),
+    Port: port,
+}
+</code></pre>
+
+<p>}</p>
+
+<p>func bidirectionHole(srcAddr <em>net.UDPAddr, anotherAddr </em>net.UDPAddr) {</p>
+
+<pre><code>conn, err := net.DialUDP("udp", srcAddr, anotherAddr)
+if err != nil {
+    fmt.Println(err)
+}
+defer conn.Close()
+// 向另一个peer发送一条udp消息(对方peer的nat设备会丢弃该消息,非法来源),用意是在自身的nat设备打开一条可进入的通道,这样对方peer就可以发过来udp消息
+if _, err = conn.Write([]byte(HAND_SHAKE_MSG)); err != nil {
+    log.Println("send handshake:", err)
+}
+go func() {
+    for {
+        time.Sleep(10 * time.Second)
+        if _, err = conn.Write([]byte("from [" + tag + "]")); err != nil {
+            log.Println("send msg fail", err)
+        }
+    }
+}()
+for {
+    data := make([]byte, 1024)
+    n, _, err := conn.ReadFromUDP(data)
+    if err != nil {
+        log.Printf("error during read: %s\n", err)
+    } else {
+        log.Printf("收到数据:%s\n", data[:n])
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>注意代码仅模拟打洞基础流程,如果读者测试网络情况较差发生udp丢包,可能看不到预期结果,此时简单重启server,peer即可.</p>
+
+<p>完整代码参考<a href="https://github.com/qjpcpu/p2pbyudp">github</a></p>
+
+<h1>udp打洞转tcp通信</h1>
+
+<p>通常,由于udp打洞实现简单,p2p的实现采用udp打洞较多,然而当通路建立起来后使用tcp进行节点间通信可以获取更好的通信效果。因为udp打洞完成后形成的nat映射是和tcp/udp无关的,所以此时可以转为使用tcp建立连接,达到最终的p2p的tcp通信.由于代码较简单,这里就不给出示例了。</p>
+
+<h1>参考文献</h1>
+
+<ul>
+<li><a href="https://yq.aliyun.com/articles/227421">UDP用打洞技术穿透NAT的原理与实现</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/26796476">P2P通信原理与实现</a></li>
+<li><a href="https://github.com/jtriley/pystun">NAT类型检测工具</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
