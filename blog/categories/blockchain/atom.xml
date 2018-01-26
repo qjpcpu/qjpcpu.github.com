@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 区块链 | Jason's space]]></title>
-  <link href="http://qjpcpu.github.io/blog/categories/qu-kuai-lian/atom.xml" rel="self"/>
+  <title><![CDATA[Category: blockchain | Jason's space]]></title>
+  <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-26T23:06:57+08:00</updated>
+  <updated>2018-01-26T23:09:57+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
