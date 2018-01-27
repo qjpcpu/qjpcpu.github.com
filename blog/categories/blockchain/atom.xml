@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-26T23:09:57+08:00</updated>
+  <updated>2018-01-27T08:58:15+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -77,7 +77,7 @@
 3. 流程中第3步,nat A收到这个握手包后并不会转发给A,因为它发现自己的没有保存过B的地址,认为这是一个来历不明的包而直接丢弃,然而这个包的作用在于在nat B留下了A的记录,使得nat B认为A是可达或者说可通过了,这样当A-&gt;B再发送udp包时就可以真正到达B了。所以这个"握手"包的作用是可以打通A-&gt;B的通路,是必要的
 </code></p>
 
-<h1>上源码示例</h1>
+<h1>源码示例</h1>
 
 <p>使用三台设备模拟,外网设备207.148.70.129模拟Server S,执行server.go代码:</p>
 
