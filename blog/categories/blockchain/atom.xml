@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T11:37:34+08:00</updated>
+  <updated>2018-01-29T11:44:19+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -24,6 +24,12 @@
 
 <!-- more -->
 
+
+<h1>Peer to peer</h1>
+
+<p>在深入了解前,最好先看看基于p2p包实现一个自己子协议,建立对其的直观印象</p>
+
+<blockquote><p>下面示例来基于官方[Peer to peer]wiki文档(官方文档有个小bug, ^_^),详细参考文献</p></blockquote>
 
 <h1>参考文献</h1>
 
