@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="Peer to peer 参考文献 (go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议, &hellip;">
+	<meta name="description" content="(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,16 +80,17 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">深入ethereum源码-p2p模块基础结构</h2>
-	<div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#peer-to-peer">Peer to peer</a></li>
-  <li><a href="#section">参考文献</a></li>
-</ul>
-
-<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
+	<div class="entry-content"><p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
 
 <p>如果将以太坊的p2p类比做tcp协议,那么p2p暴露出来的子协议就类似http,使得以太坊能够在基础p2p基础上构建出whisper网络。</p>
 
 <!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#peer-to-peer">Peer to peer</a></li>
+  <li><a href="#peer">peer接入</a></li>
+  <li><a href="#section">参考文献</a></li>
+</ul>
 
 <h1 id="peer-to-peer">Peer to peer</h1>
 
@@ -387,6 +388,74 @@
 </span><span class="line">	<span class="p">}</span>
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="peer">peer接入</h1>
+
+<p>从上面的例子,我们可以看出来实现ethereum是非常便利的,那么下一步,我们可以看看一个节点是怎么处理新peer的接入的?梳理出这个接入过程,也就明白了节点间基本的数据流通方式.</p>
+
+<p>首先,每个节点启动入口都在<code>func (srv *Server) Start() (err error)</code>.该函数调用<code>srv.startListening()</code>在传入的ip地址监听tcp连接:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">srv</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nx">startListening</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// Launch the TCP listener.</span>
+</span><span class="line">    <span class="nx">listener</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Listen</span><span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">ListenAddr</span><span class="p">)</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="k">go</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">listenLoop</span><span class="p">()</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 主执行逻辑</span>
+</span><span class="line">    <span class="k">go</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">dialer</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>当接收到一个新的tcp连接,节点开始检查并初始化peer</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">srv</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nx">setupConn</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">conn</span><span class="p">,</span> <span class="nx">flags</span> <span class="nx">connFlag</span><span class="p">,</span> <span class="nx">dialDest</span> <span class="o">*</span><span class="nx">discover</span><span class="p">.</span><span class="nx">Node</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 从这里开始,其实已经开始了ethereum的自有协议,doEncHandshake是RLPX协议的握手方法</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">c</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">doEncHandshake</span><span class="p">(</span><span class="nx">srv</span><span class="p">.</span><span class="nx">PrivateKey</span><span class="p">,</span> <span class="nx">dialDest</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">srv</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">Trace</span><span class="p">(</span><span class="s">&quot;Failed RLPx handshake&quot;</span><span class="p">,</span> <span class="s">&quot;addr&quot;</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">fd</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">(),</span> <span class="s">&quot;conn&quot;</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">flags</span><span class="p">,</span> <span class="s">&quot;err&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 两次握手消息代码(handshakeMsg = 0x00)和(discMsg = 0x01)</span>
+</span><span class="line">    <span class="nx">phs</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">doProtoHandshake</span><span class="p">(</span><span class="nx">srv</span><span class="p">.</span><span class="nx">ourHandshake</span><span class="p">)</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 握手完毕,将新连接对象*p2p.conn压入server.addpeer</span>
+</span><span class="line">    <span class="nx">err</span> <span class="p">=</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">checkpoint</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">addpeer</span><span class="p">)</span>
+</span><span class="line">    <span class="c1">// If the checks completed successfully, runPeer has now been</span>
+</span><span class="line">    <span class="c1">// launched by run.</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>下面开始看<code>Start()</code>函数里的节点主逻辑,主逻辑位于<code>Start()</code>末尾的<code>srv.run()</code></p>
 
 <h1 id="section">参考文献</h1>
 
