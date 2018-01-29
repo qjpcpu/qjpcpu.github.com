@@ -224,7 +224,47 @@ func (srv *Server) setupConn(c *conn, flags connFlag, dialDest *discover.Node) e
 }
 ```
 
-下面开始看`Start()`函数里的节点主逻辑,主逻辑位于`Start()`末尾的`srv.run()`
+下面开始看`Start()`函数里的节点主逻辑,主逻辑位于`Start()`末尾的`srv.run()`,该函数逻辑较复杂,我们现在主要看新peer接入的代码:
+
+```go 
+func (srv *Server) run(dialstate dialer) {
+      ...
+      select{
+          ...
+          case c := <-srv.addpeer:  // 在这里取出之前压入addpeer的连接对象conn
+          // 执行到这里表明握手完成,并且通过了节点验证
+          err := srv.protoHandshakeChecks(peers, c)
+          if err == nil {
+              // 创建节点peer对象,传入所有子协议实现,自己实现的子协议就是在这里传入peer的
+              p := newPeer(c, srv.Protocols)
+              ...
+              go srv.runPeer(p)
+          }
+          ...
+      }
+      ...
+
+}
+```
+
+下面继续看最终peer处理逻辑`srv.runPeer`:
+
+```go
+func (p *Peer) run() (remoteRequested bool, err error) {
+    ...
+    // peer逻辑里最重要两个循环逻辑
+
+    // 收取消息循环,核心逻辑是根据消息的代号proto, err := p.getProto(msg.Code),
+    // 取得对应的子协议,然后投放到对应协议的读队列proto.in <- msg
+    go p.readLoop(readErr)
+    // 不停发送ping心跳包到远端peer
+    go p.pingLoop()
+
+    // 在startProtocols里最终调用我们自定义子协议的Run方法proto.Run(p, rw)
+    p.startProtocols(writeStart, writeErr)
+    ...
+}
+```
 
 # 参考文献
 
