@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T15:14:41+08:00</updated>
+  <updated>2018-01-29T15:55:52+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -394,7 +394,77 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>下面开始看<code>Start()</code>函数里的节点主逻辑,主逻辑位于<code>Start()</code>末尾的<code>srv.run()</code></p>
+<p>下面开始看<code>Start()</code>函数里的节点主逻辑,主逻辑位于<code>Start()</code>末尾的<code>srv.run()</code>,该函数逻辑较复杂,我们现在主要看新peer接入的代码:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">srv</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nx">run</span><span class="p">(</span><span class="nx">dialstate</span> <span class="nx">dialer</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="o">...</span>
+</span><span class="line">      <span class="k">select</span><span class="p">{</span>
+</span><span class="line">          <span class="o">...</span>
+</span><span class="line">          <span class="k">case</span> <span class="nx">c</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">srv</span><span class="p">.</span><span class="nx">addpeer</span><span class="p">:</span>  <span class="c1">// 在这里取出之前压入addpeer的连接对象conn</span>
+</span><span class="line">          <span class="c1">// 执行到这里表明握手完成,并且通过了节点验证</span>
+</span><span class="line">          <span class="nx">err</span> <span class="o">:=</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">protoHandshakeChecks</span><span class="p">(</span><span class="nx">peers</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span><span class="line">          <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">              <span class="c1">// 创建节点peer对象,传入所有子协议实现,自己实现的子协议就是在这里传入peer的</span>
+</span><span class="line">              <span class="nx">p</span> <span class="o">:=</span> <span class="nx">newPeer</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">Protocols</span><span class="p">)</span>
+</span><span class="line">              <span class="o">...</span>
+</span><span class="line">              <span class="k">go</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">runPeer</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+</span><span class="line">          <span class="p">}</span>
+</span><span class="line">          <span class="o">...</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">      <span class="o">...</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>下面继续看最终peer处理逻辑<code>srv.runPeer</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">Peer</span><span class="p">)</span> <span class="nx">run</span><span class="p">()</span> <span class="p">(</span><span class="nx">remoteRequested</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// peer逻辑里最重要两个循环逻辑</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 收取消息循环,核心逻辑是根据消息的代号proto, err := p.getProto(msg.Code),</span>
+</span><span class="line">    <span class="c1">// 取得对应的子协议,然后投放到对应协议的读队列proto.in &lt;- msg</span>
+</span><span class="line">    <span class="k">go</span> <span class="nx">p</span><span class="p">.</span><span class="nx">readLoop</span><span class="p">(</span><span class="nx">readErr</span><span class="p">)</span>
+</span><span class="line">    <span class="c1">// 不停发送ping心跳包到远端peer</span>
+</span><span class="line">    <span class="k">go</span> <span class="nx">p</span><span class="p">.</span><span class="nx">pingLoop</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 在startProtocols里最终调用我们自定义子协议的Run方法proto.Run(p, rw)</span>
+</span><span class="line">    <span class="nx">p</span><span class="p">.</span><span class="nx">startProtocols</span><span class="p">(</span><span class="nx">writeStart</span><span class="p">,</span> <span class="nx">writeErr</span><span class="p">)</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <h1 id="section">参考文献</h1>
 
