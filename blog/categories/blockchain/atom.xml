@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-27T08:58:15+08:00</updated>
+  <updated>2018-01-29T11:37:34+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,29 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[深入ethereum源码-p2p模块基础结构]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/"/>
+    <updated>2018-01-29T11:19:23+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou</id>
+    <content type="html"><![CDATA[<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
+
+<p>如果将以太坊的p2p类比做tcp协议,那么p2p暴露出来的子协议就类似http,使得以太坊能够在基础p2p基础上构建出whisper网络。</p>
+
+<!-- more -->
+
+
+<h1>参考文献</h1>
+
+<ul>
+<li><a href="https://github.com/ethereum/go-ethereum">go-ethereum github地址</a></li>
+<li><a href="https://github.com/ethereum/go-ethereum/wiki/Peer-to-Peer">Peer to Peer</a></li>
+<li><a href="http://blog.csdn.net/teaspring/article/details/78455046">基于p2p的底层通信</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[p2p之UDP打洞]]></title>
