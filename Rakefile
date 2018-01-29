@@ -1,3 +1,4 @@
+# coding: utf-8
 require "rubygems"
 require "bundler/setup"
 require "stringex"
@@ -116,6 +117,7 @@ task :new_post, :title do |t, args|
     post.puts "comments: true"
     post.puts "categories: "
     post.puts "---"
+    post.puts "\n* 目录\n{:toc}\n"
   end
 end
 
