@@ -14,10 +14,172 @@ categories: blockchain
 
 # Peer to peer
 
-在深入了解前,最好先看看基于p2p包实现一个自己子协议,建立对其的直观印象
+在深入了解前,最好先看看基于p2p包怎么实现一个自己子协议,建立对其的直观印象
 
 > 下面示例来基于官方[Peer to peer]wiki文档(官方文档有个小bug, ^_^),详细参考文献
 
+启动一个p2p节点仅需要对`p2p.Server`做一些简单配置:
+
+```go
+nodekey, _ := crypto.GenerateKey()
+srv := p2p.Server{
+    Config: p2p.Config{
+        MaxPeers:   10,
+        PrivateKey: nodekey,
+        Name:       "my node name",
+        ListenAddr: ":30300",
+        Protocols:  []p2p.Protocol{},
+        NAT:        nat.Any(),   // 支持内网穿透
+        Logger:     log.New(),
+    },
+}
+```
+
+这样启动的节点仅包含了以太坊自身的基础协议:
+
+要实现自己的子协议,就需要拓展`Protocols:  []p2p.Protocol{}`,实现自己的`p2p.Protocol`
+
+```go
+func MyProtocol() p2p.Protocol {
+	return p2p.Protocol{                                                          // 1.
+		Name:    "MyProtocol",                                                    // 2.
+		Version: 1,                                                               // 3.
+		Length:  1,                                                               // 4.
+		Run:     func(peer *p2p.Peer, ws p2p.MsgReadWriter) error { return nil }, // 5.
+	}
+}
+```
+
+1. 一个子协议即一个`p2p.Protocol`
+2. 子协议名,需要唯一标识该子协议
+3. 协议版本号,当一个子协议有多个版本时,采纳最高版本的协议
+4. 这个协议需要依赖的信息数目，因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明），p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一个message
+5. 在你的协议主要的handler中，我们现在故意将其留空。这个peer变量是指代连接到当前节点，其携带了一些peer本身的信息。其ws变量是reader和writer允许你同该peer进行通信，如果信息能够发送到当前节点，则反之也能够从本节点发送到对端peer节点
+
+现在让我们将前面留空的handler代码实现，以让它能够同别的peer通信:
+
+```go
+const messageId = 0   // 1.
+type Message string   // 2.
+
+func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
+    for {
+        msg, err := ws.ReadMsg()   // 3.
+        if err != nil {            // 4.
+            return err // if reading fails return err which will disconnect the peer.
+        }
+
+        var myMessage [1]Message
+        err = msg.Decode(&myMessage) // 5.
+        if err != nil {
+            // handle decode error
+            continue
+        }
+        
+        switch myMessage[0] {
+        case "foo":
+            err := p2p.SendItems(ws, messageId, "bar")  // 6.
+            if err != nil {
+                return err // return (and disconnect) error if writing fails.
+            }
+         default:
+             fmt.Println("recv:", myMessage)
+         }
+    }
+
+    return nil
+}
+```
+
+1. 其中有且唯一的已知信息ID；
+2. 将Messages alias 为string类型；
+3. ReadMsg将一直阻塞等待，直到其收到了一条新的信息，一个错误或者EOF；
+4. 如果在读取流信息的过程当中收到了一个错误，最好的解决实践是将其返回给p2p server进行处理。这种错误通常是对端节点已经断开连接；
+5. msg包括两个属性和一个decode方法
+    1. Code 包括了信息ID，Code == messageId (i.e.0)
+    2. Payload 是信息的内容
+    3. Decode(<ptr>) 是一个工具方法：取得 msg.Payload并将其解码，并将其内容设置到传入的message指针中，如果失败了则返回一个error
+6. 如果解码出来的信息是foo将发回一个NewMessage并用messageId标记信息类型，信息内容是bar；而bar信息在被对端收到之后将被defaultcase捕获。
+
+现在，我们将上述的所有部分整合起来，得到下面的p2p样例代码:
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/log"
+	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/ethereum/go-ethereum/p2p/discover"
+	"github.com/ethereum/go-ethereum/p2p/nat"
+	"net"
+	"os"
+)
+
+const messageId = 0
+
+type Message string
+
+func MyProtocol() p2p.Protocol {
+	return p2p.Protocol{
+		Name:    "MyProtocol",
+		Version: 1,
+		Length:  1,
+		Run:     msgHandler,
+	}
+}
+func main() {
+	nodekey, _ := crypto.GenerateKey()
+	logger := log.New()
+	logger.SetHandler(log.StderrHandler)
+	srv := p2p.Server{
+		Config: p2p.Config{
+			MaxPeers:   10,
+			PrivateKey: nodekey,
+			Name:       "my node name",
+			ListenAddr: ":30300",
+			Protocols:  []p2p.Protocol{MyProtocol()},
+			NAT:        nat.Any(),
+			Logger:     logger,
+		},
+	}
+	server = &srv
+	if err := srv.Start(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println("started..", srv.NodeInfo())
+	select {}
+}
+
+func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
+	for {
+		msg, err := ws.ReadMsg()
+		if err != nil {
+			return err
+		}
+
+		var myMessage [1]Message
+		err = msg.Decode(&myMessage)
+		if err != nil {
+			// handle decode error
+			continue
+		}
+
+		fmt.Println("code:", msg.Code, "receiver at:", msg.ReceivedAt, "msg:", myMessage)
+		switch myMessage[0] {
+		case "foo":
+			err := p2p.SendItems(ws, messageId, "bar")
+			if err != nil {
+				return err
+			}
+		default:
+			fmt.Println("recv:", myMessage)
+		}
+	}
+}
+```
 
 # 参考文献
 
