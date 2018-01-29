@@ -56,7 +56,7 @@ func MyProtocol() p2p.Protocol {
 1. 一个子协议即一个`p2p.Protocol`
 2. 子协议名,需要唯一标识该子协议
 3. 协议版本号,当一个子协议有多个版本时,采纳最高版本的协议
-4. 这个协议需要依赖的信息数目，因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明），p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一个message
+4. 该协议拥有的消息类型个数,因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明）,p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一种类型
 5. 在你的协议主要的handler中，我们现在故意将其留空。这个peer变量是指代连接到当前节点，其携带了一些peer本身的信息。其ws变量是reader和writer允许你同该peer进行通信，如果信息能够发送到当前节点，则反之也能够从本节点发送到对端peer节点
 
 现在让我们将前面留空的handler代码实现，以让它能够同别的peer通信:
@@ -247,6 +247,38 @@ func (srv *Server) run(dialstate dialer) {
 }
 ```
 
+这里补充说一下`newPeer()`对子协议的一个组织方式:
+
+```go
+func matchProtocols(protocols []Protocol, caps []Cap, rw MsgReadWriter) map[string]*protoRW {
+    // 按协议(name asc,version asc)排序子协议
+    sort.Sort(capsByNameAndVersion(caps))
+    // 自定义协议偏移
+    offset := baseProtocolLength
+    result := make(map[string]*protoRW)
+
+outer:
+    for _, cap := range caps {
+        for _, proto := range protocols {
+            if proto.Name == cap.Name && proto.Version == cap.Version {
+                // If an old protocol version matched, revert it
+                if old := result[cap.Name]; old != nil {
+                    offset -= old.Length
+                }
+                // Assign the new match
+                result[cap.Name] = &protoRW{Protocol: proto, offset: offset, in: make(chan Msg), w: rw}
+                offset += proto.Length
+
+                continue outer
+            }
+        }
+    }
+    return result
+}
+```
+
+最终每个子协议以`name=>protocol`的map格式组织起来,然后每个协议根据自身支持消息类型数量`Protocol.Length`在整个以太坊消息类型轴上占据了`[proto.offset,proto.offset+proto.Length)`的左闭右开消息类型段,理解这个结构,才好理解最终根据消息类型`Msg.Code`去找handler的逻辑(`func (p *Peer) getProto(code uint64) (*protoRW, error)`)。
+
 下面继续看最终peer处理逻辑`srv.runPeer`:
 
 ```go
@@ -275,6 +307,12 @@ func (p *Peer) run() (remoteRequested bool, err error) {
 定义
 
 > RLP编码的定义只处理两类数据：一类是字符串（例如字节数组），一类是列表。字符串指的是一串二进制数据，列表是一个嵌套递归的结构，里面可以包含字符串和列表，例如`["cat",["puppy","cow"],"horse",[[]],"pig",[""],"sheep"]`就是一个复杂的列表。其他类型的数据需要转成以上的两类，转换的规则不是RLP编码定义的，可以根据自己的规则转换，例如struct可以转成列表，int可以转成二进制（属于字符串一类），以太坊中整数都以大端形式存储。
+
+这部分代码均位于`github.com/ethereum/go-ethereum/rlp`包中,代码相对独立,我也没深入研究改算法,就不详细说明了。
+
+# 总述
+
+本文主要梳理了以太坊p2p模块的主流程,描述了核心的peer间数据读写的来龙去脉,从代码里也能够比较容易理解以太坊子协议的概念,理清这个主干流程,以后也就能够从每个细节发散开来,深入细节。
 
 # 参考文献
 
