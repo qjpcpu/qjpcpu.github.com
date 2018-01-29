@@ -6,14 +6,14 @@ comments: true
 categories: blockchain 
 ---
 
-* 目录
-{:toc}
-
 (go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.
 
 如果将以太坊的p2p类比做tcp协议,那么p2p暴露出来的子协议就类似http,使得以太坊能够在基础p2p基础上构建出whisper网络。
 
 <!-- more -->
+
+* 目录
+{:toc}
 
 # Peer to peer
 
@@ -182,6 +182,49 @@ func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
 	}
 }
 ```
+
+# peer接入
+
+从上面的例子,我们可以看出来实现ethereum是非常便利的,那么下一步,我们可以看看一个节点是怎么处理新peer的接入的?梳理出这个接入过程,也就明白了节点间基本的数据流通方式.
+
+首先,每个节点启动入口都在`func (srv *Server) Start() (err error)`.该函数调用`srv.startListening()`在传入的ip地址监听tcp连接:
+
+```go
+func (srv *Server) startListening() error {
+    // Launch the TCP listener.
+    listener, err := net.Listen("tcp", srv.ListenAddr)
+    ...
+    go srv.listenLoop()
+    ...
+    // 主执行逻辑
+    go srv.run(dialer)
+    return nil
+}
+```
+
+当接收到一个新的tcp连接,节点开始检查并初始化peer
+
+```go
+func (srv *Server) setupConn(c *conn, flags connFlag, dialDest *discover.Node) error {
+    ...
+    // 从这里开始,其实已经开始了ethereum的自有协议,doEncHandshake是RLPX协议的握手方法
+    if c.id, err = c.doEncHandshake(srv.PrivateKey, dialDest); err != nil {
+        srv.log.Trace("Failed RLPx handshake", "addr", c.fd.RemoteAddr(), "conn", c.flags, "err", err)
+        return err
+    }
+    ...
+    // 两次握手消息代码(handshakeMsg = 0x00)和(discMsg = 0x01)
+    phs, err := c.doProtoHandshake(srv.ourHandshake)
+    ...
+    // 握手完毕,将新连接对象*p2p.conn压入server.addpeer
+    err = srv.checkpoint(c, srv.addpeer)
+    // If the checks completed successfully, runPeer has now been
+    // launched by run.
+    return nil
+}
+```
+
+下面开始看`Start()`函数里的节点主逻辑,主逻辑位于`Start()`末尾的`srv.run()`
 
 # 参考文献
 
