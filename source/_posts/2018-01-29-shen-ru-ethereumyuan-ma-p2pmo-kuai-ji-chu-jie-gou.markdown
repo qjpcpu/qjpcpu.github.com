@@ -235,7 +235,7 @@ func (srv *Server) run(dialstate dialer) {
           // 执行到这里表明握手完成,并且通过了节点验证
           err := srv.protoHandshakeChecks(peers, c)
           if err == nil {
-              // 创建节点peer对象,传入所有子协议实现,自己实现的子协议就是在这里传入peer的
+              // 创建节点peer对象,传入所有子协议实现,自己实现的子协议就是在这里传入peer的,传入的所以协议通过matchProtocols函数格式化组织
               p := newPeer(c, srv.Protocols)
               ...
               go srv.runPeer(p)
