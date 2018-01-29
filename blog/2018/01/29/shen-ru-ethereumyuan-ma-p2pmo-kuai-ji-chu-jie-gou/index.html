@@ -89,9 +89,307 @@
 
 <h1>Peer to peer</h1>
 
-<p>在深入了解前,最好先看看基于p2p包实现一个自己子协议,建立对其的直观印象</p>
+<p>在深入了解前,最好先看看基于p2p包怎么实现一个自己子协议,建立对其的直观印象</p>
 
 <blockquote><p>下面示例来基于官方[Peer to peer]wiki文档(官方文档有个小bug, ^_^),详细参考文献</p></blockquote>
+
+<p>启动一个p2p节点仅需要对<code>p2p.Server</code>做一些简单配置:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">nodekey</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">GenerateKey</span><span class="p">()</span>
+</span><span class='line'><span class="nx">srv</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span><span class='line'>    <span class="nx">Config</span><span class="p">:</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+</span><span class='line'>        <span class="nx">MaxPeers</span><span class="p">:</span>   <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">PrivateKey</span><span class="p">:</span> <span class="nx">nodekey</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">Name</span><span class="p">:</span>       <span class="s">&quot;my node name&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">ListenAddr</span><span class="p">:</span> <span class="s">&quot;:30300&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">Protocols</span><span class="p">:</span>  <span class="p">[]</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{},</span>
+</span><span class='line'>        <span class="nx">NAT</span><span class="p">:</span>        <span class="nx">nat</span><span class="p">.</span><span class="nx">Any</span><span class="p">(),</span>   <span class="c1">// 支持内网穿透</span>
+</span><span class='line'>        <span class="nx">Logger</span><span class="p">:</span>     <span class="nx">log</span><span class="p">.</span><span class="nx">New</span><span class="p">(),</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样启动的节点仅包含了以太坊自身的基础协议:</p>
+
+<p>要实现自己的子协议,就需要拓展<code>Protocols:  []p2p.Protocol{}</code>,实现自己的<code>p2p.Protocol</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">func</span> <span class="nx">MyProtocol</span><span class="p">()</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{</span>                                                          <span class="c1">// 1.</span>
+</span><span class='line'>      <span class="nx">Name</span><span class="p">:</span>    <span class="s">&quot;MyProtocol&quot;</span><span class="p">,</span>                                                    <span class="c1">// 2.</span>
+</span><span class='line'>      <span class="nx">Version</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>                                                               <span class="c1">// 3.</span>
+</span><span class='line'>      <span class="nx">Length</span><span class="p">:</span>  <span class="mi">1</span><span class="p">,</span>                                                               <span class="c1">// 4.</span>
+</span><span class='line'>      <span class="nx">Run</span><span class="p">:</span>     <span class="kd">func</span><span class="p">(</span><span class="nx">peer</span> <span class="o">*</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Peer</span><span class="p">,</span> <span class="nx">ws</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span> <span class="p">},</span> <span class="c1">// 5.</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>一个子协议即一个<code>p2p.Protocol</code></li>
+<li>子协议名,需要唯一标识该子协议</li>
+<li>协议版本号,当一个子协议有多个版本时,采纳最高版本的协议</li>
+<li>这个协议需要依赖的信息数目，因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明），p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一个message</li>
+<li>在你的协议主要的handler中，我们现在故意将其留空。这个peer变量是指代连接到当前节点，其携带了一些peer本身的信息。其ws变量是reader和writer允许你同该peer进行通信，如果信息能够发送到当前节点，则反之也能够从本节点发送到对端peer节点</li>
+</ol>
+
+
+<p>现在让我们将前面留空的handler代码实现，以让它能够同别的peer通信:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">const</span> <span class="nx">messageId</span> <span class="p">=</span> <span class="mi">0</span>   <span class="c1">// 1.</span>
+</span><span class='line'><span class="kd">type</span> <span class="nx">Message</span> <span class="kt">string</span>   <span class="c1">// 2.</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">msgHandler</span><span class="p">(</span><span class="nx">peer</span> <span class="o">*</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Peer</span><span class="p">,</span> <span class="nx">ws</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ws</span><span class="p">.</span><span class="nx">ReadMsg</span><span class="p">()</span>   <span class="c1">// 3.</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>            <span class="c1">// 4.</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">err</span> <span class="c1">// if reading fails return err which will disconnect the peer.</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">myMessage</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nx">Message</span>
+</span><span class='line'>        <span class="nx">err</span> <span class="p">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">myMessage</span><span class="p">)</span> <span class="c1">// 5.</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// handle decode error</span>
+</span><span class='line'>            <span class="k">continue</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">switch</span> <span class="nx">myMessage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="s">&quot;foo&quot;</span><span class="p">:</span>
+</span><span class='line'>            <span class="nx">err</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">messageId</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>  <span class="c1">// 6.</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="nx">err</span> <span class="c1">// return (and disconnect) error if writing fails.</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>         <span class="k">default</span><span class="p">:</span>
+</span><span class='line'>             <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;recv:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
+</span><span class='line'>         <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>其中有且唯一的已知信息ID；</li>
+<li>将Messages alias 为string类型；</li>
+<li>ReadMsg将一直阻塞等待，直到其收到了一条新的信息，一个错误或者EOF；</li>
+<li>如果在读取流信息的过程当中收到了一个错误，最好的解决实践是将其返回给p2p server进行处理。这种错误通常是对端节点已经断开连接；</li>
+<li>msg包括两个属性和一个decode方法
+
+<ol>
+<li>Code 包括了信息ID，Code == messageId (i.e.0)</li>
+<li>Payload 是信息的内容</li>
+<li>Decode(<ptr>) 是一个工具方法：取得 msg.Payload并将其解码，并将其内容设置到传入的message指针中，如果失败了则返回一个error</li>
+</ol>
+</li>
+<li>如果解码出来的信息是foo将发回一个NewMessage并用messageId标记信息类型，信息内容是bar；而bar信息在被对端收到之后将被defaultcase捕获。</li>
+</ol>
+
+
+<p>现在，我们将上述的所有部分整合起来，得到下面的p2p样例代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;github.com/ethereum/go-ethereum/crypto&quot;</span>
+</span><span class='line'>  <span class="s">&quot;github.com/ethereum/go-ethereum/log&quot;</span>
+</span><span class='line'>  <span class="s">&quot;github.com/ethereum/go-ethereum/p2p&quot;</span>
+</span><span class='line'>  <span class="s">&quot;github.com/ethereum/go-ethereum/p2p/discover&quot;</span>
+</span><span class='line'>  <span class="s">&quot;github.com/ethereum/go-ethereum/p2p/nat&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net&quot;</span>
+</span><span class='line'>  <span class="s">&quot;os&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">const</span> <span class="nx">messageId</span> <span class="p">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">type</span> <span class="nx">Message</span> <span class="kt">string</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">MyProtocol</span><span class="p">()</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{</span>
+</span><span class='line'>      <span class="nx">Name</span><span class="p">:</span>    <span class="s">&quot;MyProtocol&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">Version</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">Length</span><span class="p">:</span>  <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">Run</span><span class="p">:</span>     <span class="nx">msgHandler</span><span class="p">,</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">nodekey</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">GenerateKey</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">logger</span> <span class="o">:=</span> <span class="nx">log</span><span class="p">.</span><span class="nx">New</span><span class="p">()</span>
+</span><span class='line'>  <span class="nx">logger</span><span class="p">.</span><span class="nx">SetHandler</span><span class="p">(</span><span class="nx">log</span><span class="p">.</span><span class="nx">StderrHandler</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">srv</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span><span class='line'>      <span class="nx">Config</span><span class="p">:</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+</span><span class='line'>          <span class="nx">MaxPeers</span><span class="p">:</span>   <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">PrivateKey</span><span class="p">:</span> <span class="nx">nodekey</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">Name</span><span class="p">:</span>       <span class="s">&quot;my node name&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">ListenAddr</span><span class="p">:</span> <span class="s">&quot;:30300&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">Protocols</span><span class="p">:</span>  <span class="p">[]</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{</span><span class="nx">MyProtocol</span><span class="p">()},</span>
+</span><span class='line'>          <span class="nx">NAT</span><span class="p">:</span>        <span class="nx">nat</span><span class="p">.</span><span class="nx">Any</span><span class="p">(),</span>
+</span><span class='line'>          <span class="nx">Logger</span><span class="p">:</span>     <span class="nx">logger</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">server</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">srv</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">Start</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;started..&quot;</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">NodeInfo</span><span class="p">())</span>
+</span><span class='line'>  <span class="k">select</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">msgHandler</span><span class="p">(</span><span class="nx">peer</span> <span class="o">*</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Peer</span><span class="p">,</span> <span class="nx">ws</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ws</span><span class="p">.</span><span class="nx">ReadMsg</span><span class="p">()</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">err</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">myMessage</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nx">Message</span>
+</span><span class='line'>      <span class="nx">err</span> <span class="p">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">myMessage</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">// handle decode error</span>
+</span><span class='line'>          <span class="k">continue</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;code:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Code</span><span class="p">,</span> <span class="s">&quot;receiver at:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">ReceivedAt</span><span class="p">,</span> <span class="s">&quot;msg:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">switch</span> <span class="nx">myMessage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s">&quot;foo&quot;</span><span class="p">:</span>
+</span><span class='line'>          <span class="nx">err</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">messageId</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>              <span class="k">return</span> <span class="nx">err</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="k">default</span><span class="p">:</span>
+</span><span class='line'>          <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;recv:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h1>参考文献</h1>
 
