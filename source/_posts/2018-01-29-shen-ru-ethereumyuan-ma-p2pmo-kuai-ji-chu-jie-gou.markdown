@@ -266,8 +266,20 @@ func (p *Peer) run() (remoteRequested bool, err error) {
 }
 ```
 
+# 数据传输格式RLP
+
+以太坊数据传输都是基于RLP编码,下面文字摘自[RLP编码原理](http://ethfans.org/posts/415)
+
+> RLP(Recursive Length Prefix，递归长度前缀)是一种编码算法，用于编码任意的嵌套结构的二进制数据，它是以太坊中数据序列化/反序列化的主要方法，区块、交易等数据结构在持久化时会先经过RLP编码后再存储到数据库中
+
+定义
+
+> RLP编码的定义只处理两类数据：一类是字符串（例如字节数组），一类是列表。字符串指的是一串二进制数据，列表是一个嵌套递归的结构，里面可以包含字符串和列表，例如`["cat",["puppy","cow"],"horse",[[]],"pig",[""],"sheep"]`就是一个复杂的列表。其他类型的数据需要转成以上的两类，转换的规则不是RLP编码定义的，可以根据自己的规则转换，例如struct可以转成列表，int可以转成二进制（属于字符串一类），以太坊中整数都以大端形式存储。
+
 # 参考文献
 
 * [go-ethereum github地址](https://github.com/ethereum/go-ethereum)
 * [Peer to Peer](https://github.com/ethereum/go-ethereum/wiki/Peer-to-Peer)
 * [基于p2p的底层通信](http://blog.csdn.net/teaspring/article/details/78455046)
+* [RLP](https://github.com/ethereum/wiki/wiki/%5B%E4%B8%AD%E6%96%87%5D-RLP)
+* [RLP编码原理](http://ethfans.org/posts/415)
