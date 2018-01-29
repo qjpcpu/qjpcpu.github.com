@@ -147,7 +147,6 @@ func main() {
 			Logger:     logger,
 		},
 	}
-	server = &srv
 	if err := srv.Start(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
