@@ -80,20 +80,20 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Ruby线程</h2>
-	<div class="entry-content"><h3>1. 创建线程</h3>
+	<div class="entry-content"><h3 id="section">1. 创建线程</h3>
 
-<pre><code>    Thread.new do
-        3.times do 
-            sleep 3
-            puts "Thread #{Thread.current.object_id} running..."
-        end
-    end
+<pre><code>	Thread.new do
+		3.times do 
+			sleep 3
+			puts "Thread #{Thread.current.object_id} running..."
+		end
+	end
 </code></pre>
 
 <p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
 
 <pre><code>class Book
-    attr_accessor :name
+	attr_accessor :name
 end
 num = 0
 count = 0
@@ -102,10 +102,10 @@ book.name = 'ybur'
 puts "main Thread=#{num} count=#{count} book=#{book.name}"
 
 t.Thread.new(num,book) do |n,b|
-    n+=1
-    count+=1
-    b.name.reverse!
-    puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+	n+=1
+	count+=1
+	b.name.reverse!
+	puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
 end
 t.join
 puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
@@ -115,7 +115,6 @@ puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
 </code></pre>
 
 <!-- more -->
-
 
 <p>新线程中保存num的副本，在线程中更改num并不影响外部num值，而新线程对book的修改会直接影响外部book，在新线程中也可打破作用域直接访问外部count并作出修改。</p>
 
@@ -132,9 +131,9 @@ Thread#join
 <p>线程可以将某些信息放在自身的hash表中，让别的线程访问。使用Thread#value（阻塞方法）访问线程执行最后一行代码的结果：</p>
 
 <pre><code>t=Thread.new(1,10) do |a,b|
-    sleep 3
-    Thread.current['plus_result']=a+b
-    "thread result:#{a+b}"
+	sleep 3
+	Thread.current['plus_result']=a+b
+	"thread result:#{a+b}"
 end
 t.join
 puts "1+10=#{t['plus_result']}"
@@ -143,7 +142,7 @@ puts "#{t.value}"
 #=&gt; thread result:11
 </code></pre>
 
-<h3>2. Mutex</h3>
+<h3 id="mutex">2. Mutex</h3>
 
 <p>来自ruby-doc的例子</p>
 
@@ -152,19 +151,19 @@ mutex=Mutex.new
 count1=count2=0
 difference=0
 counter=Thread.new do
-    loop do
-        mutex.synchronize do
-            count1+=1
-            count2+=1
-        end
-    end
+	loop do
+		mutex.synchronize do
+			count1+=1
+			count2+=1
+		end
+	end
 end
 spy=Thread.new do
-    loop do
-        mutex.synchronize do
-            difference+=(count1-count2).abs
-        end
-    end
+	loop do
+		mutex.synchronize do
+			difference+=(count1-count2).abs
+		end
+	end
 end
 sleep 1
 mutex.lock
@@ -173,7 +172,7 @@ mutex.lock
 #=&gt; difference &gt;&gt;0
 </code></pre>
 
-<h3>3. Condition Variables</h3>
+<h3 id="condition-variables">3. Condition Variables</h3>
 
 <p>来自ruby-doc</p>
 
@@ -181,19 +180,19 @@ mutex.lock
 mutext=Mutex.new
 cv=ConditionVariable.new
 a=Thread.new {
-    mutex.synchronize {
-        puts "A:I have critical section, but will wait for cv"
-        cv.wait mutex
-        puts "A:I have critical section again! I rule!"
-    }
+	mutex.synchronize {
+		puts "A:I have critical section, but will wait for cv"
+		cv.wait mutex
+		puts "A:I have critical section again! I rule!"
+	}
 }
 puts "(Later, back at the ranch...)"
 b=Thread.new {
-    mutex.synchronize {
-        puts "B: Now I am critical, but am done with cv"
-        cv.signal
-        puts "B: I am still critical, finishing up"
-    }
+	mutex.synchronize {
+		puts "B: Now I am critical, but am done with cv"
+		cv.signal
+		puts "B: I am still critical, finishing up"
+	}
 }
 a.join
 b.join
@@ -207,25 +206,25 @@ A: I have critical section again! I Rule!
 
 <p>在进入临界区并在cv上等待时，会释放该互斥锁mutex，从而才能让别的线程进入临界区，不至于发生死锁。</p>
 
-<h3>4. Queue</h3>
+<h3 id="queue">4. Queue</h3>
 
 <p>ruby的Queue和java的BlockingQueue十分类似。当Queue为空时，执行pop操作会导致线程挂起等待。</p>
 
 <pre><code>require 'thread'
 queue=Queue.new
 producer=Thread.new do 
-    5.times do |i|
-        sleep 4
-        queue &lt;&lt; i # operator &lt;&lt; is alias of push
-        puts "#{i} produced"
-    end
+	5.times do |i|
+		sleep 4
+		queue &lt;&lt; i # operator &lt;&lt; is alias of push
+		puts "#{i} produced"
+	end
 end
 consumer=Thread.new do 
-    5.times do |i|
-        value=queue.pop
-        sleep 2
-        puts "consumed #{value}"
-    end
+	5.times do |i|
+		value=queue.pop
+		sleep 2
+		puts "consumed #{value}"
+	end
 end
 </code></pre>
 

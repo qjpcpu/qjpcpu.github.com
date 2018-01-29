@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="创建远程版本库 设置git git config --global user.name "MyName" git config --global user.email abcde@example.com 创建版本库 a.新建版本库，并推送到远端 mkdir TestRepo cd &hellip;">
+	<meta name="description" content="### 创建远程版本库 设置git git config --global user.name "MyName" git config --global user.email abcde@example.com 创建版本库 a.新建版本库，并推送到远端 mkdir TestRepo cd &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -81,21 +81,22 @@
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Git常用操作</h2>
 	<div class="entry-content"><!-- more -->
-
-
-<h3>创建远程版本库</h3>
+<p>### 创建远程版本库</p>
 
 <ol>
-<li><p>设置git</p>
+  <li>
+    <p>设置git</p>
 
-<pre><code> git config --global user.name "MyName"
+    <pre><code> git config --global user.name "MyName"
  git config --global user.email abcde@example.com
-</code></pre></li>
-<li><p>创建版本库</p>
+</code></pre>
+  </li>
+  <li>
+    <p>创建版本库</p>
 
-<p> a.新建版本库，并推送到远端</p>
+    <p>a.新建版本库，并推送到远端</p>
 
-<pre><code> mkdir TestRepo
+    <pre><code> mkdir TestRepo
  cd TestRepo
  git init
  touch README.md
@@ -105,21 +106,23 @@
  git push -u origin master
 </code></pre>
 
-<p> b.使用已有本地版本库，并推送到远端</p>
+    <p>b.使用已有本地版本库，并推送到远端</p>
 
-<pre><code> cd TestRepo
+    <pre><code> cd TestRepo
  git remote add origin git@gitserver.com:MyAcountName/TestRepo.git
  git push -u origin mast
-</code></pre></li>
-<li><p>推/拉</p>
+</code></pre>
+  </li>
+  <li>
+    <p>推/拉</p>
 
-<pre><code> git push origin master
+    <pre><code> git push origin master
  git pull origin master
-</code></pre></li>
+</code></pre>
+  </li>
 </ol>
 
-
-<h3>克隆已有的远程版本库</h3>
+<h3 id="section">克隆已有的远程版本库</h3>
 
 <pre><code>git clone  git@gitserver.com:MyAcountName/TestRepo.git  usr1/project
 cd usr1/project
@@ -131,7 +134,7 @@ git commit –m “initial commit.”
 git push origin master
 </code></pre>
 
-<h3>克隆本地版本库</h3>
+<h3 id="section-1">克隆本地版本库</h3>
 
 <pre><code>git clone  file:///path/to/repo/TestRepo.git  usr2/project
 </code></pre>

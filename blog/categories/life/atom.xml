@@ -4,7 +4,7 @@
   <title><![CDATA[Category: life | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -24,12 +24,11 @@
 
 <p>但是在下半年，我逐渐感受到狂热背后的东西，尽管在百度，也要做很多机械重复的事情，此外更重要的是，我发现自己很孤独，除开工作，我一无所有，独自在上海漂泊，心里非常寂寞。再加上后来家人生病，我选择了离开，回到成都。</p>
 
-<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过&hellip;&hellip;</p>
+<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过……</p>
 
 <p><code>people must pay for their choices</code>，每个人必须为他的选择付出代价。</p>
 
 <!-- more -->
-
 
 <p>回来的好长日子里，我无法适应。逐渐地，我开始怀念在百度的那段日子。这时我才体会到，百度真正优秀的地方，不在于她的大公司地位和光环，在于百度的人，在于那些身上深深烙上了百度刻印而不自知的优秀同学。不论懂的多少，总是怀着一种谦逊求知的态度，对技术和知识的真正渴望，塑造了百度人自己的气质。</p>
 
@@ -44,197 +43,207 @@
     <link href="http://qjpcpu.github.io/blog/2014/12/15/resume/"/>
     <updated>2014-12-15T20:20:58+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/12/15/resume</id>
-    <content type="html"><![CDATA[<h4>联系方式</h4>
+    <content type="html"><![CDATA[<h4 id="section">联系方式</h4>
 
 <ul>
-<li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#113;&#106;&#112;&#x63;&#112;&#117;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;">&#113;&#x6a;&#x70;&#99;&#112;&#117;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></p></li>
-<li><p>电话: 158-8454-2238</p></li>
-<li><p>微信:</p></li>
+  <li>
+    <p>姓名: 屈剑平</p>
+  </li>
+  <li>
+    <p>邮箱: qjpcpu@gmail.com</p>
+  </li>
+  <li>
+    <p>电话: 158-8454-2238</p>
+  </li>
+  <li>
+    <p>微信: </p>
+  </li>
 </ul>
-
 
 <p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
 
 <!-- more -->
 
-
-<h3>教育经历</h3>
+<h3 id="section-1">教育经历</h3>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>时间</th>
-<th>学校</th>
-<th>学位</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td>2011.9~2014.3</td>
-<td>同济大学</td>
-<td>硕士研究生</td>
-<td>&ndash;</td>
-</tr>
-<tr>
-<td></td>
-<td>2007.9~2011.7</td>
-<td>同济大学</td>
-<td>本科学士学位</td>
-<td>&ndash;</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>时间</th>
+      <th>学校</th>
+      <th>学位</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2011.9~2014.3</td>
+      <td>同济大学</td>
+      <td>硕士研究生</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>2007.9~2011.7</td>
+      <td>同济大学</td>
+      <td>本科学士学位</td>
+      <td>-</td>
+    </tr>
+  </tbody>
 </table>
 
+<h3 id="section-2">工作履历</h3>
 
-<h3>工作履历</h3>
-
-<h4>2014.12 &ndash; 至今</h4>
-
-<ul>
-<li><p>Company: tap4fun</p></li>
-<li><p>Location: 成都</p></li>
-<li><p>Position: 运维开发</p></li>
-</ul>
-
-
-<h4>2013.12 &ndash; 2014.12</h4>
+<h4 id="section-3">2014.12 - 至今</h4>
 
 <ul>
-<li><p>Company: 百度</p></li>
-<li><p>Location: 上海</p></li>
-<li><p>Position: 运维开发</p></li>
+  <li>
+    <p>Company: tap4fun</p>
+  </li>
+  <li>
+    <p>Location: 成都</p>
+  </li>
+  <li>
+    <p>Position: 运维开发</p>
+  </li>
 </ul>
 
-
-<h4>2013.1 &ndash; 2013.8</h4>
+<h4 id="section-4">2013.12 - 2014.12</h4>
 
 <ul>
-<li><p>Company: 惠普(中国)</p></li>
-<li><p>Location: 上海</p></li>
-<li><p>Position: 打印机app开发(实习)</p></li>
+  <li>
+    <p>Company: 百度</p>
+  </li>
+  <li>
+    <p>Location: 上海</p>
+  </li>
+  <li>
+    <p>Position: 运维开发</p>
+  </li>
 </ul>
 
+<h4 id="section-5">2013.1 - 2013.8</h4>
 
-<h3>项目经验</h3>
+<ul>
+  <li>
+    <p>Company: 惠普(中国)</p>
+  </li>
+  <li>
+    <p>Location: 上海</p>
+  </li>
+  <li>
+    <p>Position: 打印机app开发(实习)</p>
+  </li>
+</ul>
 
-<h4>1. 智能运维系统iOP(tap4fun)</h4>
+<h3 id="section-6">项目经验</h3>
+
+<h4 id="ioptap4fun">1. 智能运维系统iOP(tap4fun)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby on rails, mongodb, angularJs, coffee-script</p>
 
 <p><strong>项目描述:</strong>  系统为了完成运维自动化，提升运维效率，主要包含了以下几大功能:</p>
 
 <ol>
-<li>自动部署: 运维同学在iOP中编辑部署模板，配置好部署针对的目标机器，需要执行的命令及每个命令脚本的执行顺序，提交后iOP按照配置自动完成代码从产品库到线上的发布变更</li>
-<li>流程管理: iOP内部抽象完成出一套工作流引擎<a href="https://github.com/qjpcpu/taskflow-mongoid">TaskFlow</a>，该引擎的执行步骤可重用可配置，驱动整个iOP的工单数据流</li>
-<li>机器操作: 底层封装aws及阿里云，屏蔽其细节，统一对运维提供开服/关服/开关机等机器操作</li>
-<li>镜像备份: 根据配置自动备份机器实例，完成灾备</li>
-<li>权限管理: 所有用户根据自己角色决定了资源的可见性和可操作性，同时和线上机器登录权限保持同步</li>
-<li>配置: 其他运维元数据的配置管理</li>
+  <li>自动部署: 运维同学在iOP中编辑部署模板，配置好部署针对的目标机器，需要执行的命令及每个命令脚本的执行顺序，提交后iOP按照配置自动完成代码从产品库到线上的发布变更</li>
+  <li>流程管理: iOP内部抽象完成出一套工作流引擎<a href="https://github.com/qjpcpu/taskflow-mongoid">TaskFlow</a>，该引擎的执行步骤可重用可配置，驱动整个iOP的工单数据流</li>
+  <li>机器操作: 底层封装aws及阿里云，屏蔽其细节，统一对运维提供开服/关服/开关机等机器操作</li>
+  <li>镜像备份: 根据配置自动备份机器实例，完成灾备</li>
+  <li>权限管理: 所有用户根据自己角色决定了资源的可见性和可操作性，同时和线上机器登录权限保持同步</li>
+  <li>配置: 其他运维元数据的配置管理</li>
 </ol>
 
-
-<h4>2. 微信消息平台(tap4fun)<a href="https://github.com/qjpcpu/WeChatNotifier">github地址</a></h4>
+<h4 id="tap4fungithubhttpsgithubcomqjpcpuwechatnotifier">2. 微信消息平台(tap4fun)<a href="https://github.com/qjpcpu/WeChatNotifier">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, nodejs, requirejs, gulp, coffee-script, leveldb</p>
 
 <p><strong>项目描述:</strong> 为企业内部提供消息推送服务及单点登录</p>
 
 <ol>
-<li>消息推送: 利用该平台，企业各内部系统可以利用微信向员工推送消息</li>
-<li>消息响应: 内部系统可以被动响应消息，从而达到将微信作为交互平台的目的</li>
-<li>单点登录: 企业内部系统可以利用微信消息平台作为单点登录,有效解决中小型企业的登录安全性及便利性</li>
+  <li>消息推送: 利用该平台，企业各内部系统可以利用微信向员工推送消息</li>
+  <li>消息响应: 内部系统可以被动响应消息，从而达到将微信作为交互平台的目的</li>
+  <li>单点登录: 企业内部系统可以利用微信消息平台作为单点登录,有效解决中小型企业的登录安全性及便利性</li>
 </ol>
 
-
-<h4>3. 统一认证系统(tap4fun)</h4>
+<h4 id="tap4fun">3. 统一认证系统(tap4fun)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby on rails, mongodb</p>
 
 <p><strong>项目描述:</strong> 使用google Oauth2完成内部员工单点登录认证</p>
 
-<h4>4. 流式监控系统(百度)</h4>
+<h4 id="section-7">4. 流式监控系统(百度)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby, mysql, emacs, sinatra</p>
 
 <p><strong>项目描述:</strong> 监控流式计算系统当前的任务处理情况,并能自动定位故障。前端使用sinatra框架完成,使用了ajax和coffeescript等技术,后端任务用ruby+bash完成,数据存储在项目前期后期分别选用了mongodb和mysql</p>
 
-<h4>5. 机器管理系统(百度)</h4>
+<h4 id="section-8">5. 机器管理系统(百度)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby, mysql, emacs</p>
 
 <p><strong>项目描述:</strong> 管理机器池的机器自动安装,环境自动初始化,机器数量千台以上。首先,自动检测机器是否故障,如果有故障则自动完成送修,送修完成自动挂回。如无故障则进行机器重装,安装各种初始化环境等 。系统前端采用rails编写,后端混合ruby和bash,数据交互使用mysql数据库,自动操作利用状态机设计完成</p>
 
-<h4>6. 快速报表开发框架(百度)<a href="https://github.com/qjpcpu/jreport">github地址</a></h4>
+<h4 id="githubhttpsgithubcomqjpcpujreport">6. 快速报表开发框架(百度)<a href="https://github.com/qjpcpu/jreport">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, ruby , emacs</p>
 
 <p><strong>项目描述:</strong>  一套快速报表开发框架,基于该框架最快可以在10分钟内开发出一套邮件报表,是一套针对报表专门设计开发的类rails框架</p>
 
-<h4>7. 基于golang的批量工具(百度)<a href="https://github.com/qjpcpu/sexy-ssh">github地址</a></h4>
+<h4 id="golanggithubhttpsgithubcomqjpcpusexy-ssh">7. 基于golang的批量工具(百度)<a href="https://github.com/qjpcpu/sexy-ssh">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, golang</p>
 
 <p><strong>项目描述:</strong> 基于ssh协议的批量操作工具,功能强大部署简单。 能完成批量任务执行及文件复制,任务执行能力强,使用go语言开发完成</p>
 
-<h4>8. 打印机app(惠普中国)</h4>
+<h4 id="app">8. 打印机app(惠普中国)</h4>
 
 <p><strong>环境及工具:</strong> windows, java, serverlet, jsp</p>
 
 <p><strong>项目描述:</strong> 惠普打印机无线打印app。无须电脑,打印机上直接浏览网盘文件进行预览及打印</p>
 
-<h3>技能概览</h3>
+<h3 id="section-9">技能概览</h3>
 
-<h4>编程语言</h4>
+<h4 id="section-10">编程语言</h4>
 
 <ul>
-<li>ruby; 精通ruby,5年+经验</li>
-<li>coffee-script; 熟悉coffee，能熟练用来开发前端页面或后端node程序</li>
-<li>golang; 熟悉go语言，有小型项目经验</li>
-<li>shell; 2年以上linux运维，能熟练使用shell管理linux</li>
-<li>java/C#/C/Python; 基本了解</li>
+  <li>ruby; 精通ruby,5年+经验</li>
+  <li>coffee-script; 熟悉coffee，能熟练用来开发前端页面或后端node程序</li>
+  <li>golang; 熟悉go语言，有小型项目经验</li>
+  <li>shell; 2年以上linux运维，能熟练使用shell管理linux</li>
+  <li>java/C#/C/Python; 基本了解</li>
 </ul>
 
-
-<h4>操作系统</h4>
+<h4 id="section-11">操作系统</h4>
 
 <ul>
-<li>2年以上linux运维经验, 长期linux使用经验</li>
-<li>自己编译过linux系统，并翻译过LFS，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
+  <li>2年以上linux运维经验, 长期linux使用经验</li>
+  <li>自己编译过linux系统，并翻译过LFS，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
 </ul>
 
-
-<h4>数据库</h4>
+<h4 id="section-12">数据库</h4>
 
 <ul>
-<li>有基于mongodb, mysql开发经验</li>
+  <li>有基于mongodb, mysql开发经验</li>
 </ul>
 
-
-<h4>web开发</h4>
+<h4 id="web">web开发</h4>
 
 <ul>
-<li>熟悉ruby及js的web开发技术</li>
-<li>熟悉前端新技术angularJS</li>
+  <li>熟悉ruby及js的web开发技术</li>
+  <li>熟悉前端新技术angularJS</li>
 </ul>
 
-
-<h4>服务器开发</h4>
+<h4 id="section-13">服务器开发</h4>
 
 <ul>
-<li>熟练利用ruby/golang进行服务端开发</li>
+  <li>熟练利用ruby/golang进行服务端开发</li>
 </ul>
 
-
-<h3>自我评价</h3>
+<h3 id="section-14">自我评价</h3>
 
 <ul>
-<li>好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向</li>
-<li>自我激励，一旦认定目标，会投入100%精力完成</li>
-<li>崇拜Google</li>
+  <li>好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向</li>
+  <li>自我激励，一旦认定目标，会投入100%精力完成</li>
+  <li>崇拜Google</li>
 </ul>
 
 ]]></content>
@@ -248,7 +257,6 @@
     <content type="html"><![CDATA[<p>还记得大概一年前，也是在CSDN博客上读过一篇文章，拜读某个大牛描述了他为心仪的公司准备的过程，当时觉得很受触动，于是在博客下留言自勉，还记得他回复的话说：跨专业，更要提早准备。而现在，作为一个机械专业的学生，一路过关斩将拿到百度offer，除了激动之余，我能清晰的感觉到，自己的梦想画卷才刚刚展开。</p>
 
 <!-- more -->
-
 
 <p>说起来，我一开始完全没想到自己会干上IT这一行。大学学的是机械，但老实说，我对机械一点都没兴趣，中国应试教育的结果就是，我能高分考入大学，但却完全不知道自己想做什么，未来，仍然是一片迷茫。在大二的时候，学了C++编程的课程，但也没能勾起对编程的爱好。回想起来，我很庆幸自己没有读计算机专业，否则以中国老师的讲课方式，我现在应当是极度厌恶计算机的。不过我有一个好习惯，喜欢读书。记得有一个下午，我闲来无事去书店，抓起了一本Java的书，是个韩国人写的，随手翻翻竟然比国字教材将得有趣多了。就是这本书，唤醒了我对编程的热爱。</p>
 
@@ -275,14 +283,13 @@
     <link href="http://qjpcpu.github.io/blog/2014/02/13/first-post/"/>
     <updated>2014-02-13T22:12:38+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/13/first-post</id>
-    <content type="html"><![CDATA[<p><code>ruby
-puts 'Hello world!'
-</code></p>
+    <content type="html"><![CDATA[<p><code>ruby 
+puts 'Hello world!'	
+</code>
+<!-- more --></p>
 
-<!-- more -->
+<p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=073d9f3922a446237acaa567a8190333/4e4a20a4462309f7fa4d4851700e0cf3d7cad657.jpg?referer=ac43c04b5143fbf29c3b9313124d&amp;x=.jpg" alt="logo" /></p>
 
-
-<p> <img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=073d9f3922a446237acaa567a8190333/4e4a20a4462309f7fa4d4851700e0cf3d7cad657.jpg?referer=ac43c04b5143fbf29c3b9313124d&amp;x=.jpg" alt="logo" /></p>
 ]]></content>
   </entry>
   

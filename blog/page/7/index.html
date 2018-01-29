@@ -94,14 +94,15 @@
 <p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
 
 <ol>
-<li><p>建立数据表</p>
+  <li>
+    <p>建立数据表</p>
 
-<pre><code> $ rails g model customer name:string
+    <pre><code> $ rails g model customer name:string
  $ rails g model order customer_id:integer order_date:datetime
  $ rails g model rake db:migrate
-</code></pre></li>
+</code></pre>
+  </li>
 </ol>
-
 
 
 		
@@ -281,9 +282,11 @@
 			Go学习笔记-go Routine</a>
 	</h2>
 	<div class="entry-content">
-		<h2>Go routine indeed</h2>
+		<h2 id="go-routine-indeed">Go routine indeed</h2>
 
-<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
+<blockquote>
+  <p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p>
+</blockquote>
 
 <p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
 
@@ -295,7 +298,7 @@
 
 <p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
 
-<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
+<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS &gt; 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
 
 <p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
 
@@ -345,19 +348,19 @@
 			Go学习笔记-函数和包</a>
 	</h2>
 	<div class="entry-content">
-		<h3>函数定义</h3>
+		<h3 id="section">函数定义</h3>
 
 <p>go语言中使用func关键字定义函数，如main函数的定义：</p>
 
 <pre><code>func main() {
-     fmt.Println("main function")
+	 fmt.Println("main function")
 }
 </code></pre>
 
 <p>定义一个具有参数和返回值的函数：</p>
 
 <pre><code>func sum(a int,b int) int {
-    return a+b
+	return a+b
 }
 </code></pre>
 
@@ -403,28 +406,25 @@
 			Shell字符串处理</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.获取字符串长度</h3>
+		<h3 id="section">1.获取字符串长度</h3>
 
 <pre><code>${#string}
 </code></pre>
 
-<p>&ndash;</p>
+<p>-</p>
 
 <pre><code>[jason@localhost ~]$ str="hello,world"
 [jason@localhost ~]$ echo ${#str}
 11
 </code></pre>
 
-<h3>2.获取子串</h3>
+<h3 id="section-1">2.获取子串</h3>
 
 <pre><code>${string:position}
 ${string:position:length}
-$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号
-</code></pre>
+$(string:(-postion)) 如果使用负数，表示从右开始计数，注意负数必须使用括号 -
 
-<p>&ndash;</p>
-
-<pre><code>[jason@localhost ~]$ str=ABCDEFGHIJKLMN
+[jason@localhost ~]$ str=ABCDEFGHIJKLMN
 [jason@localhost ~]$ echo ${str:1}
 BCDEFGHIJKLMN
 [jason@localhost ~]$ echo ${str:1:2}
@@ -475,12 +475,12 @@ MN
 			Code Snippets</a>
 	</h2>
 	<div class="entry-content">
-		<h3>ruby文件utf-8编码</h3>
+		<h3 id="rubyutf-8">ruby文件utf-8编码</h3>
 
 <pre><code># -*- coding: UTF-8 -*-
 </code></pre>
 
-<h3>退出ssh登录后继续执行命令</h3>
+<h3 id="ssh">退出ssh登录后继续执行命令</h3>
 
 <p>如果long_run_cmd是一个长时间执行的命令，而我们又想在退出ssh后不至于中断该命令：</p>
 
@@ -531,18 +531,17 @@ MN
 	<div class="entry-content">
 		<p>Rake，顾名思义，就是Ruby的Make工具。</p>
 
-<h2>Rake的特性</h2>
+<h2 id="rake">Rake的特性</h2>
 
 <p>Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语法。不需要编辑XML文件，也不需要记忆古怪的makefile语法。</p>
 
 <ul>
-<li>可以定义任务（task），并为任务定义依赖。</li>
-<li>rake支持利用规则模式来合成隐式任务。</li>
-<li>灵活的文件列表，可以像列表一样操作。</li>
-<li>预置的库使得编写rakefile变得更加简单。</li>
-<li>支持并行执行多个任务。</li>
+  <li>可以定义任务（task），并为任务定义依赖。</li>
+  <li>rake支持利用规则模式来合成隐式任务。</li>
+  <li>灵活的文件列表，可以像列表一样操作。</li>
+  <li>预置的库使得编写rakefile变得更加简单。</li>
+  <li>支持并行执行多个任务。</li>
 </ul>
-
 
 <p>所以说，rakefile文件没有特殊的格式，仅仅是一个包含ruby代码的文件，不过，仍然有一些关于rakefile的约定，遵循这些约定，使得rake能够更好地处理任务和行为。</p>
 

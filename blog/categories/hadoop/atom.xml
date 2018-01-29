@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hadoop | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/hadoop/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,76 +18,71 @@
     <link href="http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce/"/>
     <updated>2014-09-03T20:40:36+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce</id>
-    <content type="html"><![CDATA[<h2>搭建hadoop环境</h2>
+    <content type="html"><![CDATA[<h2 id="hadoop">搭建hadoop环境</h2>
 
 <p>hadoop环境搭建具体可以参考<a href="http://hadoop.apache.org/docs/r1.2.1/single_node_setup.html">官方文档</a>。</p>
 
-<h2>搭建配置maven</h2>
+<h2 id="maven">搭建配置maven</h2>
 
 <p>map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。</p>
 
 <p>首先编译安装maven，并将<code>MAVEN_HOME/bin</code>加入PATH环境变量，这样就可以直接使用<code>mvn</code>命令了。这里说一下怎么利用maven编译生成我们后续示例中的jar包。</p>
 
-<h3>1. 使用maven新建一个工程</h3>
+<h3 id="maven-1">1. 使用maven新建一个工程</h3>
 
 <p>下面的命令创建一个包含java类<code>org.myorg.WordCount</code>的工程<code>WordCount</code>.</p>
 
 <p><code>bash
 mvn archetype:create -DgroupId=org.myorg -DartifactId=WordCount
-</code></p>
-
-<!--more-->
-
+</code>
+<!--more--></p>
 
 <p>工程结构如图：</p>
 
-<p>```
+<p><code>
 WordCount
 ├── pom.xml
-└── src</p>
-
-<pre><code>├── main
-│   └── java
-│       └── org
-│           └── myorg
-│               └── App.java
-└── test
-    └── java
-        └── org
-            └── myorg
-                └── AppTest.java
-</code></pre>
-
-<p>```</p>
+└── src
+    ├── main
+    │   └── java
+    │       └── org
+    │           └── myorg
+    │               └── App.java
+    └── test
+        └── java
+            └── org
+                └── myorg
+                    └── AppTest.java
+</code></p>
 
 <p>将<code>WordCount/src/main/java/org/myorg/App.java</code>重命名为<code>WordCount/src/main/java/org/myorg/WordCount.java</code>，并将示例代码复制进去，代码的细节稍后再看。</p>
 
 <p>由于java类中依赖于hadoop的java包，所以在maven的配置文件<code>pom.xml</code>标签对<code>&lt;dependencies/&gt;</code>内添加java类文件里引用的依赖：</p>
 
-<p><code>xml WordCount/pom.xml
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;
-  &lt;artifactId&gt;hadoop-mapreduce-client-core&lt;/artifactId&gt;
-  &lt;version&gt;2.4.1&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;
-  &lt;artifactId&gt;hadoop-common&lt;/artifactId&gt;
-  &lt;version&gt;2.4.1&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;
-  &lt;artifactId&gt;hadoop-mapreduce-client-common&lt;/artifactId&gt;
-  &lt;version&gt;2.4.1&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;
-  &lt;artifactId&gt;hadoop-mapreduce-client-jobclient&lt;/artifactId&gt;
-  &lt;version&gt;2.4.1&lt;/version&gt;
-&lt;/dependency&gt;
-</code></p>
+<p>```xml WordCount/pom.xml</p>
+<dependency>
+  <groupid>org.apache.hadoop</groupid>
+  <artifactid>hadoop-mapreduce-client-core</artifactid>
+  <version>2.4.1</version>
+</dependency>
+<dependency>
+  <groupid>org.apache.hadoop</groupid>
+  <artifactid>hadoop-common</artifactid>
+  <version>2.4.1</version>
+</dependency>
+<dependency>
+  <groupid>org.apache.hadoop</groupid>
+  <artifactid>hadoop-mapreduce-client-common</artifactid>
+  <version>2.4.1</version>
+</dependency>
+<dependency>
+  <groupid>org.apache.hadoop</groupid>
+  <artifactid>hadoop-mapreduce-client-jobclient</artifactid>
+  <version>2.4.1</version>
+</dependency>
+<p>```</p>
 
-<h3>2.编译生成jar包</h3>
+<h3 id="jar">2.编译生成jar包</h3>
 
 <p>在WordCount根目录下执行：</p>
 
@@ -96,74 +91,61 @@ mvn package
 </code>
 就生成了我们需要的<code>WordCount/target/WordCount-1.0-SNAPSHOT.jar</code>文件。</p>
 
-<h2>执行示例程序WordCount</h2>
+<h2 id="wordcount">执行示例程序WordCount</h2>
 
 <p>示例程序是一个单词计数程序，输入文件有两个：</p>
 
-<p>```</p>
+<p>```
+file01
+=======================
+Hello World Bye World</p>
 
-<h1>file01</h1>
-
-<p>Hello World Bye World</p>
-
-<h1>file02</h1>
-
+<h1 id="file02">file02</h1>
 <p>Hello Hadoop Goodbye Hadoop
-```</p>
+```
+### 1.上传数据文件</p>
 
-<h3>1.上传数据文件</h3>
+<p><code>bash
+#创建目录
+hdfs dfs -mkdir /user
+hdfs dfs -mkdir /user/hadoop
+#上传文件
+hdfs dfs -put file01 /user/hadoop/input
+hdfs dfs -put file02 /user/hadoop/input
+#查看文件是否上传上去了
+hdfs dfs -ls /user/hadoop/input
+</code></p>
 
-<p>```bash</p>
-
-<h1>创建目录</h1>
-
-<p>hdfs dfs -mkdir /user
-hdfs dfs -mkdir /user/hadoop</p>
-
-<h1>上传文件</h1>
-
-<p>hdfs dfs -put file01 /user/hadoop/input
-hdfs dfs -put file02 /user/hadoop/input</p>
-
-<h1>查看文件是否上传上去了</h1>
-
-<p>hdfs dfs -ls /user/hadoop/input
-```</p>
-
-<h3>2.提交并执行map-reduce任务</h3>
+<h3 id="map-reduce">2.提交并执行map-reduce任务</h3>
 
 <p><code>bash
 hadoop jar WordCount-1.0-SNAPSHOT.jar org.myorg.WordCount /user/hadoop/input /user/hadoop/output
 </code></p>
 
-<h3>3.获取结果</h3>
+<h3 id="section">3.获取结果</h3>
 
 <p>当任务执行完毕在输出目录会生成_SUCCESS文件：</p>
 
-<p>```bash
-hdfs dfs -ls /user/hadoop/output</p>
-
-<h1>输出是：</h1>
-
-<p>-rw-r&mdash;r&mdash;   1 hadoop supergroup          0 2014-09-03 20:20 /user/hadoop/output/_SUCCESS
--rw-r&mdash;r&mdash;   1 hadoop supergroup         41 2014-09-03 20:20 /user/hadoop/output/part-00000
-```</p>
+<p><code>bash
+hdfs dfs -ls /user/hadoop/output
+#输出是：
+-rw-r--r--   1 hadoop supergroup          0 2014-09-03 20:20 /user/hadoop/output/_SUCCESS
+-rw-r--r--   1 hadoop supergroup         41 2014-09-03 20:20 /user/hadoop/output/part-00000
+</code></p>
 
 <p>查看结果：</p>
 
-<p>```bash
-hdfs dfs -cat /user/hadoop/output/part-00000</p>
+<p><code>bash
+hdfs dfs -cat /user/hadoop/output/part-00000
+#输出：
+Bye	1
+Goodbye	1
+Hadoop	2
+Hello	2
+World	2
+</code></p>
 
-<h1>输出：</h1>
-
-<p>Bye 1
-Goodbye 1
-Hadoop  2
-Hello   2
-World   2
-```</p>
-
-<h2>Map-Reduce</h2>
+<h2 id="map-reduce-1">Map-Reduce</h2>
 
 <p>回过头来再看执行map-reduce的这个java类<code>WordCount.java</code>，该类包含了两个静态内部类<code>Map</code>和<code>Reduce</code>，都继承了<code>MapReduceBase</code>基类，并各自实现了<code>Mapper</code>和<code>Reducer</code>接口。</p>
 
@@ -180,32 +162,27 @@ import org.apache.hadoop.mapred.<em>;
 import org.apache.hadoop.util.</em>;</p>
 
 <p>public class WordCount {
-//执行map操作的静态类</p>
+//执行map操作的静态类
+    public static class Map extends MapReduceBase implements Mapper&lt;LongWritable, Text, Text, IntWritable&gt; {
+	private final static IntWritable one = new IntWritable(1);
+	private Text word = new Text();</p>
 
-<pre><code>public static class Map extends MapReduceBase implements Mapper&lt;LongWritable, Text, Text, IntWritable&gt; {
-private final static IntWritable one = new IntWritable(1);
-private Text word = new Text();
-
-public void map(LongWritable key, Text value, OutputCollector&lt;Text, IntWritable&gt; output, Reporter reporter) throws IOException {
+<pre><code>public void map(LongWritable key, Text value, OutputCollector&lt;Text, IntWritable&gt; output, Reporter reporter) throws IOException {
     String line = value.toString();
     StringTokenizer tokenizer = new StringTokenizer(line);
     while (tokenizer.hasMoreTokens()) {
-    word.set(tokenizer.nextToken());
-    //OutputCollector以单词本身为键，出现次数为键值进行计数，这里每出现一次计数1
-    output.collect(word, one);
+	word.set(tokenizer.nextToken());
+	//OutputCollector以单词本身为键，出现次数为键值进行计数，这里每出现一次计数1
+	output.collect(word, one);
     }
 }
-}
-</code></pre>
-
-<p>//执行reduce操作的静态类</p>
-
-<pre><code>public static class Reduce extends MapReduceBase implements Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+} //执行reduce操作的静态类
+public static class Reduce extends MapReduceBase implements Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
 public void reduce(Text key, Iterator&lt;IntWritable&gt; values, OutputCollector&lt;Text, IntWritable&gt; output, Reporter reporter) throws IOException {
     //map后的结果是同一个key对应一个value的列表，所以这里遍历values迭代器，累加所有值，即得到每个单词计数值
     int sum = 0;
     while (values.hasNext()) {
-    sum += values.next().get();
+	sum += values.next().get();
     }
     output.collect(key, new IntWritable(sum));
 }
@@ -228,39 +205,36 @@ FileInputFormat.setInputPaths(conf, new Path(args[0]));
 FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 
 JobClient.runJob(conf);
-}
+} } ```
 </code></pre>
-
-<p>}
-```</p>
 
 <p><code>Mapper</code>接口是一个泛型接口,该接口4个参数分别指定了map方法的<code>输入键值，输入值，输出键值，输出值</code>类型。 类似的<code>Reducer</code>接口也是个泛型接口，它的前两个参数和map的后两个参数类型对应，从而也间接决定了后两个参数的类型。</p>
 
 <p>简而言之，map的过程是把一行行的输入变成：</p>
 
-<p>key1 => val1</p>
+<p>key1 =&gt; val1</p>
 
-<p>key2 => val2</p>
+<p>key2 =&gt; val2</p>
 
-<p>key3 => val1</p>
+<p>key3 =&gt; val1</p>
 
 <p>而reduce的输入是排序过后map的输出：</p>
 
-<p>key1 => [val1,val&hellip;..]</p>
+<p>key1 =&gt; [val1,val…..]</p>
 
-<p>key2 => [val2,val&hellip;..]</p>
+<p>key2 =&gt; [val2,val…..]</p>
 
-<p>&hellip;</p>
+<p>…</p>
 
 <p>reduce的操作就是把这个输入合并成我们想要的东西。</p>
 
 <p>最后，<code>WordCount</code>类的<code>main</code>方法里设置输入输出，然后执行任务。</p>
 
-<h2>以streaming方式执行map-reduce任务</h2>
+<h2 id="streamingmap-reduce">以streaming方式执行map-reduce任务</h2>
 
 <p>通常来说，简单的map-reduce任务还是用脚本来写比较快，比如ruby,python或者linux shell，这里使用bash来重写一次这个单词计数。</p>
 
-<h3>1. map程序</h3>
+<h3 id="map">1. map程序</h3>
 
 <p>hadoop的streaming是流式处理，即上一操作的输入作为下一操作的输出，基本可以等价用管道来看：</p>
 
@@ -269,25 +243,21 @@ cat data-file | mapper.sh | sort | reducer.sh
 </code>
 输入输出都是走的标准输入输出，所以改写的map程序非常简单：</p>
 
-<p>```bash map.sh map操作</p>
+<p><code>bash map.sh map操作
+#!/bin/bash
+awk '{for(i=1;i&lt;=NF;i++) print $i" 1"}'
+</code></p>
 
-<h1>!/bin/bash</h1>
-
-<p>awk &lsquo;{for(i=1;i&lt;=NF;i++) print $i" 1"}&rsquo;
-```</p>
-
-<h3>2. reduce程序</h3>
+<h3 id="reduce">2. reduce程序</h3>
 
 <p>类似的重写reduce：</p>
 
-<p>```bash reduce.sh  reduce操作</p>
+<p><code>bash reduce.sh  reduce操作
+#!/bin/bash
+awk '{arr[$1]+=1}END{for(k in arr) print k" "arr[k]}'
+</code></p>
 
-<h1>!/bin/bash</h1>
-
-<p>awk &lsquo;{arr[$1]+=1}END{for(k in arr) print k" &ldquo;arr[k]}&rsquo;
-```</p>
-
-<h3>3. 提交streaming任务</h3>
+<h3 id="streaming">3. 提交streaming任务</h3>
 
 <p>提交streaming类型的任务需要指定一个额外的jar包<code>$HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.4.1.jar</code>，还要在命令里指出map和recude的脚本</p>
 
@@ -297,17 +267,15 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.4.1.jar  -inpu
 
 <p>任务执行的结果和之前是一致的：</p>
 
-<p>```bash
-hdfs dfs -cat /user/hadoop/output1/part-00000</p>
-
-<h1>输出:</h1>
-
-<p>Hadoop 2
+<p><code>bash
+hdfs dfs -cat /user/hadoop/output1/part-00000
+#输出:
+Hadoop 2
 Goodbye 1
 Bye 1
 Hello 2
 World 2
-```</p>
+</code></p>
 ]]></content>
   </entry>
   

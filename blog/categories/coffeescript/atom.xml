@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coffeescript | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/coffeescript/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -20,35 +20,28 @@
     <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<p>```coffee-script  example.coffee  异步回调中的陷阱
-chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
+<p><code>coffee-script  example.coffee  异步回调中的陷阱
+chars = ['A', 'B', 'C']
 for ch in chars
-  setTimeout(&ndash;></p>
-
-<pre><code>console.log ch
-</code></pre>
-
-<p>  ,10)
-```</p>
+  setTimeout(-&gt;
+    console.log ch
+  ,10)
+</code></p>
 
 <!--more-->
-
 
 <p>这个结果会输出<code>C C C</code>而不是<code>A B C</code>，为什么会这样是因为js的异步机制，在普通代码执行完毕后才会处理事件，而在处理时间打印console时<code>ch</code>已经是<code>C</code>了，所以三个回调都会打印<code>C</code>。</p>
 
 <p>给出的改进版本也很直观：</p>
 
-<p>```coffee-script example-v2.coffee 恰当控制闭包环境中的变量
-chars = [&lsquo;A&rsquo;, &lsquo;B&rsquo;, &lsquo;C&rsquo;]
+<p><code>coffee-script example-v2.coffee 恰当控制闭包环境中的变量
+chars = ['A', 'B', 'C']
 for ch in chars
-  do (ch) &ndash;></p>
-
-<pre><code>setTimeout(-&gt;
-  console.log ch
-,10)
-</code></pre>
-
-<p>```</p>
+  do (ch) -&gt;
+    setTimeout(-&gt;
+      console.log ch
+    ,10)
+</code></p>
 
 <p>为啥这样改呢，其实原因严格来说和闭包有关系。</p>
 
@@ -61,32 +54,23 @@ for ch in chars
 <p>```go example.go golang的闭包示例
 package main</p>
 
-<p>import (</p>
+<p>import (
+	“fmt”
+	“time”
+)</p>
 
-<pre><code>"fmt"
-"time"
-</code></pre>
-
-<p>)</p>
-
-<p>func example() {</p>
-
-<pre><code>i := 0
-go func() {
-    time.Sleep(2 * time.Second)
-    fmt.Println(i)
-}()
-i += 1
-</code></pre>
-
-<p>}
-func main() {</p>
-
-<pre><code>example()
-time.Sleep(5 * time.Second)
-</code></pre>
-
-<p>}
+<p>func example() {
+	i := 0
+	go func() {
+		time.Sleep(2 * time.Second)
+		fmt.Println(i)
+	}()
+	i += 1
+}
+func main() {
+	example()
+	time.Sleep(5 * time.Second)
+}
 ```</p>
 
 <p>输出会是1而不是0.</p>

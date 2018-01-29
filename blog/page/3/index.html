@@ -135,20 +135,17 @@
 	<div class="entry-content">
 		<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<figure class='code'><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
-</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
-</span><span class='line'>  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="coffee-script"><span class="line"><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
+</span><span class="line">  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class="line">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
+</span><span class="line">  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -192,55 +189,53 @@
 			Struct Tags</a>
 	</h2>
 	<div class="entry-content">
-		<h3>结构体标签</h3>
+		<h3 id="section">结构体标签</h3>
 
 <p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
-</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
-</span><span class='line'>  <span class="s">&quot;reflect&quot;</span>
-</span><span class='line'><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">type</span> <span class="nx">S</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">F</span> <span class="kt">string</span> <span class="s">`species:&quot;gopher&quot; color:&quot;blue&quot;`</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">s</span> <span class="o">:=</span> <span class="nx">S</span><span class="p">{}</span>
-</span><span class='line'>  <span class="nx">st</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
-</span><span class='line'>  <span class="nx">field</span> <span class="o">:=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">Field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;species&quot;</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
+</span><span class="line">	<span class="s">&quot;reflect&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="kd">type</span> <span class="nx">S</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">F</span> <span class="kt">string</span> <span class="s">`species:&quot;gopher&quot; color:&quot;blue&quot;`</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">
+</span><span class="line">	<span class="nx">s</span> <span class="o">:=</span> <span class="nx">S</span><span class="p">{}</span>
+</span><span class="line">	<span class="nx">st</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">field</span> <span class="o">:=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">Field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;species&quot;</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>输出结果</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>blue gopher
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">blue gopher
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>结构体<code>S</code>的<code>F</code>成员具有两个属性<code>species</code>和<code>color</code>，其属性的值分别为<code>blue</code>和<code>gopher</code>。如果不使用反射去取这个属性，在定义时写不写属性都是无所谓的。</p>
 
@@ -286,43 +281,39 @@
 			你不知道的Go</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.匿名结构</h3>
+		<h3 id="section">1.匿名结构</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">name</span>      <span class="kt">string</span>
-</span><span class='line'>    <span class="nx">age</span> <span class="kt">int</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">name</span>      <span class="kt">string</span>
+</span><span class="line">    <span class="nx">age</span> <span class="kt">int</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>声明时初始化：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">name</span> <span class="kt">string</span>
-</span><span class='line'>  <span class="nx">age</span>  <span class="kt">int</span>
-</span><span class='line'><span class="p">}{</span>
-</span><span class='line'>  <span class="s">&quot;Jack&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="mi">12</span><span class="p">,</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">name</span> <span class="kt">string</span>
+</span><span class="line">	<span class="nx">age</span>  <span class="kt">int</span>
+</span><span class="line"><span class="p">}{</span>
+</span><span class="line">	<span class="s">&quot;Jack&quot;</span><span class="p">,</span>
+</span><span class="line">	<span class="mi">12</span><span class="p">,</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -366,31 +357,27 @@
 			信任关系建立</a>
 	</h2>
 	<div class="entry-content">
-		<h3>建立host1到host2的信任关系</h3>
+		<h3 id="host1host2">建立host1到host2的信任关系</h3>
 
-<h4>如果A的rsa文件不存在可以这样建立</h4>
+<h4 id="arsa">如果A的rsa文件不存在可以这样建立</h4>
 
 <p>首先在<code>host1</code>上：</p>
 
-<figure class='code'><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h4>添加信任关系</h4>
+<h4 id="section">添加信任关系</h4>
 
 <p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
 
-<h4>避免第一次连接出现添加fingerprint的询问</h4>
+<h4 id="fingerprint">避免第一次连接出现添加fingerprint的询问</h4>
 
 <p>在<code>host1</code>上执行：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -478,7 +465,7 @@
 			Sort</a>
 	</h2>
 	<div class="entry-content">
-		<h3>sort排序常用参数</h3>
+		<h3 id="sort">sort排序常用参数</h3>
 
 <p>-n : 按照数值排序</p>
 
@@ -488,27 +475,25 @@
 
 <p>-t : 指定分段符号</p>
 
-<p>-k : 按照第几个字段(1&hellip;)排序</p>
+<p>-k : 按照第几个字段(1…)排序</p>
 
 <p>默认sort是按照字符排序的。</p>
 
-<h3>sort临时目录</h3>
+<h3 id="sort-1">sort临时目录</h3>
 
 <p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>sort不为人知的一个深坑</h3>
+<h3 id="sort-2">sort不为人知的一个深坑</h3>
 
 <p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>为什么这样设置，可以<code>man sort</code>看一下它的warning部分的说明。</p>
 
@@ -553,16 +538,14 @@
 			Server Load</a>
 	</h2>
 	<div class="entry-content">
-		<h3>先看几个处理器</h3>
+		<h3 id="section">先看几个处理器</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>grep -c <span class="s1">&#39;model name&#39;</span> /proc/cpuinfo
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">grep -c <span class="s1">&#39;model name&#39;</span> /proc/cpuinfo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>比如结果是4</p>
 
-<h3>top查看系统整体情况</h3>
+<h3 id="top">top查看系统整体情况</h3>
 
 <p>执行<code>top</code>命令查看系统负载情况：
 1. 关注<code>load average</code>系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
@@ -570,7 +553,7 @@
 3. 第四行us用户占用cpu，sy系统占用cpu，ni，id空闲比例，wa io等待，hi，si swap交换
 4. 最后是内存情况和交换分区</p>
 
-<h3>iostat检查io情况</h3>
+<h3 id="iostatio">iostat检查io情况</h3>
 
 <p><code>iostat -x</code>，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。</p>
 
@@ -616,9 +599,8 @@
 			Linux下查看线程数</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1. cat /proc/${pid}/status</h3>
-
-<h3>2. ps -mp &lt;PID></h3>
+		<h3 id="cat-procpidstatus">1. cat /proc/${pid}/status</h3>
+<p>### 2. ps -mp &lt;PID&gt;</p>
 
 		
 		
@@ -665,10 +647,9 @@
 
 <p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(<code>route -n</code>)，外网ip没得路由规则走，添加默认网关后ok：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>route add default gw 10.46.148.1
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">route add default gw 10.46.148.1
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>提醒自己以后把学到的东西利用起来！</p>
 

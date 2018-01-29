@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rack Based Application</h2>
-	<div class="entry-content"><h3>1.什么是rack</h3>
+	<div class="entry-content"><h3 id="rack">1.什么是rack</h3>
 
 <p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
 
@@ -88,7 +88,7 @@
   body = "Hello, World!"
   [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
 end
-
+ 
 run app
 </code></pre>
 
@@ -99,20 +99,21 @@ run app
 
 <!-- more -->
 
-
-<h3>2.一个简单的rack-based-application</h3>
+<h3 id="rack-based-application">2.一个简单的rack-based-application</h3>
 
 <p>编写一个最简单的rack based application，ok，需要一个能响应call方法的对象，在该对象上调用call方法能返回[ status_code, headers, body ]列表。在文件夹rack_based下新建simple.ru文件，*.ru被称为rakcup文件，rack使用该文件来启动rack应用。该文件内容为：</p>
 
 <pre><code>run lambda { |env| [200,{'Content-Type'=&gt;'text/plain'},['OK']]}
 </code></pre>
 
-<p>That&rsquo;s all.这个基于rack的应用已经编写完成了，在terminal中键入下面命令即可启动这个应用了：</p>
+<p>That’s all.这个基于rack的应用已经编写完成了，在terminal中键入下面命令即可启动这个应用了：</p>
 
 <pre><code>rackup rack_based/simple.ru
 </code></pre>
 
-<blockquote><p>注：rack默认的rackup文件名是<code>config.ru</code>，使用该文件名在同级目录启动应用直接执行<code>rackup</code>即可启动应用。</p></blockquote>
+<blockquote>
+  <p>注：rack默认的rackup文件名是<code>config.ru</code>，使用该文件名在同级目录启动应用直接执行<code>rackup</code>即可启动应用。</p>
+</blockquote>
 
 <p>rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动该应用：</p>
 
@@ -122,7 +123,7 @@ Maximum connections set to 1024
 Listening on 0.0.0.0:9292, CTRL+C to stop
 </code></pre>
 
-<p>在浏览器中访问<a href="http://localhost:9292">http://localhost:9292</a> 即可看到页面显示“OK”，说明应用正常工作了。</p>
+<p>在浏览器中访问http://localhost:9292 即可看到页面显示“OK”，说明应用正常工作了。</p>
 
 <p>Rails也是基于rack的框架，rails的rackup配置文件是位于应用根目录下的config.ru：</p>
 
@@ -135,48 +136,47 @@ run Rails.application
 <p>另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：</p>
 
 <pre><code>module Simple
-    class Application
-        def self.call(env)
-            [200,{'Content-Type'=&gt;'text/plain'},[env.to_s]]
-        end
-    end
+	class Application
+		def self.call(env)
+			[200,{'Content-Type'=&gt;'text/plain'},[env.to_s]]
+		end
+	end
 end
 run Simple::Application
 </code></pre>
 
 <p>启动该应用，则可以看到结果：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>"GATEWAY_INTERFACE"=&gt;"CGI/1.1",
-</span><span class='line'>"PATH_INFO"=&gt;"/",
-</span><span class='line'>"QUERY_STRING"=&gt;"",
-</span><span class='line'>"REMOTE_ADDR"=&gt;"127.0.0.1",
-</span><span class='line'>"REMOTE_HOST"=&gt;"localhost",
-</span><span class='line'>"REQUEST_METHOD"=&gt;"GET",
-</span><span class='line'>"REQUEST_URI"=&gt;"http://localhost:9292/",
-</span><span class='line'>"SCRIPT_NAME"=&gt;"",
-</span><span class='line'>"SERVER_NAME"=&gt;"localhost",
-</span><span class='line'>"SERVER_PORT"=&gt;"9292",
-</span><span class='line'>"SERVER_PROTOCOL"=&gt;"HTTP/1.1",
-</span><span class='line'>...........
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{
+</span><span class="line">"GATEWAY_INTERFACE"=&gt;"CGI/1.1",
+</span><span class="line">"PATH_INFO"=&gt;"/",
+</span><span class="line">"QUERY_STRING"=&gt;"",
+</span><span class="line">"REMOTE_ADDR"=&gt;"127.0.0.1",
+</span><span class="line">"REMOTE_HOST"=&gt;"localhost",
+</span><span class="line">"REQUEST_METHOD"=&gt;"GET",
+</span><span class="line">"REQUEST_URI"=&gt;"http://localhost:9292/",
+</span><span class="line">"SCRIPT_NAME"=&gt;"",
+</span><span class="line">"SERVER_NAME"=&gt;"localhost",
+</span><span class="line">"SERVER_PORT"=&gt;"9292",
+</span><span class="line">"SERVER_PROTOCOL"=&gt;"HTTP/1.1",
+</span><span class="line">...........
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>3.middleware</h3>
+<h3 id="middleware">3.middleware</h3>
 
 <p>这是一个rack应用的请求栈：</p>
 
@@ -186,7 +186,7 @@ run Simple::Application
 
 <p>由这张图可以看出来，rack是web server和应用之间的桥梁，或者说适配器。另外，rack应用处在请求栈的最后一层，web请求经过了无数的middleware后才真正到达应用这里。middleware所起的作用和java struts中的拦截器概念非常相似，它们都负责将请求逐层包裹最后递交给应用的是一个非常友好的请求包，使得应用可以更方便地处理逻辑。</p>
 
-<p>下面就来创建一个自定义的middleware，该middleware可以将请求网页内所有&lt;h1>标记内的内容的e改写成大写的X。</p>
+<p>下面就来创建一个自定义的middleware，该middleware可以将请求网页内所有&lt;h1&gt;标记内的内容的e改写成大写的X。</p>
 
 <p>首先新建一个rails app，在新建完成后，实用下面命令可以查看rails已经使用的middleware：</p>
 
@@ -206,22 +206,22 @@ run Demo::Application.routes
 <pre><code>require 'nokogiri'
 
 class LinkJumbler
-    def initialize(app,letters)
-        @app=app
-        @letters=letters
-    end
+	def initialize(app,letters)
+		@app=app
+		@letters=letters
+	end
 
-    def call(env)
-        status, headers, response = @app.call(env)
-        body=Nokogiri::HTML(response.body)
-        body.css("h1").each do |a|
-            @letters.each do |f,r|
-                a.content=a.content.gsub f.to_s,r.to_s
-            end
-        end
+	def call(env)
+		status, headers, response = @app.call(env)
+		body=Nokogiri::HTML(response.body)
+		body.css("h1").each do |a|
+			@letters.each do |f,r|
+				a.content=a.content.gsub f.to_s,r.to_s
+			end
+		end
 
-        [status,headers,[body.to_s]]
-    end
+		[status,headers,[body.to_s]]
+	end
 end
 </code></pre>
 
@@ -257,18 +257,19 @@ use LinkJumbler
 run Demo::Application.routes
 </code></pre>
 
-<blockquote><p>实际上，rails只是利用自己的一套tricky的把戏自动添加了这个middleware，在其他rack based application中，比如sinatra，在config.ru文件里的<code>run xxx</code>方法前加上<code>use LinkJumbler</code>语句即完成添加middleware.</p></blockquote>
+<blockquote>
+  <p>实际上，rails只是利用自己的一套tricky的把戏自动添加了这个middleware，在其他rack based application中，比如sinatra，在config.ru文件里的<code>run xxx</code>方法前加上<code>use LinkJumbler</code>语句即完成添加middleware.</p>
+</blockquote>
 
 <p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
 
 <p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&amp;x=.jpg" alt="image" /></p>
 
-<h3>4. 其他</h3>
+<h3 id="section">4. 其他</h3>
 
 <ul>
-<li>rack based application(比如sinatra)可能会依赖于一个环境变量<code>RACK_ENV</code>，取值<code>production,development,test</code></li>
+  <li>rack based application(比如sinatra)可能会依赖于一个环境变量<code>RACK_ENV</code>，取值<code>production,development,test</code></li>
 </ul>
-
 </div>
 
 

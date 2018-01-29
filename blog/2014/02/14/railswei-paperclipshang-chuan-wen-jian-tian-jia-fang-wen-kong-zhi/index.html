@@ -80,14 +80,13 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rails为paperclip上传文件添加访问控制</h2>
-	<div class="entry-content"><h3>0 前言</h3>
+	<div class="entry-content"><h3 id="section">0 前言</h3>
 
 <p>由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。</p>
 
 <!-- more -->
 
-
-<h3>1 更改paperclip默认的上传位置</h3>
+<h3 id="paperclip">1 更改paperclip默认的上传位置</h3>
 
 <p>若有一个story类，每个story有一个封面cover，该cover是一张图片，就可以这样更改model定义：</p>
 
@@ -103,7 +102,7 @@ end
 
 <p>这里，将保存paperclip的上传文件的目录设置为rails工程根目录下的paperclip目录。</p>
 
-<h3>2 添加controller</h3>
+<h3 id="controller">2 添加controller</h3>
 
 <p>在routes.rb中添加路由：</p>
 

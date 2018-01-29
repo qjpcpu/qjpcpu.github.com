@@ -89,11 +89,11 @@
 			初识jruby之安装配置jrubyonrails</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1. prerequesite</h3>
+		<h3 id="prerequesite">1. prerequesite</h3>
 
 <p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
 
-<h3>2. 安装rails</h3>
+<h3 id="rails">2. 安装rails</h3>
 
 <p>安装rails4.0.0：</p>
 
@@ -149,13 +149,13 @@ Rails 4.0.0
 	</h2>
 	<div class="entry-content">
 		<pre><code>lambda{
-    shared=10
-    Kernel.send :define_method, :counter do
-        shared+=1
-    end
-    Kernel.send :define_method, :show do
-        shared
-    end
+	shared=10
+	Kernel.send :define_method, :counter do
+		shared+=1
+	end
+	Kernel.send :define_method, :show do
+		shared
+	end
 }.call
 
 show #=&gt;10
@@ -205,7 +205,7 @@ show #=&gt;13
 			Rails 在javascript中使用ruby对象</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.在javascript中使用ruby简单对象</h3>
+		<h3 id="javascriptruby">1.在javascript中使用ruby简单对象</h3>
 
 <p>如，需要将ruby对象转换成javascript的简单变量：</p>
 
@@ -214,7 +214,7 @@ show #=&gt;13
 &lt;% end %&gt;
 </code></pre>
 
-<p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
+<p>此时的&lt;%=  %&gt;是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
 
 
 		
@@ -260,7 +260,7 @@ show #=&gt;13
 	<div class="entry-content">
 		<p>rails URL路由的最权威文档当然是其官方站点Rails routing from the outside in，我这里只提几个文档中常用的要点。</p>
 
-<h3>1.CRUB</h3>
+<h3 id="crub">1.CRUB</h3>
 
 <p>由resources建立的资源，是rails中最常见的路由方式，不用多说。</p>
 
@@ -398,8 +398,8 @@ show #=&gt;13
 		<p>若存在如下Post model：</p>
 
 <pre><code>class Post &lt; ActiveRecord::Base
-    belongs_to :author
-    has_many :comments
+	belongs_to :author
+	has_many :comments
 end
 </code></pre>
 
@@ -456,39 +456,35 @@ end
 	<div class="entry-content">
 		<p>以经典的customer-order为例</p>
 
-<h3>1. 在创建数据表时直接创建索引</h3>
+<h3 id="section">1. 在创建数据表时直接创建索引</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
-</span><span class='line'>rails g model order customer:references
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rails g model customer
+</span><span class="line">rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">change</span>
+</span><span class="line">		<span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class="line">				<span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class="line">				<span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class="line">		<span class="k">end</span>
+</span><span class="line">		<span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class="line">	<span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -532,7 +528,7 @@ end
 			Rails使用devise验证用户</a>
 	</h2>
 	<div class="entry-content">
-		<h3>安装配置devise</h3>
+		<h3 id="devise">安装配置devise</h3>
 
 <p>在gemfile中添加一行：</p>
 
@@ -592,20 +588,20 @@ rake db:migrate
 			Ruby线程</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1. 创建线程</h3>
+		<h3 id="section">1. 创建线程</h3>
 
-<pre><code>    Thread.new do
-        3.times do 
-            sleep 3
-            puts "Thread #{Thread.current.object_id} running..."
-        end
-    end
+<pre><code>	Thread.new do
+		3.times do 
+			sleep 3
+			puts "Thread #{Thread.current.object_id} running..."
+		end
+	end
 </code></pre>
 
 <p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
 
 <pre><code>class Book
-    attr_accessor :name
+	attr_accessor :name
 end
 num = 0
 count = 0
@@ -614,10 +610,10 @@ book.name = 'ybur'
 puts "main Thread=#{num} count=#{count} book=#{book.name}"
 
 t.Thread.new(num,book) do |n,b|
-    n+=1
-    count+=1
-    b.name.reverse!
-    puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+	n+=1
+	count+=1
+	b.name.reverse!
+	puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
 end
 t.join
 puts "main Thread:num=#{num} count=#{count} book=#{book.name}"

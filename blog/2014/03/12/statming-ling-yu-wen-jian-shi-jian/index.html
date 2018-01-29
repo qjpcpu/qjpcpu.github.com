@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="stat命令 stat命令常用来获取文件三个时间access time,modify time和change time $ stat access.log File: `access.log' Size: 1559877779 Blocks: 3049624 IO Block: 4096 &hellip;">
+	<meta name="description" content="stat命令 stat命令常用来获取文件三个时间access time,modify time和change time $ stat access.log File: `access.log' Size: 1559877779	Blocks: 3049624 IO Block: 4096 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,14 +80,14 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Stat命令与文件时间</h2>
-	<div class="entry-content"><h3>stat命令</h3>
+	<div class="entry-content"><h3 id="stat">stat命令</h3>
 
 <p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
 
 <pre><code>$ stat access.log
   File: `access.log'
-  Size: 1559877779  Blocks: 3049624    IO Block: 4096   regular file
-Device: ca20h/51744d    Inode: 16269326    Links: 1
+  Size: 1559877779	Blocks: 3049624    IO Block: 4096   regular file
+Device: ca20h/51744d	Inode: 16269326    Links: 1
 Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
 Access: 2014-03-09 21:58:33.000000000 +0800
 Modify: 2014-03-07 08:17:36.000000000 +0800
@@ -106,8 +106,7 @@ $ stat -c %z access.log #获取change time
 
 <!--more-->
 
-
-<h3>三个时间</h3>
+<h3 id="section">三个时间</h3>
 
 <p><code>access time</code>对应文件访问时间，只要有读操作就会更新这个时间。</p>
 

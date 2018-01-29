@@ -88,42 +88,37 @@ for ch in chars setTimeout &hellip;">
 	<h2 class="title">Js异步回调与闭包</h2>
 	<div class="entry-content"><p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
-<figure class='code'><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
-</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
-</span><span class='line'>  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="coffee-script"><span class="line"><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
+</span><span class="line">  <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class="line">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
+</span><span class="line">  <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!--more-->
-
 
 <p>这个结果会输出<code>C C C</code>而不是<code>A B C</code>，为什么会这样是因为js的异步机制，在普通代码执行完毕后才会处理事件，而在处理时间打印console时<code>ch</code>已经是<code>C</code>了，所以三个回调都会打印<code>C</code>。</p>
 
 <p>给出的改进版本也很直观：</p>
 
-<figure class='code'><figcaption><span>example-v2.coffee 恰当控制闭包环境中的变量</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='coffee-script'><span class='line'><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
-</span><span class='line'>  <span class="nx">do</span> <span class="nf">(ch) -&gt;</span>
-</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
-</span><span class='line'>    <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>example-v2.coffee 恰当控制闭包环境中的变量</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="coffee-script"><span class="line"><span class="nv">chars = </span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">chars</span>
+</span><span class="line">  <span class="nx">do</span> <span class="nf">(ch) -&gt;</span>
+</span><span class="line">    <span class="nx">setTimeout</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class="line">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">ch</span>
+</span><span class="line">    <span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>为啥这样改呢，其实原因严格来说和闭包有关系。</p>
 
@@ -133,46 +128,45 @@ for ch in chars setTimeout &hellip;">
 
 <p>这个问题其实在别的语言同样存在，只不过其他语言很大部分都同步执行闭包，导致看不出差别，实际上是一样的，看下面的go语言示例：</p>
 
-<figure class='code'><figcaption><span>example.go golang的闭包示例</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
-</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
-</span><span class='line'>  <span class="s">&quot;time&quot;</span>
-</span><span class='line'><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">func</span> <span class="nx">example</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">}()</span>
-</span><span class='line'>  <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">example</span><span class="p">()</span>
-</span><span class='line'>  <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>example.go golang的闭包示例</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
+</span><span class="line">	<span class="s">&quot;time&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">example</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
+</span><span class="line">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span><span class="line">		<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}()</span>
+</span><span class="line">	<span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">example</span><span class="p">()</span>
+</span><span class="line">	<span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>输出会是1而不是0.</p>
 

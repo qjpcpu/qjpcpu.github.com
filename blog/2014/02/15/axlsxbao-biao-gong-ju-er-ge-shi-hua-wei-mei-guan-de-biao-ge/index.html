@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Axlsx报表工具(二)格式化为美观的表格</h2>
-	<div class="entry-content"><h3>基础知识</h3>
+	<div class="entry-content"><h3 id="section">基础知识</h3>
 
 <p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
 
@@ -88,7 +88,6 @@
 </code></pre>
 
 <!-- more -->
-
 
 <p>所有的格式设置操作都在options这个hash中指定，该hash的键名非常好记，下面是常见的键值列表：</p>
 
@@ -198,7 +197,7 @@ shrinkToFit (Boolean)
 readingOrder (Integer)
 </code></pre>
 
-<h3>格式化报表示例</h3>
+<h3 id="section-1">格式化报表示例</h3>
 
 <p>格式化报表是以单元格为单位执行的，通常在添加行的时候，在add_row第二个hash参数里指定：</p>
 
@@ -213,66 +212,65 @@ sheet.add_row ["a', "b"], :style =&gt; header
 
 <p>下面是创建如图报表的部分代码：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span> <span class="k">do</span> <span class="o">|</span><span class="n">wb</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">styles</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">styles</span>
-</span><span class='line'>    <span class="n">header</span>     <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFFF33&quot;</span><span class="p">,</span><span class="ss">:fg_color</span><span class="o">=&gt;</span><span class="s2">&quot;0033CC&quot;</span><span class="p">,</span> <span class="ss">:sz</span> <span class="o">=&gt;</span> <span class="mi">16</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span><span class="p">}</span>
-</span><span class='line'>    <span class="n">tbl_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span><span class="o">=&gt;</span><span class="s2">&quot;99FF33&quot;</span><span class="p">,</span><span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">ind_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'>    <span class="n">col_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">label</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">money</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span>
-</span><span class='line'>    <span class="n">t_label</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
-</span><span class='line'>    <span class="n">t_money</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>               <span class="c1">#添加空行</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;College Budget&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">header</span><span class="o">]</span>        <span class="c1">#标题，大字体居中</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;What&#39;s coming in this month.&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;How am I doing&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="n">tbl_header</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="o">]</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Estimated monthly net income&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Monthly income&quot;</span><span class="p">,</span> <span class="s2">&quot;=C9&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="o">]</span>
-</span><span class='line'>      <span class="c1">#省略部分代码</span>
-</span><span class='line'>      <span class="sx">%w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">range</span><span class="o">|</span> <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span><span class="p">(</span><span class="n">range</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>      <span class="n">sheet</span><span class="o">.</span><span class="n">column_widths</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">use_shared_strings</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>  <span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;styles.xlsx&#39;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;axlsx&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="ss">Axlsx</span><span class="p">:</span><span class="ss">:Package</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">workbook</span> <span class="k">do</span> <span class="o">|</span><span class="n">wb</span><span class="o">|</span>
+</span><span class="line">    <span class="n">styles</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">styles</span>
+</span><span class="line">    <span class="n">header</span>     <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFFF33&quot;</span><span class="p">,</span><span class="ss">:fg_color</span><span class="o">=&gt;</span><span class="s2">&quot;0033CC&quot;</span><span class="p">,</span> <span class="ss">:sz</span> <span class="o">=&gt;</span> <span class="mi">16</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span><span class="p">}</span>
+</span><span class="line">    <span class="n">tbl_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span><span class="o">=&gt;</span><span class="s2">&quot;99FF33&quot;</span><span class="p">,</span><span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
+</span><span class="line">    <span class="n">ind_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">}</span>
+</span><span class="line">    <span class="n">col_header</span> <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span><span class="p">,</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:horizontal</span> <span class="o">=&gt;</span> <span class="ss">:center</span> <span class="p">}</span>
+</span><span class="line">    <span class="n">label</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:alignment</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:indent</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class="line">    <span class="n">money</span>      <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+</span><span class="line">    <span class="n">t_label</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
+</span><span class="line">    <span class="n">t_money</span>    <span class="o">=</span> <span class="n">styles</span><span class="o">.</span><span class="n">add_style</span> <span class="ss">:b</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:num_fmt</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:bg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FFDFDEDF&quot;</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">wb</span><span class="o">.</span><span class="n">add_worksheet</span> <span class="k">do</span> <span class="o">|</span><span class="n">sheet</span><span class="o">|</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>               <span class="c1">#添加空行</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;College Budget&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">header</span><span class="o">]</span>        <span class="c1">#标题，大字体居中</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;What&#39;s coming in this month.&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;How am I doing&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="n">tbl_header</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="s2">&quot;Amount&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">ind_header</span><span class="p">,</span> <span class="n">col_header</span><span class="o">]</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">add_row</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Estimated monthly net income&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;Monthly income&quot;</span><span class="p">,</span> <span class="s2">&quot;=C9&quot;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:style</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">money</span><span class="o">]</span>
+</span><span class="line">      <span class="c1">#省略部分代码</span>
+</span><span class="line">      <span class="sx">%w(B4:C4 E4:F4 B11:C11 E11:F11 B2:F2)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">range</span><span class="o">|</span> <span class="n">sheet</span><span class="o">.</span><span class="n">merge_cells</span><span class="p">(</span><span class="n">range</span><span class="p">)</span> <span class="p">}</span>
+</span><span class="line">      <span class="n">sheet</span><span class="o">.</span><span class="n">column_widths</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="mi">2</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">use_shared_strings</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">serialize</span> <span class="s1">&#39;styles.xlsx&#39;</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 </div>
 
 

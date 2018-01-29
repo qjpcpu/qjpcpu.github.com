@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">状态转移</h2>
-	<div class="entry-content"><h3>0. 引言</h3>
+	<div class="entry-content"><h3 id="section">0. 引言</h3>
 
 <p>昨天遇到一个问题，就是关于对象状态转移的问题，我姑且这样命名吧。简要描述一下就是：对于一个人，他有进食，帮助他人，恋爱等功能，但是这些功能是有先后顺序的，对于刚出生的人，他要先学会进食，然后随着他的成长，他逐渐学会帮助他人，在这个过程中他学会了爱与被爱，当他遇到一个合适的女孩，他就坠入了爱河。整个过程反映到程序上就是，必须按照下面的顺序调用方法：</p>
 
@@ -97,26 +97,25 @@ man.fall_in_love
 
 <!-- more -->
 
-
-<h3>1. 目标</h3>
+<h3 id="section-1">1. 目标</h3>
 
 <p>仔细想想，其实这类问题出现还是比较普遍的，比如一个浏览器处理类，它必须要在登陆操作后才允许执行修改个人信息。所以，有必要为了这类问题思考一个解决方法。那么，首先要明确的是，我想要怎样实现这样一个功能。为每个类去实现一个这样的状态转移显然不是ruby way。所以，我觉得对于我自己，我希望这样处理一下我的Human类之后，我就能像引言中那样直接使用状态转移提供的功能：</p>
 
 <pre><code>class Human
-    include State
-    def feed
-        puts"feed myself"
-    end
-    def protect_env
-        puts "protect environment"
-    end
-    def help_people
-        puts "help other people"
-    end
-    def fall_in_love
-        puts "love someone"
-    end
-    define_chain :feed,[:protect_env,:help_people],:fall_in_love
+	include State
+	def feed
+		puts"feed myself"
+	end
+	def protect_env
+		puts "protect environment"
+	end
+	def help_people
+		puts "help other people"
+	end
+	def fall_in_love
+		puts "love someone"
+	end
+	define_chain :feed,[:protect_env,:help_people],:fall_in_love
 end
 </code></pre>
 
@@ -124,17 +123,17 @@ end
 
 <p>好吧，这样看起来，似乎是像模像样的ruby解决方法了，那么，下面就看看如何来实现这个State模块。</p>
 
-<h3>2. 环绕别名</h3>
+<h3 id="section-2">2. 环绕别名</h3>
 
 <p>首先，我们肯定需要在define_chain方法上做文章。该方法实际完成状态转移方法链的定义，那么问题的关键是：我知道了这一串方法，怎么样保证在调用下一个方法前，明确上一个方法是否被调用了呢？很显然，我们需要一个变量来保存状态，在每次调用方法前检查是否能够调用当前方法，如果能够，则在调用完成之后更新状态。那么怎么做呢？总不能要求编写Human类的程序员在每个方法调用前先检查一下状态，在调用完成后再更新状态吧，那显然是会被鄙视的。实际上，作为一个ruby程序员，每个人都需要会一点点魔法，这次的魔法就是环绕别名。</p>
 
 <p>假如，对于某个方法名method，我们可以这样环绕起来：</p>
 
 <pre><code>define_method "#{method}_in_chain" do |*params,&amp;block|
-    validate_state_for method.to_sym
-    self.send "#{method}_out_chain",*params,&amp;block
-    update_state_for method.to_sym
-    end
+	validate_state_for method.to_sym
+	self.send "#{method}_out_chain",*params,&amp;block
+	update_state_for method.to_sym
+	end
 alias_method "#{method}_out_chain",method
 alias_method method,"#{method}_in_chain"
 </code></pre>
@@ -144,20 +143,20 @@ alias_method method,"#{method}_in_chain"
 <p>然后我们去实现validate_state_for和update_state_for方法，这两个方法实现很简单，后面再说，我们的State模块看起来基本是这样的：</p>
 
 <pre><code>module State
-    def define_chain(*args)
-    end
+	def define_chain(*args)
+	end
 
-    def validate_state_for(method)
-    end
-
-    def update_state_for(method)
-    end
+	def validate_state_for(method)
+	end
+	
+	def update_state_for(method)
+	end
 end
 </code></pre>
 
 <p>好吧，问题的最关键部分解决了，但还是有一些细节，不要小看细节，它决定成败。</p>
 
-<h3>3. 类扩展混入</h3>
+<h3 id="section-3">3. 类扩展混入</h3>
 
 <p>显然，我们的define_chain方法必须作为类方法存在，这很简单，可以使用扩展混入。即</p>
 
@@ -169,17 +168,17 @@ end
 <p>但问题来了，我只希望define_chain被作为类方法混入，而validate_state_for和update_state_for方法仍然需要作为类实例方法。那么直接混入肯定就不行了，这时就需要使用ruby另一个魔法了——类扩展混入，将部分方法作为类方法混入，部分方法作为实例方法混入。这种魔法使用了included钩子。</p>
 
 <pre><code>module State
-    def self.included(base)
-        base.extend StateMaker
-    end
-    module StateMaker
-        def define_chain(*args)
-        end
-    end
-    def validate_state_for(method)
-    end
-    def update_state_for(method)
-    end
+	def self.included(base)
+		base.extend StateMaker
+	end
+	module StateMaker
+		def define_chain(*args)
+		end
+	end
+	def validate_state_for(method)
+	end
+	def update_state_for(method)
+	end
 end
 </code></pre>
 
@@ -190,7 +189,7 @@ end
 end
 </code></pre>
 
-<h3>4. 最后一步，实现</h3>
+<h3 id="section-4">4. 最后一步，实现</h3>
 
 <p>我们的State状态转移模块的结构就是这样了，那么下面就需要具体实现了。</p>
 
@@ -201,22 +200,22 @@ end
 <p>这就是State模块的实例方法实现：</p>
 
 <pre><code>module State
-    def validate_state_for(method)
-        raise "State is too low to execute #{method}" unless min_state_for(method) &lt;= state
-    end
-    def min_state_for(method)
-        self.class.state_chain.find_index{|k,v| v.include? method}
-    end
-    def update_state_for(method)
-        @_state_from_object_monitor_+=1 if min_state_for(method) == state
-    end
-    def reset_state
-        @_state_from_object_monitor_=0
-    end
-    def state
-        @_state_from_object_monitor_=0 unless @_state_from_object_monitor_
-        @_state_from_object_monitor_
-    end
+	def validate_state_for(method)
+		raise "State is too low to execute #{method}" unless min_state_for(method) &lt;= state
+	end
+	def min_state_for(method)
+		self.class.state_chain.find_index{|k,v| v.include? method}
+	end
+	def update_state_for(method)
+		@_state_from_object_monitor_+=1 if min_state_for(method) == state
+	end
+	def reset_state
+		@_state_from_object_monitor_=0
+	end
+	def state
+		@_state_from_object_monitor_=0 unless @_state_from_object_monitor_
+		@_state_from_object_monitor_
+	end
 end
 </code></pre>
 
@@ -225,30 +224,30 @@ end
 <p>下面就是State::StateMaker的的define_chain方法的实现：</p>
 
 <pre><code>module State
-    module StateMaker
-        def define_chain(*args)
-            args.map{|x| x}
-            args.flatten.each do |method|
-                define_method "#{method}_in_chain" do |*params,&amp;block|
-                    validate_state_for method.to_sym
-                    self.send "#{method}_out_chain",*params,&amp;block
-                    update_state_for method.to_sym
-                    nil
-                end
-                alias_method "#{method}_out_chain",method
-                alias_method method,"#{method}_in_chain"
-            end
-            @chain_methods=args.each_with_index.inject({}) do |memo,(v,index)|
-                memo[index]=v.class==Symbol ? [v] : v
-                memo
-            end
-            nil
-        end
-
-        def state_chain
-            @chain_methods
-        end
-    end
+	module StateMaker
+		def define_chain(*args)
+			args.map{|x| x}
+			args.flatten.each do |method|
+				define_method "#{method}_in_chain" do |*params,&amp;block|
+					validate_state_for method.to_sym
+					self.send "#{method}_out_chain",*params,&amp;block
+					update_state_for method.to_sym
+					nil
+				end
+				alias_method "#{method}_out_chain",method
+				alias_method method,"#{method}_in_chain"
+			end
+			@chain_methods=args.each_with_index.inject({}) do |memo,(v,index)|
+				memo[index]=v.class==Symbol ? [v] : v
+				memo
+			end
+			nil
+		end
+		
+		def state_chain
+			@chain_methods
+		end
+	end
 end
 </code></pre>
 
@@ -257,62 +256,61 @@ end
 <pre><code>{0=&gt;[:feed], 1=&gt;[:protect_env, :help_people], 2=&gt;[:fall_in_love]}
 </code></pre>
 
-<h3>5. 结尾</h3>
+<h3 id="section-5">5. 结尾</h3>
 
 <p>现在，整个状态转移方法调用就完成了，可以像引言中那样去使用了。不过，这仅仅是个开始，ruby的原则就是DRY，还有细节的地方需要完善修改，比如用ruby2.0就可以更漂亮地完成环绕别名等等。</p>
 
-<h3>6. 附录</h3>
+<h3 id="section-6">6. 附录</h3>
 
 <p>下面是State模块完整代码，供参考。</p>
 
 <pre><code>module State
-    def self.included(base)
-        base.extend StateMaker
-    end
-    module StateMaker
-        def define_chain(*args)
-            args.map{|x| x}
-            args.flatten.each do |method|
-                define_method "#{method}_in_chain" do |*params,&amp;block|
-                    validate_state_for method.to_sym
-                    result=self.send "#{method}_out_chain",*params,&amp;block
-                    update_state_for method.to_sym
-                    result
-                end
-                alias_method "#{method}_out_chain",method
-                alias_method method,"#{method}_in_chain"
-            end
-            @chain_methods=args.each_with_index.inject({}) do |memo,(v,index)|
-                memo[index]=v.class==Symbol ? [v] : v
-                memo
-            end
-            nil
-        end
-        def state_chain
-            @chain_methods
-        end
-    end
-    def validate_state_for(method)
-        raise "State is too low to execute #{method}" unless min_state_for(method) &lt;= state
-    end
-    def min_state_for(method)
-        self.class.state_chain.find_index{|k,v| v.include? method}
-    end
-    def update_state_for(method)
-        @_state_from_object_monitor_+=1 if min_state_for(method) == state
-    end
-    def reset_state
-        @_state_from_object_monitor_=0
-    end
-    def state
-        @_state_from_object_monitor_=0 unless @_state_from_object_monitor_
-        @_state_from_object_monitor_
-    end
+	def self.included(base)
+		base.extend StateMaker
+	end
+	module StateMaker
+		def define_chain(*args)
+			args.map{|x| x}
+			args.flatten.each do |method|
+				define_method "#{method}_in_chain" do |*params,&amp;block|
+					validate_state_for method.to_sym
+					result=self.send "#{method}_out_chain",*params,&amp;block
+					update_state_for method.to_sym
+					result
+				end
+				alias_method "#{method}_out_chain",method
+				alias_method method,"#{method}_in_chain"
+			end
+			@chain_methods=args.each_with_index.inject({}) do |memo,(v,index)|
+				memo[index]=v.class==Symbol ? [v] : v
+				memo
+			end
+			nil
+		end
+		def state_chain
+			@chain_methods
+		end
+	end
+	def validate_state_for(method)
+		raise "State is too low to execute #{method}" unless min_state_for(method) &lt;= state
+	end
+	def min_state_for(method)
+		self.class.state_chain.find_index{|k,v| v.include? method}
+	end
+	def update_state_for(method)
+		@_state_from_object_monitor_+=1 if min_state_for(method) == state
+	end
+	def reset_state
+		@_state_from_object_monitor_=0
+	end
+	def state
+		@_state_from_object_monitor_=0 unless @_state_from_object_monitor_
+		@_state_from_object_monitor_
+	end
 end
 </code></pre>
 
-<h3>7. 后记</h3>
-
+<h3 id="section-7">7. 后记</h3>
 <p>现在回来看这篇文章，感觉那时的思考和视野的局限。其实我需要的是一个状态机，而那时我还不知道这个名词，自己闭门思考实现的这个东西，状态的转移非常局限，无法适应灵活的需求，而且使用方法链的方式本身也局限了进一步升级。同时，<code>alias_method</code>这种技术也可以使用2.0的<code>prepend</code>关键字来更优美地完成。</p>
 
 <p>Anyway,这篇文章还是留着，写这个后记，也说明进步了。</p>

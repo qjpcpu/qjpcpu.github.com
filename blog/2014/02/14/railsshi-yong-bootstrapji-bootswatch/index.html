@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rails使用bootstrap及bootswatch</h2>
-	<div class="entry-content"><h3>1.简介</h3>
+	<div class="entry-content"><h3 id="section">1.简介</h3>
 
 <p>Twitter-bootstrap是一个功能强大的前端web框架，使用它可以快速地开发出漂亮的web UI。而thomas-mcdonald/bootstrap-sass是rails sass版本的bootstrap。其他类似的gem还有jlong/sass-twitter-bootstrap，metaskills/less-rails-bootstrap，seyhunak/twitter-bootstrap-rails，前一个也是sass版本，后两个是less版本的。另外，jasny-twitter-bootstrap是bootstrap的一个很好的拓展，添加了文件上传等漂亮的插件。</p>
 
@@ -88,8 +88,7 @@
 
 <!-- more -->
 
-
-<h3>2.安装twitter-bootstrap</h3>
+<h3 id="twitter-bootstrap">2.安装twitter-bootstrap</h3>
 
 <p>这里推荐使用tomas-macdonald/bootstrap-sass。首先在gemfile中添加：</p>
 
@@ -110,7 +109,7 @@ gem 'bootstrap-sass', '~&gt; 2.3.2.0'
 
 <p>现在可以调整app/views/layouts/application.html.erb模板布局，然后就可以浏览twitter-bootstrap网站按照example美化自己的rails站点了。</p>
 
-<h3>3.安装bootswatch主题</h3>
+<h3 id="bootswatch">3.安装bootswatch主题</h3>
 
 <p>如果还想利用bootswatch的主题，就可以使用maxim/bootswatch-rails来方便地继承bootswatch的免费主题。</p>
 
@@ -143,7 +142,7 @@ body { padding-top: 60px; }
 
 <p>你需要在application.css.scss文件相同目录下创建base.css.scss文件，如果需要就在其中添加更多自定义选择。</p>
 
-<h3>4.Bug fix</h3>
+<h3 id="bug-fix">4.Bug fix</h3>
 
 <p>在rails中使用bootswatch可能导致某些css设置失效，通常的可能就是在/app/assets/stylesheets目录下，某些css设置覆盖了bootswatch的配置。比如，按照上述方法配置的bootswatch主题就有可能无法显示主题背景色（body背景色始终是白色）。而rails自动产生的scaffolds.css.sass文件中就覆盖了body的背景色配置，故而导致该bug。所以删除scaffolds.css.scss中除.field_with_errors  和 #error_explanation 其余内容即可。</p>
 

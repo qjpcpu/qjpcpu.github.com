@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="sort排序常用参数 -n : 按照数值排序 -u : 过滤重复的行 -r : 降序排序，默认升序 -t : 指定分段符号 -k : 按照第几个字段(1&hellip;)排序 默认sort是按照字符排序的。 sort临时目录 默认情况下sort使用/tmp作为临时文件存放目录，如果根分区很小， &hellip;">
+	<meta name="description" content="sort排序常用参数 -n : 按照数值排序 -u : 过滤重复的行 -r : 降序排序，默认升序 -t : 指定分段符号 -k : 按照第几个字段(1…)排序 默认sort是按照字符排序的。 sort临时目录 默认情况下sort使用/tmp作为临时文件存放目录，如果根分区很小， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Sort</h2>
-	<div class="entry-content"><h3>sort排序常用参数</h3>
+	<div class="entry-content"><h3 id="sort">sort排序常用参数</h3>
 
 <p>-n : 按照数值排序</p>
 
@@ -90,27 +90,25 @@
 
 <p>-t : 指定分段符号</p>
 
-<p>-k : 按照第几个字段(1&hellip;)排序</p>
+<p>-k : 按照第几个字段(1…)排序</p>
 
 <p>默认sort是按照字符排序的。</p>
 
-<h3>sort临时目录</h3>
+<h3 id="sort-1">sort临时目录</h3>
 
 <p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sort -T /path/to/tmp_directory
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sort -T /path/to/tmp_directory
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>sort不为人知的一个深坑</h3>
+<h3 id="sort-2">sort不为人知的一个深坑</h3>
 
 <p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>为什么这样设置，可以<code>man sort</code>看一下它的warning部分的说明。</p>
 </div>

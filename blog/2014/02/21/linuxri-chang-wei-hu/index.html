@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Linux日常维护</h2>
-	<div class="entry-content"><h3>某些用户cron任务失败</h3>
+	<div class="entry-content"><h3 id="cron">某些用户cron任务失败</h3>
 
 <p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
 
@@ -89,14 +89,12 @@
 <p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
 
 <ul>
-<li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
-<li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
-<li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
+  <li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
+  <li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
+  <li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
 </ul>
 
-
 <!--more-->
-
 </div>
 
 

@@ -80,11 +80,11 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">初识jruby之安装配置jrubyonrails</h2>
-	<div class="entry-content"><h3>1. prerequesite</h3>
+	<div class="entry-content"><h3 id="prerequesite">1. prerequesite</h3>
 
 <p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
 
-<h3>2. 安装rails</h3>
+<h3 id="rails">2. 安装rails</h3>
 
 <p>安装rails4.0.0：</p>
 
@@ -99,8 +99,7 @@ Rails 4.0.0
 
 <!-- more -->
 
-
-<h3>3. 新建一个rails Apps</h3>
+<h3 id="rails-apps">3. 新建一个rails Apps</h3>
 
 <pre><code>C:\&gt;jruby -S rails new demo
 </code></pre>
@@ -157,10 +156,10 @@ Rails 4.0.0
 
 <p>此时，再jruby -S rails s启动app则可以正确运行了。</p>
 
-<h3>4. 配置java类路径</h3>
+<h3 id="java">4. 配置java类路径</h3>
 
-<p>如果需要在rails中使用java外部类，则需要配置一下$CLASSPATH，首先，假设我们将需要的java类都放在rails_root/lib/java文件夹下。那么就在environment.rb文件中require File.expand_path(&lsquo;../
-application&rsquo;, __FILE__)后添加代码：</p>
+<p>如果需要在rails中使用java外部类，则需要配置一下$CLASSPATH，首先，假设我们将需要的java类都放在rails_root/lib/java文件夹下。那么就在environment.rb文件中require File.expand_path(‘../
+application’, __FILE__)后添加代码：</p>
 
 <pre><code>require 'java'
 $CLASSPATH &lt;&lt; File.join(Rails.root, 'lib','java')
@@ -174,24 +173,27 @@ $CLASSPATH &lt;&lt; File.join(Rails.root, 'lib','java')
 <p>如果还使用了外部jar，则还要添加引用jar的代码，同样在environment.rb文件中添加：</p>
 
 <pre><code>Dir.glob(File.join(Rails.root, 'lib','java',"**","*.jar")).each do |jar| 
-    $CLASSPATH &lt;&lt; jar
+	$CLASSPATH &lt;&lt; jar
 end
 </code></pre>
 
 <p>所以最终environment.rb文件看起来是这样的：</p>
 
-<blockquote><p>environment.rb</p></blockquote>
+<blockquote>
+  <p>environment.rb</p>
+</blockquote>
 
 <pre><code># Load the rails application
 require File.expand_path('../application',__FILE__)
 requrie 'java'
 $CLASSPATH&lt;&lt;File.join(Rails.root,'lib','java')
 Dir.glob(File.join(Rails.root,'lib','java','**','*.jar)).each do |jar|
-    $CLASSPATH &lt;&lt; jar
+	$CLASSPATH &lt;&lt; jar
 end
 
 Demo::Application.initialize!
 </code></pre>
+
 </div>
 
 

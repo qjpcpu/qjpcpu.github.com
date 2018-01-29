@@ -84,15 +84,13 @@
 
 <p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(<code>route -n</code>)，外网ip没得路由规则走，添加默认网关后ok：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>route add default gw 10.46.148.1
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">route add default gw 10.46.148.1
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>提醒自己以后把学到的东西利用起来！</p>
 
 <!--more-->
-
 </div>
 
 

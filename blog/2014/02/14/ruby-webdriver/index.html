@@ -82,14 +82,13 @@ b.driver. &hellip;">
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Ruby Webdriver</h2>
-	<div class="entry-content"><h3>前言</h3>
+	<div class="entry-content"><h3 id="section">前言</h3>
 
 <p>Watir Webdriver是用ruby操作webdriver的很酷的方式，通常被用来做一些rails app的测试。</p>
 
 <!-- more -->
 
-
-<h3>Example</h3>
+<h3 id="example">Example</h3>
 
 <p>下面的示例是一个网站的登录示例：</p>
 
@@ -112,10 +111,10 @@ b.close
 <p>上面的示例中，很多text_field或button等元素使用了focus！方法，这是因为webdriver无法和浏览器中未显示的元素交互，否则会发生异常，当你拥有一个很长的列表在当前浏览器窗口中无法显示时，如果去和未显示的列表项交互就会发生这种异常。解决办法是调用元素的focus方法，focus方法会将该元素滚动到视野中，但focus方法默认返回nil，如果调用该方法多次就不是一个hacky way。所以需要为webdriver打个补丁，添加一个focus！方法：</p>
 
 <pre><code>class Watir::Element
-    def focus!
-        self.focus unless self.visible?
-        self
-    end
+	def focus!
+		self.focus unless self.visible?
+		self
+	end
 end
 </code></pre>
 

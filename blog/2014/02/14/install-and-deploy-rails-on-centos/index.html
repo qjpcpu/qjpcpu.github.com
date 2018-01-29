@@ -80,14 +80,13 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Install and Deploy Rails on CentOS</h2>
-	<div class="entry-content"><h3>prerequisites:</h3>
+	<div class="entry-content"><h3 id="prerequisites">prerequisites:</h3>
 
-<p>I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, you needn&rsquo;t worry about SELinux.</p>
+<p>I cover all these operations on CentOS 6.4 and with root, so if you encounter some privilege problem, try sudo. And, if using Ubuntu, you needn’t worry about SELinux.</p>
 
 <!-- more -->
 
-
-<h4>1. install essentical library</h4>
+<h4 id="install-essentical-library">1. install essentical library</h4>
 
 <pre><code>yum update
 yum install gcc g++ make automake autoconf curl-devel openssl-devel zlib-develhttpd-devel apr-devel apr-util-devel sqlite-devel gcc-c++
@@ -99,7 +98,7 @@ yum install gcc g++ make automake autoconf curl-devel openssl-devel zlib-develht
 # then compile and install it
 </code></pre>
 
-<h4>2. install libyaml(needed by ruby)</h4>
+<h4 id="install-libyamlneeded-by-ruby">2. install libyaml(needed by ruby)</h4>
 
 <pre><code>wget http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
 tar xzvf yaml-0.1.4.tar.gz
@@ -109,14 +108,14 @@ make
 make install
 </code></pre>
 
-<h4>3. install ruby</h4>
+<h4 id="install-ruby">3. install ruby</h4>
 
 <pre><code>wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p0.tar.gz
 # compile and install
 ruby –v # check ruby installed correctly
 </code></pre>
 
-<h4>4. install rubygems</h4>
+<h4 id="install-rubygems">4. install rubygems</h4>
 
 <pre><code>wget  http://production.cf.rubygems.org/rubygems/rubygems-2.0.3.tgz
 tar vxzf rubygems-2.0.3.tgz
@@ -125,7 +124,7 @@ ruby setup.rb
 gem –v
 </code></pre>
 
-<h4>5. install rails</h4>
+<h4 id="install-rails">5. install rails</h4>
 
 <pre><code>gem update
 gem update --system
@@ -134,20 +133,20 @@ gem install rails –V  #It really costs a longtime, enjoy a coffee now
 
 <p>Next,we talk about deploy on centos</p>
 
-<h4>6. install passenger(follow the instructions to install extra lib)</h4>
+<h4 id="install-passengerfollow-the-instructions-to-install-extra-lib">6. install passenger(follow the instructions to install extra lib)</h4>
 
 <pre><code>gem  install passenger
 passenger-install-apache2-module
 </code></pre>
 
-<p>P.S. ==>install passenger &amp; compile nginx</p>
+<p>P.S. ==&gt;install passenger &amp; compile nginx</p>
 
 <pre><code>passenger-install-nginx-module
 </code></pre>
 
 <p>P.S. install passenger &amp; compile nginx&lt;==</p>
 
-<h4>7. find the apache configure</h4>
+<h4 id="find-the-apache-configure">7. find the apache configure</h4>
 
 <pre><code>apachectl  –V | grep HTTPD_ROOT
 apachectl  –V | grep SERVER_CONFIG_FILE
@@ -166,21 +165,20 @@ apachectl  –V | grep SERVER_CONFIG_FILE
 &lt;/VirtualHost&gt;
 </code></pre>
 
-<p>P.S. ==>for nginx</p>
+<p>P.S. ==&gt;for nginx</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>   server {
-</span><span class='line'>      listen 80;
-</span><span class='line'>      server_name www.yourhost.com;
-</span><span class='line'>      root /somewhere/public;   # &lt;--- be sure to point to 'public'!
-</span><span class='line'>      passenger_enabled on;
-</span><span class='line'>   }</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">   server {
+</span><span class="line">      listen 80;
+</span><span class="line">      server_name www.yourhost.com;
+</span><span class="line">      root /somewhere/public;   # &lt;--- be sure to point to 'public'!
+</span><span class="line">      passenger_enabled on;
+</span><span class="line">   }</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Add this for development mode in <code>http{</code> node.</p>
 
@@ -194,7 +192,7 @@ apachectl  –V | grep SERVER_CONFIG_FILE
 <pre><code>NameVirtualHost  *:80
 </code></pre>
 
-<h4>8. config mysql database(if you use sqlite,skip this step)</h4>
+<h4 id="config-mysql-databaseif-you-use-sqliteskip-this-step">8. config mysql database(if you use sqlite,skip this step)</h4>
 
 <p>If you use mysql in production, add below to gemfile</p>
 
@@ -230,33 +228,33 @@ mysql&gt;exit;
      host: localhost
 </code></pre>
 
-<h4>9. apply your migrations</h4>
+<h4 id="apply-your-migrations">9. apply your migrations</h4>
 
 <pre><code>rake db:setup RAILS_ENV='production'
 </code></pre>
 
-<h4>10. precompile the static resources</h4>
+<h4 id="precompile-the-static-resources">10. precompile the static resources</h4>
 
 <pre><code>bundle exec rake assets:precompile RAILS_ENV='production'
 </code></pre>
 
 <p>On centos, we must change selinux’s behavior(Everytime you deploy!)</p>
 
-<h4>11. Temporarily go into SELinux permissive mode</h4>
+<h4 id="temporarily-go-into-selinux-permissive-mode">11. Temporarily go into SELinux permissive mode</h4>
 
 <pre><code>setenforce  0
 </code></pre>
 
-<h4>12. restart apache</h4>
+<h4 id="restart-apache">12. restart apache</h4>
 
 <pre><code>apachectl restart
 </code></pre>
 
-<h4>13. use your rails app for a while</h4>
+<h4 id="use-your-rails-app-for-a-while">13. use your rails app for a while</h4>
 
-<h4>14. allow passenger run with selinux</h4>
+<h4 id="allow-passenger-run-with-selinux">14. allow passenger run with selinux</h4>
 
-<p>Note: if can&rsquo;t find audit2allow, you should install it first, otherwise you can skip 2 commands below</p>
+<p>Note: if can’t find audit2allow, you should install it first, otherwise you can skip 2 commands below</p>
 
 <pre><code>yum  provides  \*/audit2allow
 yum  install  policycoreutils-python
@@ -268,7 +266,7 @@ grep httpd  /var/log/audit/audit.log | audit2allow -M passenger
 <pre><code>semodule  -i passenger.pp
 </code></pre>
 
-<h4>15. switch selinux back to enforcing mode</h4>
+<h4 id="switch-selinux-back-to-enforcing-mode">15. switch selinux back to enforcing mode</h4>
 
 <pre><code>setenforce 1
 </code></pre>

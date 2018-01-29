@@ -85,8 +85,7 @@ gem 'paperclip' 2.在app/assets/ &hellip;">
 
 <!-- more -->
 
-
-<h3>1.安装Gem</h3>
+<h3 id="gem">1.安装Gem</h3>
 
 <p>在gemfile中添加jquery-fileupload-rails和paperclip的gem：</p>
 
@@ -94,17 +93,17 @@ gem 'paperclip' 2.在app/assets/ &hellip;">
 gem 'paperclip'
 </code></pre>
 
-<h3>2.在app/assets/application.js添加</h3>
+<h3 id="appassetsapplicationjs">2.在app/assets/application.js添加</h3>
 
 <pre><code>//= require jquery-fileupload
 </code></pre>
 
-<h3>3.在app/assets/stylesheets/application.css添加</h3>
+<h3 id="appassetsstylesheetsapplicationcss">3.在app/assets/stylesheets/application.css添加</h3>
 
 <pre><code>*= require jquery.fileupload-ui
 </code></pre>
 
-<h3>4.创建Picture数据表</h3>
+<h3 id="picture">4.创建Picture数据表</h3>
 
 <pre><code>rails g model Picture avatar:attachment
 rake db:migrate
@@ -115,36 +114,36 @@ rake db:migrate
 <p>修改picture.rb的内容：</p>
 
 <pre><code>class Picture &lt; ActiveRecord::Base
-    has_attached_file :avatar
-
-    include Rails.application.routes.url_helpers
-
-    def to_json_picture
-        {
-            'name'=&gt;read_attribute(:avatar_file_name),
-            'size'=&gt;read_attribute(:avatar_file_size),
-            'url'=&gt;avatar.url(:original),
-            'delete_url'=&gt;picture_path(self),
-            'delete_type'=&gt;'DELETE'
-        }
-    end
+	has_attached_file :avatar
+	
+	include Rails.application.routes.url_helpers
+	
+	def to_json_picture
+		{
+			'name'=&gt;read_attribute(:avatar_file_name),
+			'size'=&gt;read_attribute(:avatar_file_size),
+			'url'=&gt;avatar.url(:original),
+			'delete_url'=&gt;picture_path(self),
+			'delete_type'=&gt;'DELETE'
+		}
+	end
 end
 </code></pre>
 
 <p>在model中，使用类方法has_attached_file指明文件对象是avatar，并且定义了to_json_picture方法，该方法将picture对象转换成一个hash，在jquery-fileupload和server的交互中被转变为json数据。</p>
 
-<h3>5.创建view</h3>
+<h3 id="view">5.创建view</h3>
 
 <p>只需要创建一个上传界面index.html.erb，自定义你自己的view时，仅需要将form_for Picture.new和f.file_field :avatar修改为自己model即可，其他内容都可以直接copy-paste。</p>
 
 <p><a href="https://gist.github.com/qjpcpu/9017226">源码地址</a></p>
 
-<h3>6.创建controller</h3>
+<h3 id="controller">6.创建controller</h3>
 
 <pre><code>rails g controller pictures index create destroy
 </code></pre>
 
-<p>&ndash;</p>
+<p>-</p>
 
 <pre><code>class PicturesController &lt; ApplicationController
   def index
@@ -190,13 +189,14 @@ end
 end
 </code></pre>
 
-<h3>7.效果图</h3>
+<h3 id="section">7.效果图</h3>
 
 <p><img src="http://a.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=794ee559c45c1038207ecec7822ae22e/342ac65c103853436bec62629113b07eca808856.jpg?referer=457c5546e7dde711bec576c6e84c&amp;x=.jpg" alt="image" /></p>
 
 <p>这就是最终结果了，如果想要达到jqeury-fileupload Demo中漂亮的结果，如下图，就需要使用Twitter-bootstrap或者自己写写CSS了。</p>
 
 <p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=ff26dca4932397ddd279980169b9c38a/0dd7912397dda144372a89f1b0b7d0a20cf48656.jpg?referer=354f23adb68f8c54bac4f01fe24c&amp;x=.jpg" alt="image" /></p>
+
 </div>
 
 

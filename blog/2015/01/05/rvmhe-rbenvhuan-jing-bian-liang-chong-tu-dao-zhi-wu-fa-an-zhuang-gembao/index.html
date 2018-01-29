@@ -7,7 +7,9 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="背景 root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。 resolve 这种情况是rvm强制设置了GEM_HOME导致的，可以gem env查看： jason@mac:~$ gem env &hellip;">
+	<meta name="description" content="背景
+root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。 resolve
+这种情况是rvm强制设置了GEM_HOME导致的，可以gem env查看： jason@mac:~$ gem env &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,15 +82,12 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rvm和rbenv环境变量冲突导致无法安装gem包</h2>
-	<div class="entry-content"><h2>背景</h2>
-
+	<div class="entry-content"><h2 id="section">背景</h2>
 <p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
 
 <!-- more -->
 
-
-<h2>resolve</h2>
-
+<h2 id="resolve">resolve</h2>
 <p>这种情况是rvm强制设置了<code>GEM_HOME</code>导致的，可以<code>gem env</code>查看：</p>
 
 <pre><code>jason@mac:~$ gem env

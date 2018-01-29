@@ -98,33 +98,31 @@ for d in $(ls);do &hellip;">
 
 <pre><code>centence="Linux is cool"
 for word in $centence;do
-    echo $word
+	echo $word
 done
 </code></pre>
 
 <p>有时用ls命令遍历目录会遇到空目录：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
-</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
+</span><span class="line"><span class="k">	</span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class="line"><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>处理办法是：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ls -1 | <span class="k">while </span><span class="nb">read </span>d
-</span><span class='line'><span class="k">do</span>
-</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
-</span><span class='line'><span class="k">done</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ls -1 | <span class="k">while </span><span class="nb">read </span>d
+</span><span class="line"><span class="k">do</span>
+</span><span class="line"><span class="k">	</span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class="line"><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		
@@ -227,14 +225,14 @@ done
 			Stat命令与文件时间</a>
 	</h2>
 	<div class="entry-content">
-		<h3>stat命令</h3>
+		<h3 id="stat">stat命令</h3>
 
 <p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
 
 <pre><code>$ stat access.log
   File: `access.log'
-  Size: 1559877779  Blocks: 3049624    IO Block: 4096   regular file
-Device: ca20h/51744d    Inode: 16269326    Links: 1
+  Size: 1559877779	Blocks: 3049624    IO Block: 4096   regular file
+Device: ca20h/51744d	Inode: 16269326    Links: 1
 Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
 Access: 2014-03-09 21:58:33.000000000 +0800
 Modify: 2014-03-07 08:17:36.000000000 +0800
@@ -293,7 +291,7 @@ $ stat -c %z access.log #获取change time
 			Shell数组</a>
 	</h2>
 	<div class="entry-content">
-		<h3>数组定义</h3>
+		<h3 id="section">数组定义</h3>
 
 <p>定义数组需要用括号把元素包裹起来。</p>
 
@@ -345,16 +343,15 @@ echo ${colors[@]}  # red green blue black white
 			Compile Ruby From Source</a>
 	</h2>
 	<div class="entry-content">
-		<h3>下载需要的软件包</h3>
+		<h3 id="section">下载需要的软件包</h3>
 
 <ul>
-<li><a href="http://www.openssl.org/source/">openssl</a></li>
-<li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
-<li><a href="https://www.ruby-lang.org">ruby</a></li>
-<li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
-<li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
+  <li><a href="http://www.openssl.org/source/">openssl</a></li>
+  <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
+  <li><a href="https://www.ruby-lang.org">ruby</a></li>
+  <li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
+  <li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
 </ul>
-
 
 
 		
@@ -398,28 +395,24 @@ echo ${colors[@]}  # red green blue black white
 			Curl</a>
 	</h2>
 	<div class="entry-content">
-		<h3>基本用法</h3>
+		<h3 id="section">基本用法</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl http://www.google.com
-</span><span class='line'>curl --proxy http://proxy.com:8888 http://ww.google.com <span class="c">#使用代理</span>
-</span><span class='line'>curl http://user:password@example.org/  <span class="c">#http验证</span>
-</span><span class='line'>curl -u user:password http://example.org/ <span class="c">#http验证</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">curl http://www.google.com
+</span><span class="line">curl --proxy http://proxy.com:8888 http://ww.google.com <span class="c">#使用代理</span>
+</span><span class="line">curl http://user:password@example.org/  <span class="c">#http验证</span>
+</span><span class="line">curl -u user:password http://example.org/ <span class="c">#http验证</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>获取响应头</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
-</span><span class='line'>curl -IL http://example.com  <span class="c">#仅返回响应头</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
+</span><span class="line">curl -IL http://example.com  <span class="c">#仅返回响应头</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		<a href="/blog/2014/03/05/curl/" class="more-link">Read on &rarr;</a>
@@ -462,49 +455,47 @@ echo ${colors[@]}  # red green blue black white
 			列出目录结构</a>
 	</h2>
 	<div class="entry-content">
-		<h3>最简单美观的方法tree</h3>
+		<h3 id="tree">最简单美观的方法tree</h3>
 
 <p>tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>tree demo
-</span><span class='line'>demo
-</span><span class='line'>├── Gemfile
-</span><span class='line'>├── boot.rb
-</span><span class='line'>├── collectors
-</span><span class='line'>├── config
-</span><span class='line'>│   └── mail_config.rb
-</span><span class='line'>├── controllers
-</span><span class='line'>├── db
-</span><span class='line'>│   ├── connection.rb
-</span><span class='line'>│   ├── database.yml
-</span><span class='line'>│   └── migrate
-</span><span class='line'>├── helpers
-</span><span class='line'>├── models
-</span><span class='line'>├── rakefile
-</span><span class='line'>└── views
-</span><span class='line'>
-</span><span class='line'>8 directories, 6 files
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>tree demo
+</span><span class="line">demo
+</span><span class="line">├── Gemfile
+</span><span class="line">├── boot.rb
+</span><span class="line">├── collectors
+</span><span class="line">├── config
+</span><span class="line">│   └── mail_config.rb
+</span><span class="line">├── controllers
+</span><span class="line">├── db
+</span><span class="line">│   ├── connection.rb
+</span><span class="line">│   ├── database.yml
+</span><span class="line">│   └── migrate
+</span><span class="line">├── helpers
+</span><span class="line">├── models
+</span><span class="line">├── rakefile
+</span><span class="line">└── views
+</span><span class="line">
+</span><span class="line">8 directories, 6 files
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		<a href="/blog/2014/02/27/lie-chu-mu-lu-jie-gou/" class="more-link">Read on &rarr;</a>
@@ -547,31 +538,27 @@ echo ${colors[@]}  # red green blue black white
 			Find命令</a>
 	</h2>
 	<div class="entry-content">
-		<h3>find的基本语法</h3>
+		<h3 id="find">find的基本语法</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><code>find</code>命令可以使用多个OPTION，不同OPTION之间默认是<code>and</code>关系，除了<code>and</code>关系还有<code>not</code>和<code>or</code>关系，如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
-</span><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
-</span><span class='line'>find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
+</span><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
+</span><span class="line">find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>当使用的OPTION很多时，可以将OPTIONS括起来增加可读性，注意括号需要用<code>\</code>来转义，同时<code>\(</code>和<code>\)</code>两边都需要有空格：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		<a href="/blog/2014/02/27/findming-ling/" class="more-link">Read on &rarr;</a>
@@ -617,28 +604,27 @@ echo ${colors[@]}  # red green blue black white
 		<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
 我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
 
-<h3>利用expect命令实现自动登录并执行命令</h3>
+<h3 id="expect">利用expect命令实现自动登录并执行命令</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>expect -c <span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
-</span><span class='line'><span class="s1">expect {</span>
-</span><span class='line'><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
-</span><span class='line'><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
-</span><span class='line'><span class="s1">}</span>
-</span><span class='line'><span class="s1">expect eof</span>
-</span><span class='line'><span class="s1">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
+</span><span class="line">expect -c <span class="s1">&#39;</span>
+</span><span class="line"><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
+</span><span class="line"><span class="s1">expect {</span>
+</span><span class="line"><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class="line"><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
+</span><span class="line"><span class="s1">}</span>
+</span><span class="line"><span class="s1">expect eof</span>
+</span><span class="line"><span class="s1">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
 
@@ -684,7 +670,7 @@ echo ${colors[@]}  # red green blue black white
 			Linux日常维护</a>
 	</h2>
 	<div class="entry-content">
-		<h3>某些用户cron任务失败</h3>
+		<h3 id="cron">某些用户cron任务失败</h3>
 
 <p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
 
@@ -693,11 +679,10 @@ echo ${colors[@]}  # red green blue black white
 <p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
 
 <ul>
-<li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
-<li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
-<li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
+  <li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
+  <li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
+  <li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
 </ul>
-
 
 
 		

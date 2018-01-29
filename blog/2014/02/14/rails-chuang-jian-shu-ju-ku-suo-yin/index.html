@@ -86,102 +86,93 @@ rails g model order customer:references 查看order的migration文件，rails自
 	<h2 class="title">Rails 创建数据库索引</h2>
 	<div class="entry-content"><p>以经典的customer-order为例</p>
 
-<h3>1. 在创建数据表时直接创建索引</h3>
+<h3 id="section">1. 在创建数据表时直接创建索引</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
-</span><span class='line'>rails g model order customer:references
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rails g model customer
+</span><span class="line">rails g model order customer:references
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>查看order的migration文件，rails自动为我们添加了index：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
-</span><span class='line'>              <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">CreateOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">change</span>
+</span><span class="line">		<span class="n">create_table</span> <span class="ss">:orders</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class="line">				<span class="n">t</span><span class="o">.</span><span class="n">refercences</span> <span class="ss">:customer</span>
+</span><span class="line">				<span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class="line">		<span class="k">end</span>
+</span><span class="line">		<span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class="line">	<span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!-- more -->
 
-
-<h3>2. 手动附加索引</h3>
+<h3 id="section-1">2. 手动附加索引</h3>
 
 <p>此时创建数据表是以普通字段创建的外键</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g model customer
-</span><span class='line'>rails g model order customer_id:integer
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rails g model customer
+</span><span class="line">rails g model order customer_id:integer
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>如果需要创建索引，就需要手动新建一个migration来添加索引：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rails g migration add_customer_id_index_to_orders
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rails g migration add_customer_id_index_to_orders
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>修改migration文件，手动添加index</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddCustomerIdIndexToOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">AddCustomerIdIndexToOrders</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">change</span>
+</span><span class="line">		<span class="n">add_index</span> <span class="ss">:orders</span><span class="p">,</span> <span class="ss">:customer_id</span>
+</span><span class="line">	<span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>3. many-to-many关系中添加index</h3>
+<h3 id="many-to-manyindex">3. many-to-many关系中添加index</h3>
 
 <p>以man-address为例，直接创建中间表并不会自动添加索引，所以需要在中间表内手动添加索引：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AddAddressesMenTable</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:address_men</span><span class="p">,</span><span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:address</span><span class="p">,</span> <span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
-</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:man</span><span class="p">,</span><span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="n">add_index</span> <span class="ss">:addresses_men</span><span class="p">,</span><span class="o">[</span><span class="ss">:address_id</span><span class="p">,</span><span class="ss">:man_id</span><span class="o">]</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">AddAddressesMenTable</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">change</span>
+</span><span class="line">		<span class="n">create_table</span> <span class="ss">:address_men</span><span class="p">,</span><span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class="line">			<span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:address</span><span class="p">,</span> <span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class="line">			<span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:man</span><span class="p">,</span><span class="ss">:null</span><span class="o">=&gt;</span><span class="kp">false</span>
+</span><span class="line">		<span class="k">end</span>
+</span><span class="line">		<span class="n">add_index</span> <span class="ss">:addresses_men</span><span class="p">,</span><span class="o">[</span><span class="ss">:address_id</span><span class="p">,</span><span class="ss">:man_id</span><span class="o">]</span>
+</span><span class="line">	<span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>4. 建议</h3>
+<h3 id="section-2">4. 建议</h3>
 
 <p>所有的外键最好都添加索引。</p>
 </div>

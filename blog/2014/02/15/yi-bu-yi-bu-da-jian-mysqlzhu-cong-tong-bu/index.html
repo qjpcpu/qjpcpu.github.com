@@ -81,7 +81,7 @@ tar vzxf mysql-5.1.73.tar.gz 编译安装 最好专门创建一个用户mysql来
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">一步一步搭建mysql主从同步</h2>
-	<div class="entry-content"><h3>下载mysql数据库</h3>
+	<div class="entry-content"><h3 id="mysql">下载mysql数据库</h3>
 
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
 tar vzxf mysql-5.1.73.tar.gz
@@ -89,8 +89,7 @@ tar vzxf mysql-5.1.73.tar.gz
 
 <!-- more -->
 
-
-<h3>编译安装</h3>
+<h3 id="section">编译安装</h3>
 
 <p>最好专门创建一个用户mysql来安装数据库。</p>
 
@@ -106,7 +105,7 @@ make
 make install
 </code></pre>
 
-<h3>初始化数据库</h3>
+<h3 id="section-1">初始化数据库</h3>
 
 <p>复制必要的配置文件和启停脚本</p>
 
@@ -116,7 +115,7 @@ cp share/mysql/my-medium.cnf  etc/my.cnf
 cp share/mysql/mysql.server  bin/
 </code></pre>
 
-<h3>修改配置文件</h3>
+<h3 id="section-2">修改配置文件</h3>
 
 <pre><code>vim etc/my.cnf
 </code></pre>
@@ -145,7 +144,7 @@ $ ./bin/mysql.server start    #出现下面这行说数据库启动ok了
 Starting MySQL.                                            [  OK  ]
 </code></pre>
 
-<h3>配置mysql用户</h3>
+<h3 id="mysql-1">配置mysql用户</h3>
 
 <p>使用./bin目录下的mysql命令可以登录到数据库，登录后删除匿名用户并且为root设置密码：</p>
 
@@ -163,7 +162,7 @@ Starting MySQL.                                            [  OK  ]
 <pre><code>&gt; GRANT REPLICATION SLAVE ON *.* TO 'mysqlsync'@'%' IDENTIFIED BY 'password';
 </code></pre>
 
-<h3>主库配置</h3>
+<h3 id="section-3">主库配置</h3>
 
 <p>所有的配置项还是在my.cnf中的[mysqld]下添加。</p>
 
@@ -180,7 +179,7 @@ log-bin-index = mysql-bin.index  # 记录二进制日志索引文件
 relay-log-index = relay-log.index # 记录中继日志索引文件
 </code></pre>
 
-<h3>从库配置</h3>
+<h3 id="section-4">从库配置</h3>
 
 <pre><code>server-id=2
 read-only # 在从库开启该选项，避免在从库上进行写操作，导致主从数据不一致（不过对super权限无效哦）
@@ -193,7 +192,7 @@ replicate-wild-ignore-table = mysql.%
 replicate-wild-ignore-table = test.%
 </code></pre>
 
-<h3>同步设置</h3>
+<h3 id="section-5">同步设置</h3>
 
 <p>启动主数据库，并查看主库状态：</p>
 
@@ -204,7 +203,7 @@ mysql&gt; show master status;
 
 <p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=21e536be79899e517c8e3a11729ca80e/e7cd7b899e510fb31b3b92d4db33c895d1430c56.jpg?referer=a44e286a8418367af49e4aed6c4d&amp;x=.jpg" alt="image" /></p>
 
-<p>记下来log文件名和位置，这里是“mysql-bin.000005&#8221;和”106“。</p>
+<p>记下来log文件名和位置，这里是“mysql-bin.000005”和”106“。</p>
 
 <p>然后启动从库，</p>
 

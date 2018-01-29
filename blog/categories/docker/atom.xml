@@ -4,7 +4,7 @@
   <title><![CDATA[Category: docker | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/docker/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -22,17 +22,15 @@
 
 <!-- more -->
 
-
-<h3>flag</h3>
+<h3 id="flag">flag</h3>
 
 <p>go语言默认使用flag包来做命令行参数解析，对于这个包的使用可以参考官方文档的说明。但归结起来，使用这个包大概有三个步骤：</p>
 
 <ol>
-<li>使用<code>flag.XXX</code>函数定义参数名及保存参数的变量</li>
-<li>调用<code>flag.Parse()</code>进行参数的解析，解析结果被保存在定义的各个变量里</li>
-<li>读取这些变量值</li>
+  <li>使用<code>flag.XXX</code>函数定义参数名及保存参数的变量</li>
+  <li>调用<code>flag.Parse()</code>进行参数的解析，解析结果被保存在定义的各个变量里</li>
+  <li>读取这些变量值</li>
 </ol>
-
 
 <p>但docker里定义参数的函数和标准库不太一样，docker的flag可以使用参数名数组来定义参数。比如在标准flag库里定义一个显示版本号的参数：</p>
 
@@ -41,16 +39,13 @@
 
 <p>但在docker里是这样定义的：</p>
 
-<p>```go docker/docker.go</p>
-
-<pre><code>flVersion = flag.Bool([]string{"v", "-version"}, false, "Print version information and quit")
-</code></pre>
-
-<p>```</p>
+<p><code>go docker/docker.go
+	flVersion = flag.Bool([]string{"v", "-version"}, false, "Print version information and quit")
+</code></p>
 
 <p>所以即可以使用<code>docker -v</code>也可以使用<code>docker --version</code>来显示版本号。</p>
 
-<h3>docker的实现</h3>
+<h3 id="docker">docker的实现</h3>
 
 <p>docker在这里玩了个小trick，首先它重写了标准库的flag，并将包名由<code>flag</code>改成<code>mflag</code>，然后这样导入包：</p>
 
@@ -63,17 +58,14 @@
 
 <p>首先，mflag将<code>Flag</code>的结构体定义参数名<code>Name</code>修改成数组形式<code>Names</code>：</p>
 
-<p>```go pkg/mflag/flag.go</p>
-
-<pre><code>type Flag struct {
-    Names    []string // name as it appears on command line
-    Usage    string   // help message
-    Value    Value    // value as set
-    DefValue string   // default value (as text); for usage message
-}
-</code></pre>
-
-<p>```</p>
+<p><code>go pkg/mflag/flag.go
+	type Flag struct {
+	    Names    []string // name as it appears on command line
+	    Usage    string   // help message
+	    Value    Value    // value as set
+	    DefValue string   // default value (as text); for usage message
+	}
+</code></p>
 
 <p>然后还利用了flag标准库本身的特性，在同一个变量上可以绑定多个参数名:</p>
 
@@ -93,29 +85,26 @@ flag.String(&amp;de,"b","","argument")
 
 <p>实际实现也很简单，就是在帮助函数里去除对旧参数的说明：</p>
 
-<p>```go pkg/mflag/flag.go
-func (f *FlagSet) PrintDefaults() {</p>
-
-<pre><code>f.VisitAll(func(flag *Flag) {
-    format := "  -%s=%s: %s\n"
-    if _, ok := flag.Value.(*stringValue); ok {
-        // put quotes on the value
-        format = "  -%s=%q: %s\n"
-    }
-    names := []string{}
-    for _, name := range flag.Names {
-        if name[0] != '#' {
-            names = append(names, name)
+<p><code>go pkg/mflag/flag.go
+func (f *FlagSet) PrintDefaults() {
+    f.VisitAll(func(flag *Flag) {
+        format := "  -%s=%s: %s\n"
+        if _, ok := flag.Value.(*stringValue); ok {
+            // put quotes on the value
+            format = "  -%s=%q: %s\n"
         }
-    }
-    if len(names) &gt; 0 {
-        fmt.Fprintf(f.out(), format, strings.Join(names, ", -"), flag.DefValue, flag.Usage)
-    }
-})
-</code></pre>
-
-<p>}
-```</p>
+        names := []string{}
+        for _, name := range flag.Names {
+            if name[0] != '#' {
+                names = append(names, name)
+            }
+        }
+        if len(names) &gt; 0 {
+            fmt.Fprintf(f.out(), format, strings.Join(names, ", -"), flag.DefValue, flag.Usage)
+        }
+    })
+}
+</code></p>
 
 <p>在10-12行，如果参数名定义时以<code>#</code>开头则不打印参数帮助。</p>
 

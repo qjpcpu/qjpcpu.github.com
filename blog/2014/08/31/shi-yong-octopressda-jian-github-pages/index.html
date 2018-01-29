@@ -7,7 +7,8 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="安装git,ruby 略 安装octopress并搭建博客 1
+	<meta name="description" content="安装git,ruby
+略 安装octopress并搭建博客 1
 2
 3
 4
@@ -87,87 +88,79 @@ rake install 初始化博客 1 &hellip;">
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">使用octopress搭建github Pages</h2>
-	<div class="entry-content"><h2>安装git,ruby</h2>
-
+	<div class="entry-content"><h2 id="gitruby">安装git,ruby</h2>
 <p>略</p>
 
-<h2>安装octopress并搭建博客</h2>
+<h2 id="octopress">安装octopress并搭建博客</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone git://github.com/imathis/octopress.git octopress
-</span><span class='line'><span class="nb">cd </span>octopress
-</span><span class='line'>bundle install
-</span><span class='line'>rake install
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone git://github.com/imathis/octopress.git octopress
+</span><span class="line"><span class="nb">cd </span>octopress
+</span><span class="line">bundle install
+</span><span class="line">rake install
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <!-- more -->
-
 
 <p>初始化博客</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake setup_github_pages
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake setup_github_pages
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>编辑<code>_config.yml</code>写入博客名和其他信息</p>
 
 <p>开始书写博客：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake new_page<span class="o">[</span><span class="s2">&quot;About&quot;</span><span class="o">]</span>    <span class="c"># 添加博客页</span>
-</span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;First Post!&quot;</span><span class="o">]</span>  <span class="c"># 新建一篇文章</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake new_page<span class="o">[</span><span class="s2">&quot;About&quot;</span><span class="o">]</span>    <span class="c"># 添加博客页</span>
+</span><span class="line">rake new_post<span class="o">[</span><span class="s2">&quot;First Post!&quot;</span><span class="o">]</span>  <span class="c"># 新建一篇文章</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>发布到github</p>
 
-<figure class='code'><figcaption><span>deploy.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake generate      <span class="c"># 生成页面</span>
-</span><span class='line'><span class="c">#rake preview       # 如果需要在本地预览生成的结果，预览页http://localhost:4000</span>
-</span><span class='line'>rake deploy        <span class="c">#发布到github</span>
-</span><span class='line'><span class="c"># 发布到github的pages在master分支，还要保存源的source分支</span>
-</span><span class='line'>git add .
-</span><span class='line'>git commit -m <span class="s1">&#39;Added About page and first post!&#39;</span>
-</span><span class='line'>git push origin <span class="nb">source</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>deploy.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate      <span class="c"># 生成页面</span>
+</span><span class="line"><span class="c">#rake preview       # 如果需要在本地预览生成的结果，预览页http://localhost:4000</span>
+</span><span class="line">rake deploy        <span class="c">#发布到github</span>
+</span><span class="line"><span class="c"># 发布到github的pages在master分支，还要保存源的source分支</span>
+</span><span class="line">git add .
+</span><span class="line">git commit -m <span class="s1">&#39;Added About page and first post!&#39;</span>
+</span><span class="line">git push origin <span class="nb">source</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>在另外机器编辑博客</h2>
+<h2 id="section">在另外机器编辑博客</h2>
 
 <p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
 
-<figure class='code'><figcaption><span>get_my_blog.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone git@github.com:username/username.github.com.git
-</span><span class='line'><span class="nb">cd </span>username.github.com
-</span><span class='line'>git checkout <span class="nb">source</span>
-</span><span class='line'>mkdir _deploy
-</span><span class='line'><span class="nb">cd </span>_deploy
-</span><span class='line'>git init
-</span><span class='line'>git remote add origin git@github.com:username/username.github.com.git
-</span><span class='line'>git pull origin master
-</span><span class='line'><span class="nb">cd</span> ..
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>get_my_blog.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone git@github.com:username/username.github.com.git
+</span><span class="line"><span class="nb">cd </span>username.github.com
+</span><span class="line">git checkout <span class="nb">source</span>
+</span><span class="line">mkdir _deploy
+</span><span class="line"><span class="nb">cd </span>_deploy
+</span><span class="line">git init
+</span><span class="line">git remote add origin git@github.com:username/username.github.com.git
+</span><span class="line">git pull origin master
+</span><span class="line"><span class="nb">cd</span> ..
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 </div>
 
 

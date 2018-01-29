@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,9 +18,9 @@
     <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
     <updated>2014-05-21T14:58:28+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
-    <content type="html"><![CDATA[<h3>建立host1到host2的信任关系</h3>
+    <content type="html"><![CDATA[<h3 id="host1host2">建立host1到host2的信任关系</h3>
 
-<h4>如果A的rsa文件不存在可以这样建立</h4>
+<h4 id="arsa">如果A的rsa文件不存在可以这样建立</h4>
 
 <p>首先在<code>host1</code>上：</p>
 
@@ -28,11 +28,11 @@
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 </code></p>
 
-<h4>添加信任关系</h4>
+<h4 id="section">添加信任关系</h4>
 
 <p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
 
-<h4>避免第一次连接出现添加fingerprint的询问</h4>
+<h4 id="fingerprint">避免第一次连接出现添加fingerprint的询问</h4>
 
 <p>在<code>host1</code>上执行：</p>
 
@@ -42,32 +42,27 @@ ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
 
 <!--more-->
 
-
 <p>下面是一个示例脚本，在一个中控机上（能同时访问a和b）建立a到b的信任关系：</p>
 
-<p>```bash relation_a2b</p>
-
-<h1>!/bin/bash</h1>
-
-<p>if [ &ldquo;$#&rdquo; -lt 2 ];then</p>
-
-<pre><code>    echo "Usage: relation_a2b host1 host2"
-    exit 1
-</code></pre>
-
-<p>fi
+<p><code>bash relation_a2b
+#!/bin/bash
+if [ "$#" -lt 2 ];then
+        echo "Usage: relation_a2b host1 host2"
+        exit 1
+fi
 from=$1
 to=$2
-key=<code>ssh $from "ssh-keyscan -t rsa $to &gt;&gt; ~/.ssh/known_hosts 2&gt;/dev/null &amp;&amp; cat ~/.ssh/id_rsa.pub"</code>
-ssh $to &ldquo;echo $key >> ~/.ssh/authorized_keys&rdquo;
-echo &ldquo;$from &mdash;> $to [OK]&rdquo;
-```</p>
+key=`ssh $from "ssh-keyscan -t rsa $to &gt;&gt; ~/.ssh/known_hosts 2&gt;/dev/null &amp;&amp; cat ~/.ssh/id_rsa.pub"`
+ssh $to "echo $key &gt;&gt; ~/.ssh/authorized_keys"
+echo "$from --&gt; $to [OK]"
+</code></p>
 
 <p>使用方法</p>
 
 <p><code>bash
 relation_a2b host1 host2
 </code></p>
+
 ]]></content>
   </entry>
   
@@ -76,7 +71,7 @@ relation_a2b host1 host2
     <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
     <updated>2014-04-15T20:57:34+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
-    <content type="html"><![CDATA[<h3>sort排序常用参数</h3>
+    <content type="html"><![CDATA[<h3 id="sort">sort排序常用参数</h3>
 
 <p>-n : 按照数值排序</p>
 
@@ -86,11 +81,11 @@ relation_a2b host1 host2
 
 <p>-t : 指定分段符号</p>
 
-<p>-k : 按照第几个字段(1&hellip;)排序</p>
+<p>-k : 按照第几个字段(1…)排序</p>
 
 <p>默认sort是按照字符排序的。</p>
 
-<h3>sort临时目录</h3>
+<h3 id="sort-1">sort临时目录</h3>
 
 <p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
 
@@ -98,7 +93,7 @@ relation_a2b host1 host2
 sort -T /path/to/tmp_directory
 </code></p>
 
-<h3>sort不为人知的一个深坑</h3>
+<h3 id="sort-2">sort不为人知的一个深坑</h3>
 
 <p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
 
@@ -115,9 +110,8 @@ export LC_ALL=C
     <link href="http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/"/>
     <updated>2014-03-25T08:53:55+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu</id>
-    <content type="html"><![CDATA[<h3>1. cat /proc/${pid}/status</h3>
-
-<h3>2. ps -mp &lt;PID></h3>
+    <content type="html"><![CDATA[<h3 id="cat-procpidstatus">1. cat /proc/${pid}/status</h3>
+<p>### 2. ps -mp &lt;PID&gt;</p>
 ]]></content>
   </entry>
   
@@ -137,7 +131,6 @@ route add default gw 10.46.148.1
 <p>提醒自己以后把学到的东西利用起来！</p>
 
 <!--more-->
-
 ]]></content>
   </entry>
   
@@ -150,32 +143,26 @@ route add default gw 10.46.148.1
 
 <pre><code>centence="Linux is cool"
 for word in $centence;do
-    echo $word
+	echo $word
 done
 </code></pre>
 
 <p>有时用ls命令遍历目录会遇到空目录：</p>
 
-<p>```bash
-for d in $(ls);do</p>
-
-<pre><code>echo "$d"
-</code></pre>
-
-<p>done
-```</p>
+<p><code>bash
+for d in $(ls);do
+	echo "$d"
+done
+</code></p>
 
 <p>处理办法是：</p>
 
-<p>```bash
+<p><code>bash
 ls -1 | while read d
-do</p>
-
-<pre><code>echo "$d"
-</code></pre>
-
-<p>done
-```</p>
+do
+	echo "$d"
+done
+</code></p>
 ]]></content>
   </entry>
   

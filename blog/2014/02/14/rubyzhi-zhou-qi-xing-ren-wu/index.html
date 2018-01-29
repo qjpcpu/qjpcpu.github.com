@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq， &hellip;">
+	<meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天……）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,14 +80,13 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Ruby之周期性任务</h2>
-	<div class="entry-content"><h3>1.前言</h3>
+	<div class="entry-content"><h3 id="section">1.前言</h3>
 
-<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
+<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天……）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
 
 <!-- more -->
 
-
-<h3>2.whenever</h3>
+<h3 id="whenever">2.whenever</h3>
 
 <p>首先，whenever是基于linux的cron服务的，所以，在windows平台上没有直接的方法使用该gem。whenever严格来说应该算一个cron的翻译器，将ruby代码翻译为cron脚本，从而将周期性任务转交给cron实际去完成。对于精通cron的shell程序员来说可能不值一提，但对rubyist却不是。首先，我们可以使用ruby语言来书写任务代码，在ruby层面上控制代码，避免了和一些shell脚本的切换；另外，cron命令很强大，但我总是记不住它的命令参数，为了避免一遍一遍去man它的手册，还是ruby语法比较亲民。</p>
 
@@ -156,7 +155,7 @@ $ whenever -c #取消任务
 <pre><code>$ crontab -l
 </code></pre>
 
-<h3>3.sidetiq</h3>
+<h3 id="sidetiq">3.sidetiq</h3>
 
 <p>sidetiq是sidekiq的亲兄弟，如果在rails项目中使用sidekiq来处理后台任务，那么就用sidetiq来交付周期性任务也显得比较自然。</p>
 
@@ -181,13 +180,13 @@ end
 
 <p>sidetiq和sidekiq一样，依赖于redis消息来处理消息。当rails项目启动后，这些周期性任务会自动加载执行。</p>
 
-<h3>3.1 sidetiq-cron</h3>
+<h3 id="sidetiq-cron">3.1 sidetiq-cron</h3>
 
 <p>现在可以使用sidetiq-cron，和sidekiq配合更紧密，使用更加简单。</p>
 
 <p><a href="https://github.com/ondrejbartas/sidekiq-cron">sidetiq-cron</a></p>
 
-<h3>4.clockwork</h3>
+<h3 id="clockwork">4.clockwork</h3>
 
 <p>clockwork和sidetiq一样，也不必依赖于cron，可以适应”跨平台“要求。下面是代码示例(clock.rb)：</p>
 

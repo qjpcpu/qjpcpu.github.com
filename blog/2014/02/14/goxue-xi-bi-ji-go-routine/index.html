@@ -80,9 +80,11 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Go学习笔记-go Routine</h2>
-	<div class="entry-content"><h2>Go routine indeed</h2>
+	<div class="entry-content"><h2 id="go-routine-indeed">Go routine indeed</h2>
 
-<blockquote><p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p></blockquote>
+<blockquote>
+  <p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p>
+</blockquote>
 
 <p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
 
@@ -94,7 +96,7 @@
 
 <p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
 
-<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS > 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
+<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS &gt; 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
 
 <p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
 
@@ -104,62 +106,61 @@
 
 <!-- more -->
 
-
-<h3>启动一个go routine</h3>
+<h3 id="go-routine">启动一个go routine</h3>
 
 <p>go关键字+函数名即可启动一个go routine:</p>
 
 <pre><code>package main
 import (
-    "fmt"
-    "time"
+	"fmt"
+	"time"
 )
 func p() {
      for i := 0; i &lt; 100; i++ {
            fmt.Println(i)
-           time.Sleep(time.Second * 1)
-       } 
+		   time.Sleep(time.Second * 1)
+	   } 
 }
 func main() {
      go p()
      var input string
      fmt.Scanln(&amp;input)
-     fmt.Println("End")
+	 fmt.Println("End")
 }
 </code></pre>
 
-<h3>goroutine通信：Channel</h3>
+<h3 id="goroutinechannel">goroutine通信：Channel</h3>
 
 <p>go routine使用channel来进行routine间的通信：</p>
 
 <pre><code>package main
 import (
-    "fmt"
-    "time"
-    "math/rand"
+	"fmt"
+	"time"
+	"math/rand"
 )
 func sell(c chan int) {
-    for {
-    num := &lt;- c
-    fmt.Println("Sell ",num," bread")
+	for {
+	num := &lt;- c
+	fmt.Println("Sell ",num," bread")
 }
 }
 func produce(c chan int){
-    for {
-    num := rand.Intn(10)
-    t := time.Duration(num)
-    fmt.Println("Product ",num," bread")
-    c &lt;- num
-    time.Sleep(time.Second* t)
-    }
+	for {
+	num := rand.Intn(10)
+	t := time.Duration(num)
+	fmt.Println("Product ",num," bread")
+	c &lt;- num
+	time.Sleep(time.Second* t)
+	}
 }
 func main() {
-    var c chan int = make(chan int)
+	var c chan int = make(chan int)
      go sell(c)
-     go produce(c)
+	 go produce(c)
      var input string
      fmt.Scanln(&amp;input)
-     fmt.Println("End")
+	 fmt.Println("End")
 }
 //输出结果：
 Product  1  bread

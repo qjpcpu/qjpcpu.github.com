@@ -84,64 +84,58 @@ find / -name &#39;n1&#39; -type &hellip;">
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Find命令</h2>
-	<div class="entry-content"><h3>find的基本语法</h3>
+	<div class="entry-content"><h3 id="find">find的基本语法</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><code>find</code>命令可以使用多个OPTION，不同OPTION之间默认是<code>and</code>关系，除了<code>and</code>关系还有<code>not</code>和<code>or</code>关系，如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
-</span><span class='line'>find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
-</span><span class='line'>find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
+</span><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
+</span><span class="line">find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>当使用的OPTION很多时，可以将OPTIONS括起来增加可读性，注意括号需要用<code>\</code>来转义，同时<code>\(</code>和<code>\)</code>两边都需要有空格：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <!--more-->
 
-
-<h3>find命令常用的OPTION</h3>
+<h3 id="findoption">find命令常用的OPTION</h3>
 
 <ul>
-<li>-name  按名称查找，支持通配符*,?,[]</li>
-<li>-user  按用户名查找</li>
-<li>-empty  查找空文件(目录)</li>
-<li>-perm  查找对应权限的文件，权限表示的三位数字形式如777</li>
-<li>-type 按类型查找，类型可为<code>b</code>块设备，<code>c</code>字符设备，<code>p</code>管道，<code>f</code>普通文件，<code>l</code>链接文件，<code>s</code>socket文件</li>
-<li>-print  打印结果</li>
-<li>-regex 按正则表达式查找，注意该正则匹配属于完全匹配，即如果要查找<code>dir</code>目录下的文件<code>file_23</code>应该用正则表达式<code>.*file_[0-9]+</code>，用<code>file_[0-9]+</code>是匹配不到的，<code>find dir -regex '.*file_[0-9]+</code>是用完整结果即<code>dir/file_23</code>来做和<code>-regex</code>完全匹配的</li>
-<li>-maxdepth n  find的最大目录层级查找深度，最小为1</li>
-<li>-mindepth n find的最小目录查找深度</li>
+  <li>-name  按名称查找，支持通配符*,?,[]</li>
+  <li>-user  按用户名查找</li>
+  <li>-empty  查找空文件(目录)</li>
+  <li>-perm  查找对应权限的文件，权限表示的三位数字形式如777</li>
+  <li>-type 按类型查找，类型可为<code>b</code>块设备，<code>c</code>字符设备，<code>p</code>管道，<code>f</code>普通文件，<code>l</code>链接文件，<code>s</code>socket文件</li>
+  <li>-print  打印结果</li>
+  <li>-regex 按正则表达式查找，注意该正则匹配属于完全匹配，即如果要查找<code>dir</code>目录下的文件<code>file_23</code>应该用正则表达式<code>.*file_[0-9]+</code>，用<code>file_[0-9]+</code>是匹配不到的，<code>find dir -regex '.*file_[0-9]+</code>是用完整结果即<code>dir/file_23</code>来做和<code>-regex</code>完全匹配的</li>
+  <li>-maxdepth n  find的最大目录层级查找深度，最小为1</li>
+  <li>-mindepth n find的最小目录查找深度</li>
 </ul>
-
 
 <p>按时间查找的参数：</p>
 
 <ul>
-<li>-amin n  查找n分钟以前被访问（access）的文件</li>
-<li>-atime n  查找n天前被访问的文件</li>
-<li>-cmin n  查找n分钟前文件元信息被修改（change）的文件</li>
-<li>-ctime n  查找n天前文件元信息被修改过的文件</li>
-<li>-mmin n  查找n分钟前内容被修改的文件</li>
-<li>-mtime n 查找n天前内容被修改的文件</li>
+  <li>-amin n  查找n分钟以前被访问（access）的文件</li>
+  <li>-atime n  查找n天前被访问的文件</li>
+  <li>-cmin n  查找n分钟前文件元信息被修改（change）的文件</li>
+  <li>-ctime n  查找n天前文件元信息被修改过的文件</li>
+  <li>-mmin n  查找n分钟前内容被修改的文件</li>
+  <li>-mtime n 查找n天前内容被修改的文件</li>
 </ul>
 
-
-<h3>exec</h3>
+<h3 id="exec">exec</h3>
 
 <p>find命令最后的exec表示对找到的文件执行什么命令，其中<code>{}</code>代表找到的文件，注意<code>{}</code>和<code>\;</code>间有空格。</p>
+
 </div>
 
 

@@ -84,62 +84,61 @@
 
 <!-- more -->
 
-
-<h3>1. each简单迭代</h3>
+<h3 id="each">1. each简单迭代</h3>
 
 <p>each是ruby中非常常见的遍历操作，她是年老色衰的for直接替代品。如果需要索引，则可以使用each_with_index方法。</p>
 
 <pre><code>words=%w(good god ruby sexy girl run)
 words.each do |word|
-    puts word
+	puts word
 end
 </code></pre>
 
-<h3>2. find 查找单个元素</h3>
+<h3 id="find-">2. find 查找单个元素</h3>
 
 <p>查找到第一个符合条件的元素，find。</p>
 
 <pre><code>words=%w(good god ruby sexy girl run)
 words.find do |word|
-    word.start_with? 'r'
+	word.start_with? 'r'
 end
 =&gt; "ruby"
 </code></pre>
 
-<h3>3. select 选取元素</h3>
+<h3 id="select-">3. select 选取元素</h3>
 
 <p>选取所有符合条件的元素，select。</p>
 
 <pre><code>words=%w(good god ruby sexy girl run)
 words.select do |word|
-    word.start_with? 'r'
+	word.start_with? 'r'
 end
 =&gt; ["ruby", "run"]
 </code></pre>
 
-<h3>4. reject 剔除元素</h3>
+<h3 id="reject-">4. reject 剔除元素</h3>
 
 <p>剔除部分符合条件的元素，reject。</p>
 
 <pre><code>words=%w(good god ruby sexy girl run)
 words.reject do |word|
-    word.start_with? 'r'
+	word.start_with? 'r'
 end
 =&gt; ["good", "god", "sexy", "girl"]
 </code></pre>
 
-<h3>5. map 转换元素</h3>
+<h3 id="map-">5. map 转换元素</h3>
 
 <p>转换每个元素，map。</p>
 
 <pre><code>words=%w(good god ruby sexy girl run)
 words.map do |word|
-    word.capitalize
+	word.capitalize
 end
 =&gt; ["Good", "God", "Ruby", "Sexy", "Girl", "Run"]
 </code></pre>
 
-<h3>6. uniq 唯一化</h3>
+<h3 id="uniq-">6. uniq 唯一化</h3>
 
 <p>剔除相等的元素，uniq。</p>
 
@@ -152,12 +151,12 @@ words.uniq
 
 <pre><code>words=%w(good god ruby sexy girl run run god Run)
 words.uniq do |w|
-    w.downcase
+	w.downcase
 end
 =&gt; ["good", "god", "ruby", "sexy", "girl", "run"]
 </code></pre>
 
-<h3>7. group_by 分组元素</h3>
+<h3 id="groupby-">7. group_by 分组元素</h3>
 
 <p>分组元素，这个真的很sexy，group_by。</p>
 
@@ -165,23 +164,23 @@ end
 
 <pre><code>words=%w(good god ruby sexy girl Run)
 words.group_by do |w|
-    w.capitalize[0]
+	w.capitalize[0]
 end
 =&gt; {"G"=&gt;["good", "god", "girl"], "R"=&gt;["ruby", "Run"], "S"=&gt;["sexy"]}
 </code></pre>
 
-<h3>8. sort_by 排序元素</h3>
+<h3 id="sortby-">8. sort_by 排序元素</h3>
 
 <p>排序元素，sort_by。</p>
 
 <pre><code>words=%w(good god ruby sexy girl Run)
 words.sort_by do |w|
-    w.length
+	w.length
 end
 =&gt; ["Run", "god", "sexy", "ruby", "girl", "good"]
 </code></pre>
 
-<h3>9. zip 组合元素</h3>
+<h3 id="zip-">9. zip 组合元素</h3>
 
 <p>组合遍历元素，zip。</p>
 
@@ -192,13 +191,13 @@ words.zip(symbols,numbers)
 =&gt; [["good", "+", 11], ["god", "-", 12], ["ruby", "*", 13], ["sexy", "/", 14], ["girl", "=", 15], ["Run", "%", 16]]
 </code></pre>
 
-<h3>10. inject 累积元素</h3>
+<h3 id="inject-">10. inject 累积元素</h3>
 
 <p>累积元素求值，这是我最喜欢的一个，inject。</p>
 
 <pre><code>numbers=(1..10)
 numbers.inject do |memo,value|
-    memo=memo+value
+	memo=memo+value
 end
 =&gt; 55
 </code></pre>
@@ -207,28 +206,26 @@ end
 
 <pre><code>tbl={a:1,b:2,c:3,d:1}
 tbl.inject({}) do |memo,(k,v)|
-    memo[v]||=[]
-    memo[v]&lt;&lt;k
-    memo
+	memo[v]||=[]
+	memo[v]&lt;&lt;k
+	memo
 end
 =&gt; {1=&gt;[:a, :d], 2=&gt;[:b], 3=&gt;[:c]}
 </code></pre>
 
-<h3>11. partition 分组操作</h3>
+<h3 id="partition-">11. partition 分组操作</h3>
 
 <p>将元素分为符合条件和不符合条件的两个组。</p>
 
-<pre><code>(1..6).partition { |v| v.even? }  #=&gt; [[2, 4, 6], [1, 3, 5]]
+<pre><code>(1..6).partition { |v| v.even? }  #=&gt; [[2, 4, 6], [1, 3, 5]] ###12. flatten扁平化列表
 </code></pre>
-
-<h3>12. flatten扁平化列表</h3>
 
 <p>将多级列表合并为一个单独列表，以上例的列表为例。</p>
 
 <pre><code>[[2, 4, 6], [1, 3, 5]].flatten  #=&gt;[ 2 , 4 , 6 , 1 , 3 , 5 ]
 </code></pre>
 
-<h3>13. rotate旋转列表</h3>
+<h3 id="rotate">13. rotate旋转列表</h3>
 
 <pre><code>a = [ "a", "b", "c", "d" ]
 a.rotate         #=&gt; ["b", "c", "d", "a"]
@@ -237,7 +234,7 @@ a.rotate(2)      #=&gt; ["c", "d", "a", "b"]
 a.rotate(-3)     #=&gt; ["b", "c", "d", "a"]
 </code></pre>
 
-<h3>14. join将列表转换为一个字符串</h3>
+<h3 id="join">14. join将列表转换为一个字符串</h3>
 
 <pre><code>[ "a", "b", "c" ].join        #=&gt; "abc"
 [ "a", "b", "c" ].join("-")   #=&gt; "a-b-c"

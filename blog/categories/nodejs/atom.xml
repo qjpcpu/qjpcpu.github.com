@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nodejs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/nodejs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,17 +18,13 @@
     <link href="http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile/"/>
     <updated>2015-09-16T21:56:17+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile</id>
-    <content type="html"><![CDATA[<h3>0. 简介</h3>
-
+    <content type="html"><![CDATA[<h3 id="section">0. 简介</h3>
 <p>gulp是javascript世界的构建工具，它并不是js世界第一个构建工具，但由于它小而快的特点，一出现就快速赶超它的前辈grunt，在npm的下载榜上一直高居前列。</p>
 
 <!-- more -->
-
-
 <p><img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" alt="gulp logo" /></p>
 
-<h3>1. gulp的特性</h3>
-
+<h3 id="gulp">1. gulp的特性</h3>
 <p><strong><code>小</code></strong></p>
 
 <p>gulp的第一个特点应该是小，不仅仅是源码小，更重要的是gulp编写的出的构建代码非常短小明了。这是因为gulp基本上完全是基于流式的构建处理，可以理解为由源码文件流经过一系列的中间加工处理直接将结果灌入到输出文件，没有了中间的临时文件读写，自然就减少了处理代码，出来的构建workflow同样也就十分清理简捷。</p>
@@ -39,7 +35,7 @@
 
 <p>那么在这里为什么要说这个呢，因为grunt其实可以说是一个基于<code>配置优于代码</code>的构建工具，而且很多其他编程语言的构建工具都是基于这个理念的。这类构建工具在执行大工程的构建时，配置的碎片化非常严重，为了描述构建需要在构建代码里编写大量的元信息片段，甚至于需要分立诸多构建小文件来描述子构建单元，那么维护构建流程本身也变成一件令人头疼的事情。</p>
 
-<p>而gulp可以说某种程度上的回归，将更多的东西又返回到了原始的地方&mdash;&mdash;&mdash;-代码。gulp的构建文件里配置信息非常少，一个构建task包含的所有信息都在这个task里，你不需要跳到其他文件里查阅这个task的配置信息。是的，程序员喜欢代码，把构建所有的东西都在task这块代码里完成，这样的构建流程自然就很清晰了。所以，gulp非常适合中小型程序的构建，我私自揣度这也是gulp快速流行起来的原因。</p>
+<p>而gulp可以说某种程度上的回归，将更多的东西又返回到了原始的地方——-代码。gulp的构建文件里配置信息非常少，一个构建task包含的所有信息都在这个task里，你不需要跳到其他文件里查阅这个task的配置信息。是的，程序员喜欢代码，把构建所有的东西都在task这块代码里完成，这样的构建流程自然就很清晰了。所以，gulp非常适合中小型程序的构建，我私自揣度这也是gulp快速流行起来的原因。</p>
 
 <p><strong><code>快</code></strong></p>
 
@@ -49,11 +45,11 @@
 
 <p>在阅读了gulp的一些资料后，我本来打算花一个下午的时间来学习的，结果10分钟左右就读完了gulp的文档，因为它实在太简单了，总共只有<strong>4个</strong>API.</p>
 
-<h3>2. gulp入门</h3>
+<h3 id="gulp-1">2. gulp入门</h3>
 
 <p>对于gulp的基础，我不打算在这里讲，因为它的<a href="https://github.com/gulpjs/gulp/tree/master/docs">官方文档</a>非常简单易读，如果想读中文，这里也有<a href="https://github.com/lisposter/gulp-docs-zh-cn">gulp中文文档</a>。花个10分钟读一下，你就可以向身边的小伙伴炫耀： Hi，让我给你展示下一种很cool的构建工具。</p>
 
-<h3>3. gulp流</h3>
+<h3 id="gulp-2">3. gulp流</h3>
 
 <p><code>流</code>是gulp重中之重的概念，理解了流才可以玩转gulp。可以看下<a href="https://github.com/substack/stream-handbook">nodejs流</a>深入理解下nodejs流的概念。这里仅简单介绍下gulp中广泛使用的<code>pipe()</code>函数。</p>
 
@@ -75,7 +71,7 @@ c.pipe(d);
 
 <p>这个操作和shell编程的管道非常相似: <code>a | b | c | d</code></p>
 
-<h3>4. gulp任务的编写准则</h3>
+<h3 id="gulp-3">4. gulp任务的编写准则</h3>
 
 <p>gulp的核心是流，构建单元是一个个<code>task</code>，那么编写这些task的时候需要注意什么呢？</p>
 
@@ -91,144 +87,124 @@ c.pipe(d);
 
 <p>此外，当需要写出一些高阶的gulp玩法时，不理解并执行这几条规则，就很难办到。另外，可以思考个额外的问题，为什么gulp的task需要有这三条规则? 根据这3条规则，是否都可以猜测出gulp的实现机制呢?</p>
 
-<p>在这里我顺便申明我对学习新东西的一个观点，就是<code>seize the key</code>，学习一种新东西就要理解她的核心。有的人秉持一种观念是说，语言只是工具，学习了一种其他都差不多，当有切换需求要学习新语言or新工具，就草草将以前的经验套上去，完成任务后还以为学会了新语言。所以有时候会看到一些四不像的代码，比如长得像shell的ruby代码，长得像java的python代码，一脸C长相的golang&hellip;</p>
+<p>在这里我顺便申明我对学习新东西的一个观点，就是<code>seize the key</code>，学习一种新东西就要理解她的核心。有的人秉持一种观念是说，语言只是工具，学习了一种其他都差不多，当有切换需求要学习新语言or新工具，就草草将以前的经验套上去，完成任务后还以为学会了新语言。所以有时候会看到一些四不像的代码，比如长得像shell的ruby代码，长得像java的python代码，一脸C长相的golang…</p>
 
 <p>那么，怎样一学习新东西就能抓住其核心呢，很简单，多想想<code>why</code>。实际操作起来就几点经验：</p>
 
 <ul>
-<li>如果有作者对这个语言/工具的创作初衷的相关文章，一定要看！</li>
-<li>看这个新东西是为了解决什么问题</li>
-<li>这个语言解决的是什么问题，更重要的是解决的思路或方式是什么！</li>
-<li>如果涉及新的概念或思路，一定要看足够多的文档直到理解这个概念</li>
-<li>如果学习的是新语言，必须<strong>理解</strong>这个语言的<strong>key feature</strong>，了解语言的生态圈，语言的编码规范、构建工具、测试工具、包管理工具，该语言里著名的库/框架，这些框架的设计理念，如果有余力可以看下这些库/框架的源码，告诉自己用这种语言写出的代码也应该是这个水平</li>
+  <li>如果有作者对这个语言/工具的创作初衷的相关文章，一定要看！</li>
+  <li>看这个新东西是为了解决什么问题</li>
+  <li>这个语言解决的是什么问题，更重要的是解决的思路或方式是什么！</li>
+  <li>如果涉及新的概念或思路，一定要看足够多的文档直到理解这个概念</li>
+  <li>如果学习的是新语言，必须<strong>理解</strong>这个语言的<strong>key feature</strong>，了解语言的生态圈，语言的编码规范、构建工具、测试工具、包管理工具，该语言里著名的库/框架，这些框架的设计理念，如果有余力可以看下这些库/框架的源码，告诉自己用这种语言写出的代码也应该是这个水平</li>
 </ul>
-
 
 <p>比如对于gulp:</p>
 
 <ul>
-<li><strong>创作初衷</strong>: 看文档FAQ,作者twitter</li>
-<li><strong>需要解决的问题</strong>: grunt复杂庞大的插件配置</li>
-<li><strong>解决思路</strong>: nodejs流式处理=>什么是nodejs流=>解决什么问题，带来什么问题</li>
+  <li><strong>创作初衷</strong>: 看文档FAQ,作者twitter</li>
+  <li><strong>需要解决的问题</strong>: grunt复杂庞大的插件配置</li>
+  <li><strong>解决思路</strong>: nodejs流式处理=&gt;什么是nodejs流=&gt;解决什么问题，带来什么问题</li>
 </ul>
-
 
 <p>方方面面的东西了解了之后，你就能真正把控你的新玩意儿，有时候你甚至能预测这个语言或工具的未来动向。</p>
 
-<h3>5. 常用gulp插件</h3>
+<h3 id="gulp-4">5. 常用gulp插件</h3>
 
 <p>关于gulp的插件，需要的时候去github上找一下基本都能找到，这里提几个可能是通用构建流程里很可能用到的。</p>
 
-<h4><a href="https://www.npmjs.com/package/run-sequence">run-sequence</a></h4>
+<h4 id="run-sequencehttpswwwnpmjscompackagerun-sequence"><a href="https://www.npmjs.com/package/run-sequence">run-sequence</a></h4>
 
 <p>鉴于流程控制对javascript这种纯异步编程的重要性，gulp的异步任务控制需求同样强烈，run-sequence就是为了解决这个问题。</p>
 
 <p>```javascript
-var gulp = require(&lsquo;gulp&rsquo;);
-var runSequence = require(&lsquo;run-sequence&rsquo;);
-var clean = require(&lsquo;gulp-clean&rsquo;);</p>
+var gulp = require(‘gulp’);
+var runSequence = require(‘run-sequence’);
+var clean = require(‘gulp-clean’);</p>
 
-<p>// This will run in this order:
-// * build-clean
-// * build-scripts and build-styles in parallel
-// * build-html
-// * Finally call the callback function
-gulp.task(&lsquo;build&rsquo;, function(callback) {
-  runSequence(&lsquo;build-clean&rsquo;,</p>
-
-<pre><code>          ['build-scripts', 'build-styles'],
-          'build-html',
-          callback);
-</code></pre>
-
-<p>});</p>
-
-<p>// configure build-clean, build-scripts, build-styles, build-html as you
-// wish, but make sure they either return a stream or handle the callback
-// Example:</p>
-
-<p>gulp.task(&lsquo;build-clean&rsquo;, function() {</p>
-
-<pre><code>return gulp.src(BUILD_DIRECTORY).pipe(clean());
-</code></pre>
-
-<p>//  ^^^^^^
-//   This is the key here, to make sure tasks run asynchronously!
+<p>// This will run in this order: 
+// * build-clean 
+// * build-scripts and build-styles in parallel 
+// * build-html 
+// * Finally call the callback function 
+gulp.task(‘build’, function(callback) {
+  runSequence(‘build-clean’,
+              [‘build-scripts’, ‘build-styles’],
+              ‘build-html’,
+              callback);
 });</p>
 
-<p>gulp.task(&lsquo;build-scripts&rsquo;, function() {</p>
+<p>// configure build-clean, build-scripts, build-styles, build-html as you 
+// wish, but make sure they either return a stream or handle the callback 
+// Example: </p>
 
-<pre><code>return gulp.src(SCRIPTS_SRC).pipe(...)...
-</code></pre>
+<p>gulp.task(‘build-clean’, function() {
+    return gulp.src(BUILD_DIRECTORY).pipe(clean());
+//  ^^^^^^ 
+//   This is the key here, to make sure tasks run asynchronously! 
+});</p>
 
-<p>//  ^^^^^^
-//   This is the key here, to make sure tasks run asynchronously!
+<p>gulp.task(‘build-scripts’, function() {
+    return gulp.src(SCRIPTS_SRC).pipe(…)…
+//  ^^^^^^ 
+//   This is the key here, to make sure tasks run asynchronously! 
 });
 ```</p>
 
-<h4><a href="https://www.npmjs.com/package/del">del</a></h4>
+<h4 id="delhttpswwwnpmjscompackagedel"><a href="https://www.npmjs.com/package/del">del</a></h4>
 
 <p>删除文件，这是个再频繁不过的需求了。</p>
 
 <p>```javascript
-var del = require(&lsquo;del&rsquo;);</p>
+var del = require(‘del’);</p>
 
-<p>del([&lsquo;tmp/*.js&rsquo;, &lsquo;!tmp/unicorn.js&rsquo;]).then(function (paths) {</p>
-
-<pre><code>console.log('Deleted files/folders:\n', paths.join('\n'));
-</code></pre>
-
-<p>});
+<p>del([‘tmp/*.js’, ‘!tmp/unicorn.js’]).then(function (paths) {
+    console.log(‘Deleted files/folders:\n’, paths.join(‘\n’));
+});
 ```</p>
 
 <p>主要，del函数返回的是一个promise对象。</p>
 
-<h4><a href="https://www.npmjs.com/package/merge-stream">merge-stream</a></h4>
+<h4 id="merge-streamhttpswwwnpmjscompackagemerge-stream"><a href="https://www.npmjs.com/package/merge-stream">merge-stream</a></h4>
 
 <p>当一个task里有多条流时，怎么办? merge-stream就是为了解决流的合并问题的。</p>
 
 <p>```javascript
-var gulp = require(&lsquo;gulp&rsquo;);
-var merge = require(&lsquo;merge-stream&rsquo;);</p>
+var gulp = require(‘gulp’);
+var merge = require(‘merge-stream’);</p>
 
-<p>gulp.task(&lsquo;test&rsquo;, function() {
-  var bootstrap = gulp.src(&lsquo;bootstrap/js/*.js&rsquo;)</p>
+<p>gulp.task(‘test’, function() {
+  var bootstrap = gulp.src(‘bootstrap/js/*.js’)
+    .pipe(gulp.dest(‘public/bootstrap’));</p>
 
-<pre><code>.pipe(gulp.dest('public/bootstrap'));
-</code></pre>
+<p>var jquery = gulp.src(‘jquery.cookie/jquery.cookie.js’)
+    .pipe(gulp.dest(‘public/jquery’));</p>
 
-<p>  var jquery = gulp.src(&lsquo;jquery.cookie/jquery.cookie.js&rsquo;)</p>
-
-<pre><code>.pipe(gulp.dest('public/jquery'));
-</code></pre>
-
-<p>  return merge(bootstrap, jquery);
+<p>return merge(bootstrap, jquery);
 });
 ```</p>
 
 <p>当<code>bootstrap</code>和<code>jquery</code>这两条流都完成时，合并后的流才算完成。</p>
 
-<h4>用户代码</h4>
+<h4 id="section-1">用户代码</h4>
 
 <p>还有一种情况，如果task的流处理完成时，我希望执行一些用户代码，比如仅仅打印一些信息，这要怎么做呢? 使用task依赖固然可以完成，但是仅仅因为这个需求就增加一个<code>空</code>task是不是有点杀鸡用牛刀了，如果真正理解了nodejs流和gulp的task规则，其实也很好办:</p>
 
-<p>```javascript
-gulp.task(&lsquo;cli&rsquo;, [&lsquo;coffee&rsquo;], function(cb) {
-  gulp.src(&lsquo;*.coffee&rsquo;).pipe(coffee()).pipe(gulp.dest(&lsquo;js/&rsquo;)).on(&lsquo;end&rsquo;, function() {</p>
-
-<pre><code>doSomething();
-return cb();
-</code></pre>
-
-<p>  });
+<p><code>javascript
+gulp.task('cli', ['coffee'], function(cb) {
+  gulp.src('*.coffee').pipe(coffee()).pipe(gulp.dest('js/')).on('end', function() {
+    doSomething();
+    return cb();
+  });
   return null;
 });
-```
+</code>
 注意task的返回值及task回调cb。</p>
 
-<h3>6. 结束</h3>
+<h3 id="section-2">6. 结束</h3>
 
 <p>gulp是一个很cool的构建工具，学习她，在合适的时候使用她。</p>
+
 ]]></content>
   </entry>
   

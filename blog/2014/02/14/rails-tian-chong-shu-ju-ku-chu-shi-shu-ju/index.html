@@ -85,17 +85,15 @@
 	<h2 class="title">Rails 填充数据库初始数据</h2>
 	<div class="entry-content"><!-- more -->
 
-
 <p>利用db/seeds.rb文件将数据库的initial data填入即可，该文件位于rails环境中，可以访问railsApp中任何类和方法。如，填充product表的初始数据：</p>
 
-<figure class='code'><figcaption><span>seeds.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
-</span><span class='line'>  <span class="no">Product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="ss">:&quot;Product #</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span><span class="ss">description</span><span class="p">:</span><span class="s2">&quot;A product&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>seeds.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class="line">	<span class="no">Product</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="ss">:&quot;Product #</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span><span class="ss">description</span><span class="p">:</span><span class="s2">&quot;A product&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>使用rake命令填充数据：</p>
 

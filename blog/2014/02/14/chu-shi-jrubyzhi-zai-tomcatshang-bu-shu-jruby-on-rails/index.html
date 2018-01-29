@@ -80,24 +80,23 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">初识jruby之在tomcat上部署jruby-on-rails</h2>
-	<div class="entry-content"><h3>1. prerequesite</h3>
+	<div class="entry-content"><h3 id="prerequesite">1. prerequesite</h3>
 
 <p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
 
 <!-- more -->
 
-
-<h3>2. 安装配置Apache Tomcat</h3>
+<h3 id="apache-tomcat">2. 安装配置Apache Tomcat</h3>
 
 <p>首先，在Apache Tomcat网站上下载tomcat压缩包，目前的版本是7.0。下载完成后解压缩，如解压到C:\，解压缩后目录结构如图：</p>
 
 <p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=c5fe07e6d343ad4ba22e46c5b2392b92/c995d143ad4bd1136f3d4d7158afa40f4afb0584.jpg?referer=97197c6f8501a18ba9fc267f639b&amp;x=.jpg" alt="image" /></p>
 
-<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问<a href="http://localhost:8080">http://localhost:8080</a> ，如果出现图示页面说明tomcat安装配置正确。</p>
+<p>进入其中bin目录，并以管理员身份运行startup.bat批处理文件启动tomcat，tomcat默认端口为8080，所以，在浏览器中访问http://localhost:8080 ，如果出现图示页面说明tomcat安装配置正确。</p>
 
 <p><img src="http://d.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=79626b7c49fbfbedd859367a48cb860b/a50f4bfbfbedab642082b783f536afc378311e84.jpg?referer=24c5e74b1d30e92496b3a8015a9b&amp;x=.jpg" alt="image" /></p>
 
-<h3>3. 下载安装jruby</h3>
+<h3 id="jruby">3. 下载安装jruby</h3>
 
 <p>安装jruby在前一篇博文讲解较细，这里不再赘述。</p>
 
@@ -111,7 +110,7 @@
 <pre><code>jruby -S gem install warbler
 </code></pre>
 
-<h3>4. 打包jruby on rails工程</h3>
+<h3 id="jruby-on-rails">4. 打包jruby on rails工程</h3>
 
 <p>首先确认database.yml文件production环境配置正确：</p>
 
@@ -137,7 +136,7 @@
 
 <p>该命令会在工程根目录下生成一个war文件，如demo.war，该war会将必要的gem打包进去，使得我们能够像普通java工程war文件那样部署到tomcat中。</p>
 
-<h3>5. 部署war</h3>
+<h3 id="war">5. 部署war</h3>
 
 <p>将该war复制到tomcat的webapps目录下，等待大约几秒钟，tomcat会自动释放文件完成部署。</p>
 
@@ -146,7 +145,7 @@
 <pre><code>C:\apache-tomcat-7.0.35\webapps\demo&gt;jruby -S rake db:migrate RAILS_ENV="production"
 </code></pre>
 
-<p>现在可以访问<a href="http://localhost:8080/demo">http://localhost:8080/demo</a> ，可以看到rails app的首页了。</p>
+<p>现在可以访问http://localhost:8080/demo ，可以看到rails app的首页了。</p>
 </div>
 
 

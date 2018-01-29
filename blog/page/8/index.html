@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq， &hellip;">
+	<meta name="description" content="1.前言 无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天……）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,9 +89,9 @@
 			Ruby之周期性任务</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.前言</h3>
+		<h3 id="section">1.前言</h3>
 
-<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天&hellip;&hellip;）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
+<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天……）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
 
 
 		
@@ -135,7 +135,7 @@
 			学算法并非和语言无关</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1. 写在前面</h3>
+		<h3 id="section">1. 写在前面</h3>
 
 <p>算法这个东西，本来不是什么特别复杂的东西，就是为了解决某个问题提出的一个解决方案，说白了，就是一种思路。基本上，所有的算法书上都默认选用了伪代码来表达算法，因为这样可以脱离具体的语言，让算法学习者能够直面算法的本质，理解算法的核心，然后使用自己常用的语言来重新表达，写出能够运行的代码。实际上，在我接触到ruby这类高表达力的语言前，我也这么认为。虽然我能够理解很多算法的核心本质，但往往在实际用C或者java来实现时，总是被一些数组索引等细枝末节的问题所折磨，我通常会告诉自己，嗷，我还没有深刻领悟它，再去看看算法图述和伪码。</p>
 
@@ -183,7 +183,7 @@
 			状态转移</a>
 	</h2>
 	<div class="entry-content">
-		<h3>0. 引言</h3>
+		<h3 id="section">0. 引言</h3>
 
 <p>昨天遇到一个问题，就是关于对象状态转移的问题，我姑且这样命名吧。简要描述一下就是：对于一个人，他有进食，帮助他人，恋爱等功能，但是这些功能是有先后顺序的，对于刚出生的人，他要先学会进食，然后随着他的成长，他逐渐学会帮助他人，在这个过程中他学会了爱与被爱，当他遇到一个合适的女孩，他就坠入了爱河。整个过程反映到程序上就是，必须按照下面的顺序调用方法：</p>
 
@@ -240,7 +240,7 @@ man.fall_in_love
 			初识jruby之入门</a>
 	</h2>
 	<div class="entry-content">
-		<p>首先，Jruby的官方站点是<a href="http://jruby.org/">http://jruby.org/</a> ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby，java这个词本身先产生了50%的安全感，所以这可能是比较贴近现实的选择。不过我今天想去倒腾倒腾这个东西，则完全是为了了解ruby的方方面面。</p>
+		<p>首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby，java这个词本身先产生了50%的安全感，所以这可能是比较贴近现实的选择。不过我今天想去倒腾倒腾这个东西，则完全是为了了解ruby的方方面面。</p>
 
 
 		
@@ -328,7 +328,7 @@ man.fall_in_love
 			Ruby Webdriver</a>
 	</h2>
 	<div class="entry-content">
-		<h3>前言</h3>
+		<h3 id="section">前言</h3>
 
 <p>Watir Webdriver是用ruby操作webdriver的很酷的方式，通常被用来做一些rails app的测试。</p>
 
@@ -374,7 +374,7 @@ man.fall_in_love
 			Rails为paperclip上传文件添加访问控制</a>
 	</h2>
 	<div class="entry-content">
-		<h3>0 前言</h3>
+		<h3 id="section">0 前言</h3>
 
 <p>由paperclip上传的文件默认是放在rails项目的public目录下的，也就是说，只要能得到该文件的URL，就可以直接访问/下载该文件，如果要对该文件添加访问控制，就需要更改paperclip的默认上传位置。</p>
 
@@ -420,7 +420,7 @@ man.fall_in_love
 			Rails使用bootstrap及bootswatch</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.简介</h3>
+		<h3 id="section">1.简介</h3>
 
 <p>Twitter-bootstrap是一个功能强大的前端web框架，使用它可以快速地开发出漂亮的web UI。而thomas-mcdonald/bootstrap-sass是rails sass版本的bootstrap。其他类似的gem还有jlong/sass-twitter-bootstrap，metaskills/less-rails-bootstrap，seyhunak/twitter-bootstrap-rails，前一个也是sass版本，后两个是less版本的。另外，jasny-twitter-bootstrap是bootstrap的一个很好的拓展，添加了文件上传等漂亮的插件。</p>
 
@@ -468,7 +468,7 @@ man.fall_in_love
 			在CentOS上搭建git服务器</a>
 	</h2>
 	<div class="entry-content">
-		<h3>0.定义</h3>
+		<h3 id="section">0.定义</h3>
 
 <p>这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。</p>
 
@@ -480,11 +480,10 @@ git是为git服务器创建的专有账户。</p>
 <p>linux是jason的workstation。</p>
 
 <ul>
-<li>git server:                 [test@localhost]     [git@localhost]</li>
-<li>git administrator:      [user@ubuntu]</li>
-<li>git user:                    [jason@linux]</li>
+  <li>git server:                 [test@localhost]     [git@localhost]</li>
+  <li>git administrator:      [user@ubuntu]</li>
+  <li>git user:                    [jason@linux]</li>
 </ul>
-
 
 <p>文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。</p>
 

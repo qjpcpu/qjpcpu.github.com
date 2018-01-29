@@ -95,50 +95,47 @@ st := struct { name string age int &hellip;">
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">你不知道的Go</h2>
-	<div class="entry-content"><h3>1.匿名结构</h3>
+	<div class="entry-content"><h3 id="section">1.匿名结构</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">name</span>      <span class="kt">string</span>
-</span><span class='line'>    <span class="nx">age</span> <span class="kt">int</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">name</span>      <span class="kt">string</span>
+</span><span class="line">    <span class="nx">age</span> <span class="kt">int</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>声明时初始化：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">name</span> <span class="kt">string</span>
-</span><span class='line'>  <span class="nx">age</span>  <span class="kt">int</span>
-</span><span class='line'><span class="p">}{</span>
-</span><span class='line'>  <span class="s">&quot;Jack&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="mi">12</span><span class="p">,</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">name</span> <span class="kt">string</span>
+</span><span class="line">	<span class="nx">age</span>  <span class="kt">int</span>
+</span><span class="line"><span class="p">}{</span>
+</span><span class="line">	<span class="s">&quot;Jack&quot;</span><span class="p">,</span>
+</span><span class="line">	<span class="mi">12</span><span class="p">,</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!-- more -->
 
+<h3 id="section-1">2.抢占式调度器</h3>
 
-<h3>2.抢占式调度器</h3>
-
-<blockquote><p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p></blockquote>
+<blockquote>
+  <p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p>
+</blockquote>
 
 <p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
 </div>

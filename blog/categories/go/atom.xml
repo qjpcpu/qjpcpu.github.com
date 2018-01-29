@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -22,60 +22,42 @@
 
 <p>ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法<strong>ServeHTTP</strong>:</p>
 
-<p>```go src/net/http/server.go
-type Handler interface {</p>
+<p><code>go src/net/http/server.go
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+</code>
+<!-- more --></p>
 
-<pre><code>ServeHTTP(ResponseWriter, *Request)
-</code></pre>
-
-<p>}
-```</p>
-
-<!-- more -->
-
-
-<h3>基本原理</h3>
+<h3 id="section">基本原理</h3>
 
 <p>下面我们创建一个简单的HTTP服务，该服务仅返回一个文本页面:</p>
 
 <p>```go main.go
 package main</p>
 
-<p>import (</p>
+<p>import (
+	“fmt”
+	“net/http”
+)</p>
 
-<pre><code>"fmt"
-"net/http"
+<p>type TextHandler struct {
+	word string
+}</p>
+
+<p>func (th *TextHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(“I wanna say: “ + th.word))
+}</p>
+
+<p>func main() {
+	mux := http.NewServeMux()
+	th := &amp;TextHandler{word: “cool”}
+	mux.Handle(“/”, th)</p>
+
+<pre><code>fmt.Println("Server started...")
+
+http.ListenAndServe(":3000", mux) } ```
 </code></pre>
-
-<p>)</p>
-
-<p>type TextHandler struct {</p>
-
-<pre><code>word string
-</code></pre>
-
-<p>}</p>
-
-<p>func (th <em>TextHandler) ServeHTTP(w http.ResponseWriter, r </em>http.Request) {</p>
-
-<pre><code>w.Write([]byte("I wanna say: " + th.word))
-</code></pre>
-
-<p>}</p>
-
-<p>func main() {</p>
-
-<pre><code>mux := http.NewServeMux()
-th := &amp;TextHandler{word: "cool"}
-mux.Handle("/", th)
-
-fmt.Println("Server started...")
-
-http.ListenAndServe(":3000", mux)
-</code></pre>
-
-<p>}
-```</p>
 
 <p>访问<a href="http://localhost:3000">http://localhost:3000</a>，页面返回<code>I wanna say: cool</code>。</p>
 
@@ -91,109 +73,89 @@ func ListenAndServe(addr string, handler Handler) error
 
 <p><strong>综上，使用ServeMux组装路由,再将它作为一个Handler交给http启动服务。当服务接收到一个http请求后，就根据路由中配置的规则选择对应的handler进行处理，实际的处理逻辑则由该handler的ServeHTTP方法实现。</strong></p>
 
-<blockquote><p>路由分发的逻辑具体实现可以查看<a href="https://golang.org/src/net/http/server.go">http包源码</a></p></blockquote>
+<blockquote>
+  <p>路由分发的逻辑具体实现可以查看<a href="https://golang.org/src/net/http/server.go">http包源码</a></p>
+</blockquote>
 
-<h3>标准用法</h3>
+<h3 id="section-1">标准用法</h3>
 
-<h4>1.简化代码</h4>
+<h4 id="section-2">1.简化代码</h4>
 
-<p>基本原理中的例子足以展示出golang的http处理原理，由于自定义的handler均必须实现http.Handler接口,这样会导致多余声明代码的产生。所以http包提供了一个帮助方法<code>http.HandlerFunc</code>将方法参数和<code>ServeHTTP</code>相同的方法转换为<code>http.Handler</code>。</p>
+<p>基本原理中的例子足以展示出golang的http处理原理，由于自定义的handler均必须实现http.Handler接口,这样会导致多余声明代码的产生。所以http包提供了一个帮助方法<code>http.HandlerFunc</code>将方法参数和<code>ServeHTTP</code>相同的方法转换为<code>http.Handler</code>。 </p>
 
 <p>```go main.go
 package main</p>
 
-<p>import (</p>
+<p>import (
+	“fmt”
+	“net/http”
+)</p>
 
-<pre><code>"fmt"
-"net/http"
-</code></pre>
+<p>func saySomething(w http.ResponseWriter, r *http.Request) {
+	word := “cool”
+	w.Write([]byte(“I wanna say: “ + word))
+}</p>
 
-<p>)</p>
-
-<p>func saySomething(w http.ResponseWriter, r *http.Request) {</p>
-
-<pre><code>word := "cool"
-w.Write([]byte("I wanna say: " + word))
-</code></pre>
-
-<p>}</p>
-
-<p>func main() {</p>
-
-<pre><code>mux := http.NewServeMux()
-th := http.HandlerFunc(saySomething)
-mux.Handle("/", th)
-fmt.Println("Server started...")
-http.ListenAndServe(":3000", mux)
-</code></pre>
-
-<p>}</p>
+<p>func main() {
+	mux := http.NewServeMux()
+	th := http.HandlerFunc(saySomething)
+	mux.Handle(“/”, th)
+	fmt.Println(“Server started…”)
+	http.ListenAndServe(“:3000”, mux)
+}</p>
 
 <p>```</p>
 
 <p>实际上，<code>http.HandlerFunc</code>不是一个方法调用，仅仅是一个类型转换。</p>
 
-<p>```go 源码src/net/http/server.go
-type HandlerFunc func(ResponseWriter, <em>Request)
+<p><code>go 源码src/net/http/server.go
+type HandlerFunc func(ResponseWriter, *Request)
 // ServeHTTP calls f(w, r).
-func (f HandlerFunc) ServeHTTP(w ResponseWriter, r </em>Request) {</p>
-
-<pre><code>f(w, r)
-</code></pre>
-
-<p>}
-```</p>
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+	f(w, r)
+}
+</code></p>
 
 <p>所以，自定义的请求处理函数(<code>saySomething</code>)仅需要保持参数定义和<code>http.Handler</code>接口相同即可，将该自定义函数做类型转换为<code>HandlerFunc</code>即可。另外，由源码可以看出，函数类型<code>HandlerFunc</code>同时也实现了<code>http.Handler</code>，所以能够注册到<code>ServeMux</code>中。</p>
 
-<h4>2.保持封装</h4>
+<h4 id="section-3">2.保持封装</h4>
 
 <p>代码看起来缺失简单了一些，然而这样却破坏了逻辑的封装性：<code>saySomething</code>中包含了硬编码的参数<code>word</code>。这可以使用闭包来解决:</p>
 
 <p>```go main.go
 package main</p>
 
-<p>import (</p>
+<p>import (
+	“fmt”
+	“net/http”
+)</p>
 
-<pre><code>"fmt"
-"net/http"
-</code></pre>
+<p>func saySomething(word string) http.Handler {
+    // 闭包装入变量word
+	f := func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(“I wanna say: “ + word))
+	}
+	return http.HandlerFunc(f)
+}</p>
 
-<p>)</p>
-
-<p>func saySomething(word string) http.Handler {</p>
-
-<pre><code>// 闭包装入变量word
-f := func(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("I wanna say: " + word))
+<p>func main() {
+	mux := http.NewServeMux()
+	th := saySomething(“cool”)
+	mux.Handle(“/”, th)
+	fmt.Println(“Server started…”)
+	http.ListenAndServe(“:3000”, mux)
 }
-return http.HandlerFunc(f)
-</code></pre>
-
-<p>}</p>
-
-<p>func main() {</p>
-
-<pre><code>mux := http.NewServeMux()
-th := saySomething("cool")
-mux.Handle("/", th)
-fmt.Println("Server started...")
-http.ListenAndServe(":3000", mux)
-</code></pre>
-
-<p>}
 ```</p>
 
 <p><strong>http服务中出现了很多名称，命名比较相近，这里汇总解释下:</strong></p>
 
 <ul>
-<li><strong>ServeMux</strong>，路由容器，http服务中的路由规则统一在这里定义，启动服务后路由的分发自然也由其处理</li>
-<li><strong>http.Handler</strong>,请求处理器，每个处理http请求的处理器均需要实现该接口<code>ServeHTTP</code></li>
-<li><strong>http.HandlerFunc</strong>,帮助"方法"(实际是一个函数类型声明),将参数和<code>ServeHTTP</code>相同的普通函数转换为一个<code>http.Handler</code></li>
+  <li><strong>ServeMux</strong>，路由容器，http服务中的路由规则统一在这里定义，启动服务后路由的分发自然也由其处理</li>
+  <li><strong>http.Handler</strong>,请求处理器，每个处理http请求的处理器均需要实现该接口<code>ServeHTTP</code></li>
+  <li><strong>http.HandlerFunc</strong>,帮助”方法”(实际是一个函数类型声明),将参数和<code>ServeHTTP</code>相同的普通函数转换为一个<code>http.Handler</code></li>
 </ul>
 
-
-<h3>http中间件</h3>
+<h3 id="http">http中间件</h3>
 
 <p>golang中http处理流程是这样的:</p>
 
@@ -203,24 +165,20 @@ http.ListenAndServe(":3000", mux)
 <p><strong>中间件</strong>:</p>
 
 <ul>
-<li>中间件也是一个http.Handler，所以必须实现<code>ServeHTTP</code></li>
-<li>构建完整的中间件调用链，保证覆盖上图的中间件调用关系，并作为handler注册到<code>http.ServeMux</code></li>
+  <li>中间件也是一个http.Handler，所以必须实现<code>ServeHTTP</code></li>
+  <li>构建完整的中间件调用链，保证覆盖上图的中间件调用关系，并作为handler注册到<code>http.ServeMux</code></li>
 </ul>
-
 
 <p>一个中间件示例:</p>
 
-<p>```go
+<p><code>go
 func exampleMiddleware(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
-
-<pre><code>// 中间件逻辑在这里实现
-next.ServeHTTP(w, r)
-</code></pre>
-
-<p>  })
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    // 中间件逻辑在这里实现
+    next.ServeHTTP(w, r)
+  })
 }
-```</p>
+</code></p>
 
 <p>由这个中间件定义可以看出中间件链的构建方式: 函数嵌套。</p>
 
@@ -234,45 +192,39 @@ http.Handle("/", middlewareOne(middlewareTwo(finalHandler)))
 package main</p>
 
 <p>import (
-  &ldquo;log&rdquo;
-  &ldquo;net/http&rdquo;
+  “log”
+  “net/http”
 )</p>
 
 <p>func middlewareOne(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
-
-<pre><code>log.Println("Executing middlewareOne")
-next.ServeHTTP(w, r)
-log.Println("Executing middlewareOne again")
-</code></pre>
-
-<p>  })
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    log.Println(“Executing middlewareOne”)
+    next.ServeHTTP(w, r)
+    log.Println(“Executing middlewareOne again”)
+  })
 }</p>
 
 <p>func middlewareTwo(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</p>
-
-<pre><code>log.Println("Executing middlewareTwo")
-if r.URL.Path != "/" {
-  return
-}
-next.ServeHTTP(w, r)
-log.Println("Executing middlewareTwo again")
-</code></pre>
-
-<p>  })
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    log.Println(“Executing middlewareTwo”)
+    if r.URL.Path != “/” {
+      return
+    }
+    next.ServeHTTP(w, r)
+    log.Println(“Executing middlewareTwo again”)
+  })
 }</p>
 
 <p>func final(w http.ResponseWriter, r *http.Request) {
-  log.Println(&ldquo;Executing finalHandler&rdquo;)
-  w.Write([]byte(&ldquo;OK&rdquo;))
+  log.Println(“Executing finalHandler”)
+  w.Write([]byte(“OK”))
 }</p>
 
 <p>func main() {
   finalHandler := http.HandlerFunc(final)</p>
 
-<p>  http.Handle(&ldquo;/&rdquo;, middlewareOne(middlewareTwo(finalHandler)))
-  http.ListenAndServe(&ldquo;:3000&rdquo;, nil)
+<p>http.Handle(“/”, middlewareOne(middlewareTwo(finalHandler)))
+  http.ListenAndServe(“:3000”, nil)
 }
 ```</p>
 
@@ -286,7 +238,7 @@ log.Println("Executing middlewareTwo again")
 2014/10/13 20:27:36 Executing middlewareOne again
 </code></pre>
 
-<h4>中间件链构造方式</h4>
+<h4 id="section-4">中间件链构造方式</h4>
 
 <p>上面例子的中间件链是比较常见的构造方式，然而多少有些可怕。而<a href="https://github.com/justinas/alice">Alice</a>将中间件链的构造简化了许多:</p>
 
@@ -300,16 +252,15 @@ log.Println("Executing middlewareTwo again")
 alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
 </code></pre>
 
-<h3>参考文献</h3>
+<h3 id="section-5">参考文献</h3>
 
 <p>文中主要内容来自参考文献第一、二条</p>
 
 <ul>
-<li><a href="http://www.alexedwards.net/blog/a-recap-of-request-handling">A Recap of Request Handling in Go</a></li>
-<li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
-<li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
+  <li><a href="http://www.alexedwards.net/blog/a-recap-of-request-handling">A Recap of Request Handling in Go</a></li>
+  <li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
+  <li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
 </ul>
-
 ]]></content>
   </entry>
   
@@ -322,38 +273,28 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
 
 <!-- more -->
 
-
-<h3>服务端</h3>
+<h3 id="section">服务端</h3>
 
 <p>首先定义服务契约：</p>
 
 <p>```go contract.go  服务契约定义
 package contract</p>
 
-<p>import (</p>
+<p>import (
+    “fmt”
+)</p>
 
-<pre><code>"fmt"
-</code></pre>
-
-<p>)</p>
-
-<p>type Args struct {</p>
-
-<pre><code>Name string
-Age  int
-</code></pre>
-
-<p>}</p>
+<p>type Args struct {
+    Name string
+    Age  int
+}</p>
 
 <p>type Sign int</p>
 
-<p>func (t <em>Sign) Content(args </em>Args, reply *string) error {</p>
-
-<pre><code>*reply = fmt.Sprintf("%s is %v years old.", args.Name, args.Age)
-return nil
-</code></pre>
-
-<p>}
+<p>func (t *Sign) Content(args *Args, reply *string) error {
+    *reply = fmt.Sprintf(“%s is %v years old.”, args.Name, args.Age)
+    return nil
+}
 ```</p>
 
 <p>契约的定义规则很简单：服务函数必须满足 <code>func (t *T) MethodName(argType T1, replyType *T2) error</code>的形式，方法的第一个参数是服务接收的传入参数，第二个引用参数是返回值。契约服务的接收者可以随意定义，如此处的<code>Sign</code>，没有特别的用处。</p>
@@ -363,33 +304,27 @@ return nil
 <p>```go main.go 服务端
 package main</p>
 
-<p>import (</p>
+<p>import (
+    “contract”
+    “log”
+    “net”
+    “net/http”
+    “net/rpc”
+)</p>
 
-<pre><code>"contract"
-"log"
-"net"
-"net/http"
-"net/rpc"
-</code></pre>
-
-<p>)</p>
-
-<p>func main() {</p>
-
-<pre><code>ct := new(contract.Sign)
-rpc.Register(ct)
-rpc.HandleHTTP()
-l, e := net.Listen("tcp", ":8843")
-if e != nil {
-    log.Fatal("listen error:", e)
+<p>func main() {
+    ct := new(contract.Sign)
+    rpc.Register(ct)
+    rpc.HandleHTTP()
+    l, e := net.Listen(“tcp”, “:8843”)
+    if e != nil {
+        log.Fatal(“listen error:”, e)
+    }
+    http.Serve(l, nil)
 }
-http.Serve(l, nil)
-</code></pre>
-
-<p>}
 ```</p>
 
-<h3>客户端</h3>
+<h3 id="section-1">客户端</h3>
 
 <p>在很多其他语言中，实现远程调用的契约，必须共享一套契约代码，比如android的远程调用，必须将服务端定义的契约编译成<code>.class</code>文件然后提供给客户端使用，否则同一个服务类是无法在客户端和服务端对应起来的。</p>
 
@@ -400,66 +335,54 @@ http.Serve(l, nil)
 <p>```go main.go 客户端
 package main</p>
 
-<p>import (</p>
-
-<pre><code>"fmt"
-"log"
-"net/rpc"
-</code></pre>
-
-<p>)
-func sync_invoke() string {</p>
-
-<pre><code>client, err := rpc.DialHTTP("tcp", "127.0.0.1:8843")
-if err != nil {
-    log.Fatal("dialing:", err)
+<p>import (
+    “fmt”
+    “log”
+    “net/rpc”
+)
+func sync_invoke() string {
+    client, err := rpc.DialHTTP(“tcp”, “127.0.0.1:8843”)
+    if err != nil {
+        log.Fatal(“dialing:”, err)
+    }
+    args := &amp;struct {
+        Name string
+        Age  int
+    }{“jack”, 23}
+    var reply string
+    err = client.Call(“Sign.Content”, args, &amp;reply)
+    if err != nil {
+        log.Fatal(“error:”, err)
+    }
+    return reply
 }
-args := &amp;struct {
-    Name string
-    Age  int
-}{"jack", 23}
-var reply string
-err = client.Call("Sign.Content", args, &amp;reply)
-if err != nil {
-    log.Fatal("error:", err)
+func async_invoke() string {
+    client, err := rpc.DialHTTP(“tcp”, “127.0.0.1:8843”)
+    if err != nil {
+        log.Fatal(“dialing:”, err)
+    }
+    args := &amp;struct {
+        Name string
+        Age  int
+        Sex string
+    }{“jack”, 23,”male”}
+    var reply string
+    future := client.Go(“Sign.Content”, args, &amp;reply, nil)
+    // wait for call end
+    futureResult := &lt;-future.Done
+    if futureResult.Error != nil {
+        log.Fatal(“error:”, err)
+    }
+    c := futureResult.Reply.(*string)
+    return *c
+}</p>
+
+<p>func main() {
+    c := sync_invoke() 
+    fmt.Println(“get sync result:”, c)
+    c = async_invoke()
+    fmt.Println(“get async result:”, c)
 }
-return reply
-</code></pre>
-
-<p>}
-func async_invoke() string {</p>
-
-<pre><code>client, err := rpc.DialHTTP("tcp", "127.0.0.1:8843")
-if err != nil {
-    log.Fatal("dialing:", err)
-}
-args := &amp;struct {
-    Name string
-    Age  int
-    Sex string
-}{"jack", 23,"male"}
-var reply string
-future := client.Go("Sign.Content", args, &amp;reply, nil)
-// wait for call end
-futureResult := &lt;-future.Done
-if futureResult.Error != nil {
-    log.Fatal("error:", err)
-}
-c := futureResult.Reply.(*string)
-return *c
-</code></pre>
-
-<p>}</p>
-
-<p>func main() {</p>
-
-<pre><code>c := sync_invoke() 
-fmt.Println("get sync result:", c)
-c = async_invoke()
-fmt.Println("get async result:", c)
-</code></pre>
-
-<p>}
 ```</p>
 
 <p>输出结果：</p>
@@ -482,28 +405,24 @@ get async result: jack is 23 years old.
     <link href="http://qjpcpu.github.io/blog/2014/07/12/struct-tags/"/>
     <updated>2014-07-12T00:07:11+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/07/12/struct-tags</id>
-    <content type="html"><![CDATA[<h3>结构体标签</h3>
+    <content type="html"><![CDATA[<h3 id="section">结构体标签</h3>
 
 <p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
 
 <p>```go
 package main</p>
 
-<p>import (</p>
+<p>import (
+	“fmt”
+	“reflect”
+)</p>
 
-<pre><code>"fmt"
-"reflect"
-</code></pre>
+<p>func main() {
+	type S struct {
+		F string <code>species:"gopher" color:"blue"</code>
+	}</p>
 
-<p>)</p>
-
-<p>func main() {</p>
-
-<pre><code>type S struct {
-    F string `species:"gopher" color:"blue"`
-}
-
-s := S{}
+<pre><code>s := S{}
 st := reflect.TypeOf(s)
 field := st.Field(0)
 fmt.Println(field.Tag.Get("color"), field.Tag.Get("species"))
@@ -522,12 +441,13 @@ blue gopher
 
 <!--more-->
 
-
 <p>在go中，tag的定义是有规定的：</p>
 
-<blockquote><p>By convention, tag strings are a concatenation of optionally space-separated key:&ldquo;value&rdquo; pairs. Each key is a non-empty string consisting of non-control characters other than space (U+0020 &lsquo; &rsquo;), quote (U+0022 &lsquo;&ldquo;&rsquo;), and colon (U+003A &lsquo;:&rsquo;). Each value is quoted using U+0022 &lsquo;&rdquo;&rsquo; characters and Go string literal syntax.</p></blockquote>
+<blockquote>
+  <p>By convention, tag strings are a concatenation of optionally space-separated key:”value” pairs. Each key is a non-empty string consisting of non-control characters other than space (U+0020 ‘ ‘), quote (U+0022 ‘”’), and colon (U+003A ‘:’). Each value is quoted using U+0022 ‘”’ characters and Go string literal syntax.</p>
+</blockquote>
 
-<p>即：按照go的默认约定，tag以<code>key:value</code>的形式定义，多个<code>key:value</code>以空格分割，<code>key</code>不能是控制字符单引号、双引号和冒号，<code>value</code>需要用引号引起来。</p>
+<p>即：按照go的默认约定，tag以<code>key:value</code>的形式定义，多个<code>key:value</code>以空格分割，<code>key</code>不能是控制字符单引号、双引号和冒号，<code>value</code>需要用引号引起来。 </p>
 
 <p>当然，也可以不遵守这个约定，因为具体怎么使用tag还是按照开发者自己的意愿来的。</p>
 ]]></content>
@@ -538,44 +458,36 @@ blue gopher
     <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
     <updated>2014-06-23T14:37:47+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
-    <content type="html"><![CDATA[<h3>1.匿名结构</h3>
+    <content type="html"><![CDATA[<h3 id="section">1.匿名结构</h3>
 
-<p>```go
-var person struct {</p>
-
-<pre><code>name      string
-age int
-</code></pre>
-
-<p>}
-person.name=&ldquo;jack&rdquo;
-```</p>
+<p><code>go
+var person struct {
+    name      string
+    age int
+}
+person.name="jack"
+</code></p>
 
 <p>声明时初始化：</p>
 
-<p>```go
-st := struct {</p>
-
-<pre><code>name string
-age  int
-</code></pre>
-
-<p>}{</p>
-
-<pre><code>"Jack",
-12,
-</code></pre>
-
-<p>}
+<p><code>go
+st := struct {
+	name string
+	age  int
+}{
+	"Jack",
+	12,
+}
 fmt.Println(st.name)
-```</p>
+</code></p>
 
 <!-- more -->
 
+<h3 id="section-1">2.抢占式调度器</h3>
 
-<h3>2.抢占式调度器</h3>
-
-<blockquote><p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p></blockquote>
+<blockquote>
+  <p>In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.</p>
+</blockquote>
 
 <p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
 ]]></content>
@@ -590,8 +502,7 @@ fmt.Println(st.name)
 
 <!-- more -->
 
-
-<h3>结构类型</h3>
+<h3 id="section">结构类型</h3>
 
 <p>这里，还是和C语言很像的，定义结构：</p>
 
@@ -609,7 +520,7 @@ m := Man{name:"jack",age:12} //声明并初始化
 m := Man{"jack",12}  //声明并初始化
 </code></pre>
 
-<h3>方法</h3>
+<h3 id="section-1">方法</h3>
 
 <p>go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。</p>
 
@@ -619,7 +530,7 @@ m := Man{"jack",12}  //声明并初始化
 }
 </code></pre>
 
-<p>调用方法使用了".&ldquo;符号：</p>
+<p>调用方法使用了”.”符号：</p>
 
 <pre><code>m := Man{"Jack",12}
 ok := m.Introduce()
@@ -629,39 +540,39 @@ ok := m.Introduce()
 
 <pre><code>package main
 import (
-    "fmt"
-    "strings"
+	"fmt"
+	"strings"
 )
 
 type MyString string
 func (str MyString) chomp() string {
-    return strings.TrimRight(string(str),"\n")
+	return strings.TrimRight(string(str),"\n")
 }
 func main() {
-    str := "Hello world!\n"
-    ms := MyString(str)
-    fmt.Println(ms.chomp())   //输出 Hello world!
+	str := "Hello world!\n"
+	ms := MyString(str)
+	fmt.Println(ms.chomp())   //输出 Hello world!
 }
 </code></pre>
 
-<h3>方法代理</h3>
+<h3 id="section-2">方法代理</h3>
 
 <p>其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：</p>
 
 <pre><code>package main
 import "fmt"
 func main() {
-    n := new(Neo)
-    n.Fly()  //输出：The One can fly!
+	n := new(Neo)
+	n.Fly()  //输出：The One can fly!
 }
 
 type Neo struct{
-    TheOne
+	TheOne
 }
 type TheOne struct{}
 
 func (o *TheOne) Fly(){
-    fmt.Println("The One can fly!")
+	fmt.Println("The One can fly!")
 }
 </code></pre>
 
@@ -669,7 +580,7 @@ func (o *TheOne) Fly(){
 
 <p>另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。</p>
 
-<h3>go style duck-type</h3>
+<h3 id="go-style-duck-type">go style duck-type</h3>
 
 <p>go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。</p>
 
@@ -699,32 +610,32 @@ func (o *TheOne) Fly(){
 import "fmt"
 func main() {
      m := Man{name:"Jack"}
-     m.say()
-     e := new(Earch)
-     SaySth(e)
-     SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
+	 m.say()
+	 e := new(Earch)
+	 SaySth(e)
+	 SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
 }
 func SaySth(obj Object){
-    obj.say()
+	obj.say()
 }
 type Object interface{
-    say()
+	say()
 }
 type Man struct{
-    name string
+	name string
 }
 type Earch struct{}
 
 func (m *Man) say(){
-    fmt.Println("Man says: I'm ",m.name)
+	fmt.Println("Man says: I'm ",m.name)
 }
 
 func (e *Earch) say(){
-    //do nothing
+	//do nothing
 }
 </code></pre>
 
-<h3>空接口及类型</h3>
+<h3 id="section-3">空接口及类型</h3>
 
 <p>空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
 类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。</p>

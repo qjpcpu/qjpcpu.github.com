@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rspec</h2>
-	<div class="entry-content"><h2>RSpec断言规则</h2>
+	<div class="entry-content"><h2 id="rspec">RSpec断言规则</h2>
 
 <p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
 
@@ -90,8 +90,7 @@
 
 <!-- more -->
 
-
-<p>除了用&#8221;be_&ldquo;来前缀断言方法，也可以用&#8221;be_a_&#8221;和&#8221;be_an_&#8221;前缀，使得代码读起来更加自然：</p>
+<p>除了用”be_“来前缀断言方法，也可以用”be_a_“和”be_an_“前缀，使得代码读起来更加自然：</p>
 
 <pre><code>"a string".should be_an_instance_of(String) =&gt;"a string".instance_of?(String)#passes
 3.should be_a_kind_of(Fixnum) =&gt; 3.kind_of?(Numeric) #passes

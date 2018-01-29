@@ -101,36 +101,35 @@ TO:to@example.com
 From:from@example
 Content-Type:text/html
 &lt;html&gt;
-    &lt;body&gt;
-        邮件内容
-    &lt;/body&gt;
+	&lt;body&gt;
+		邮件内容
+	&lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
 
-<h3>解决内容乱码</h3>
+<h3 id="section">解决内容乱码</h3>
 
 <p>内容乱码比较好解决，首先内容先使用utf-8编码，然后在修改邮件的<code>Content-Type</code>为：</p>
 
 <pre><code>Content-Type:text/html;charset=UTF-8
 </code></pre>
 
-<h3>解决标题乱码</h3>
+<h3 id="section-1">解决标题乱码</h3>
 
 <p>需要利用base64编码标题内容，例如，如果UTF-8编码的字符串<code>标题</code>进行base64编码后的内容为<code>5qCH6aKY</code>,则邮件标题为：</p>
 
 <pre><code>Subject:=?UTF-8?B?5qCH6aKY?=
 </code></pre>
 
-<p>即邮件标题<code>Subject:</code>后字符串格式为：&#8221;<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>&#8221;</p>
+<p>即邮件标题<code>Subject:</code>后字符串格式为：”<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>”</p>
 
-<h3>发送邮件</h3>
+<h3 id="section-2">发送邮件</h3>
 
 <p>最后发送文件可以正确显示：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>cat file | sendmail -t
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">cat file | sendmail -t
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		
@@ -173,18 +172,17 @@ Content-Type:text/html
 			Axlsx报表工具(四)——条件格式化</a>
 	</h2>
 	<div class="entry-content">
-		<h3>定义格式化操作</h3>
+		<h3 id="section">定义格式化操作</h3>
 
 <p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># define the style for conditional formatting</span>
-</span><span class='line'><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
-</span><span class='line'><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="c1"># define the style for conditional formatting</span>
+</span><span class="line"><span class="n">profitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF428751&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span><span class="line"><span class="n">unprofitable</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">add_style</span><span class="p">(</span> <span class="ss">:fg_color</span> <span class="o">=&gt;</span> <span class="s2">&quot;FF0000&quot;</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:dxf</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>条件格式化有四种类型cellIs，colorScale，dataBar，iconSet。</p>
 
@@ -230,7 +228,7 @@ Content-Type:text/html
 			Axlsx报表工具(三)创建图表</a>
 	</h2>
 	<div class="entry-content">
-		<h3>饼图</h3>
+		<h3 id="section">饼图</h3>
 
 <p>axlsx创建饼状图非常简单，上图：</p>
 
@@ -278,7 +276,7 @@ Content-Type:text/html
 			Axlsx报表工具(二)格式化为美观的表格</a>
 	</h2>
 	<div class="entry-content">
-		<h3>基础知识</h3>
+		<h3 id="section">基础知识</h3>
 
 <p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
 
@@ -327,7 +325,7 @@ Content-Type:text/html
 			Axlsx报表工具(一)安装及入门</a>
 	</h2>
 	<div class="entry-content">
-		<h3>安装</h3>
+		<h3 id="section">安装</h3>
 
 <p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
 
@@ -375,7 +373,7 @@ Content-Type:text/html
 			一步一步搭建mysql主从同步</a>
 	</h2>
 	<div class="entry-content">
-		<h3>下载mysql数据库</h3>
+		<h3 id="mysql">下载mysql数据库</h3>
 
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
 tar vzxf mysql-5.1.73.tar.gz
@@ -465,7 +463,7 @@ tar vzxf mysql-5.1.73.tar.gz
 			Rspec</a>
 	</h2>
 	<div class="entry-content">
-		<h2>RSpec断言规则</h2>
+		<h2 id="rspec">RSpec断言规则</h2>
 
 <p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
 
@@ -515,7 +513,7 @@ tar vzxf mysql-5.1.73.tar.gz
 			Rack Based Application</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.什么是rack</h3>
+		<h3 id="rack">1.什么是rack</h3>
 
 <p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
 
@@ -523,7 +521,7 @@ tar vzxf mysql-5.1.73.tar.gz
   body = "Hello, World!"
   [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
 end
-
+ 
 run app
 </code></pre>
 
@@ -574,7 +572,7 @@ run app
 			初识jruby之在tomcat上部署jruby-on-rails</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1. prerequesite</h3>
+		<h3 id="prerequesite">1. prerequesite</h3>
 
 <p>假定部署的sever上已经安装好了Java环境和mysql数据库（因为这里我将以mysql为例）。并且，这里为了和前面几篇博文保持一致，还是在windows上进行部署，实际在linux上部署的节奏也差不多了，即便遇到问题，google is ready for you.</p>
 

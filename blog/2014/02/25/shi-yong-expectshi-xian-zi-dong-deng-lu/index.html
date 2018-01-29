@@ -94,70 +94,67 @@ expect -c &#39; &hellip;">
 	<div class="entry-content"><p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
 我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
 
-<h3>利用expect命令实现自动登录并执行命令</h3>
+<h3 id="expect">利用expect命令实现自动登录并执行命令</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>expect -c <span class="s1">&#39;</span>
-</span><span class='line'><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
-</span><span class='line'><span class="s1">expect {</span>
-</span><span class='line'><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
-</span><span class='line'><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
-</span><span class='line'><span class="s1">}</span>
-</span><span class='line'><span class="s1">expect eof</span>
-</span><span class='line'><span class="s1">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
+</span><span class="line">expect -c <span class="s1">&#39;</span>
+</span><span class="line"><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
+</span><span class="line"><span class="s1">expect {</span>
+</span><span class="line"><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class="line"><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
+</span><span class="line"><span class="s1">}</span>
+</span><span class="line"><span class="s1">expect eof</span>
+</span><span class="line"><span class="s1">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
 
 <!--more-->
 
-
-<h3>获取登录名及登录密码</h3>
+<h3 id="section">获取登录名及登录密码</h3>
 
 <p>从bash中获取变量无非就是获取登录主机及密码，提高代码移植性。这里利用bash的Here document实现。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'><span class="nv">host</span><span class="o">=</span><span class="s2">&quot;USER@HOST&quot;</span>
-</span><span class='line'><span class="nv">password</span><span class="o">=</span><span class="s2">&quot;PASSWORD&quot;</span>
-</span><span class='line'><span class="nv">cmd</span><span class="o">=</span><span class="s2">&quot;command_list&quot;</span>
-</span><span class='line'>
-</span><span class='line'>expect <span class="s">&lt;&lt;EOF </span>
-</span><span class='line'><span class="s">spawn ssh $host &quot;$cmd&quot;</span>
-</span><span class='line'><span class="s">expect {</span>
-</span><span class='line'><span class="s">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
-</span><span class='line'><span class="s">&quot;*assword:&quot; { send &quot;$password\r&quot; }</span>
-</span><span class='line'><span class="s">}</span>
-</span><span class='line'><span class="s">expect eof</span>
-</span><span class='line'><span class="s">EOF</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
+</span><span class="line"><span class="nv">host</span><span class="o">=</span><span class="s2">&quot;USER@HOST&quot;</span>
+</span><span class="line"><span class="nv">password</span><span class="o">=</span><span class="s2">&quot;PASSWORD&quot;</span>
+</span><span class="line"><span class="nv">cmd</span><span class="o">=</span><span class="s2">&quot;command_list&quot;</span>
+</span><span class="line">
+</span><span class="line">expect <span class="s">&lt;&lt;EOF </span>
+</span><span class="line"><span class="s">spawn ssh $host &quot;$cmd&quot;</span>
+</span><span class="line"><span class="s">expect {</span>
+</span><span class="line"><span class="s">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class="line"><span class="s">&quot;*assword:&quot; { send &quot;$password\r&quot; }</span>
+</span><span class="line"><span class="s">}</span>
+</span><span class="line"><span class="s">expect eof</span>
+</span><span class="line"><span class="s">EOF</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>bash会自动解析here document中的变量，个人认为这种方式比使用expect的set命令更简便。</p>
 
-<h3>获取登录执行命令结果</h3>
+<h3 id="section-1">获取登录执行命令结果</h3>
 
 <p>如果希望保持登录，去掉上面代码的<code>ssh</code>后的命令列表并且将<code>expect eof</code>改成<code>interact</code>即可。</p>
 
@@ -165,81 +162,79 @@ expect -c &#39; &hellip;">
 
 <p>下面的代码展示的怎样获取并输出远程主机的真正命令输出，同时也是一个在here document后接管道操作的例子：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'><span class="nv">host</span><span class="o">=</span><span class="s2">&quot;USER@HOST&quot;</span>
-</span><span class='line'><span class="nv">password</span><span class="o">=</span><span class="s2">&quot;PASSWORD&quot;</span>
-</span><span class='line'><span class="nv">cmd</span><span class="o">=</span><span class="s2">&quot;command_list&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">(</span>expect <span class="s">&lt;&lt;EOF </span>
-</span><span class='line'><span class="s">spawn ssh $host &quot;$cmd&quot;</span>
-</span><span class='line'><span class="s">expect {</span>
-</span><span class='line'><span class="s">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
-</span><span class='line'><span class="s">&quot;*assword:&quot; { send &quot;$password\r&quot; }</span>
-</span><span class='line'><span class="s">}</span>
-</span><span class='line'><span class="s">expect eof</span>
-</span><span class='line'><span class="s">EOF</span>
-</span><span class='line'><span class="o">)</span> | awk <span class="s1">&#39;BEGIN{find=0}</span>
-</span><span class='line'><span class="s1">{</span>
-</span><span class='line'><span class="s1"> if(find){print $0;next}</span>
-</span><span class='line'><span class="s1"> if($0 ~ /[pP]assword:/){ find=1 }</span>
-</span><span class='line'><span class="s1">}&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
+</span><span class="line"><span class="nv">host</span><span class="o">=</span><span class="s2">&quot;USER@HOST&quot;</span>
+</span><span class="line"><span class="nv">password</span><span class="o">=</span><span class="s2">&quot;PASSWORD&quot;</span>
+</span><span class="line"><span class="nv">cmd</span><span class="o">=</span><span class="s2">&quot;command_list&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">(</span>expect <span class="s">&lt;&lt;EOF </span>
+</span><span class="line"><span class="s">spawn ssh $host &quot;$cmd&quot;</span>
+</span><span class="line"><span class="s">expect {</span>
+</span><span class="line"><span class="s">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class="line"><span class="s">&quot;*assword:&quot; { send &quot;$password\r&quot; }</span>
+</span><span class="line"><span class="s">}</span>
+</span><span class="line"><span class="s">expect eof</span>
+</span><span class="line"><span class="s">EOF</span>
+</span><span class="line"><span class="o">)</span> | awk <span class="s1">&#39;BEGIN{find=0}</span>
+</span><span class="line"><span class="s1">{</span>
+</span><span class="line"><span class="s1">	if(find){print $0;next}</span>
+</span><span class="line"><span class="s1">	if($0 ~ /[pP]assword:/){ find=1 }</span>
+</span><span class="line"><span class="s1">}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>这就是在bash中调用expect自动登录的完整代码了。</p>
 
 <p>P.S. 在here document后接管道操作的几种方法：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># 1</span>
-</span><span class='line'>cat <span class="s">&lt;&lt;EOF | sh</span>
-</span><span class='line'><span class="s">echo 1</span>
-</span><span class='line'><span class="s">EOF</span>
-</span><span class='line'><span class="c"># 2</span>
-</span><span class='line'><span class="o">(</span>cat <span class="s">&lt;&lt;EOF</span>
-</span><span class='line'><span class="s">echo 1</span>
-</span><span class='line'><span class="s">EOF</span>
-</span><span class='line'><span class="o">)</span> | sh
-</span><span class='line'><span class="c"># 3</span>
-</span><span class='line'><span class="o">{</span>
-</span><span class='line'>cat<span class="s">&lt;&lt;EOF</span>
-</span><span class='line'><span class="s">echo 1</span>
-</span><span class='line'><span class="s">EOF</span>
-</span><span class='line'><span class="o">}</span> | sh
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c"># 1</span>
+</span><span class="line">cat <span class="s">&lt;&lt;EOF | sh</span>
+</span><span class="line"><span class="s">echo 1</span>
+</span><span class="line"><span class="s">EOF</span>
+</span><span class="line"><span class="c"># 2</span>
+</span><span class="line"><span class="o">(</span>cat <span class="s">&lt;&lt;EOF</span>
+</span><span class="line"><span class="s">echo 1</span>
+</span><span class="line"><span class="s">EOF</span>
+</span><span class="line"><span class="o">)</span> | sh
+</span><span class="line"><span class="c"># 3</span>
+</span><span class="line"><span class="o">{</span>
+</span><span class="line">cat<span class="s">&lt;&lt;EOF</span>
+</span><span class="line"><span class="s">echo 1</span>
+</span><span class="line"><span class="s">EOF</span>
+</span><span class="line"><span class="o">}</span> | sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 </div>
 
 

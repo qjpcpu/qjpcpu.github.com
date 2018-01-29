@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rails使用devise验证用户</h2>
-	<div class="entry-content"><h3>安装配置devise</h3>
+	<div class="entry-content"><h3 id="devise">安装配置devise</h3>
 
 <p>在gemfile中添加一行：</p>
 
@@ -99,7 +99,6 @@ rake db:migrate
 </code></pre>
 
 <!-- more -->
-
 
 <p>查看models文件夹下devise创建了user.rb文件：</p>
 
@@ -125,7 +124,7 @@ rake db:migrate
 
 <p><img src="http://c.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=e7392f8d9b25bc312f5d019d6ee4fc8c/e1fe9925bc315c60fe6491ac8fb1cb1348547784.jpg?referer=ba03f4b49d3df8dcff2abba1b19a&amp;x=.jpg" alt="image" /></p>
 
-<h3>devise提供的常用method</h3>
+<h3 id="devisemethod">devise提供的常用method</h3>
 
 <pre><code>* authenticate_user!，验证用户是否登陆，常用于before_filter: `before_filter :authenticate_user!`. 另，如果你创建的devise model叫admin，那么该方法就是authenticate_admin!，以下方法同理。这又是ruby玩的一个小把戏了。
 * user_signed_in?，当前是否有登陆用户
@@ -134,7 +133,7 @@ rake db:migrate
 * after_sign_in_path_for和after_sign_out_path_for方法指定用户登入/登出后的跳转url.
 </code></pre>
 
-<h3>自定义views</h3>
+<h3 id="views">自定义views</h3>
 
 <p>devise gem提供了足够功能的用户验证，但是由上图可见，其自带的view未免太过简单。如果需要自定义视图，就需要将devise默认的view拷贝到rails工程：</p>
 
@@ -145,23 +144,28 @@ rake db:migrate
 
 <p>该命令将devise的views复制到工程目录app/views下，分类为多个文件夹。修改需要的view模板就能够改变对应界面。</p>
 
-<h3>自定义controller</h3>
+<h3 id="controller">自定义controller</h3>
 
 <ul>
-<li><p>如果需要自定义controller，如Devise::SessionController：</p>
+  <li>
+    <p>如果需要自定义controller，如Devise::SessionController：</p>
 
-<pre><code>  class Admins::SessionsController &lt; Devise::SessionsController
+    <pre><code>  class Admins::SessionsController &lt; Devise::SessionsController
   end
-</code></pre></li>
-<li><p>在路由文件routes.rb中更新配置，告诉devise使用新的controller</p>
+</code></pre>
+  </li>
+  <li>
+    <p>在路由文件routes.rb中更新配置，告诉devise使用新的controller</p>
 
-<pre><code>  devise_for :users, :controllers =&gt; { :sessions =&gt; "admins/sessions" }
-</code></pre></li>
-<li><p>更新了controller后，在app/views/devise/sessions下的views不会再被使用，所以，还需要将这部分views复制到app/views/admins/sessions下，或者在该目录下建立新的views。</p></li>
+    <pre><code>  devise_for :users, :controllers =&gt; { :sessions =&gt; "admins/sessions" }
+</code></pre>
+  </li>
+  <li>
+    <p>更新了controller后，在app/views/devise/sessions下的views不会再被使用，所以，还需要将这部分views复制到app/views/admins/sessions下，或者在该目录下建立新的views。</p>
+  </li>
 </ul>
 
-
-<h3>邮件确认</h3>
+<h3 id="section">邮件确认</h3>
 
 <p>如果需要更安全一点的注册验证，可以使用邮件确认方式。</p>
 

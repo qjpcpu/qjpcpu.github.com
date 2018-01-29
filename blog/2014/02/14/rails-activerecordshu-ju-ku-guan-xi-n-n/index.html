@@ -86,11 +86,9 @@
 
 <!-- more -->
 
-
 <ol>
-<li>建立数据表</li>
+  <li>建立数据表</li>
 </ol>
-
 
 <p>由于n:n的关系是以中间表的形式表达的，所以需要创建图示中的三张表assemlies, parts和中间表assemlies_part。</p>
 
@@ -101,30 +99,29 @@ $ rails g migration CreateAssembliesAndParts
 
 <p>编辑db/migrate/目录下新建的xxxx_create_assemblies_and_parts.rb文件，在该文件中定义中间表：</p>
 
-<figure class='code'><figcaption><span>20130609063804_create_assemblies_and_parts.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateAssembliesAndParts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
-</span><span class='line'>      <span class="n">create_table</span> <span class="ss">:assemblies_parts</span><span class="p">,</span> <span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:assembly_id</span>
-</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:part_id</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>20130609063804_create_assemblies_and_parts.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">CreateAssembliesAndParts</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">change</span>
+</span><span class="line">		<span class="n">create_table</span> <span class="ss">:assemblies_parts</span><span class="p">,</span> <span class="ss">:id</span><span class="o">=&gt;</span><span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class="line">			<span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:assembly_id</span>
+</span><span class="line">			<span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:part_id</span>
+</span><span class="line">		<span class="k">end</span>
+</span><span class="line">	<span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<p> 注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=>false。</p>
+<p>注意，该表包含n:n的两端表的主键，且自身不使用主键，故:id=&gt;false。</p>
 
 <p>另外，该中间表的表名是“assemblies_part“，以中间的下划线连接两张表，并且按照字母顺序小在前字母顺序大的在后排列，如果创建”part_assemlies“表，则rails可能找不到该中间表。</p>
 
-<p>实际上，rails是以string的”&lt;“操作来比较单词的，所以，如果不确定哪个表在前哪个在后，可以使用该操作符确定一下再创建表。比如有两张表”devil_x“和&#8221;devilx&#8221;（为什么会有人取这么奇怪的表名呢），那就需要自己来确认一下中间表的表名：</p>
+<p>实际上，rails是以string的”&lt;“操作来比较单词的，所以，如果不确定哪个表在前哪个在后，可以使用该操作符确定一下再创建表。比如有两张表”devil_x“和”devilx”（为什么会有人取这么奇怪的表名呢），那就需要自己来确认一下中间表的表名：</p>
 
 <pre><code>irb(main):002:0&gt; 'devil_x'&lt;'devilx'
 =&gt; true
@@ -138,36 +135,30 @@ $ rails g migration CreateAssembliesAndParts
 </code></pre>
 
 <ol>
-<li>修改model，添加关系</li>
+  <li>修改model，添加关系</li>
 </ol>
-
 
 <p>在关系的两端都需要添加has_and_belongs_to_many。</p>
 
-<figure class='code'><figcaption><span>assembly.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Assembly</span> <span class="o">&lt;</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:parts</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>assembly.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Assembly</span> <span class="o">&lt;</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line">	<span class="n">has_and_belongs_to_many</span> <span class="ss">:parts</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-
-
-<figure class='code'><figcaption><span>part.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Part</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:assemblies</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>part.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Part</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line">	<span class="n">has_and_belongs_to_many</span> <span class="ss">:assemblies</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <ol>
-<li>操作关系</li>
+  <li>操作关系</li>
 </ol>
-
 
 <p>在n:n关系的两端都添加了如下方法：</p>
 
@@ -190,9 +181,8 @@ collection.create(attributes = {})
 <p>可以看到，添加的方法和has_many关系添加的方法相同，所以就不再重复介绍使用方法。</p>
 
 <ol>
-<li>特殊多对多关系，多态</li>
+  <li>特殊多对多关系，多态</li>
 </ol>
-
 
 <p>还是以Picture,Employee,Product为例,Picture和Employee,Product都是多对多的关系，首先创建数据表。</p>
 
@@ -204,59 +194,48 @@ $ rails g model product
 
 <p>修改model：</p>
 
-<figure class='code'><figcaption><span>product.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-</span><span class='line'>   <span class="n">has_many</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:box</span>
-</span><span class='line'>   <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>product.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line">   <span class="n">has_many</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:box</span>
+</span><span class="line">   <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line">   <span class="n">has_many</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:box</span>
+</span><span class="line">   <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>picture.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Picture</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
+</span><span class="line">	<span class="n">has_many</span> <span class="ss">:picture_boxes</span>
+</span><span class="line">    <span class="n">has_many</span> <span class="ss">:products</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:box</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span>
+</span><span class="line">    <span class="n">has_many</span> <span class="ss">:employee</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:box</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="s1">&#39;Employee&#39;</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<figure class='code'><figcaption><span>employee.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
-</span><span class='line'>   <span class="n">has_many</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">:as</span><span class="o">=&gt;</span><span class="ss">:box</span>
-</span><span class='line'>   <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>picture.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Picture</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:picture_boxes</span>
-</span><span class='line'>    <span class="n">has_many</span> <span class="ss">:products</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:box</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="s1">&#39;Product&#39;</span>
-</span><span class='line'>    <span class="n">has_many</span> <span class="ss">:employee</span><span class="p">,</span><span class="ss">through</span><span class="p">:</span> <span class="ss">:picture_boxes</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:box</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="s1">&#39;Employee&#39;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>picture_box.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">PictureBox</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:box</span><span class="p">,</span> <span class="ss">:polymorphic</span><span class="o">=&gt;</span><span class="kp">true</span>
-</span><span class='line'>    <span class="n">belongs_to</span> <span class="ss">:picture</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=>:box，而picture的model中has_many关系添加了:polymorphic=>true选项。</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>picture_box.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">PictureBox</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="no">Base</span>
+</span><span class="line">	<span class="n">belongs_to</span> <span class="ss">:box</span><span class="p">,</span> <span class="ss">:polymorphic</span><span class="o">=&gt;</span><span class="kp">true</span>
+</span><span class="line">    <span class="n">belongs_to</span> <span class="ss">:picture</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>所有拥有picture的model中，都在其has_many关系中添加了选项:as=&gt;:box，而picture的model中has_many关系添加了:polymorphic=&gt;true选项。</p>
 </div>
 
 

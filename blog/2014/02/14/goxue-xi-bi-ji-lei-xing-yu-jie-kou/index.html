@@ -85,8 +85,7 @@
 
 <!-- more -->
 
-
-<h3>结构类型</h3>
+<h3 id="section">结构类型</h3>
 
 <p>这里，还是和C语言很像的，定义结构：</p>
 
@@ -104,7 +103,7 @@ m := Man{name:"jack",age:12} //声明并初始化
 m := Man{"jack",12}  //声明并初始化
 </code></pre>
 
-<h3>方法</h3>
+<h3 id="section-1">方法</h3>
 
 <p>go语言为结构定义的函数称为方法，和面向对象的叫法是一样的。go语言的方法定义看起来非常前卫，方法即消息，所以方法定义先是说明方法(消息)接收者，然后是方法名及其参数。</p>
 
@@ -114,7 +113,7 @@ m := Man{"jack",12}  //声明并初始化
 }
 </code></pre>
 
-<p>调用方法使用了&#8221;.&ldquo;符号：</p>
+<p>调用方法使用了”.”符号：</p>
 
 <pre><code>m := Man{"Jack",12}
 ok := m.Introduce()
@@ -124,39 +123,39 @@ ok := m.Introduce()
 
 <pre><code>package main
 import (
-    "fmt"
-    "strings"
+	"fmt"
+	"strings"
 )
 
 type MyString string
 func (str MyString) chomp() string {
-    return strings.TrimRight(string(str),"\n")
+	return strings.TrimRight(string(str),"\n")
 }
 func main() {
-    str := "Hello world!\n"
-    ms := MyString(str)
-    fmt.Println(ms.chomp())   //输出 Hello world!
+	str := "Hello world!\n"
+	ms := MyString(str)
+	fmt.Println(ms.chomp())   //输出 Hello world!
 }
 </code></pre>
 
-<h3>方法代理</h3>
+<h3 id="section-2">方法代理</h3>
 
 <p>其实google把这个特性叫做嵌入类型(Embedded type)，如果类型A包含一个类型B，通常在其他语言里我们称之为 A  has-a B，但在go里我们称之为A是一个B，这是因为B成为了A的成员，那么我们可以视为A也就拥有了B的功能，那么它也就是一个B了。那么方法代理的作用是什么呢？顾名思义，我们可以在A上直接调用B的方法，就好像A.B.b_method一样，举个例子：在 matrix里，neo是救世主，所以他具有（包含）了救世主的能力，所以我们直接发送fly的消息给neo，neo肯定是可以飞的，同样neo的前几代救世主可能不叫neo但我们直接告诉他fly，他们都是可以飞的，所以利用方法代理的确简捷直当：</p>
 
 <pre><code>package main
 import "fmt"
 func main() {
-    n := new(Neo)
-    n.Fly()  //输出：The One can fly!
+	n := new(Neo)
+	n.Fly()  //输出：The One can fly!
 }
 
 type Neo struct{
-    TheOne
+	TheOne
 }
 type TheOne struct{}
 
 func (o *TheOne) Fly(){
-    fmt.Println("The One can fly!")
+	fmt.Println("The One can fly!")
 }
 </code></pre>
 
@@ -164,7 +163,7 @@ func (o *TheOne) Fly(){
 
 <p>另外，大家觉得这个嵌入类型和OOP的继承很像，为什么不叫继承而叫方法代理呢？实际情况就是， Neo做的仅仅是将消息转发给TheOne，就算二者有相同的成员，但fly方法也只能看到TheOne的成员变量，所以叫方法代理更合适，大家可以写代码验证下。</p>
 
-<h3>go style duck-type</h3>
+<h3 id="go-style-duck-type">go style duck-type</h3>
 
 <p>go风格的鸭子类型。个人觉得这是go语言里最cool的地方了，在静态语言里将动态语言的鸭子类型实现得如此风骚。go语言的接口就是为此而生的。</p>
 
@@ -194,32 +193,32 @@ func (o *TheOne) Fly(){
 import "fmt"
 func main() {
      m := Man{name:"Jack"}
-     m.say()
-     e := new(Earch)
-     SaySth(e)
-     SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
+	 m.say()
+	 e := new(Earch)
+	 SaySth(e)
+	 SaySth(&amp;m)  //say()方法的接收者是一个指针变量，所以这里要用&amp;取地址
 }
 func SaySth(obj Object){
-    obj.say()
+	obj.say()
 }
 type Object interface{
-    say()
+	say()
 }
 type Man struct{
-    name string
+	name string
 }
 type Earch struct{}
 
 func (m *Man) say(){
-    fmt.Println("Man says: I'm ",m.name)
+	fmt.Println("Man says: I'm ",m.name)
 }
 
 func (e *Earch) say(){
-    //do nothing
+	//do nothing
 }
 </code></pre>
 
-<h3>空接口及类型</h3>
+<h3 id="section-3">空接口及类型</h3>
 
 <p>空interface(interface{})不包含任何的method,正因为如此,所有的类型都实现了空interface。空interface对于描述起不到任何的作用(因为它不包含任何的method),但是空interface在我们需要存储任意
 类型的数值的时候相当 有用,因为它可以存储任意类型的数值。它有点类似于C语言的void*类型。</p>

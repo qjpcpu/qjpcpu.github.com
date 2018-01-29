@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling/"/>
     <updated>2014-08-21T11:05:13+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling</id>
-    <content type="html"><![CDATA[<h3>1.远程链接mysql</h3>
+    <content type="html"><![CDATA[<h3 id="mysql">1.远程链接mysql</h3>
 
 <p><code>
 mysql -h主机地址 -u用户名 －p用户密码 －P 端口号
@@ -26,80 +26,78 @@ grant all on *.* to ‘用户名’@’主机地址’ identified by ‘密码�
 grant select on 数据库.* to 用户名@登录主机 identified by \"密码\"
 </code></p>
 
-<h3>2.修改密码</h3>
+<h3 id="section">2.修改密码</h3>
 
 <p><code>
 mysqladmin -u用户名 -p旧密码 password 新密码
 </code></p>
 
-<h3>3.显示数据库列表。</h3>
+<h3 id="section-1">3.显示数据库列表。</h3>
 
 <p><code>
 show databases
 </code></p>
 
-<h3>4.显示库中的数据表</h3>
+<h3 id="section-2">4.显示库中的数据表</h3>
 
 <p><code>
 show tables
 </code></p>
 
-<h3>5.显示数据表的结构</h3>
+<h3 id="section-3">5.显示数据表的结构</h3>
 
 <p><code>
 describe 表名
 </code></p>
 
 <!--more-->
-
-
-<h3>6.建库</h3>
+<p>### 6.建库</p>
 
 <p><code>
 create database 库名
 </code></p>
 
-<h3>7.建表</h3>
+<h3 id="section-4">7.建表</h3>
 
 <p><code>
 create table 表名 (字段设定列表)
 CREATE TABLE MYTABLE (name VARCHAR(20), sex CHAR(1))
 </code></p>
 
-<h3>8.删库和删表</h3>
+<h3 id="section-5">8.删库和删表</h3>
 
 <p><code>
 drop database 库名
 drop table 表名
 </code></p>
 
-<h3>9.将表中记录清空</h3>
+<h3 id="section-6">9.将表中记录清空</h3>
 
 <p><code>
 delete from 表名
 truncate table 表名
 </code></p>
 
-<h3>10.显示表中的记录</h3>
+<h3 id="section-7">10.显示表中的记录</h3>
 
 <p><code>
 select * from 表名
 select * from 表名
 </code></p>
 
-<h3>11.插入表</h3>
+<h3 id="section-8">11.插入表</h3>
 
 <p><code>
 Insert into 表名 values（字段各值）
 </code></p>
 
-<h3>12.更新表</h3>
+<h3 id="section-9">12.更新表</h3>
 
 <p><code>
-Update 表名 set 字段 = 值 where
+Update 表名 set 字段 = 值 where 
 </code></p>
 
-<h3>13.导入</h3>
+<h3 id="section-10">13.导入</h3>
 
 <p><code>
 数据传入命令 load data local infile "文件名" into table 表名
@@ -107,7 +105,7 @@ Source sql文件
 ./mysqlimport -u root -p123456 &lt; sql文件
 </code></p>
 
-<h3>14.导出</h3>
+<h3 id="section-11">14.导出</h3>
 
 <p><code>
 Select * from 表名 into outfile ‘文件名’
@@ -115,14 +113,14 @@ Select * from 表名 into outfile ‘文件名’
 ./mysqldump –opt 库名 表名 &gt; sql文件
 </code></p>
 
-<h3>15.改名</h3>
+<h3 id="section-12">15.改名</h3>
 
 <p><code>
 Alter table 表名 rename 新表名
 Alter database 库名 rename 新库名
 </code></p>
 
-<h3>16.查看服务器运行状态</h3>
+<h3 id="section-13">16.查看服务器运行状态</h3>
 
 <p><code>
 show status
@@ -130,31 +128,30 @@ show status
 
 <p>该命令将显示出一长列状态变量及其对应的值，其中包括：被中止访问的用户数量，被中止的连接数量，尝试连接的次数，并发连接数量最大值，以及其他许多有用的信息。</p>
 
-<h3>17.显示一个用户的权限，显示结果类似于grant 命令</h3>
+<h3 id="grant-">17.显示一个用户的权限，显示结果类似于grant 命令</h3>
 
 <p><code>
 show grants for user_name
 </code></p>
 
-<h3>18.显示表的索引</h3>
+<h3 id="section-14">18.显示表的索引</h3>
 
 <p><code>
 show index from table_name
 </code></p>
 
-<h3>19.显示一些系统特定资源的信息，例如，正在运行的线程数量</h3>
-
+<h3 id="section-15">19.显示一些系统特定资源的信息，例如，正在运行的线程数量</h3>
 <p><code>
 show status
 </code></p>
 
-<h3>20.显示系统变量的名称和值</h3>
+<h3 id="section-16">20.显示系统变量的名称和值</h3>
 
 <p><code>
 show variables
 </code></p>
 
-<h3>21.显示系统中正在运行的所有进程，也就是当前正在执行的查询。大多数用户可以查看</h3>
+<h3 id="section-17">21.显示系统中正在运行的所有进程，也就是当前正在执行的查询。大多数用户可以查看</h3>
 
 <p><code>
 show processlist
@@ -162,49 +159,49 @@ show processlist
 
 <p>他们自己的进程，但是如果他们拥有process权限，就可以查看所有人的进程，包括密码</p>
 
-<h3>22.显示当前使用或者指定的database中的每个表的信息。信息包括表类型和表的最新更新时间</h3>
+<h3 id="database">22.显示当前使用或者指定的database中的每个表的信息。信息包括表类型和表的最新更新时间</h3>
 
 <p><code>
 show table status
 </code></p>
 
-<h3>23.显示服务器所支持的不同权限</h3>
+<h3 id="section-18">23.显示服务器所支持的不同权限</h3>
 
 <p><code>
 show privileges
 </code></p>
 
-<h3>24.显示create database 语句是否能够创建指定的数据库</h3>
+<h3 id="create-database-">24.显示create database 语句是否能够创建指定的数据库</h3>
 
 <p><code>
 show create database database_name
 </code></p>
 
-<h3>25.显示create database 语句是否能够创建指定的数据库</h3>
+<h3 id="create-database--1">25.显示create database 语句是否能够创建指定的数据库</h3>
 
 <p><code>
 show create table table_name
 </code></p>
 
-<h3>26.显示innoDB存储引擎的状态</h3>
+<h3 id="innodb">26.显示innoDB存储引擎的状态</h3>
 
 <p><code>
 show innodb status
 </code></p>
 
-<h3>27.显示BDB存储引擎的日志</h3>
+<h3 id="bdb">27.显示BDB存储引擎的日志</h3>
 
 <p><code>
 show logs
 </code></p>
 
-<h3>28.显示最后一个执行的语句所产生的错误、警告和通知</h3>
+<h3 id="section-19">28.显示最后一个执行的语句所产生的错误、警告和通知</h3>
 
 <p><code>
 show warnings
 </code></p>
 
-<h3>29.只显示最后一个执行语句所产生的错误</h3>
+<h3 id="section-20">29.只显示最后一个执行语句所产生的错误</h3>
 
 <p><code>
 show errors

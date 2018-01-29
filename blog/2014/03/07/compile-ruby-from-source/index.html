@@ -7,11 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="下载需要的软件包 openssl
-yaml
-ruby
-sqlite3(可选)
-pkg-config(可选) 假设需要安装的ruby目录为/path/to/ruby_dir export RUBY_DEST=/path/to/ruby_dir 编译openssl ./config --prefix &hellip;">
+	<meta name="description" content="下载需要的软件包 openssl yaml ruby sqlite3(可选) pkg-config(可选) 假设需要安装的ruby目录为/path/to/ruby_dir export RUBY_DEST=/path/to/ruby_dir 编译openssl ./config --prefix &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,40 +80,38 @@ pkg-config(可选) 假设需要安装的ruby目录为/path/to/ruby_dir export RU
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Compile Ruby From Source</h2>
-	<div class="entry-content"><h3>下载需要的软件包</h3>
+	<div class="entry-content"><h3 id="section">下载需要的软件包</h3>
 
 <ul>
-<li><a href="http://www.openssl.org/source/">openssl</a></li>
-<li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
-<li><a href="https://www.ruby-lang.org">ruby</a></li>
-<li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
-<li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
+  <li><a href="http://www.openssl.org/source/">openssl</a></li>
+  <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
+  <li><a href="https://www.ruby-lang.org">ruby</a></li>
+  <li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
+  <li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
 </ul>
 
-
 <!--more-->
-
 
 <p>假设需要安装的ruby目录为<code>/path/to/ruby_dir</code></p>
 
 <pre><code>export RUBY_DEST=/path/to/ruby_dir
 </code></pre>
 
-<h3>编译openssl</h3>
+<h3 id="openssl">编译openssl</h3>
 
 <pre><code>./config --prefix=$RUBY_DEST  shared
 make 
 make install
 </code></pre>
 
-<h3>编译libyaml</h3>
+<h3 id="libyaml">编译libyaml</h3>
 
 <pre><code>./configure --prefix=$RUBY_DEST
 make
 make install
 </code></pre>
 
-<h3>编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in '.$RUBY_DEST.tmp.pc'</code>)</h3>
+<h3 id="pkg-configrubyunknown-keyword-url-in-rubydesttmppc">编译pkg-config(如果版本过低需要安装，否则编译ruby会报错<code>Unknown keyword 'URL' in '.$RUBY_DEST.tmp.pc'</code>)</h3>
 
 <pre><code>./configure --prefix=$RUBY_DEST         \
             --with-internal-glib  \
@@ -143,7 +137,7 @@ gthread-posix.c:1175: error: for each function it appears in.)
 <pre><code>make &amp;&amp; make install
 </code></pre>
 
-<h3>编译ruby</h3>
+<h3 id="ruby">编译ruby</h3>
 
 <p>先导入环境变量,否则ruby找不到ssl的链接目录</p>
 
@@ -158,13 +152,14 @@ make
 make install
 </code></pre>
 
-<h3>编译sqlite3(可选)</h3>
+<h3 id="sqlite3">编译sqlite3(可选)</h3>
 
-<h3>测试</h3>
+<h3 id="section-1">测试</h3>
 
 <pre><code>$RUBY_DEST/bin/ruby -v #打印版本号，说明安装成功
 export PATH=$PATH:$RUBY_DEST/bin
 </code></pre>
+
 </div>
 
 

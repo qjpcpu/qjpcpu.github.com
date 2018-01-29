@@ -7,7 +7,8 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="分离式scope（Isolated Scope） 在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量， &hellip;">
+	<meta name="description" content="分离式scope（Isolated Scope）
+在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,61 +81,54 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">AngularJs之Isolated Scope</h2>
-	<div class="entry-content"><h3>分离式scope（Isolated Scope）</h3>
-
-<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的&#8221;环境&#8221;,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
+	<div class="entry-content"><h3 id="scopeisolated-scope">分离式scope（Isolated Scope）</h3>
+<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
 
 <!--more-->
 
+<blockquote>
+  <p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p>
+</blockquote>
 
-<blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;docsIsolateScopeDirective&#39;</span><span class="p">,</span> <span class="p">[]).</span><span class="nx">controller</span><span class="p">(</span><span class="s">&#39;Controller&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
+</span><span class="line">  <span class="nv">$scope.naomi =</span>
+</span><span class="line">    <span class="nv">name: </span><span class="s">&#39;Naomi&#39;</span>
+</span><span class="line">    <span class="nv">address: </span><span class="s">&#39;1600 Amphitheatre&#39;</span>
+</span><span class="line">  <span class="nv">$scope.igor =</span>
+</span><span class="line">    <span class="nv">name: </span><span class="s">&#39;Igor&#39;</span>
+</span><span class="line">    <span class="nv">address: </span><span class="s">&#39;123 Somewhere&#39;</span>
+</span><span class="line"><span class="p">]).</span><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class="line">  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+</span><span class="line">  <span class="nv">scope: customerInfo: </span><span class="s">&#39;=info&#39;</span>
+</span><span class="line">  <span class="nv">template: </span><span class="s">&quot;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;docsIsolateScopeDirective&#39;</span><span class="p">,</span> <span class="p">[]).</span><span class="nx">controller</span><span class="p">(</span><span class="s">&#39;Controller&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
-</span><span class='line'>  <span class="nv">$scope.naomi =</span>
-</span><span class='line'>    <span class="nv">name: </span><span class="s">&#39;Naomi&#39;</span>
-</span><span class='line'>    <span class="nv">address: </span><span class="s">&#39;1600 Amphitheatre&#39;</span>
-</span><span class='line'>  <span class="nv">$scope.igor =</span>
-</span><span class='line'>    <span class="nv">name: </span><span class="s">&#39;Igor&#39;</span>
-</span><span class='line'>    <span class="nv">address: </span><span class="s">&#39;123 Somewhere&#39;</span>
-</span><span class='line'><span class="p">]).</span><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
-</span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
-</span><span class='line'>  <span class="nv">scope: customerInfo: </span><span class="s">&#39;=info&#39;</span>
-</span><span class='line'>  <span class="nv">template: </span><span class="s">&quot;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;Controller&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;naomi&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
+</span><span class="line">  <span class="nt">&lt;hr&gt;</span>
+</span><span class="line">  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;igor&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
+</span><span class="line"><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-
-
-<figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;Controller&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;naomi&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
-</span><span class='line'>  <span class="nt">&lt;hr&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;igor&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
-</span><span class='line'><span class="nt">&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>输出为</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>输出为</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>由输出可以看出，指令<code>my-customer</code>中的<code>info</code>属性被分别绑定到了外部scope的两个变量<code>naomi</code>和<code>igor</code>，虽然是同一指令，但相互之间没有干扰或污染。这样<code>my-customer</code>指令可以非常漂亮的被重用。</p>
 
@@ -142,88 +136,70 @@
 
 <p>另外，指令内属性名如果和绑定的外部属性相同，可以采用简写模式，如这里<code>my-customer</code>的<code>info</code>属性映射到内部也用<code>info</code>引用的化:</p>
 
-<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
-</span><span class='line'>  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
-</span><span class='line'>  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
-</span><span class='line'>  <span class="nv">template: </span><span class="s">&#39;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class="line">  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+</span><span class="line">  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
+</span><span class="line">  <span class="nv">template: </span><span class="s">&#39;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>@单向绑定</h3>
-
+<h3 id="section">@单向绑定</h3>
 <p>对于仅仅需要在指令中反应外部scope变量变化的情况下，可以仅使用单向绑定，将controller的变量映射到指令中，一旦在controller中修改变量，指令中可以立即看到变化，然而反过来则不可，即外部scope中看不到指令内部对变量的修改。</p>
 
-<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class='line'><span class="s">  scope: attributeFoo: &#39;</span><span class="nx">@</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
+</span><span class="line"><span class="s">  scope: attributeFoo: &#39;</span><span class="nx">@</span><span class="s">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-
-
-<figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;my</span><span class="na">-component</span> <span class="na">attribute-foo=</span><span class="s">&quot;{ {foo} }&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-component&gt;
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;my</span><span class="na">-component</span> <span class="na">attribute-foo=</span><span class="s">&quot;{ {foo} }&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-component&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>即，在控制器里修改foo，在<code>my-directive</code>中可以感知到。通常单向绑定对于取字符串值很常见，所以这里的html中使用双花括号插值。因此，单向绑定的官方名称其实是叫属性绑定。</p>
 
-<h3>=双向绑定</h3>
-
+<h3 id="section-1">=双向绑定</h3>
 <p>看名称就知道用途了，双向绑定使用<code>=</code>定义，直接看例子:</p>
 
-<figure class='code'><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class='line'><span class="s">  scope: bindingFoo: &#39;</span><span class="o">=</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
+</span><span class="line"><span class="s">  scope: bindingFoo: &#39;</span><span class="o">=</span><span class="s">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h3>&amp;表达式绑定</h3>
-
+<h3 id="section-2">&amp;表达式绑定</h3>
 <p>或者换个更human的名称，函数绑定，如果需要在指令内调用controler的函数，这就是说我们可以在指令内部定义接口，controller定义具体实现，这样指令就能够变得非常灵活，用在分离式scope中，既避免了变量污染又达到了灵活性，太cool了。</p>
 
-<figure class='code'><figcaption><span>my-directive.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class='line'><span class="s">  scope: myHandler: &#39;</span><span class="o">&amp;</span><span class="s">&#39;</span>
-</span><span class='line'><span class="s">  template: &#39;</span><span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">click</span><span class="o">=</span><span class="s">&quot;myHandler({$count: 123})&quot;</span><span class="o">&gt;&lt;/</span><span class="nx">button</span><span class="o">&gt;</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>my-directive.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
+</span><span class="line"><span class="s">  scope: myHandler: &#39;</span><span class="o">&amp;</span><span class="s">&#39;</span>
+</span><span class="line"><span class="s">  template: &#39;</span><span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">click</span><span class="o">=</span><span class="s">&quot;myHandler({$count: 123})&quot;</span><span class="o">&gt;&lt;/</span><span class="nx">button</span><span class="o">&gt;</span><span class="s">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>my-controller.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;MyCtrl&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
+</span><span class="line">    <span class="nv">$scope.getCounts = </span><span class="nf">(countNum) -&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Button click count: </span><span class="si">#{</span><span class="nx">countNum</span><span class="si">}</span><span class="s">&quot;</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;my</span><span class="na">-directive</span> <span class="na">my-handler=</span><span class="s">&quot;getCounts($count)&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-directive&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<figure class='code'><figcaption><span>my-controller.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;MyCtrl&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
-</span><span class='line'>    <span class="nv">$scope.getCounts = </span><span class="nf">(countNum) -&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Button click count: </span><span class="si">#{</span><span class="nx">countNum</span><span class="si">}</span><span class="s">&quot;</span>
-</span><span class='line'><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;my</span><span class="na">-directive</span> <span class="na">my-handler=</span><span class="s">&quot;getCounts($count)&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-directive&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>非常重要:函数传参</h4>
-
+<h4 id="section-3">非常重要:函数传参</h4>
 <p>对于无参函数的绑定，没什么好说的。但对应上例中的情况，需要把参数从指令中传到外部函数，则需要注意了。</p>
 
 <ul>
-<li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
-<li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
+  <li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
+  <li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
 </ul>
-
 </div>
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,8 +18,7 @@
     <link href="http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling/"/>
     <updated>2015-05-27T17:47:56+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling</id>
-    <content type="html"><![CDATA[<h3>Angular directive on bower</h3>
-
+    <content type="html"><![CDATA[<h3 id="angular-directive-on-bower">Angular directive on bower</h3>
 <p>用Angular做web开发不但听起来是非常炫酷的事情，而且从我实际的开发体验来看，它确实是极大减轻了开发者的痛苦。我可以把精力都花在组织业务逻辑，创建更为流畅和漂亮的UI上，而完全不用去反复沦陷在事件绑定数据更新这些无趣的事情上。此外，angular框架本身依照设计模式上定义出了一套MVC漂亮的实现,了解其controller,server,directive后，写出大型web app已经不是难事了。</p>
 
 <p>Angular中最漂亮的两个组件是service和directive，简单说来，service是逻辑代码的抽象和封装，它将应用中重复使用的逻辑代码抽象为公共服务，便于打造瘦controller；而directive则是对UI组件的抽象，其对directive的封装和接口设计简直刷新了我对前端的认识。</p>
@@ -28,39 +27,26 @@
 
 <!--more-->
 
-
-<h3>Bower</h3>
-
+<h3 id="bower">Bower</h3>
 <p><a href="http://bower.io/">Bower</a>是一个js的客户端管理工具，可以称之为客户端的npm，其作者是twitter的几个家伙(<a href="https://github.com/fat">@fat</a>,<a href="https://github.com/maccman">@maccman</a>)。根据你配置的<code>bower.json</code>文件，Bower可以自动查找、下载和安装js库，极大节约开发时间。</p>
 
-<h4>简单介绍</h4>
+<h4 id="section">简单介绍</h4>
 
-<p>```bash 安装使用
-npm install -g bower</p>
+<p><code>bash 安装使用
+npm install -g bower
+# registered package
+bower install jquery
+# GitHub shorthand
+bower install desandro/masonry
+# Git endpoint
+bower install git://github.com/user/package.git
+# URL
+bower install http://example.com/script.js
+</code>
+### 创建一个基于bower的angular指令angular-dropzone
+<a href="http://www.dropzonejs.com/">Dropzone</a>是一个漂亮的文件上传组件，下面就演示怎么把它集成为一个angular指令并分享到github。</p>
 
-<h1>registered package</h1>
-
-<p>bower install jquery</p>
-
-<h1>GitHub shorthand</h1>
-
-<p>bower install desandro/masonry</p>
-
-<h1>Git endpoint</h1>
-
-<p>bower install git://github.com/user/package.git</p>
-
-<h1>URL</h1>
-
-<p>bower install <a href="http://example.com/script.js">http://example.com/script.js</a>
-```</p>
-
-<h3>创建一个基于bower的angular指令angular-dropzone</h3>
-
-<p><a href="http://www.dropzonejs.com/">Dropzone</a>是一个漂亮的文件上传组件，下面就演示怎么把它集成为一个angular指令并分享到github。</p>
-
-<h4>1.创建指令工程</h4>
-
+<h4 id="section-1">1.创建指令工程</h4>
 <p><code>bash
 mkdir angular-dropzone &amp;&amp; cd $_
 touch angular-dropzone.js #  写入指令实现
@@ -68,62 +54,45 @@ bower init # 初始化bower工程
 </code>
 回答完一系列问题后，生成的<code>bower.json</code>文件应该类似：</p>
 
-<p>```
+<p><code>
 {
-  name: &lsquo;angular-dropzone&rsquo;,
-  main: &lsquo;angular-dropzone.js&rsquo;,
-  version: &lsquo;0.0.0&rsquo;,
-  authors: [</p>
-
-<pre><code>'qujianping &lt;qjpcpu@gmail.com&gt;'
-</code></pre>
-
-<p>  ],
-  description: &lsquo;dropzone for angular&rsquo;,
-  keywords: [</p>
-
-<pre><code>'angular',
-'dropzone'
-</code></pre>
-
-<p>  ],
-  license: &lsquo;MIT&rsquo;,
-  ignore: [</p>
-
-<pre><code>'**/.*',
-'node_modules',
-'bower_components',
-'test',
-'tests'
-</code></pre>
-
-<p>  ],
-  dependencies: {</p>
-
-<pre><code>angular: '~1.3.0',
-dropzone: '~4.0.1'
-</code></pre>
-
-<p>  }
+  name: 'angular-dropzone',
+  main: 'angular-dropzone.js',
+  version: '0.0.0',
+  authors: [
+    'qujianping &lt;qjpcpu@gmail.com&gt;'
+  ],
+  description: 'dropzone for angular',
+  keywords: [
+    'angular',
+    'dropzone'
+  ],
+  license: 'MIT',
+  ignore: [
+    '**/.*',
+    'node_modules',
+    'bower_components',
+    'test',
+    'tests'
+  ],
+  dependencies: {
+    angular: '~1.3.0',
+    dropzone: '~4.0.1'
+  }
 }
-```</p>
+</code></p>
 
-<h4>2.编辑指令代码</h4>
-
+<h4 id="section-2">2.编辑指令代码</h4>
 <p>现在开始编写指令的实现。指令代码最好遵守一定命名规范，如：以github名称作为命名空间。
-```javascript angular-dropzone.js
-angular.module(&lsquo;qjpcpu.angular-dropzone&rsquo;, []).
-  directive(&lsquo;qjpDropzone&rsquo;, function () {</p>
-
-<pre><code>// implementation goes here
-</code></pre>
-
-<p>  });
-```
+<code>javascript angular-dropzone.js
+angular.module('qjpcpu.angular-dropzone', []).
+  directive('qjpDropzone', function () {
+    // implementation goes here
+  });
+</code>
 具体代码实现可以参考<a href="https://github.com/qjpcpu/angular-dropzone">angular-dropzone</a></p>
 
-<h4>3.发布指令</h4>
-
+<h4 id="section-3">3.发布指令</h4>
 <p>编写完成后，就可以推送到github。</p>
 
 <p><code>bash
@@ -136,8 +105,7 @@ git push -u origin master
 </code>
 注意，bower使用git的tag确定版本号。</p>
 
-<h4>4.在你的应用中使用该指令</h4>
-
+<h4 id="section-4">4.在你的应用中使用该指令</h4>
 <p>现在可以拉取使用你的angular指令了：
 <code>
 bower install qjpcpu/angular-dropzone
@@ -145,16 +113,11 @@ bower install qjpcpu/angular-dropzone
 
 <p>在<code>index.html</code>文件添加加载的文件:</p>
 
-<p>```html index.html
-<link rel="stylesheet" href="bower_components/dropzone/dist/dropzone.css"></p>
-
-<script src="bower_components/dropzone/dist/dropzone.js"></script>
-
-
-<script src="bower_components/angular-dropzone/angular-dropzone.js"></script>
-
-
-<p>```</p>
+<p><code>html index.html
+&lt;link rel="stylesheet" href="bower_components/dropzone/dist/dropzone.css"&gt;
+&lt;script src="bower_components/dropzone/dist/dropzone.js"&gt;&lt;/script&gt;
+&lt;script src="bower_components/angular-dropzone/angular-dropzone.js"&gt;&lt;/script&gt;
+</code></p>
 
 <p>需要添加模块依赖:
 <code>coffeescript app.coffee
@@ -164,14 +127,11 @@ app = angular.module("my-app", [
 </code>
 这样在html片段里就可以使用指令了,关于该指令具体参数参考<a href="https://github.com/qjpcpu/angular-dropzone">angular-dropzone</a>:</p>
 
-<p>```html p.html</p>
-
-<div qjp-dropzone class="droppable-area" url="'/url/to-upload'">
-    Drop file here
-</div>
-
-
-<p>```</p>
+<p><code>html p.html
+&lt;div qjp-dropzone class="droppable-area" url="'/url/to-upload'"&gt;
+	Drop file here
+&lt;/div&gt;
+</code></p>
 ]]></content>
   </entry>
   
@@ -180,45 +140,37 @@ app = angular.module("my-app", [
     <link href="http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope/"/>
     <updated>2015-05-25T14:12:42+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope</id>
-    <content type="html"><![CDATA[<h3>分离式scope（Isolated Scope）</h3>
-
-<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的"环境",这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
+    <content type="html"><![CDATA[<h3 id="scopeisolated-scope">分离式scope（Isolated Scope）</h3>
+<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
 
 <!--more-->
 
+<blockquote>
+  <p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p>
+</blockquote>
 
-<blockquote><p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p></blockquote>
+<p><code>coffeescript script.coffee
+angular.module('docsIsolateScopeDirective', []).controller('Controller', ['$scope',($scope) -&gt;
+  $scope.naomi =
+    name: 'Naomi'
+    address: '1600 Amphitheatre'
+  $scope.igor =
+    name: 'Igor'
+    address: '123 Somewhere'
+]).directive 'myCustomer', -&gt;
+  restrict: 'E'
+  scope: customerInfo: '=info'
+  template: "Name: { {customerInfo.name} } Address: { {customerInfo.address} }"
+</code></p>
 
-<p>```coffeescript script.coffee
-angular.module(&lsquo;docsIsolateScopeDirective&rsquo;, []).controller(&lsquo;Controller&rsquo;, [&lsquo;$scope&rsquo;,($scope) &ndash;>
-  $scope.naomi =</p>
+<p>```html index.html
+&lt;div ng-controller="Controller"&gt;
+  <my-customer info="naomi"></my-customer></p>
+<hr />
 
-<pre><code>name: 'Naomi'
-address: '1600 Amphitheatre'
-</code></pre>
-
-<p>  $scope.igor =</p>
-
-<pre><code>name: 'Igor'
-address: '123 Somewhere'
-</code></pre>
-
-<p>]).directive &lsquo;myCustomer&rsquo;, &ndash;>
-  restrict: &lsquo;E&rsquo;
-  scope: customerInfo: &lsquo;=info&rsquo;
-  template: &ldquo;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&rdquo;
+<my-customer info="igor"></my-customer>
+<p>&lt;/div&gt;
 ```</p>
-
-<p>```html index.html</p>
-
-<div ng-controller="Controller">
-  <my-customer info="naomi"></my-customer>
-  <hr>
-  <my-customer info="igor"></my-customer>
-</div>
-
-
-<p>```</p>
 
 <p><code>text 输出为
 Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
@@ -237,8 +189,7 @@ directive 'myCustomer', -&gt;
   template: 'Name: { {customerInfo.name} } Address: { {customerInfo.address} }'
 </code></p>
 
-<h3>@单向绑定</h3>
-
+<h3 id="section">@单向绑定</h3>
 <p>对于仅仅需要在指令中反应外部scope变量变化的情况下，可以仅使用单向绑定，将controller的变量映射到指令中，一旦在controller中修改变量，指令中可以立即看到变化，然而反过来则不可，即外部scope中看不到指令内部对变量的修改。</p>
 
 <p><code>coffeescript script.coffee
@@ -252,8 +203,7 @@ directive 'myCustomer', -&gt;
 
 <p>即，在控制器里修改foo，在<code>my-directive</code>中可以感知到。通常单向绑定对于取字符串值很常见，所以这里的html中使用双花括号插值。因此，单向绑定的官方名称其实是叫属性绑定。</p>
 
-<h3>=双向绑定</h3>
-
+<h3 id="section-1">=双向绑定</h3>
 <p>看名称就知道用途了，双向绑定使用<code>=</code>定义，直接看例子:</p>
 
 <p><code>coffeescript script.coffee
@@ -261,8 +211,7 @@ directive 'myCustomer', -&gt;
   scope: bindingFoo: '='
 </code></p>
 
-<h3>&amp;表达式绑定</h3>
-
+<h3 id="section-2">&amp;表达式绑定</h3>
 <p>或者换个更human的名称，函数绑定，如果需要在指令内调用controler的函数，这就是说我们可以在指令内部定义接口，controller定义具体实现，这样指令就能够变得非常灵活，用在分离式scope中，既避免了变量污染又达到了灵活性，太cool了。</p>
 
 <p><code>coffeescript my-directive.coffee
@@ -271,28 +220,23 @@ directive 'myCustomer', -&gt;
   template: '&lt;button type="button" ng-click="myHandler({$count: 123})"&gt;&lt;/button&gt;'
 </code></p>
 
-<p>```coffeescript my-controller.coffee
-.controller &lsquo;MyCtrl&rsquo;, [&lsquo;$scope&rsquo;,($scope) &ndash;></p>
-
-<pre><code>$scope.getCounts = (countNum) -&gt; console.log "Button click count: #{countNum}"
-</code></pre>
-
-<p>]
-```</p>
+<p><code>coffeescript my-controller.coffee
+.controller 'MyCtrl', ['$scope',($scope) -&gt;
+    $scope.getCounts = (countNum) -&gt; console.log "Button click count: #{countNum}"
+]
+</code></p>
 
 <p><code>html index.html
 &lt;my-directive my-handler="getCounts($count)"&gt;&lt;/my-directive&gt;
 </code></p>
 
-<h4>非常重要:函数传参</h4>
-
+<h4 id="section-3">非常重要:函数传参</h4>
 <p>对于无参函数的绑定，没什么好说的。但对应上例中的情况，需要把参数从指令中传到外部函数，则需要注意了。</p>
 
 <ul>
-<li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
-<li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
+  <li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
+  <li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
 </ul>
-
 ]]></content>
   </entry>
   
@@ -303,79 +247,63 @@ directive 'myCustomer', -&gt;
     <id>http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan</id>
     <content type="html"><![CDATA[<p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
 
-<p>```json
+<p><code>json
 menuItems = [
-  {</p>
-
-<pre><code>"label": "level1",
-"link": "/A",
-"menuItems": [
   {
-    "label": "level2",
-    "link": "/A/a1"
+    "label": "level1",
+    "link": "/A",
+    "menuItems": [
+      {
+        "label": "level2",
+        "link": "/A/a1"
+      }
+    ]
+  },
+  {
+    "label": "level1",
+    "link": "/B",
+    "menuItems": [
+      {
+        "label": "level2",
+        "link": "/B/b1"
+      }
+    ]
   }
 ]
-</code></pre>
-
-<p>  },
-  {</p>
-
-<pre><code>"label": "level1",
-"link": "/B",
-"menuItems": [
-  {
-    "label": "level2",
-    "link": "/B/b1"
-  }
-]
-</code></pre>
-
-<p>  }
-]
-```</p>
+</code></p>
 
 <!-- more -->
 
+<h2 id="ng">需要的ng指令</h2>
 
-<h2>需要的ng指令</h2>
-
-<h3>script</h3>
+<h3 id="script">script</h3>
 
 <p>将<code>&lt;script&gt;</code>的内容加载到$templateCache,这样就能够在ngInclude, ngView或指令中使用。<code>&lt;script&gt;</code>的类型必须是<code>text/ng-template</code>，并用<code>id</code>指定id。如：</p>
 
-<p>```html</p>
-
-<script type="text/ng-template" id="tpl-1">
+<p><code>html
+&lt;script type="text/ng-template" id="tpl-1"&gt;
   Content of the template.
-</script>
+&lt;/script&gt;
+</code></p>
 
-
-<p>```</p>
-
-<h3>ngInit</h3>
-
+<h3 id="nginit">ngInit</h3>
 <p>在当前scope内重命名某属性</p>
 
-<p>```html</p>
-
-<script>
+<p><code>html
+&lt;script&gt;
   angular.module('initExample', [])
     .controller('ExampleController', ['$scope', function($scope) {
       $scope.list = [['a', 'b'], ['c', 'd']];
     }]);
-</script>
-
-
-<div ng-controller="ExampleController">
-  <div ng-repeat="innerList in list" ng-init="outerIndex = $index">
-    <div ng-repeat="value in innerList" ng-init="innerIndex = $index">
-       <span class="example-init">list[  ][  ] = ;</span>
-    </div>
-  </div>
-</div>
-
-
-<p>```</p>
+&lt;/script&gt;
+&lt;div ng-controller="ExampleController"&gt;
+  &lt;div ng-repeat="innerList in list" ng-init="outerIndex = $index"&gt;
+    &lt;div ng-repeat="value in innerList" ng-init="innerIndex = $index"&gt;
+       &lt;span class="example-init"&gt;list[  ][  ] = ;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></p>
 
 <p>输出：</p>
 
@@ -385,45 +313,33 @@ list[ 1 ][ 0 ] = c;
 list[ 1 ][ 1 ] = d; 
 </code></pre>
 
-<h2>示例</h2>
-
+<h2 id="section">示例</h2>
 <p>下面的示例代码就利用这些指令，将递归的菜单分割成扁平的模板，避免html模板过深的层次。</p>
 
-<p>```html</p>
-
+<p>```html
 <script type="text/ng-template" id="menu-item-link-tpl">
-    <span class="title"></span>           
+    <span class="title"></span>			
     <span ng-if="item.label"></span>
-</script>
-
-
-
+</script></p>
 
 <script type="text/ng-template" id="menu-items-tpl">
     <li ng-repeat="item in menuItems">
-    <a href="#" ng-include="'menu-item-link-tpl'"></a>
-    <ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+	<a href="#" ng-include="'menu-item-link-tpl'"></a>
+	<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
     </li>
 </script>
-
-
-
 
 <script type="text/ng-template" id="menu-items-recursive-tpl">
     <li ng-repeat="item in subItems">
-    <a href="#" ng-include="'menu-item-link-tpl'"></a>
-    <ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
+	<a href="#" ng-include="'menu-item-link-tpl'"></a>
+	<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
     </li>
 </script>
 
-
-
-
 <ul ng-include="'menu-items-tpl'">
 </ul>
-
-
 <p>```</p>
+
 ]]></content>
   </entry>
   
@@ -432,119 +348,95 @@ list[ 1 ][ 1 ] = d;
     <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
     <updated>2014-12-29T17:32:53+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
-    <content type="html"><![CDATA[<h1>简介</h1>
-
+    <content type="html"><![CDATA[<h1 id="section">简介</h1>
 <p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
 
 <!-- more -->
 
-
-<h1>Demo</h1>
-
+<h1 id="demo">Demo</h1>
 <p>直接使用<code>ui-router</code>的方式可以参考其github文档，这里以yeoman为例简单展示下ui-router的使用。</p>
 
 <p>在<code>bower.json</code>中加入ui-router依赖包,然后<code>bower install</code>执行安装</p>
 
-<p>```json bower.json
+<p><code>json bower.json
 {
-  &ldquo;name&rdquo;: &ldquo;learn-angular&rdquo;,
-  &ldquo;version&rdquo;: &ldquo;0.0.0&rdquo;,
-  &ldquo;dependencies&rdquo;: {</p>
-
-<pre><code>/*省略其他*/ 
-"angular-ui-router": "^0.2.13"
-</code></pre>
-
-<p>  },
- /<em>省略其他</em>/
+  "name": "learn-angular",
+  "version": "0.0.0",
+  "dependencies": {
+    /*省略其他*/ 
+    "angular-ui-router": "^0.2.13"
+  },
+ /*省略其他*/ 
 }
-```</p>
+</code></p>
 
 <p>在<code>index.html</code>中添加引用：</p>
 
-<p>```html app/index.html</p>
-
-<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-
-
-<p>```
+<p><code>html app/index.html
+&lt;script src="bower_components/angular-ui-router/release/angular-ui-router.js"&gt;&lt;/script&gt;
+</code>
 在app.coffee中设置路由：</p>
 
 <p>```coffeescript  app/scripts/app.coffee
-&lsquo;use strict&rsquo;</p>
+‘use strict’</p>
 
 <p>angular
-  .module(&lsquo;learnAngularApp&rsquo;, [</p>
-
-<pre><code>'ui.router'    # 添加模块依赖
-</code></pre>
-
-<p>  ])
-  .run [&lsquo;$rootScope&rsquo;, &lsquo;$state&rsquo;, &lsquo;$stateParams&rsquo;, ($rootScope,   $state,   $stateParams) &ndash;></p>
-
-<pre><code>$rootScope.$state = $state
-$rootScope.$stateParams = $stateParams
-]
-</code></pre>
-
-<p>  .config ($stateProvider,$urlRouterProvider) &ndash;></p>
-
-<pre><code>$urlRouterProvider.otherwise "/"
-$stateProvider
-  .state 'home',
-    url: '/'                      # 可见默认路由状态是home
-    templateUrl: 'views/home.html'
-  .state 'state1',
-    url: '/state1'
-    templateUrl: 'views/state1.html'
-  .state 'state1.list',
-    url: '/list'
-    templateUrl: 'views/state1.list.html'
-    controller: ($scope) -&gt;
-      $scope.items = ["A", "List", "Of", "Items"]
-  .state 'state2',
-    url: '/state2'
-    templateUrl: 'views/state2.html'
-  .state 'state2.list',
-    url: '/list'
-    templateUrl: 'views/state2.list.html'
-    controller: ($scope) -&gt;
-      $scope.things = ["A", "Set", "Of", "Things"]
-</code></pre>
-
-<p>```</p>
+  .module(‘learnAngularApp’, [
+    ‘ui.router’    # 添加模块依赖
+  ])
+  .run [‘$rootScope’, ‘$state’, ‘$stateParams’, ($rootScope,   $state,   $stateParams) -&gt;
+    $rootScope.$state = $state
+    $rootScope.$stateParams = $stateParams
+    ]
+  .config ($stateProvider,$urlRouterProvider) -&gt;
+    $urlRouterProvider.otherwise “/”
+    $stateProvider
+      .state ‘home’,
+        url: ‘/’                      # 可见默认路由状态是home
+        templateUrl: ‘views/home.html’
+      .state ‘state1’,
+        url: ‘/state1’
+        templateUrl: ‘views/state1.html’
+      .state ‘state1.list’,
+        url: ‘/list’
+        templateUrl: ‘views/state1.list.html’
+        controller: ($scope) -&gt;
+          $scope.items = [“A”, “List”, “Of”, “Items”]
+      .state ‘state2’,
+        url: ‘/state2’
+        templateUrl: ‘views/state2.html’
+      .state ‘state2.list’,
+        url: ‘/list’
+        templateUrl: ‘views/state2.list.html’
+        controller: ($scope) -&gt;
+          $scope.things = [“A”, “Set”, “Of”, “Things”]
+```</p>
 
 <p>ui-router最重要的三个服务<code>$state</code>,<code>$stateProvider</code>,<code>$urlRouterProvider</code>。在<code>$stateProvider</code>上配置所有的状态，state方法的第一个参数是状态名，第二个参数是一个hash对象，里面可以配置<code>url</code>,<code>templateUrl</code>,<code>controller</code>等。</p>
 
-<p>注意其中类似<code>state1.list</code>和<code>state1</code>的状态，<code>state1.list</code>是<code>state1</code>的子状态，所以触发<code>state1.list</code>的url是父子状态的联合，即<code>/state1</code>+<code>/list</code> => <code>/state1/list</code>,所以当浏览器导航到<code>/state1/list</code>（或手动触发<code>$state.go()</code>）时，<code>state1.list.html</code>才被插入父模板渲染。</p>
+<p>注意其中类似<code>state1.list</code>和<code>state1</code>的状态，<code>state1.list</code>是<code>state1</code>的子状态，所以触发<code>state1.list</code>的url是父子状态的联合，即<code>/state1</code>+<code>/list</code> =&gt; <code>/state1/list</code>,所以当浏览器导航到<code>/state1/list</code>（或手动触发<code>$state.go()</code>）时，<code>state1.list.html</code>才被插入父模板渲染。</p>
 
 <p>下图非常清晰反映了ui-router的渲染逻辑：</p>
 
 <ul>
-<li>绿色 = 初始状态</li>
-<li>黄色 = 即时渲染</li>
-<li>蓝色 = 最终状态</li>
+  <li>绿色 = 初始状态</li>
+  <li>黄色 = 即时渲染</li>
+  <li>蓝色 = 最终状态</li>
 </ul>
-
 
 <p><img src="https://camo.githubusercontent.com/15b1f1780e3a88cc1d6e0055dda298279d66fad7/68747470733a2f2f7261772e6769746875622e636f6d2f77696b692f616e67756c61722d75692f75692d726f757465722f5374617465476f4578616d706c65732e706e67" alt="渲染逻辑" /></p>
 
 <p>主模板index.html:</p>
 
 <p>```html app/index.html</p>
-
 <div>
     <ul>
       <li ui-sref-active="active"><a ui-sref="home">home</a></li>
-      <li ui-sref-active="active" ><a ui-sref="state1">state1</a></li>
+      <li ui-sref-active="active"><a ui-sref="state1">state1</a></li>
       <li ui-sref-active="active"><a ui-sref="state2">state2</a></li>
     </ul>
 </div>
-
-
-<div ui-view></div>
-
-
+<div ui-view=""></div>
 <p>```</p>
 
 <p>这里出现了两个ui-router的指令，<code>ui-sref</code>类似于angularjs的<code>ng-href</code>，只不过后面指定的是路由状态。</p>
@@ -553,58 +445,29 @@ $stateProvider
 
 <p>其他模板：</p>
 
-<p>```html</p>
-
-<!-- app/views/state1.html -->
-
-
+<p>```html
+<!-- app/views/state1.html --></p>
 <h1>State 1</h1>
+<hr />
 
-
-<hr/>
-
-
-<p><a ui-sref="state1.list">Show List</a></p>
-
-<div ui-view></div>
-
-
-<!-- app/views/state1.list.html -->
-
-
+<p><a ui-sref="state1.list">Show List</a>
+&lt;div ui-view&gt;&lt;/div&gt;
+<!-- app/views/state1.list.html --></p>
 <h3>List of State 1 Items</h3>
-
-
 <ul>
   <li ng-repeat="item in items"></li>
 </ul>
-
-
 <!-- app/views/state2.html -->
-
-
 <h1>State 2</h1>
+<hr />
 
-
-<hr/>
-
-
-<p><a ui-sref="state2.list">Show List</a></p>
-
-<div ui-view></div>
-
-
-<!-- app/views/state2.list.html -->
-
-
+<p><a ui-sref="state2.list">Show List</a>
+&lt;div ui-view&gt;&lt;/div&gt;
+<!-- app/views/state2.list.html --></p>
 <h3>List of State 2 Things</h3>
-
-
 <ul>
   <li ng-repeat="thing in things"></li>
 </ul>
-
-
 <p>```</p>
 
 <p>由上面的规则可以同理推出，当url为<code>/state1/list</code>时，会渲染主模板<code>state1.html</code>，并且会将子模板<code>state1.list.html</code>嵌入<code>state1.html</code>的<code>ui-view</code>中一起渲染出来。cool，路由渲染的灵活性非常高！</p>
@@ -613,52 +476,40 @@ $stateProvider
 
 <p>另外，ui-router还支持多模板：</p>
 
-<p>```html app/views/index.html
-<body></p>
-
-<pre><code>&lt;div ui-view="viewA"&gt;&lt;/div&gt;
-&lt;div ui-view="viewB"&gt;&lt;/div&gt;
-&lt;!-- Also a way to navigate --&gt;
-&lt;a ui-sref="route1"&gt;Route 1&lt;/a&gt;
-&lt;a ui-sref="route2"&gt;Route 2&lt;/a&gt;
-</code></pre>
-
-<p></body>
-```</p>
-
-<p>```coffeescript app/scripts/app.coffee
-myApp.config ($stateProvider) &ndash;>
-  $stateProvider.state(&ldquo;index&rdquo;,</p>
-
-<pre><code>url: ""
-views:
-  viewA:
-    template: "index.viewA"
-  viewB:
-    template: "index.viewB"
-</code></pre>
-
-<p>  ).state(&ldquo;route1&rdquo;,</p>
-
-<pre><code>url: "/route1"
-views:
-  viewA:
-    template: "route1.viewA"
-  viewB:
-    template: "route1.viewB"
-</code></pre>
-
-<p>  ).state &ldquo;route2&rdquo;,</p>
-
-<pre><code>url: "/route2"
-views:
-  viewA:
-    template: "route2.viewA"
-  viewB:
-    template: "route2.viewB"
-</code></pre>
-
+<p>```html app/views/index.html</p>
+<body>
+    <div ui-view="viewA"></div>
+    <div ui-view="viewB"></div>
+    <!-- Also a way to navigate -->
+    <a ui-sref="route1">Route 1</a>
+    <a ui-sref="route2">Route 2</a>
+</body>
 <p>```</p>
+
+<p><code>coffeescript app/scripts/app.coffee
+myApp.config ($stateProvider) -&gt;
+  $stateProvider.state("index",
+    url: ""
+    views:
+      viewA:
+        template: "index.viewA"
+      viewB:
+        template: "index.viewB"
+  ).state("route1",
+    url: "/route1"
+    views:
+      viewA:
+        template: "route1.viewA"
+      viewB:
+        template: "route1.viewB"
+  ).state "route2",
+    url: "/route2"
+    views:
+      viewA:
+        template: "route2.viewA"
+      viewB:
+        template: "route2.viewB"
+</code></p>
 ]]></content>
   </entry>
   
@@ -667,37 +518,33 @@ views:
     <link href="http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu/"/>
     <updated>2014-11-25T10:54:31+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu</id>
-    <content type="html"><![CDATA[<h2>需要的工具</h2>
+    <content type="html"><![CDATA[<h2 id="section">需要的工具</h2>
 
 <ul>
-<li><a href="http://bower.io/">bower</a> 前端包管理器</li>
-<li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
-<li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
-<li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
+  <li><a href="http://bower.io/">bower</a> 前端包管理器</li>
+  <li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
+  <li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
+  <li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
 </ul>
-
 
 <p>这里我使用了yeoman的一个angularJS的生成器<a href="https://github.com/yeoman/generator-angular">yo</a>，方便生成需要的全部零部件</p>
 
 <!-- more -->
 
-
-<h2>新建工程</h2>
+<h2 id="section-1">新建工程</h2>
 
 <p>我们要建立的angularjs工程的项目名称叫<code>MyAngularApp</code></p>
 
-<p>```bash
+<p><code>bash
 mkdir MyAngularApp
-cd MyAngularApp</p>
-
-<h1>这里我习惯用coffee来写代码，如果直接用javascript可以去掉后面的参数&mdash;coffee</h1>
-
-<p>yo angular &mdash;coffee
-```</p>
+cd MyAngularApp
+# 这里我习惯用coffee来写代码，如果直接用javascript可以去掉后面的参数--coffee
+yo angular --coffee
+</code></p>
 
 <p>生成的目录结构如下：</p>
 
-<p>```
+<p><code>
 MyAngularApp
 ├── Gruntfile.js
 ├── README.md
@@ -714,18 +561,15 @@ MyAngularApp
 ├── bower_components
 │   ├── angular
 │   ├── angular-animate
-│   └── &hellip;&hellip;
+│   └── ......
 ├── node_modules
 │   ├── coffee-script
-│   └── &hellip;&hellip;
+│   └── ......
 ├── package.json
-└── test</p>
-
-<pre><code>├── karma.conf.coffee
-└── spec
-</code></pre>
-
-<p>```</p>
+└── test
+    ├── karma.conf.coffee
+    └── spec
+</code></p>
 
 <p>其中，<code>Gruntfile.js</code>是grunt的makefile文件，里面定义了各种编译任务，如常用的<code>grunt serve</code>和<code>grunt build</code>。</p>
 
@@ -739,55 +583,33 @@ MyAngularApp
 
 <p><code>test</code>是测试文件所在。</p>
 
-<h2>index.html</h2>
+<h2 id="indexhtml">index.html</h2>
 
 <p>yo的常用操作可以参考其github文档。这里需要补充说一下的是<code>app/index.html</code>文件，该文件是angular项目的起始文件。注意其中类似下面这样的语句：</p>
 
-<p>```html</p>
-
+<p>```html
 <!-- build:css({.tmp,app}) styles/main.css -->
-
-
-<p><link rel="stylesheet" href="styles/main.css"></p>
-
-<!-- endbuild -->
-
-
-
+<link rel="stylesheet" href="styles/main.css" />
+<!-- endbuild --></p>
 
 <!-- build:js(.) scripts/vendor.js -->
-
-
 <!-- bower:js -->
-
-
 <script src="bower_components/angular/angular.js"></script>
-
 
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 
-
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
 
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 
-
 <script src="bower_components/angular-route/angular-route.js"></script>
-
 
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
-
 <script src="bower_components/angular-touch/angular-touch.js"></script>
 
-
 <!-- endbower -->
-
-
 <!-- endbuild -->
-
-
 <p>```</p>
 
 <p>要注意的是<code>&lt;!-- build:css(DIRECTORY) OUT_FILE --&gt;</code>和<code>&lt;!-- build:js(DIRECTORY) OUTFILE --&gt;</code>，它们并不是普通的html注释，而是grunt的指令。</p>
@@ -798,47 +620,38 @@ MyAngularApp
 
 <p>所以，自己引入的一些第三方库怎么弄也就清楚了：</p>
 
-<p>```html</p>
+<p><code>html
+&lt;!-- build:css(app) assets/css/vendor.css --&gt;
+&lt;link href="assets/css/animate.min.css" rel="stylesheet" /&gt;
+&lt;link href="assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" /&gt;
+&lt;!-- endbuild --&gt;
+</code></p>
 
-<!-- build:css(app) assets/css/vendor.css -->
-
-
-<p><link href="assets/css/animate.min.css" rel="stylesheet" />
-<link href="assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" /></p>
-
-<!-- endbuild -->
-
-
-<p>```</p>
-
-<h2>grunt</h2>
+<h2 id="grunt">grunt</h2>
 
 <p>最后说一下grunt的任务，如果在app目录有个<code>assets/img</code>目录，里面放了一些图片，希望执行<code>grunt build</code>后将这些资源复制到输出目录，那么可以对<code>Gruntfile.js</code>做简单修改，如：</p>
 
-<p>```javascript</p>
-
-<pre><code>// Copies remaining files to places other tasks can use
-copy: {
-  dist: {
-    files: [{
-      expand: true,
-      dot: true,
-      cwd: '&lt;%= yeoman.app %&gt;',
-      dest: '&lt;%= yeoman.dist %&gt;',
-      src: [
-        '*.{ico,png,txt}',
-        '.htaccess',
-        '*.html',
-        'views/{,*/}*.html',
-        'images/{,*/}*.{webp}',
-        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行,也可以直接复制整个文件夹 'assets/**'
-        'fonts/{,*/}*.*'
-      ]
-    }
-},
-</code></pre>
-
-<p>```</p>
+<p><code>javascript
+    // Copies remaining files to places other tasks can use
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '&lt;%= yeoman.app %&gt;',
+          dest: '&lt;%= yeoman.dist %&gt;',
+          src: [
+            '*.{ico,png,txt}',
+            '.htaccess',
+            '*.html',
+            'views/{,*/}*.html',
+            'images/{,*/}*.{webp}',
+	        'assets/{,img/*.*,fonts/*.*}',   //这里添加了一行,也可以直接复制整个文件夹 'assets/**'
+            'fonts/{,*/}*.*'
+          ]
+        }
+    },
+</code></p>
 ]]></content>
   </entry>
   

@@ -87,246 +87,212 @@ tmux attach -t SESSION_NAME # 进入某会话 命令列表 默认情况下， &h
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Tmux</h2>
-	<div class="entry-content"><h3>基本操作</h3>
+	<div class="entry-content"><h3 id="section">基本操作</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
-</span><span class='line'>tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
-</span><span class='line'>tmux ls <span class="c"># 列出所有会话</span>
-</span><span class='line'>tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
+</span><span class="line">tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
+</span><span class="line">tmux ls <span class="c"># 列出所有会话</span>
+</span><span class="line">tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!--more-->
 
-
-<h3>命令列表</h3>
+<h3 id="section-1">命令列表</h3>
 
 <p>默认情况下，tmux的前导命令开关是<code>Ctrl+b</code>，按了<code>Ctrl+b</code>后再按下面的命令，即执行相应操作：</p>
 
-<h4>会话类</h4>
+<h4 id="section-2">会话类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td>?</td>
-<td>显示所有快捷键，按q退出|</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>d</strong> </td>
-<td> <strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>D</td>
-<td>选择要脱离的会话；在同时开启了多个会话时使用|</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>s</strong></td>
-<td> <strong>选择并切换会话；在同时开启了多个会话时使用</strong>|</td>
-</tr>
-<tr>
-<td></td>
-<td>:</td>
-<td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器|</td>
-</tr>
-<tr>
-<td></td>
-<td>[</td>
-<td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>?</td>
+      <td>显示所有快捷键，按q退出</td>
+    </tr>
+    <tr>
+      <td><strong>d</strong></td>
+      <td><strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong></td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>选择要脱离的会话；在同时开启了多个会话时使用</td>
+    </tr>
+    <tr>
+      <td><strong>s</strong></td>
+      <td><strong>选择并切换会话；在同时开启了多个会话时使用</strong></td>
+    </tr>
+    <tr>
+      <td>:</td>
+      <td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器</td>
+    </tr>
+    <tr>
+      <td>[</td>
+      <td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h4>窗口类</h4>
+<h4 id="section-3">窗口类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td> <strong>c</strong> </td>
-<td> <strong>创建新窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>&amp;</strong> </td>
-<td> <strong>关闭当前窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>数字键</strong> </td>
-<td> <strong>切换至指定窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>p</td>
-<td>切换至上一窗口|</td>
-</tr>
-<tr>
-<td></td>
-<td>n</td>
-<td>切换至下一窗口|</td>
-</tr>
-<tr>
-<td></td>
-<td>l</td>
-<td>在前后两个窗口间互相切换|</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>w</strong> </td>
-<td> <strong>通过窗口列表切换窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>,</strong> </td>
-<td> <strong>重命名当前窗口；这样便于识别</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>.</strong> </td>
-<td> <strong>修改当前窗口编号；相当于窗口重新排序</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>!</td>
-<td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>c</strong></td>
+      <td><strong>创建新窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>&amp;</strong></td>
+      <td><strong>关闭当前窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>数字键</strong></td>
+      <td><strong>切换至指定窗口</strong></td>
+    </tr>
+    <tr>
+      <td>p</td>
+      <td>切换至上一窗口</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td>切换至下一窗口</td>
+    </tr>
+    <tr>
+      <td>l</td>
+      <td>在前后两个窗口间互相切换</td>
+    </tr>
+    <tr>
+      <td><strong>w</strong></td>
+      <td><strong>通过窗口列表切换窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>,</strong></td>
+      <td><strong>重命名当前窗口；这样便于识别</strong></td>
+    </tr>
+    <tr>
+      <td><strong>.</strong></td>
+      <td><strong>修改当前窗口编号；相当于窗口重新排序</strong></td>
+    </tr>
+    <tr>
+      <td>!</td>
+      <td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h4>面板类</h4>
+<h4 id="section-4">面板类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td> <strong>&ldquo;</strong> </td>
-<td> <strong>将当前面板平分为上下两块</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>%</strong> </td>
-<td> <strong>将当前面板平分为左右两块</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>x</strong> </td>
-<td> <strong>关闭当前面板</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>o</strong> </td>
-<td> <strong>在当前窗口中选择下一面板</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>q</td>
-<td>显示面板编号|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>”</strong></td>
+      <td><strong>将当前面板平分为上下两块</strong></td>
+    </tr>
+    <tr>
+      <td><strong>%</strong></td>
+      <td><strong>将当前面板平分为左右两块</strong></td>
+    </tr>
+    <tr>
+      <td><strong>x</strong></td>
+      <td><strong>关闭当前面板</strong></td>
+    </tr>
+    <tr>
+      <td><strong>o</strong></td>
+      <td><strong>在当前窗口中选择下一面板</strong></td>
+    </tr>
+    <tr>
+      <td>q</td>
+      <td>显示面板编号</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h3>其他</h3>
+<h3 id="section-5">其他</h3>
 
 <p>如果不想使用默认tmux server，或者同一用户想起多个tmux实例，可以使用<code>-S</code>参数指定不同的unix socket：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux -S /path/to/another/unix/socket-file
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">tmux -S /path/to/another/unix/socket-file
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>在tmux里使用zsh有时会导致窗口名称会不断变化，这需要修改下<code>~/.zshrc</code>文件：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">DISABLE_AUTO_TITLE</span><span class="o">=</span><span class="nb">true</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">DISABLE_AUTO_TITLE</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h4>可编程</h4>
+<h4 id="section-6">可编程</h4>
 
 <p>tmux最强大的地方还在于他的可编程性，用<code>tmux list-commands</code>可以看到tmux所有支持的命令。以我自己常执行的一个脚本为例，我开机后常常需要启动一系列服务便于开发, 但当我不开发时开电脑又不需要启动，所以放到开机自启动脚本里是不合适的，所以这里用tmux来批量起最合适了：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/zsh</span>
-</span><span class='line'><span class="c"># start tmux</span>
-</span><span class='line'><span class="nv">session</span><span class="o">=</span>MAC
-</span><span class='line'>tmux new -s <span class="s2">&quot;$session&quot;</span> -d
-</span><span class='line'>tmux rename-window -t <span class="s2">&quot;$session:0&quot;</span> daemon
-</span><span class='line'><span class="c"># start redis-server</span>
-</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;redis-server&#39;</span> Enter
-</span><span class='line'>tmux split-window -h -t <span class="s2">&quot;$session:daemon&quot;</span>
-</span><span class='line'><span class="c"># start mongo</span>
-</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;mongod --dbpath /Users/jason/local/var/mongodb-data&#39;</span> Enter
-</span><span class='line'><span class="c"># start nginx</span>
-</span><span class='line'>tmux split-window  -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Users/jason/local/nginx/sbin/nginx&#39;</span>
-</span><span class='line'>tmux <span class="k">select</span>-pane -L -t <span class="s2">&quot;$session:daemon&quot;</span>
-</span><span class='line'>tmux split-window -t <span class="s2">&quot;$session:daemon&quot;</span>
-</span><span class='line'><span class="c"># start firefox with pentadactyl</span>
-</span><span class='line'>tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE&#39;</span> Enter
-</span><span class='line'>tmux <span class="k">select</span>-pane -R -t <span class="s2">&quot;$session:daemon&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># for develop project</span>
-</span><span class='line'>tmux neww -a -n dev -t <span class="s2">&quot;$session&quot;</span>
-</span><span class='line'>tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/backend&#39;</span> Enter
-</span><span class='line'>tmux split-window -t <span class="s2">&quot;$session:dev&quot;</span>
-</span><span class='line'>tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/frontend&#39;</span> Enter
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/zsh</span>
+</span><span class="line"><span class="c"># start tmux</span>
+</span><span class="line"><span class="nv">session</span><span class="o">=</span>MAC
+</span><span class="line">tmux new -s <span class="s2">&quot;$session&quot;</span> -d
+</span><span class="line">tmux rename-window -t <span class="s2">&quot;$session:0&quot;</span> daemon
+</span><span class="line"><span class="c"># start redis-server</span>
+</span><span class="line">tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;redis-server&#39;</span> Enter
+</span><span class="line">tmux split-window -h -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class="line"><span class="c"># start mongo</span>
+</span><span class="line">tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;mongod --dbpath /Users/jason/local/var/mongodb-data&#39;</span> Enter
+</span><span class="line"><span class="c"># start nginx</span>
+</span><span class="line">tmux split-window  -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Users/jason/local/nginx/sbin/nginx&#39;</span>
+</span><span class="line">tmux <span class="k">select</span>-pane -L -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class="line">tmux split-window -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class="line"><span class="c"># start firefox with pentadactyl</span>
+</span><span class="line">tmux send -t <span class="s2">&quot;$session:daemon&quot;</span> <span class="s1">&#39;/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE&#39;</span> Enter
+</span><span class="line">tmux <span class="k">select</span>-pane -R -t <span class="s2">&quot;$session:daemon&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="c"># for develop project</span>
+</span><span class="line">tmux neww -a -n dev -t <span class="s2">&quot;$session&quot;</span>
+</span><span class="line">tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/backend&#39;</span> Enter
+</span><span class="line">tmux split-window -t <span class="s2">&quot;$session:dev&quot;</span>
+</span><span class="line">tmux send -t <span class="s2">&quot;$session:dev&quot;</span> <span class="s1">&#39;cd /Users/jason/repository/frontend&#39;</span> Enter
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>这个脚本启动一个名为<code>MAC</code>的tmux session，并新建了两个窗口，在第一个窗口里开了4个面板，分别启动了nginx, redis, mongo， firefox。其中，开启窗口/面板时同时执行命令，该窗口/面板会在命令执行结束后自动关闭，所以第一个窗口最后实际只有3个面板；第二个窗口启动并切换到我正则开发的工程。</p>
 

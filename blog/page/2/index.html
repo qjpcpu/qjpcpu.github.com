@@ -95,7 +95,7 @@
 
 <p>但是在下半年，我逐渐感受到狂热背后的东西，尽管在百度，也要做很多机械重复的事情，此外更重要的是，我发现自己很孤独，除开工作，我一无所有，独自在上海漂泊，心里非常寂寞。再加上后来家人生病，我选择了离开，回到成都。</p>
 
-<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过&hellip;&hellip;</p>
+<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过……</p>
 
 <p><code>people must pay for their choices</code>，每个人必须为他的选择付出代价。</p>
 
@@ -141,8 +141,7 @@
 			Rvm和rbenv环境变量冲突导致无法安装gem包</a>
 	</h2>
 	<div class="entry-content">
-		<h2>背景</h2>
-
+		<h2 id="section">背景</h2>
 <p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
 
 
@@ -189,54 +188,51 @@
 	<div class="entry-content">
 		<p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="err">menuItems</span> <span class="err">=</span> <span class="p">[</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A/a1&quot;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B/b1&quot;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="err">menuItems</span> <span class="err">=</span> <span class="p">[</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">      <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/A/a1&quot;</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="p">]</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level1&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="nt">&quot;menuItems&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="line">      <span class="p">{</span>
+</span><span class="line">        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;level2&quot;</span><span class="p">,</span>
+</span><span class="line">        <span class="nt">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;/B/b1&quot;</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="p">]</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -280,8 +276,7 @@
 			angularJS路由框架ui-router</a>
 	</h2>
 	<div class="entry-content">
-		<h1>简介</h1>
-
+		<h1 id="section">简介</h1>
 <p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
 
 
@@ -326,15 +321,22 @@
 			我的简历</a>
 	</h2>
 	<div class="entry-content">
-		<h4>联系方式</h4>
+		<h4 id="section">联系方式</h4>
 
 <ul>
-<li><p>姓名: 屈剑平</p></li>
-<li><p>邮箱: <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#113;&#106;&#112;&#99;&#112;&#x75;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#x6d;">&#113;&#x6a;&#x70;&#x63;&#112;&#117;&#x40;&#103;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></p></li>
-<li><p>电话: 158-8454-2238</p></li>
-<li><p>微信:</p></li>
+  <li>
+    <p>姓名: 屈剑平</p>
+  </li>
+  <li>
+    <p>邮箱: qjpcpu@gmail.com</p>
+  </li>
+  <li>
+    <p>电话: 158-8454-2238</p>
+  </li>
+  <li>
+    <p>微信: </p>
+  </li>
 </ul>
-
 
 <p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
 
@@ -380,15 +382,14 @@
 			新建angular项目</a>
 	</h2>
 	<div class="entry-content">
-		<h2>需要的工具</h2>
+		<h2 id="section">需要的工具</h2>
 
 <ul>
-<li><a href="http://bower.io/">bower</a> 前端包管理器</li>
-<li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
-<li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
-<li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
+  <li><a href="http://bower.io/">bower</a> 前端包管理器</li>
+  <li><a href="http://gruntjs.com/">grunt</a> javascript的makefile工具</li>
+  <li><a href="http://yeoman.io/">yeoman</a>  webapp的流行脚手架</li>
+  <li><a href="http://karma-runner.github.io/0.12/index.html">karma</a> 测试套件</li>
 </ul>
-
 
 <p>这里我使用了yeoman的一个angularJS的生成器<a href="https://github.com/yeoman/generator-angular">yo</a>，方便生成需要的全部零部件</p>
 
@@ -434,20 +435,17 @@
 			Tmux</a>
 	</h2>
 	<div class="entry-content">
-		<h3>基本操作</h3>
+		<h3 id="section">基本操作</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
-</span><span class='line'>tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
-</span><span class='line'>tmux ls <span class="c"># 列出所有会话</span>
-</span><span class='line'>tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
+</span><span class="line">tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
+</span><span class="line">tmux ls <span class="c"># 列出所有会话</span>
+</span><span class="line">tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		
@@ -491,25 +489,23 @@
 			初识hadoop及map-reduce</a>
 	</h2>
 	<div class="entry-content">
-		<h2>搭建hadoop环境</h2>
+		<h2 id="hadoop">搭建hadoop环境</h2>
 
 <p>hadoop环境搭建具体可以参考<a href="http://hadoop.apache.org/docs/r1.2.1/single_node_setup.html">官方文档</a>。</p>
 
-<h2>搭建配置maven</h2>
+<h2 id="maven">搭建配置maven</h2>
 
 <p>map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。</p>
 
 <p>首先编译安装maven，并将<code>MAVEN_HOME/bin</code>加入PATH环境变量，这样就可以直接使用<code>mvn</code>命令了。这里说一下怎么利用maven编译生成我们后续示例中的jar包。</p>
 
-<h3>1. 使用maven新建一个工程</h3>
+<h3 id="maven-1">1. 使用maven新建一个工程</h3>
 
 <p>下面的命令创建一个包含java类<code>org.myorg.WordCount</code>的工程<code>WordCount</code>.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mvn archetype:create -DgroupId<span class="o">=</span>org.myorg -DartifactId<span class="o">=</span>WordCount
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">mvn archetype:create -DgroupId<span class="o">=</span>org.myorg -DartifactId<span class="o">=</span>WordCount
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		<a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/" class="more-link">Read on &rarr;</a>
@@ -552,23 +548,20 @@
 			使用octopress搭建github Pages</a>
 	</h2>
 	<div class="entry-content">
-		<h2>安装git,ruby</h2>
-
+		<h2 id="gitruby">安装git,ruby</h2>
 <p>略</p>
 
-<h2>安装octopress并搭建博客</h2>
+<h2 id="octopress">安装octopress并搭建博客</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone git://github.com/imathis/octopress.git octopress
-</span><span class='line'><span class="nb">cd </span>octopress
-</span><span class='line'>bundle install
-</span><span class='line'>rake install
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone git://github.com/imathis/octopress.git octopress
+</span><span class="line"><span class="nb">cd </span>octopress
+</span><span class="line">bundle install
+</span><span class="line">rake install
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 		
 		<a href="/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/" class="more-link">Read on &rarr;</a>
@@ -611,41 +604,34 @@
 			Mysql常用命令</a>
 	</h2>
 	<div class="entry-content">
-		<h3>1.远程链接mysql</h3>
+		<h3 id="mysql">1.远程链接mysql</h3>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mysql -h主机地址 -u用户名 －p用户密码 －P 端口号
-</span><span class='line'>grant all on *.* to ‘用户名’@’主机地址’ identified by ‘密码’
-</span><span class='line'>grant select on 数据库.* to 用户名@登录主机 identified by \"密码\"</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">mysql -h主机地址 -u用户名 －p用户密码 －P 端口号
+</span><span class="line">grant all on *.* to ‘用户名’@’主机地址’ identified by ‘密码’
+</span><span class="line">grant select on 数据库.* to 用户名@登录主机 identified by \"密码\"</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<h3 id="section">2.修改密码</h3>
 
-<h3>2.修改密码</h3>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">mysqladmin -u用户名 -p旧密码 password 新密码</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mysqladmin -u用户名 -p旧密码 password 新密码</span></code></pre></td></tr></table></div></figure>
+<h3 id="section-1">3.显示数据库列表。</h3>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">show databases</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h3>3.显示数据库列表。</h3>
+<h3 id="section-2">4.显示库中的数据表</h3>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>show databases</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">show tables</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<h3 id="section-3">5.显示数据表的结构</h3>
 
-<h3>4.显示库中的数据表</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>show tables</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>5.显示数据表的结构</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>describe 表名</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">describe 表名</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 
 		

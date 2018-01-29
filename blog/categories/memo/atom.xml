@@ -4,7 +4,7 @@
   <title><![CDATA[Category: memo | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/memo/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T13:54:55+08:00</updated>
+  <updated>2018-01-29T14:06:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://qjpcpu.github.io/blog/2014/09/08/tmux/"/>
     <updated>2014-09-08T00:37:23+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/09/08/tmux</id>
-    <content type="html"><![CDATA[<h3>基本操作</h3>
+    <content type="html"><![CDATA[<h3 id="section">基本操作</h3>
 
 <p><code>bash
 tmux new -s SESSION_NAME  # 新建会话
@@ -29,162 +29,134 @@ tmux attach -t SESSION_NAME # 进入某会话
 
 <!--more-->
 
-
-<h3>命令列表</h3>
+<h3 id="section-1">命令列表</h3>
 
 <p>默认情况下，tmux的前导命令开关是<code>Ctrl+b</code>，按了<code>Ctrl+b</code>后再按下面的命令，即执行相应操作：</p>
 
-<h4>会话类</h4>
+<h4 id="section-2">会话类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td>?</td>
-<td>显示所有快捷键，按q退出|</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>d</strong> </td>
-<td> <strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>D</td>
-<td>选择要脱离的会话；在同时开启了多个会话时使用|</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>s</strong></td>
-<td> <strong>选择并切换会话；在同时开启了多个会话时使用</strong>|</td>
-</tr>
-<tr>
-<td></td>
-<td>:</td>
-<td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器|</td>
-</tr>
-<tr>
-<td></td>
-<td>[</td>
-<td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>?</td>
+      <td>显示所有快捷键，按q退出</td>
+    </tr>
+    <tr>
+      <td><strong>d</strong></td>
+      <td><strong>脱离当前会话；这样可以暂时返回Shell界面，输入tmux attach能够重新进入之前的会话</strong></td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>选择要脱离的会话；在同时开启了多个会话时使用</td>
+    </tr>
+    <tr>
+      <td><strong>s</strong></td>
+      <td><strong>选择并切换会话；在同时开启了多个会话时使用</strong></td>
+    </tr>
+    <tr>
+      <td>:</td>
+      <td>进入命令行模式；此时可以输入支持的命令，例如kill-server可以关闭服务器</td>
+    </tr>
+    <tr>
+      <td>[</td>
+      <td>进入复制模式；此时的操作与vi/emacs相同，按q/Esc退出</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h4>窗口类</h4>
+<h4 id="section-3">窗口类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td> <strong>c</strong> </td>
-<td> <strong>创建新窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>&amp;</strong> </td>
-<td> <strong>关闭当前窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>数字键</strong> </td>
-<td> <strong>切换至指定窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>p</td>
-<td>切换至上一窗口|</td>
-</tr>
-<tr>
-<td></td>
-<td>n</td>
-<td>切换至下一窗口|</td>
-</tr>
-<tr>
-<td></td>
-<td>l</td>
-<td>在前后两个窗口间互相切换|</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>w</strong> </td>
-<td> <strong>通过窗口列表切换窗口</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>,</strong> </td>
-<td> <strong>重命名当前窗口；这样便于识别</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>.</strong> </td>
-<td> <strong>修改当前窗口编号；相当于窗口重新排序</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>!</td>
-<td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>c</strong></td>
+      <td><strong>创建新窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>&amp;</strong></td>
+      <td><strong>关闭当前窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>数字键</strong></td>
+      <td><strong>切换至指定窗口</strong></td>
+    </tr>
+    <tr>
+      <td>p</td>
+      <td>切换至上一窗口</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td>切换至下一窗口</td>
+    </tr>
+    <tr>
+      <td>l</td>
+      <td>在前后两个窗口间互相切换</td>
+    </tr>
+    <tr>
+      <td><strong>w</strong></td>
+      <td><strong>通过窗口列表切换窗口</strong></td>
+    </tr>
+    <tr>
+      <td><strong>,</strong></td>
+      <td><strong>重命名当前窗口；这样便于识别</strong></td>
+    </tr>
+    <tr>
+      <td><strong>.</strong></td>
+      <td><strong>修改当前窗口编号；相当于窗口重新排序</strong></td>
+    </tr>
+    <tr>
+      <td>!</td>
+      <td>将当前面板置于新窗口；即新建一个窗口，其中仅包含当前面板</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h4>面板类</h4>
+<h4 id="section-4">面板类</h4>
 
 <table>
-<thead>
-<tr>
-<th></th>
-<th>键位</th>
-<th>操作描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td> <strong>&ldquo;</strong> </td>
-<td> <strong>将当前面板平分为上下两块</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>%</strong> </td>
-<td> <strong>将当前面板平分为左右两块</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>x</strong> </td>
-<td> <strong>关闭当前面板</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td> <strong>o</strong> </td>
-<td> <strong>在当前窗口中选择下一面板</strong> |</td>
-</tr>
-<tr>
-<td></td>
-<td>q</td>
-<td>显示面板编号|</td>
-</tr>
-</tbody>
+  <thead>
+    <tr>
+      <th>键位</th>
+      <th>操作描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>”</strong></td>
+      <td><strong>将当前面板平分为上下两块</strong></td>
+    </tr>
+    <tr>
+      <td><strong>%</strong></td>
+      <td><strong>将当前面板平分为左右两块</strong></td>
+    </tr>
+    <tr>
+      <td><strong>x</strong></td>
+      <td><strong>关闭当前面板</strong></td>
+    </tr>
+    <tr>
+      <td><strong>o</strong></td>
+      <td><strong>在当前窗口中选择下一面板</strong></td>
+    </tr>
+    <tr>
+      <td>q</td>
+      <td>显示面板编号</td>
+    </tr>
+  </tbody>
 </table>
 
-
-<h3>其他</h3>
+<h3 id="section-5">其他</h3>
 
 <p>如果不想使用默认tmux server，或者同一用户想起多个tmux实例，可以使用<code>-S</code>参数指定不同的unix socket：</p>
 
@@ -198,46 +170,34 @@ tmux -S /path/to/another/unix/socket-file
 DISABLE_AUTO_TITLE=true
 </code></p>
 
-<h4>可编程</h4>
+<h4 id="section-6">可编程</h4>
 
 <p>tmux最强大的地方还在于他的可编程性，用<code>tmux list-commands</code>可以看到tmux所有支持的命令。以我自己常执行的一个脚本为例，我开机后常常需要启动一系列服务便于开发, 但当我不开发时开电脑又不需要启动，所以放到开机自启动脚本里是不合适的，所以这里用tmux来批量起最合适了：</p>
 
-<p>```bash</p>
+<p>```bash
+#!/bin/zsh
+# start tmux
+session=MAC
+tmux new -s “$session” -d
+tmux rename-window -t “$session:0” daemon
+# start redis-server
+tmux send -t “$session:daemon” ‘redis-server’ Enter
+tmux split-window -h -t “$session:daemon”
+# start mongo
+tmux send -t “$session:daemon” ‘mongod –dbpath /Users/jason/local/var/mongodb-data’ Enter
+# start nginx
+tmux split-window  -t “$session:daemon” ‘/Users/jason/local/nginx/sbin/nginx’
+tmux select-pane -L -t “$session:daemon”
+tmux split-window -t “$session:daemon”
+# start firefox with pentadactyl
+tmux send -t “$session:daemon” ‘/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE’ Enter
+tmux select-pane -R -t “$session:daemon”</p>
 
-<h1>!/bin/zsh</h1>
-
-<h1>start tmux</h1>
-
-<p>session=MAC
-tmux new -s &ldquo;$session&rdquo; -d
-tmux rename-window -t &ldquo;$session:0&rdquo; daemon</p>
-
-<h1>start redis-server</h1>
-
-<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;redis-server&rsquo; Enter
-tmux split-window -h -t &ldquo;$session:daemon&rdquo;</p>
-
-<h1>start mongo</h1>
-
-<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;mongod &mdash;dbpath /Users/jason/local/var/mongodb-data&rsquo; Enter</p>
-
-<h1>start nginx</h1>
-
-<p>tmux split-window  -t &ldquo;$session:daemon&rdquo; &lsquo;/Users/jason/local/nginx/sbin/nginx&rsquo;
-tmux select-pane -L -t &ldquo;$session:daemon&rdquo;
-tmux split-window -t &ldquo;$session:daemon&rdquo;</p>
-
-<h1>start firefox with pentadactyl</h1>
-
-<p>tmux send -t &ldquo;$session:daemon&rdquo; &lsquo;/Applications/Firefox.app/Contents/MacOS/firefox -pentadactyl +u NONE&rsquo; Enter
-tmux select-pane -R -t &ldquo;$session:daemon&rdquo;</p>
-
-<h1>for develop project</h1>
-
-<p>tmux neww -a -n dev -t &ldquo;$session&rdquo;
-tmux send -t &ldquo;$session:dev&rdquo; &lsquo;cd /Users/jason/repository/backend&rsquo; Enter
-tmux split-window -t &ldquo;$session:dev&rdquo;
-tmux send -t &ldquo;$session:dev&rdquo; &lsquo;cd /Users/jason/repository/frontend&rsquo; Enter
+<h1 id="for-develop-project">for develop project</h1>
+<p>tmux neww -a -n dev -t “$session”
+tmux send -t “$session:dev” ‘cd /Users/jason/repository/backend’ Enter
+tmux split-window -t “$session:dev”
+tmux send -t “$session:dev” ‘cd /Users/jason/repository/frontend’ Enter
 ```</p>
 
 <p>这个脚本启动一个名为<code>MAC</code>的tmux session，并新建了两个窗口，在第一个窗口里开了4个面板，分别启动了nginx, redis, mongo， firefox。其中，开启窗口/面板时同时执行命令，该窗口/面板会在命令执行结束后自动关闭，所以第一个窗口最后实际只有3个面板；第二个窗口启动并切换到我正则开发的工程。</p>
@@ -253,18 +213,18 @@ tmux send -t &ldquo;$session:dev&rdquo; &lsquo;cd /Users/jason/repository/fronte
     <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
     <updated>2014-08-31T17:36:06+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
-    <content type="html"><![CDATA[<h2>安装git,ruby</h2>
-
+    <content type="html"><![CDATA[<h2 id="gitruby">安装git,ruby</h2>
 <p>略</p>
 
-<h2>安装octopress并搭建博客</h2>
+<h2 id="octopress">安装octopress并搭建博客</h2>
 
 <p><code>bash
-git clone git://github.com/imathis/octopress.git octopresscd octopressbundle installrake install
-</code></p>
-
-<!-- more -->
-
+git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+bundle install
+rake install
+</code>
+<!-- more --></p>
 
 <p>初始化博客</p>
 
@@ -277,30 +237,36 @@ rake setup_github_pages
 <p>开始书写博客：</p>
 
 <p><code>bash
-rake new_page["About"]    # 添加博客页rake new_post["First Post!"]  # 新建一篇文章
+rake new_page["About"]    # 添加博客页
+rake new_post["First Post!"]  # 新建一篇文章
 </code></p>
 
 <p>发布到github</p>
 
-<p>```bash deploy.sh
-rake generate      # 生成页面</p>
+<p><code>bash deploy.sh
+rake generate      # 生成页面
+#rake preview       # 如果需要在本地预览生成的结果，预览页http://localhost:4000
+rake deploy        #发布到github
+# 发布到github的pages在master分支，还要保存源的source分支
+git add .
+git commit -m 'Added About page and first post!'
+git push origin source
+</code></p>
 
-<h1>rake preview       # 如果需要在本地预览生成的结果，预览页<a href="http://localhost:4000">http://localhost:4000</a></h1>
-
-<p>rake deploy        #发布到github</p>
-
-<h1>发布到github的pages在master分支，还要保存源的source分支</h1>
-
-<p>git add .git commit -m &lsquo;Added About page and first post!'git push origin source
-```</p>
-
-<h2>在另外机器编辑博客</h2>
+<h2 id="section">在另外机器编辑博客</h2>
 
 <p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
 
 <p><code>bash get_my_blog.sh
 git clone git@github.com:username/username.github.com.git
-cd username.github.comgit checkout sourcemkdir _deploycd _deploygit initgit remote add origin git@github.com:username/username.github.com.gitgit pull origin mastercd ..
+cd username.github.com
+git checkout source
+mkdir _deploy
+cd _deploy
+git init
+git remote add origin git@github.com:username/username.github.com.git
+git pull origin master
+cd ..
 </code></p>
 ]]></content>
   </entry>

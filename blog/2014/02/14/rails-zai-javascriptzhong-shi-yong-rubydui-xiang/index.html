@@ -81,7 +81,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Rails 在javascript中使用ruby对象</h2>
-	<div class="entry-content"><h3>1.在javascript中使用ruby简单对象</h3>
+	<div class="entry-content"><h3 id="javascriptruby">1.在javascript中使用ruby简单对象</h3>
 
 <p>如，需要将ruby对象转换成javascript的简单变量：</p>
 
@@ -90,12 +90,11 @@
 &lt;% end %&gt;
 </code></pre>
 
-<p>此时的&lt;%=  %>是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
+<p>此时的&lt;%=  %&gt;是由引号包裹的。rails的j方法是为了正确地转义ruby对象从而嵌入javascript中。</p>
 
 <!-- more -->
 
-
-<h3>2.在javascript中使用ruby复杂对象</h3>
+<h3 id="javascriptruby-1">2.在javascript中使用ruby复杂对象</h3>
 
 <p>公共桥梁显然是json，但要正确地转义json就需要raw方法：</p>
 
@@ -104,9 +103,9 @@
 &lt;% end %&gt;
 </code></pre>
 
-<p>此时&lt;%= %>无引号包裹。</p>
+<p>此时&lt;%= %&gt;无引号包裹。</p>
 
-<h3>3.Gon gem</h3>
+<h3 id="gon-gem">3.Gon gem</h3>
 
 <p>如果有大量的ruby对象需要在javascript中使用，这种方法就不好了。Gon就是为了解决这个问题。</p>
 
@@ -140,9 +139,9 @@ gon.push(any_object) # any_object with respond_to? :each_pair
 <p>例如：</p>
 
 <pre><code>class ProductsController &lt; ApplicationController
-    def index
-        gon.products = Product.limit(10)
-    end
+	def index
+		gon.products = Product.limit(10)
+	end
 end
 </code></pre>
 
@@ -156,13 +155,12 @@ end
 <pre><code>go.products
 </code></pre>
 
-<h3>参考文献</h3>
+<h3 id="section">参考文献</h3>
 
 <ul>
-<li><a href="https://github.com/gazay/gon">gon</a></li>
-<li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
+  <li><a href="https://github.com/gazay/gon">gon</a></li>
+  <li><a href="http://railscasts.com/episodes/324-passing-data-to-javascript?view=asciicast">Passing data to javascript</a></li>
 </ul>
-
 </div>
 
 

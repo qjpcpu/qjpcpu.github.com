@@ -80,7 +80,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">在CentOS上搭建git服务器</h2>
-	<div class="entry-content"><h3>0.定义</h3>
+	<div class="entry-content"><h3 id="section">0.定义</h3>
 
 <p>这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。</p>
 
@@ -92,18 +92,16 @@ git是为git服务器创建的专有账户。</p>
 <p>linux是jason的workstation。</p>
 
 <ul>
-<li>git server:                 [test@localhost]     [git@localhost]</li>
-<li>git administrator:      [user@ubuntu]</li>
-<li>git user:                    [jason@linux]</li>
+  <li>git server:                 [test@localhost]     [git@localhost]</li>
+  <li>git administrator:      [user@ubuntu]</li>
+  <li>git user:                    [jason@linux]</li>
 </ul>
-
 
 <p>文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。</p>
 
 <!-- more -->
 
-
-<h3>1.安装git</h3>
+<h3 id="git">1.安装git</h3>
 
 <pre><code>[test@localhost ~]$ sudo yum install git
 #检查git是否安装正确
@@ -111,7 +109,7 @@ git是为git服务器创建的专有账户。</p>
 git version 1.7.1
 </code></pre>
 
-<h3>2.为git服务器创建专有用户</h3>
+<h3 id="git-1">2.为git服务器创建专有用户</h3>
 
 <p>通常将该用户取名git</p>
 
@@ -120,7 +118,7 @@ git version 1.7.1
 [test@localhost ~]$ su - git
 </code></pre>
 
-<h3>3.安装gitolite</h3>
+<h3 id="gitolite">3.安装gitolite</h3>
 
 <p>gitolite是一款git服务管理工具，通过公钥对用户进行认证，并能够利用配置文件进行repo的精细授权管理。由于它采用ssh公钥认证，所以先要安装ssh。</p>
 
@@ -159,7 +157,7 @@ BEGIN failed--compilation aborted at gitolite/install line 15.
 <pre><code>[test@localhost ~]$ sudo yum install perl-Time-HiRes
 </code></pre>
 
-<h3>4.添加用户</h3>
+<h3 id="section-1">4.添加用户</h3>
 
 <p>现在，假设team里有个成员叫jason，他将自己的公钥jason.pub邮件给管理员，要求为他创建一个名为foo的repo，他要求该repo仅自己可以修改，其他人不能修改但可以查看。首先管理员在自己的workstation上先要获取gitolite的管理repo，the_git_host是管理员刚搭建的git服务器地址：</p>
 
@@ -183,7 +181,7 @@ BEGIN failed--compilation aborted at gitolite/install line 15.
 [user@ubuntu ~]$   git push
 </code></pre>
 
-<h3>5.用户执行git版本管理</h3>
+<h3 id="git-2">5.用户执行git版本管理</h3>
 
 <pre><code>[jason@linux ~]$   git clone git@the_git_host:foo
 </code></pre>
@@ -201,7 +199,7 @@ BEGIN failed--compilation aborted at gitolite/install line 15.
 [git@localhost ~]$ rm -fr ~/repositories ~/bin  ~/projects.list ~/.ssh/authorized_keys
 </code></pre>
 
-<h3>6.配置gitweb</h3>
+<h3 id="gitweb">6.配置gitweb</h3>
 
 <p>如果想要能够在网页上访问git库，就可以利用gitweb。</p>
 
@@ -238,7 +236,7 @@ our @git_base_url_list = qw(git://git.the_git_host
 [test@localhost ~]$ sudo apachectl restart
 </code></pre>
 
-<p>最后在浏览器里键入<a href="http://the_git_host">http://the_git_host</a> 就可以看到git库了，我在本机测试，使用的是<a href="http://localhost">http://localhost</a> 来访问服务器。</p>
+<p>最后在浏览器里键入http://the_git_host 就可以看到git库了，我在本机测试，使用的是http://localhost 来访问服务器。</p>
 
 <p><em>注：</em>如果在完成上述操作后，仍然显示404 no project found，那很可能又是SELinux惹的麻烦，尝试更改selinux的状态为permissive后再刷新页面试试：</p>
 
