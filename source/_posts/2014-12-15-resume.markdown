@@ -8,11 +8,11 @@ categories: life
 
 #### 联系方式
 
-* 姓名: 屈剑平
+* 姓名: JasonQu
 
 * 邮箱: qjpcpu@gmail.com
 
-* 电话: 158-8454-2238
+* 电话: 终端执行`(uname -a |grep -i linux >/dev/null) && (echo MTU4ODQ1NDIyMzgK | base64 -d) || (echo MTU4ODQ1NDIyMzgK | base64 -D)`
 
 * 微信: 
 
@@ -29,7 +29,7 @@ categories: life
 
 ### 工作履历
 
-#### 2014.12 - 至今
+#### 2014.12 - 2016.03
 
 * Company: tap4fun
 
