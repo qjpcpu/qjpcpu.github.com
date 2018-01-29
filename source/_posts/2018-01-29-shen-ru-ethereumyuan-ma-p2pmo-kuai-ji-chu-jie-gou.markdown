@@ -12,6 +12,13 @@ categories: blockchain
 
 <!-- more -->
 
+# Peer to peer
+
+在深入了解前,最好先看看基于p2p包实现一个自己子协议,建立对其的直观印象
+
+> 下面示例来基于官方[Peer to peer]wiki文档(官方文档有个小bug, ^_^),详细参考文献
+
+
 # 参考文献
 
 * [go-ethereum github地址](https://github.com/ethereum/go-ethereum)
