@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T16:16:58+08:00</updated>
+  <updated>2018-01-29T17:06:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -28,7 +28,8 @@
   <li><a href="#peer-to-peer">Peer to peer</a></li>
   <li><a href="#peer">peer接入</a></li>
   <li><a href="#rlp">数据传输格式RLP</a></li>
-  <li><a href="#section">参考文献</a></li>
+  <li><a href="#section">总述</a></li>
+  <li><a href="#section-1">参考文献</a></li>
 </ul>
 
 <h1 id="peer-to-peer">Peer to peer</h1>
@@ -93,7 +94,7 @@
   <li>一个子协议即一个<code>p2p.Protocol</code></li>
   <li>子协议名,需要唯一标识该子协议</li>
   <li>协议版本号,当一个子协议有多个版本时,采纳最高版本的协议</li>
-  <li>这个协议需要依赖的信息数目，因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明），p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一个message</li>
+  <li>该协议拥有的消息类型个数,因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明）,p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一种类型</li>
   <li>在你的协议主要的handler中，我们现在故意将其留空。这个peer变量是指代连接到当前节点，其携带了一些peer本身的信息。其ws变量是reader和writer允许你同该peer进行通信，如果信息能够发送到当前节点，则反之也能够从本节点发送到对端peer节点</li>
 </ol>
 
@@ -434,6 +435,62 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<p>这里补充说一下<code>newPeer()</code>对子协议的一个组织方式:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">matchProtocols</span><span class="p">(</span><span class="nx">protocols</span> <span class="p">[]</span><span class="nx">Protocol</span><span class="p">,</span> <span class="nx">caps</span> <span class="p">[]</span><span class="nx">Cap</span><span class="p">,</span> <span class="nx">rw</span> <span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">protoRW</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 按协议(name asc,version asc)排序子协议</span>
+</span><span class="line">    <span class="nx">sort</span><span class="p">.</span><span class="nx">Sort</span><span class="p">(</span><span class="nx">capsByNameAndVersion</span><span class="p">(</span><span class="nx">caps</span><span class="p">))</span>
+</span><span class="line">    <span class="c1">// 自定义协议偏移</span>
+</span><span class="line">    <span class="nx">offset</span> <span class="o">:=</span> <span class="nx">baseProtocolLength</span>
+</span><span class="line">    <span class="nx">result</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">protoRW</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">outer</span><span class="p">:</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">cap</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">caps</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">proto</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">protocols</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="nx">proto</span><span class="p">.</span><span class="nx">Name</span> <span class="o">==</span> <span class="nx">cap</span><span class="p">.</span><span class="nx">Name</span> <span class="o">&amp;&amp;</span> <span class="nx">proto</span><span class="p">.</span><span class="nx">Version</span> <span class="o">==</span> <span class="nx">cap</span><span class="p">.</span><span class="nx">Version</span> <span class="p">{</span>
+</span><span class="line">                <span class="c1">// If an old protocol version matched, revert it</span>
+</span><span class="line">                <span class="k">if</span> <span class="nx">old</span> <span class="o">:=</span> <span class="nx">result</span><span class="p">[</span><span class="nx">cap</span><span class="p">.</span><span class="nx">Name</span><span class="p">];</span> <span class="nx">old</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">                    <span class="nx">offset</span> <span class="o">-=</span> <span class="nx">old</span><span class="p">.</span><span class="nx">Length</span>
+</span><span class="line">                <span class="p">}</span>
+</span><span class="line">                <span class="c1">// Assign the new match</span>
+</span><span class="line">                <span class="nx">result</span><span class="p">[</span><span class="nx">cap</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">protoRW</span><span class="p">{</span><span class="nx">Protocol</span><span class="p">:</span> <span class="nx">proto</span><span class="p">,</span> <span class="nx">offset</span><span class="p">:</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">in</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Msg</span><span class="p">),</span> <span class="nx">w</span><span class="p">:</span> <span class="nx">rw</span><span class="p">}</span>
+</span><span class="line">                <span class="nx">offset</span> <span class="o">+=</span> <span class="nx">proto</span><span class="p">.</span><span class="nx">Length</span>
+</span><span class="line">
+</span><span class="line">                <span class="k">continue</span> <span class="nx">outer</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">result</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最终每个子协议以<code>name=&gt;protocol</code>的map格式组织起来,然后每个协议根据自身支持消息类型数量<code>Protocol.Length</code>在整个以太坊消息类型轴上占据了<code>[proto.offset,proto.offset+proto.Length)</code>的左闭右开消息类型段,理解这个结构,才好理解最终根据消息类型<code>Msg.Code</code>去找handler的逻辑(<code>func (p *Peer) getProto(code uint64) (*protoRW, error)</code>)。</p>
+
 <p>下面继续看最终peer处理逻辑<code>srv.runPeer</code>:</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
@@ -480,7 +537,13 @@
   <p>RLP编码的定义只处理两类数据：一类是字符串（例如字节数组），一类是列表。字符串指的是一串二进制数据，列表是一个嵌套递归的结构，里面可以包含字符串和列表，例如<code>["cat",["puppy","cow"],"horse",[[]],"pig",[""],"sheep"]</code>就是一个复杂的列表。其他类型的数据需要转成以上的两类，转换的规则不是RLP编码定义的，可以根据自己的规则转换，例如struct可以转成列表，int可以转成二进制（属于字符串一类），以太坊中整数都以大端形式存储。</p>
 </blockquote>
 
-<h1 id="section">参考文献</h1>
+<p>这部分代码均位于<code>github.com/ethereum/go-ethereum/rlp</code>包中,代码相对独立,我也没深入研究改算法,就不详细说明了。</p>
+
+<h1 id="section">总述</h1>
+
+<p>本文主要梳理了以太坊p2p模块的主流程,描述了核心的peer间数据读写的来龙去脉,从代码里也能够比较容易理解以太坊子协议的概念,理清这个主干流程,以后也就能够从每个细节发散开来,深入细节。</p>
+
+<h1 id="section-1">参考文献</h1>
 
 <ul>
   <li><a href="https://github.com/ethereum/go-ethereum">go-ethereum github地址</a></li>
