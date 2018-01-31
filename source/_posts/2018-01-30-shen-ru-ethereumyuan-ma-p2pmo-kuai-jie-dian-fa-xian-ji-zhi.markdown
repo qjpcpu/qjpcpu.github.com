@@ -211,7 +211,6 @@ type pending struct {
 
 ![kademlia](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth_kad.jpeg)
 
-系统第一次启动随机生成本机节点NodeId，记为LocalId,生成后将固定不变，本地节点记为local-eth。
 节点第一次启动读取公共种子节点信息,已本节点ID作为target更新本地K桶,然后每隔一段时间进行节点更新, 刷新K桶流程如下:
 
 a. 随机生成目标节点Id，记为TargetId，从1开始记录发现次数和刷新时间。
@@ -254,7 +253,7 @@ func (srv *Server) Start() (err error) {
 }
 ```
 
-首先，以太坊tcp/udp共用了一个端口,然后使用uPnp协议簇进行内外网端口映射,完成链路打通,完成内网穿透.
+首先，以太坊tcp/udp共用了一个端口,然后使用uPnp协议簇进行内外网端口映射,完成链路打通,从而穿透内网.
 
 具体封装位于`nat`模块,但具体实现也是使用了三方库[goupnp](https://github.com/huin/goupnp).具体实现是关于uPnP的一个大话题,就不在这里分叉出去了。
 
