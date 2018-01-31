@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-31T17:57:24+08:00</updated>
+  <updated>2018-01-31T18:00:08+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -334,8 +334,7 @@
 
 <p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth_kad.jpeg" alt="kademlia" /></p>
 
-<p>系统第一次启动随机生成本机节点NodeId，记为LocalId,生成后将固定不变，本地节点记为local-eth。
-节点第一次启动读取公共种子节点信息,已本节点ID作为target更新本地K桶,然后每隔一段时间进行节点更新, 刷新K桶流程如下:</p>
+<p>节点第一次启动读取公共种子节点信息,已本节点ID作为target更新本地K桶,然后每隔一段时间进行节点更新, 刷新K桶流程如下:</p>
 
 <p>a. 随机生成目标节点Id，记为TargetId，从1开始记录发现次数和刷新时间。</p>
 
