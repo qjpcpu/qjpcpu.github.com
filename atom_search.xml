@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-29T17:25:40+08:00</updated>
+  <updated>2018-01-31T17:57:24+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,407 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[深入ethereum源码-p2p模块节点发现机制]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/"/>
+    <updated>2018-01-30T11:40:37+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi</id>
+    <content type="html"><![CDATA[<p>ethereum是基于kademlia协议实现其节点自动发现机制,完整整个网络拓扑关系的构建刷新。
+<!-- more --></p>
+
+<ul id="markdown-toc">
+  <li><a href="#kademlia">Kademlia协议</a></li>
+  <li><a href="#kademlia-like">以太坊Kademlia-like协议</a></li>
+  <li><a href="#section">源码跟踪以太坊节点发现机制</a>    <ul>
+      <li><a href="#refreshloop">1. <code>refreshLoop()</code></a></li>
+      <li><a href="#loopreadloop">2. <code>loop()</code>和<code>readLoop()</code></a></li>
+    </ul>
+  </li>
+  <li><a href="#section-1">内网穿透</a></li>
+  <li><a href="#section-2">参考文献</a></li>
+</ul>
+
+<h1 id="kademlia">Kademlia协议</h1>
+
+<blockquote>
+  <p>以下内容摘自维基百科,全文查看参考文献Kademlia</p>
+</blockquote>
+
+<p>Kademlia是一种通过分散式杂凑表实现的协议算法，它是由Petar和David为非集中式P2P计算机网络而设计的。Kademlia规定了网络的结构，也规定了通过节点查询进行信息交换的方式。Kademlia网络节点之间使用UDP进行通讯。参与通讯的所有节点形成一张虚拟网（或者叫做覆盖网）。这些节点通过一组数字（或称为节点ID）来进行身份标识。节点ID不仅可以用来做身份标识，还可以用来进行值定位。</p>
+
+<p>Kademlia路由表由多个列表组成，每个列表对应节点ID的一位（例如：假如节点ID共有128位，则节点的路由表将包含128个列表），包含多个条目，条目中包含定位其他节点所必要的一些数据。列表条目中的这些数据通常是由其他节点的IP地址，端口和节点ID组成。每个列表对应于与节点相距特定范围距离的一些节点，节点的第n个列表中所找到的节点的第n位与该节点的第n位肯定不同，而前n-1位相同，这就意味着很容易使用网络中远离该节点的一半节点来填充第一个列表（第一位不同的节点最多有一半），而用网络中四分之一的节点来填充第二个列表（比第一个列表中的那些节点离该节点更近一位），依次类推。如果ID有128个二进制位，则网络中的每个节点按照不同的异或距离把其他所有的节点分成了128类，ID的每一位对应于其中的一类。随着网络中的节点被某节点发现，它们被逐步加入到该节点的相应的列表中，这个过程中包括向节点列表中存信息和从节点列表中取信息的操作，甚至还包括当时协助其他节点寻找相应键对应值的操作。这个过程中发现的所有节点都将被加入到节点的列表之中，因此节点对整个网络的感知是动态的，这使得网络一直保持着频繁地更新，增强了抵御错误和攻击的能力。</p>
+
+<p>在Kademlia相关的论文中，列表也称为K桶，其中K是一个系统变量，如20，每一个K桶是一个最多包含K个条目的列表，也就是说，网络中所有节点的一个列表（对应于某一位，与该节点相距一个特定的距离）最多包含20个节点。随着对应的bit位变低（即对应的异或距离越来越短），K桶包含的可能节点数迅速下降（这是由于K桶对应的异或距离越近，节点数越少），因此，对应于更低bit位的K桶显然包含网络中所有相关部分的节点。由于网络中节点的实际数量远远小于可能ID号的数量，所以对应那些短距离的某些K桶可能一直是空的（如果异或距离只有1，可能的数量就最大只能为1，这个异或距离为1的节点如果没有发现，则对应于异或距离为1的K桶则是空的）。</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Dht_example_SVG.svg" alt="kademlia example" /></p>
+
+<p>让我们看上面的那个简单网络，该网络最大可有2^3，即8个关键字和节点，目前共有7个节点加入，每个节点用一个小圈表示（在树的底部）。我们考虑那个用黑圈标注的节点6，它共有3个K桶，节点0，1和2（二进制表示为000，001和010）是第一个K桶的候选节点，节点3目前（二进制表示为011）还没有加入网络，节点4和节点5（二进制表示分别为100和101）是第二个K桶的候选节点，只有节点7（二进制表示为111）是第3个K桶的候选节点。图中，3个K桶都用灰色圈表示，假如K桶的大小（即K值）是2，那么第一个K桶只能包含3个节点中的2个。众所周知，那些长时间在线连接的节点未来长时间在线的可能性更大，基于这种静态统计分布的规律，Kademlia选择把那些长时间在线的节点存入K桶，这一方法增长了未来某一时刻有效节点的数量，同时也提供了更为稳定的网络。当某个K桶已满，而又发现了相应于该桶的新节点的时候，那么，就首先检查K桶中最早访问的节点，假如该节点仍然存活，那么新节点就被安排到一个附属列表中（作为一个替代缓存）.只有当K桶中的某个节点停止响应的时候，替代cache才被使用。换句话说，新发现的节点只有在老的节点消失后才被使用。</p>
+
+<h1 id="kademlia-like">以太坊Kademlia-like协议</h1>
+
+<p>以太坊的kademlia网(简称kad)和标准kad网有部分差异.</p>
+
+<p>下面对照以太坊源码,阐述下kad网里几个概念:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/p2p/discover/table.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">const</span> <span class="p">(</span>
+</span><span class="line">    <span class="nx">alpha</span>      <span class="p">=</span> <span class="mi">3</span>                      <span class="c1">// Kademlia并发参数</span>
+</span><span class="line">    <span class="nx">bucketSize</span> <span class="p">=</span> <span class="mi">16</span>                     <span class="c1">// Kademlia K桶大小(可容纳节点数)</span>
+</span><span class="line">    <span class="nx">hashBits</span>   <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span><span class="p">{})</span> <span class="o">*</span> <span class="mi">8</span> <span class="c1">// 每个节点ID长度,32*8=256, 32位16进制</span>
+</span><span class="line">    <span class="nx">nBuckets</span>   <span class="p">=</span> <span class="nx">hashBits</span> <span class="o">+</span> <span class="mi">1</span>           <span class="c1">// K桶个数</span>
+</span><span class="line"><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li><code>α</code>即代码里的<code>alpha</code>,是系统内一个优化参数,控制每次从K桶最多取出节点个数,ethereum取值3</li>
+  <li><code>bucketSize</code>,K桶大小,ethereum取16</li>
+  <li><code>hashBits</code>,节点长度256位</li>
+  <li><code>nBuckets</code>,K桶个数,目前取257</li>
+</ul>
+
+<p>以太坊Kad网总共定义了4种消息类型:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/p2p/discover/udp.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">const</span> <span class="p">(</span>
+</span><span class="line">    <span class="nx">pingPacket</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// ping操作</span>
+</span><span class="line">    <span class="nx">pongPacket</span>            <span class="c1">// pong操作</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">findnodePacket</span>        <span class="c1">// find node节点查询</span>
+</span><span class="line">    <span class="nx">neighborsPacket</span>       <span class="c1">// neighbors邻居回应</span>
+</span><span class="line"><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>ping</code>和<code>pong</code>是一对操作,用于检测节点活性,节点收到<code>ping</code>消息后立即回复<code>pong</code>响应:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 收到ping消息的响应函数</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">ping</span><span class="p">)</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">udp</span><span class="p">,</span> <span class="nx">from</span> <span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">,</span> <span class="nx">fromID</span> <span class="nx">NodeID</span><span class="p">,</span> <span class="nx">mac</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 向ping消息发送方回复pong</span>
+</span><span class="line">    <span class="nx">t</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">pongPacket</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pong</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">To</span><span class="p">:</span>         <span class="nx">makeEndpoint</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">From</span><span class="p">.</span><span class="nx">TCP</span><span class="p">),</span>
+</span><span class="line">        <span class="nx">ReplyTok</span><span class="p">:</span>   <span class="nx">mac</span><span class="p">,</span>
+</span><span class="line">        <span class="nx">Expiration</span><span class="p">:</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="nx">expiration</span><span class="p">).</span><span class="nx">Unix</span><span class="p">()),</span>
+</span><span class="line">    <span class="p">})</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">!</span><span class="nx">t</span><span class="p">.</span><span class="nx">handleReply</span><span class="p">(</span><span class="nx">fromID</span><span class="p">,</span> <span class="nx">pingPacket</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// 成功完成一次ping-pong,更新K桶节点信息</span>
+</span><span class="line">        <span class="k">go</span> <span class="nx">t</span><span class="p">.</span><span class="nx">bond</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">fromID</span><span class="p">,</span> <span class="nx">from</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">From</span><span class="p">.</span><span class="nx">TCP</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>findnode</code>和<code>neighbors</code>是一对操作.</p>
+
+<p><code>findnode</code>用于查找与某节点相距最近的节点,查找到后以<code>neighbors</code>类型消息回复查找发起者</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 收到findnode消息的响应函数</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">findnode</span><span class="p">)</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">udp</span><span class="p">,</span> <span class="nx">from</span> <span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">,</span> <span class="nx">fromID</span> <span class="nx">NodeID</span><span class="p">,</span> <span class="nx">mac</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="nx">target</span> <span class="o">:=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">Keccak256Hash</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">Target</span><span class="p">[:])</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 从本节点路由表里查找于target节点相距最近的bucketSize的节点</span>
+</span><span class="line">    <span class="nx">closest</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">).</span><span class="nx">entries</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">p</span> <span class="o">:=</span> <span class="nx">neighbors</span><span class="p">{</span><span class="nx">Expiration</span><span class="p">:</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="nx">expiration</span><span class="p">).</span><span class="nx">Unix</span><span class="p">())}</span>
+</span><span class="line">    <span class="c1">// 回复查询发起方</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">n</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">closest</span> <span class="p">{</span>
+</span><span class="line">        <span class="o">...</span>
+</span><span class="line">        <span class="nx">t</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">neighborsPacket</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+</span><span class="line">        <span class="o">...</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section">源码跟踪以太坊节点发现机制</h1>
+
+<p>了解了以太坊的4种基本操作以及kad网络概念,我们就可以来看看节点发现机制怎么流转起来的:</p>
+
+<p>节点发现的代码位于<code>github.com/ethereum/go-ethereum/p2p/discover</code>包。</p>
+
+<p>首先,在节点启动时启动UDP”端口监听”:<code>server.Start() ==&gt; discover.ListenUDP ==&gt; newUDP()</code></p>
+
+<p><code>newUDP()</code>分叉出去三个流程,三个流程均是无限循环:</p>
+
+<ul>
+  <li><code>func (tab *Table) refreshLoop()</code></li>
+  <li><code>func (t *udp) loop()</code></li>
+  <li><code>func (t *udp) readLoop(unhandled chan ReadPacket)</code></li>
+</ul>
+
+<h4 id="refreshloop">1. <code>refreshLoop()</code></h4>
+
+<p>该流程每隔1小时或按需刷新K桶,核心逻辑实现位于<code>doRefresh</code>函数:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/p2p/discover/table.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">tab</span> <span class="o">*</span><span class="nx">Table</span><span class="p">)</span> <span class="nx">doRefresh</span><span class="p">(</span><span class="nx">done</span> <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span> <span class="p">{</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 和标准Kademlia协议选取最旧的K桶进行刷新不同，以太坊选取一个随机节点ID作为刷新基点</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">target</span> <span class="nx">NodeID</span>
+</span><span class="line">    <span class="nx">rand</span><span class="p">.</span><span class="nx">Read</span><span class="p">(</span><span class="nx">target</span><span class="p">[:])</span>
+</span><span class="line">    <span class="c1">// lookup函数是最kad网最核心函数,查询离target最近一批节点</span>
+</span><span class="line">    <span class="nx">result</span> <span class="o">:=</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">lookup</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+</span><span class="line">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 如果没找到,则从本地节点数据库加载预配置的种子节点到对应K桶</span>
+</span><span class="line">    <span class="nx">seeds</span> <span class="o">:=</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">querySeeds</span><span class="p">(</span><span class="nx">seedCount</span><span class="p">,</span> <span class="nx">seedMaxAge</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">seeds</span> <span class="p">=</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">bondall</span><span class="p">(</span><span class="nb">append</span><span class="p">(</span><span class="nx">seeds</span><span class="p">,</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">nursery</span><span class="o">...</span><span class="p">))</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="c1">// 最后,以自身作为目标节点,刷新K桶</span>
+</span><span class="line">    <span class="nx">tab</span><span class="p">.</span><span class="nx">lookup</span><span class="p">(</span><span class="nx">tab</span><span class="p">.</span><span class="nx">self</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>tab.lookup</code>函数虽然关键,然而其逻辑其实是很简单的:</p>
+
+<p>a. 查询离target最近一批节点,距离计算即对kad网络XOR(异或)距离计算的实现</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">tab</span> <span class="o">*</span><span class="nx">Table</span><span class="p">)</span> <span class="nx">closest</span><span class="p">(</span><span class="nx">target</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span><span class="p">,</span> <span class="nx">nresults</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">nodesByDistance</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 遍历本地路由节点表</span>
+</span><span class="line">    <span class="nx">close</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">nodesByDistance</span><span class="p">{</span><span class="nx">target</span><span class="p">:</span> <span class="nx">target</span><span class="p">}</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">buckets</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">n</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">b</span><span class="p">.</span><span class="nx">entries</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">close</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">nresults</span><span class="p">)</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">close</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="c1">// close.push最终调用distcmp进行异或计算</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">distcmp</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">target</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">da</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">^</span> <span class="nx">target</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span><span class="line">        <span class="nx">db</span> <span class="o">:=</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">^</span> <span class="nx">target</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">da</span> <span class="p">&gt;</span> <span class="nx">db</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="mi">1</span>
+</span><span class="line">        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">da</span> <span class="p">&lt;</span> <span class="nx">db</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="mi">0</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>b. 迭代上一步查到的所有节点,向这些节点发起<code>findnode</code>操作查询离target节点最近的节点列表,将查询得到的节点进行<code>ping-pong</code>测试,将测试通过的节点落库保存</p>
+
+<p>经过这个流程后,节点的K桶就能够比较均匀地将不同网络节点更新到本地K桶中。</p>
+
+<h4 id="loopreadloop">2. <code>loop()</code>和<code>readLoop()</code></h4>
+
+<p>这两个循环流程放在一起说,它们主要是一个工程实现,将异步调用代码通过channel串接成同步。业务上主要是负责处理<code>ping,pong,findnode,neighbors</code>四个消息类型的收发。</p>
+
+<p>唯一值得稍加阐述的可能只有<code>pending</code>结构:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// pending实现了一种延迟处理逻辑</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// 它主要有两个作用:</span>
+</span><span class="line"><span class="c1">// 1. 提供回调机制,当某一个操作发起异步请求时,就使用pending结构封装一个闭包,当收到异步回复后从pending列表取出这个闭包,执行回调,因此在这个回调里可以完成数据包校验等后处理</span>
+</span><span class="line"><span class="c1">// 如findnode操作将更新k桶的操作暂存,再获取到异步回复后执行这个闭包完成k桶更新</span>
+</span><span class="line"><span class="c1">// 2. 提供多个回复接收功能,一个RPC请求可能会对应多个回复包,比如findnode对应多个neigbours回复包,此时可以提供多个pending进行逐个包校验</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">pending</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 来源节点</span>
+</span><span class="line">    <span class="nx">from</span>  <span class="nx">NodeID</span>
+</span><span class="line">    <span class="nx">ptype</span> <span class="kt">byte</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 调用超时丢弃pending结构</span>
+</span><span class="line">    <span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 回调函数,简单而强大</span>
+</span><span class="line">    <span class="nx">callback</span> <span class="kd">func</span><span class="p">(</span><span class="nx">resp</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">done</span> <span class="kt">bool</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">errc</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="kt">error</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>综述,邻居节点发现流程:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth_kad.jpeg" alt="kademlia" /></p>
+
+<p>系统第一次启动随机生成本机节点NodeId，记为LocalId,生成后将固定不变，本地节点记为local-eth。
+节点第一次启动读取公共种子节点信息,已本节点ID作为target更新本地K桶,然后每隔一段时间进行节点更新, 刷新K桶流程如下:</p>
+
+<p>a. 随机生成目标节点Id，记为TargetId，从1开始记录发现次数和刷新时间。</p>
+
+<p>b. 在当前节点的K桶里查找与目标节点最近的16个节点</p>
+
+<p>c. 向b中得到的每个节点发送findnode命令,接收到每个节点传回的neighbours节点</p>
+
+<p>d. 对c返回的每个节点进行ping-pong测试然后更新到本地k桶</p>
+
+<h1 id="section-1">内网穿透</h1>
+
+<p>ethereum是基于p2p通信的,所有的操作都有可能涉及到内网穿透,而目前内网穿透最常用的方法是udp打洞,这也是kad网络使用udp作为基础通信协议的原因。</p>
+
+<p>一个简单的udp打通进行p2p通信的例子讲解可以参考<a href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/">深入ethereum源码-p2p模块基础结构</a>。</p>
+
+<p>然而以太坊里将这部分逻辑全部隐藏,可以在节点初始化函数里看出一点痕迹:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">srv</span> <span class="o">*</span><span class="nx">Server</span><span class="p">)</span> <span class="nx">Start</span><span class="p">()</span> <span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">addr</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">ResolveUDPAddr</span><span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">ListenAddr</span><span class="p">)</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">net</span><span class="p">.</span><span class="nx">ListenUDP</span><span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="nx">addr</span><span class="p">)</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="nx">realaddr</span> <span class="p">=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">LocalAddr</span><span class="p">().(</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">)</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">NAT</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">!</span><span class="nx">realaddr</span><span class="p">.</span><span class="nx">IP</span><span class="p">.</span><span class="nx">IsLoopback</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">                <span class="c1">// 进行内网网端口映射</span>
+</span><span class="line">                <span class="k">go</span> <span class="nx">nat</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="nx">srv</span><span class="p">.</span><span class="nx">NAT</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">quit</span><span class="p">,</span> <span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="nx">realaddr</span><span class="p">.</span><span class="nx">Port</span><span class="p">,</span> <span class="nx">realaddr</span><span class="p">.</span><span class="nx">Port</span><span class="p">,</span> <span class="s">&quot;ethereum discovery&quot;</span><span class="p">)</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">            <span class="c1">// TODO: react to external IP changes over time.</span>
+</span><span class="line">            <span class="k">if</span> <span class="nx">ext</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">NAT</span><span class="p">.</span><span class="nx">ExternalIP</span><span class="p">();</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">realaddr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span><span class="p">{</span><span class="nx">IP</span><span class="p">:</span> <span class="nx">ext</span><span class="p">,</span> <span class="nx">Port</span><span class="p">:</span> <span class="nx">realaddr</span><span class="p">.</span><span class="nx">Port</span><span class="p">}</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>首先，以太坊tcp/udp共用了一个端口,然后使用uPnp协议簇进行内外网端口映射,完成链路打通,完成内网穿透.</p>
+
+<p>具体封装位于<code>nat</code>模块,但具体实现也是使用了三方库<a href="https://github.com/huin/goupnp">goupnp</a>.具体实现是关于uPnP的一个大话题,就不在这里分叉出去了。</p>
+
+<h1 id="section-2">参考文献</h1>
+
+<ul>
+  <li><a href="https://zh.wikipedia.org/wiki/Kademlia">Kademlia</a></li>
+  <li><a href="http://www.yeolar.com/note/2010/03/21/kademlia/">Kademlia协议原理简介</a></li>
+  <li><a href="https://github.com/ethereum/wiki/wiki/Node-discovery-protocol">Node discovery protocol</a></li>
+  <li><a href="http://www.8btc.com/etc-p2p">P2P网络及节点发现机制</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块基础结构]]></title>

@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。 建立数据表 $ rails g model customer name:string $ rails g model order &hellip;">
+	<meta name="description" content="1. 创建线程 Thread.new do 3.times do sleep 3 puts "Thread #{Thread.current.object_id} running..." end end ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,82 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rubyxian-cheng/">
+		
+			Ruby线程</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">1. 创建线程</h3>
+
+<pre><code>	Thread.new do
+		3.times do 
+			sleep 3
+			puts "Thread #{Thread.current.object_id} running..."
+		end
+	end
+</code></pre>
+
+<p>ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。ruby线程可以在创建块中使用外部变量，也可以使用本地变量，值变量在线程内部保存的是本地副本，而引用变量保存的是一个本地引用。</p>
+
+<pre><code>class Book
+	attr_accessor :name
+end
+num = 0
+count = 0
+book = Book.new
+book.name = 'ybur'
+puts "main Thread=#{num} count=#{count} book=#{book.name}"
+
+t.Thread.new(num,book) do |n,b|
+	n+=1
+	count+=1
+	b.name.reverse!
+	puts "new Thread:num=#{n} count=#{count} book=#{b.name}"
+end
+t.join
+puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
+#=&gt;main Thread:num=0 count=0 book=ybur
+#=&gt;new Thread:num=1 count=1 book=ruby
+#=&gt;main Thread:num=0 count=1 book=ruby
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/rubyxian-cheng/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:35:53+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rubyxian-cheng/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -574,50 +650,6 @@ MN
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rake-rubys-make/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/">
-		
-			天道酬勤-在追逐梦想的路上</a>
-	</h2>
-	<div class="entry-content">
-		<p>还记得大概一年前，也是在CSDN博客上读过一篇文章，拜读某个大牛描述了他为心仪的公司准备的过程，当时觉得很受触动，于是在博客下留言自勉，还记得他回复的话说：跨专业，更要提早准备。而现在，作为一个机械专业的学生，一路过关斩将拿到百度offer，除了激动之余，我能清晰的感觉到，自己的梦想画卷才刚刚展开。</p>
-
-
-		
-		<a href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T17:43:24+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/life/'>life</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
