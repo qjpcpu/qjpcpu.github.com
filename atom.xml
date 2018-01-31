@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-31T18:00:08+08:00</updated>
+  <updated>2018-01-31T18:01:06+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -396,7 +396,7 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>首先，以太坊tcp/udp共用了一个端口,然后使用uPnp协议簇进行内外网端口映射,完成链路打通,完成内网穿透.</p>
+<p>首先，以太坊tcp/udp共用了一个端口,然后使用uPnp协议簇进行内外网端口映射,完成链路打通,从而穿透内网.</p>
 
 <p>具体封装位于<code>nat</code>模块,但具体实现也是使用了三方库<a href="https://github.com/huin/goupnp">goupnp</a>.具体实现是关于uPnP的一个大话题,就不在这里分叉出去了。</p>
 
