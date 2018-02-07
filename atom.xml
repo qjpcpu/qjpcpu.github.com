@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-01-31T18:01:06+08:00</updated>
+  <updated>2018-02-07T18:00:44+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,47 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[深入ethereum源码-whisper协议解读]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/"/>
+    <updated>2018-02-07T16:13:02+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du</id>
+    <content type="html"><![CDATA[<p>whisper协议是以太坊DApps之间的通信协议。</p>
+
+<!-- more -->
+
+<h1 id="section">通信流程</h1>
+
+<p>whisper协议的实现位于包<code>github.com/ethereum/go-ethereum/whisper</code>，该包下面有多个版本实现,目前最新协议包是<code>whisperv6</code>.</p>
+
+<h2 id="whisper-main-loop">whisper main loop</h2>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/whisper-main-loop.png" alt="whisper-main-loop" /></p>
+
+<p>whisper节点启动后产生两个分支:</p>
+
+<ul>
+  <li>一个分支负责清理<code>shh.envelopes</code>中的过期消息</li>
+  <li>另一个分支(proccessQueue)从两个队列取出新接收到的消息,根据消息对应topic投放(Trigger)到对应接收者(filter),从而交付给上层应用进行处理</li>
+</ul>
+
+<p>补充说下whisper里两个队列<code>messageQueue,p2pMsgQueue</code>的不同作用,<code>messageQueue</code>接收普通的广播消息,<code>p2pMsgQueue</code>接收点对点的直接消息,可绕过<code>pow</code>和<code>ttl</code>限制.</p>
+
+<h2 id="whisper-protocol">whisper protocol</h2>
+
+<p>whisper协议的具体实现里,代码流程也非常清晰:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/whisper-peer-loop.png" alt="whisper-peer-loop" /></p>
+
+<p>每个peer连接成功后,产生两个goroutine,进行消息接收和广播:</p>
+
+<ul>
+  <li>接收消息协程不断从连接中读取新消息,并且将消息暂存到<code>shh.envelopes</code>中,如果发现是一条新消息,则将消息转发到对应的队列<code>(messageQueue,p2pMsgQueue)</code></li>
+  <li>广播协程负责将该peer未接收过的(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)消息投递到该peer</li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块节点发现机制]]></title>
@@ -4108,87 +4149,6 @@ list[ 1 ][ 1 ] = d;
 </span><span class="line">Bye 1
 </span><span class="line">Hello 2
 </span><span class="line">World 2
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用octopress搭建github pages]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
-    <updated>2014-08-31T17:36:06+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
-    <content type="html"><![CDATA[<h2 id="gitruby">安装git,ruby</h2>
-<p>略</p>
-
-<h2 id="octopress">安装octopress并搭建博客</h2>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone git://github.com/imathis/octopress.git octopress
-</span><span class="line"><span class="nb">cd </span>octopress
-</span><span class="line">bundle install
-</span><span class="line">rake install
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<!-- more -->
-
-<p>初始化博客</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">rake setup_github_pages
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>编辑<code>_config.yml</code>写入博客名和其他信息</p>
-
-<p>开始书写博客：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">rake new_page<span class="o">[</span><span class="s2">&quot;About&quot;</span><span class="o">]</span>    <span class="c"># 添加博客页</span>
-</span><span class="line">rake new_post<span class="o">[</span><span class="s2">&quot;First Post!&quot;</span><span class="o">]</span>  <span class="c"># 新建一篇文章</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>发布到github</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>deploy.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">rake generate      <span class="c"># 生成页面</span>
-</span><span class="line"><span class="c">#rake preview       # 如果需要在本地预览生成的结果，预览页http://localhost:4000</span>
-</span><span class="line">rake deploy        <span class="c">#发布到github</span>
-</span><span class="line"><span class="c"># 发布到github的pages在master分支，还要保存源的source分支</span>
-</span><span class="line">git add .
-</span><span class="line">git commit -m <span class="s1">&#39;Added About page and first post!&#39;</span>
-</span><span class="line">git push origin <span class="nb">source</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="section">在另外机器编辑博客</h2>
-
-<p>如果更换了电脑，在新机器上编辑写博客，不需要重新搭建一遍：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>get_my_blog.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone git@github.com:username/username.github.com.git
-</span><span class="line"><span class="nb">cd </span>username.github.com
-</span><span class="line">git checkout <span class="nb">source</span>
-</span><span class="line">mkdir _deploy
-</span><span class="line"><span class="nb">cd </span>_deploy
-</span><span class="line">git init
-</span><span class="line">git remote add origin git@github.com:username/username.github.com.git
-</span><span class="line">git pull origin master
-</span><span class="line"><span class="nb">cd</span> ..
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>

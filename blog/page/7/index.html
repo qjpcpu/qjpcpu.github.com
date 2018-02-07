@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="1. 创建线程 Thread.new do 3.times do sleep 3 puts "Thread #{Thread.current.object_id} running..." end end ruby使用在Thread.new创建线程，线程创建后立即返回，线程也同时开始执行。 &hellip;">
+	<meta name="description" content="安装配置devise 在gemfile中添加一行： gem 'devise' 执行bundle install后，需要安装devise到工程： rails generate devise:install 创建验证用户model，通常用user，也可以使用其他名称： rails generate &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,6 +79,66 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/">
+		
+			Rails使用devise验证用户</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="devise">安装配置devise</h3>
+
+<p>在gemfile中添加一行：</p>
+
+<pre><code>gem 'devise'
+</code></pre>
+
+<p>执行bundle install后，需要安装devise到工程：</p>
+
+<pre><code>rails generate devise:install
+</code></pre>
+
+<p>创建验证用户model，通常用user，也可以使用其他名称：</p>
+
+<pre><code>rails generate devise user
+rake db:migrate
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:46:34+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -592,64 +652,6 @@ MN
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/code-snippets/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/rake-rubys-make/">
-		
-			Rake-ruby&#8217;s Make</a>
-	</h2>
-	<div class="entry-content">
-		<p>Rake，顾名思义，就是Ruby的Make工具。</p>
-
-<h2 id="rake">Rake的特性</h2>
-
-<p>Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语法。不需要编辑XML文件，也不需要记忆古怪的makefile语法。</p>
-
-<ul>
-  <li>可以定义任务（task），并为任务定义依赖。</li>
-  <li>rake支持利用规则模式来合成隐式任务。</li>
-  <li>灵活的文件列表，可以像列表一样操作。</li>
-  <li>预置的库使得编写rakefile变得更加简单。</li>
-  <li>支持并行执行多个任务。</li>
-</ul>
-
-<p>所以说，rakefile文件没有特殊的格式，仅仅是一个包含ruby代码的文件，不过，仍然有一些关于rakefile的约定，遵循这些约定，使得rake能够更好地处理任务和行为。</p>
-
-
-		
-		<a href="/blog/2014/02/14/rake-rubys-make/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T17:49:14+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/rake-rubys-make/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

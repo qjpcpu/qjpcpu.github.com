@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>categories - Jason's space</title>
+	<title>深入ethereum源码-whisper协议解读 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="Life [ 4 ] Ruby [ 22 ] C-sharp [ 1 ] Git [ 2 ] Rails [ 13 ] Jruby [ 3 ] Shell [ 15 ] Go [ 7 ] Linux [ 4 ] Docker [ 1 ] Coffeescript [ 1 ] Mysql [ 1 &hellip;">
+	<meta name="description" content="whisper协议是以太坊DApps之间的通信协议。 通信流程 whisper协议的实现位于包github.com/ethereum/go-ethereum/whisper，该包下面有多个版本实现,目前最新协议包是whisperv6. whisper main loop &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,47 +78,68 @@
 	
 		
 	
-	<div id="content" class="inner"><article class="page">
-    
-    <h1 class="title">Categories</h1>
-    
-    <div class="entry-content"><ul>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">深入ethereum源码-whisper协议解读</h2>
+	<div class="entry-content"><p>whisper协议是以太坊DApps之间的通信协议。</p>
 
-    <li><a href="/blog/categories/life/">Life</a> [ 4 ]</li>
+<!-- more -->
 
-    <li><a href="/blog/categories/ruby/">Ruby</a> [ 22 ]</li>
+<h1 id="section">通信流程</h1>
 
-    <li><a href="/blog/categories/c-sharp/">C-sharp</a> [ 1 ]</li>
+<p>whisper协议的实现位于包<code>github.com/ethereum/go-ethereum/whisper</code>，该包下面有多个版本实现,目前最新协议包是<code>whisperv6</code>.</p>
 
-    <li><a href="/blog/categories/git/">Git</a> [ 2 ]</li>
+<h2 id="whisper-main-loop">whisper main loop</h2>
 
-    <li><a href="/blog/categories/rails/">Rails</a> [ 13 ]</li>
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/whisper-main-loop.png" alt="whisper-main-loop" /></p>
 
-    <li><a href="/blog/categories/jruby/">Jruby</a> [ 3 ]</li>
+<p>whisper节点启动后产生两个分支:</p>
 
-    <li><a href="/blog/categories/shell/">Shell</a> [ 15 ]</li>
-
-    <li><a href="/blog/categories/go/">Go</a> [ 7 ]</li>
-
-    <li><a href="/blog/categories/linux/">Linux</a> [ 4 ]</li>
-
-    <li><a href="/blog/categories/docker/">Docker</a> [ 1 ]</li>
-
-    <li><a href="/blog/categories/coffeescript/">Coffeescript</a> [ 1 ]</li>
-
-    <li><a href="/blog/categories/mysql/">Mysql</a> [ 1 ]</li>
-
-    <li><a href="/blog/categories/memo/">Memo</a> [ 2 ]</li>
-
-    <li><a href="/blog/categories/hadoop/">Hadoop</a> [ 1 ]</li>
-
-    <li><a href="/blog/categories/angularjs/">Angularjs</a> [ 5 ]</li>
-
-    <li><a href="/blog/categories/nodejs/">Nodejs</a> [ 1 ]</li>
-
-    <li><a href="/blog/categories/blockchain/">Blockchain</a> [ 4 ]</li>
-
+<ul>
+  <li>一个分支负责清理<code>shh.envelopes</code>中的过期消息</li>
+  <li>另一个分支(proccessQueue)从两个队列取出新接收到的消息,根据消息对应topic投放(Trigger)到对应接收者(filter),从而交付给上层应用进行处理</li>
 </ul>
+
+<p>补充说下whisper里两个队列<code>messageQueue,p2pMsgQueue</code>的不同作用,<code>messageQueue</code>接收普通的广播消息,<code>p2pMsgQueue</code>接收点对点的直接消息,可绕过<code>pow</code>和<code>ttl</code>限制.</p>
+
+<h2 id="whisper-protocol">whisper protocol</h2>
+
+<p>whisper协议的具体实现里,代码流程也非常清晰:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/whisper-peer-loop.png" alt="whisper-peer-loop" /></p>
+
+<p>每个peer连接成功后,产生两个goroutine,进行消息接收和广播:</p>
+
+<ul>
+  <li>接收消息协程不断从连接中读取新消息,并且将消息暂存到<code>shh.envelopes</code>中,如果发现是一条新消息,则将消息转发到对应的队列<code>(messageQueue,p2pMsgQueue)</code></li>
+  <li>广播协程负责将该peer未接收过的(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)消息投递到该peer</li>
+</ul>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-02-07T16:13:02+08:00" pubdate data-updated="true">Feb 7<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
 </div>
 </article>
 
@@ -137,11 +158,10 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
-
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2018
 
@@ -162,8 +182,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://qjpcpu.github.io/blog/categories/index.html';
-        var disqus_url = 'http://qjpcpu.github.io/blog/categories/index.html';
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/';
         var disqus_script = 'embed.js';
       
     (function () {
