@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-07T18:00:44+08:00</updated>
+  <updated>2018-02-07T23:47:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -22,7 +22,67 @@
 
 <!-- more -->
 
-<h1 id="section">通信流程</h1>
+<h1 id="section">概述</h1>
+
+<p>whisper是完全基于<code>ID</code>的消息系统,它的设计目的是形成一套p2p节点间的异步广播系统。whisper网络上的消息是加密传送的,完全可以暴露在公网进行传输;此外,为了防范<code>DDos</code>攻击,whisper使用了<code>proof-of-work(PoW)</code>工作量证明提高消息发送门槛。</p>
+
+<h1 id="whisper">whisper基础构件</h1>
+
+<p>whisper协议对上层暴露出一套类似于<code>订阅-发布</code>的API模型,节点可以申请自己感兴趣的<code>topic</code>，那么就只会接收到这些<code>topic</code>的消息,无关主题的消息将被丢弃。在这套体系内，有几个基础构件需要说明下:</p>
+
+<h2 id="envelope">Envelope信封</h2>
+
+<p><code>envelope即信封</code>是whisper网络节点传输数据的基本形式。信封包含了加密的数据体和明文的元数据,元数据主要用于基本的消息校验和消息体的解密。</p>
+
+<p>信封是以RLP编码的格式传输:</p>
+
+<p><code>
+[ Version, Expiry, TTL, Topic, AESNonce, Data, EnvNonce ]
+</code></p>
+
+<ul>
+  <li><code>Version</code>:最多4字节(目前仅使用了1字节)，如果信封的<code>Version</code>比本节点当前值高,将无法解密,仅做转发</li>
+  <li><code>Expiry</code>:4字节（unix时间戳秒数）,过期时间</li>
+  <li><code>TTL</code>:4字节,剩余存活时间秒数</li>
+  <li><code>Topic</code>:4字节,信封主题</li>
+  <li><code>AESNonce</code>:12字节随机数据,仅在对称加密时有效</li>
+  <li><code>Data</code>:消息体</li>
+  <li><code>EnvNonce</code>:8字节任意数据(用于PoW计算)</li>
+</ul>
+
+<p>如果节点无法解密信封，那么节点对信封内的消息内容一无所知，单这并不影响节点将消息进行转发扩散。</p>
+
+<h2 id="message">Message消息</h2>
+
+<p>信封内的消息体解密后即得到消息内容。</p>
+
+<h2 id="topic">Topic主题</h2>
+
+<p>每个信封上都有一个主题,注意主题可以仅使用部分前缀</p>
+
+<h2 id="filter">Filter过滤器</h2>
+
+<p><code>filter</code>即<code>订阅-发布</code>模型中的订阅者</p>
+
+<h2 id="pow">PoW工作量证明</h2>
+
+<p><code>PoW</code>的存在是为了反垃圾信息以及降低网络负担。计算PoW所付出的代价可以理解为抵扣节点为传播和存储信息锁花费的资源.</p>
+
+<p>在<code>whisperv5</code>中,<code>PoW</code>定义为:</p>
+
+<p><code>
+PoW = (2^BestBit) / (size * TTL)
+</code></p>
+
+<ul>
+  <li><code>BestBit</code>是hash计算值的前导0个数</li>
+  <li><code>size</code>是消息大小</li>
+  <li><code>TTL</code></li>
+</ul>
+
+<p>具有高<code>PoW</code>的消息具有优先处理权。</p>
+
+<h1 id="section-1">通信流程</h1>
 
 <p>whisper协议的实现位于包<code>github.com/ethereum/go-ethereum/whisper</code>，该包下面有多个版本实现,目前最新协议包是<code>whisperv6</code>.</p>
 
@@ -48,9 +108,11 @@
 <p>每个peer连接成功后,产生两个goroutine,进行消息接收和广播:</p>
 
 <ul>
-  <li>接收消息协程不断从连接中读取新消息,并且将消息暂存到<code>shh.envelopes</code>中,如果发现是一条新消息,则将消息转发到对应的队列<code>(messageQueue,p2pMsgQueue)</code></li>
-  <li>广播协程负责将该peer未接收过的(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)消息投递到该peer</li>
+  <li>接收消息协程不断从连接中读取新消息,并且将消息暂存到<code>shh.envelopes</code>中,如果发现是一条未接收过的新消息,则将消息转发到对应的队列<code>(messageQueue,p2pMsgQueue)</code></li>
+  <li>广播协程负责将该peer未接收过的消息(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)投递到该peer</li>
 </ul>
+
+<h1 id="section-2">消息收发</h1>
 ]]></content>
   </entry>
   
