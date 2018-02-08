@@ -67,6 +67,52 @@ PoW = (2^BestBit) / (size * TTL)
 
 具有高`PoW`的消息具有优先处理权。
 
+whisper节点发送消息需要经过`创建消息whisper.NewSentMessage()`---->`封装入信封msg.Wrap(msg)`---->`shh.Send()`,消息的工作量证明就在第二步装入信封的时候进行计算。
+
+`Warp`函数最终调用`Seal`:
+
+```go github.com/ethereum/go-ethereum/whisper/whisperv5/envelope.go
+func (e *Envelope) Seal(options *MessageParams) error {
+    var target, bestBit int // target是需要达到的目标前置0位数
+    if options.PoW == 0 {
+        // 将消息过期时间调整到工作量计算完成后
+        e.Expiry += options.WorkTime
+    } else {
+        // 根据公式 PoW = (2^BestBit) / (size * TTL) 从预设的PoW阈值反解出BestBit
+        target = e.powToFirstBit(options.PoW)
+        if target < 1 {
+            target = 1
+        }
+    }
+
+    buf := make([]byte, 64)
+    // Keccak256是SHA-3的一种,Keccak已可以抵御最小的复杂度为2n的攻击，其中N为散列的大小。它具有广泛的安全边际。至目前为止，第三方密码分析已经显示出Keccak没有严重的弱点
+    h := crypto.Keccak256(e.rlpWithoutNonce())
+    copy(buf[:32], h)
+
+    finish := time.Now().Add(time.Duration(options.WorkTime) * time.Second).UnixNano()
+    for nonce := uint64(0); time.Now().UnixNano() < finish; {
+        for i := 0; i < 1024; i++ {
+            // 暴力尝试nonce值
+            binary.BigEndian.PutUint64(buf[56:], nonce)
+            d := new(big.Int).SetBytes(crypto.Keccak256(buf))
+            firstBit := math.FirstBitSet(d)
+            if firstBit > bestBit {
+                e.EnvNonce, bestBit = nonce, firstBit
+                // 当尝试得到满足条件的EnvNonce,计算完成
+                if target > 0 && bestBit >= target {
+                    return nil
+                }
+            }
+            nonce++
+        }
+    }
+    if target > 0 && bestBit < target {
+        return fmt.Errorf("failed to reach the PoW target, specified pow time (%d seconds) was insufficient", options.WorkTime)
+    }
+    return nil
+}
+```
 
 # 通信流程
 
@@ -95,4 +141,3 @@ whisper协议的具体实现里,代码流程也非常清晰:
 * 广播协程负责将该peer未接收过的消息(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)投递到该peer
 
 
-# 消息收发
