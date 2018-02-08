@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-08T10:08:27+08:00</updated>
+  <updated>2018-02-08T13:44:17+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -81,6 +81,92 @@
 
 <p>具有高<code>PoW</code>的消息具有优先处理权。</p>
 
+<p>whisper节点发送消息需要经过<code>创建消息whisper.NewSentMessage()</code>—-&gt;<code>封装入信封msg.Wrap(msg)</code>—-&gt;<code>shh.Send()</code>,消息的工作量证明就在第二步装入信封的时候进行计算。</p>
+
+<p><code>Warp</code>函数最终调用<code>Seal</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/whisper/whisperv5/envelope.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">Envelope</span><span class="p">)</span> <span class="nx">Seal</span><span class="p">(</span><span class="nx">options</span> <span class="o">*</span><span class="nx">MessageParams</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">bestBit</span> <span class="kt">int</span> <span class="c1">// target是需要达到的目标前置0位数</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">PoW</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// 将消息过期时间调整到工作量计算完成后</span>
+</span><span class="line">        <span class="nx">e</span><span class="p">.</span><span class="nx">Expiry</span> <span class="o">+=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">WorkTime</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// 根据公式 PoW = (2^BestBit) / (size * TTL) 从预设的PoW阈值反解出BestBit</span>
+</span><span class="line">        <span class="nx">target</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">powToFirstBit</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">PoW</span><span class="p">)</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">target</span> <span class="p">&lt;</span> <span class="mi">1</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">target</span> <span class="p">=</span> <span class="mi">1</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">buf</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+</span><span class="line">    <span class="c1">// Keccak256是SHA-3的一种,Keccak已可以抵御最小的复杂度为2n的攻击，其中N为散列的大小。它具有广泛的安全边际。至目前为止，第三方密码分析已经显示出Keccak没有严重的弱点</span>
+</span><span class="line">    <span class="nx">h</span> <span class="o">:=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">Keccak256</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">rlpWithoutNonce</span><span class="p">())</span>
+</span><span class="line">    <span class="nb">copy</span><span class="p">(</span><span class="nx">buf</span><span class="p">[:</span><span class="mi">32</span><span class="p">],</span> <span class="nx">h</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">finish</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Add</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">WorkTime</span><span class="p">)</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">).</span><span class="nx">UnixNano</span><span class="p">()</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">nonce</span> <span class="o">:=</span> <span class="nb">uint64</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">UnixNano</span><span class="p">()</span> <span class="p">&lt;</span> <span class="nx">finish</span><span class="p">;</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1024</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span><span class="line">            <span class="c1">// 暴力尝试nonce值</span>
+</span><span class="line">            <span class="nx">binary</span><span class="p">.</span><span class="nx">BigEndian</span><span class="p">.</span><span class="nx">PutUint64</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">56</span><span class="p">:],</span> <span class="nx">nonce</span><span class="p">)</span>
+</span><span class="line">            <span class="nx">d</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">SetBytes</span><span class="p">(</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">Keccak256</span><span class="p">(</span><span class="nx">buf</span><span class="p">))</span>
+</span><span class="line">            <span class="nx">firstBit</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">FirstBitSet</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+</span><span class="line">            <span class="k">if</span> <span class="nx">firstBit</span> <span class="p">&gt;</span> <span class="nx">bestBit</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">e</span><span class="p">.</span><span class="nx">EnvNonce</span><span class="p">,</span> <span class="nx">bestBit</span> <span class="p">=</span> <span class="nx">nonce</span><span class="p">,</span> <span class="nx">firstBit</span>
+</span><span class="line">                <span class="c1">// 当尝试得到满足条件的EnvNonce,计算完成</span>
+</span><span class="line">                <span class="k">if</span> <span class="nx">target</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">bestBit</span> <span class="o">&gt;=</span> <span class="nx">target</span> <span class="p">{</span>
+</span><span class="line">                    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line">                <span class="p">}</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">            <span class="nx">nonce</span><span class="o">++</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">target</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">bestBit</span> <span class="p">&lt;</span> <span class="nx">target</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to reach the PoW target, specified pow time (%d seconds) was insufficient&quot;</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">WorkTime</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
 <h1 id="section-1">通信流程</h1>
 
 <p>whisper协议的实现位于包<code>github.com/ethereum/go-ethereum/whisper</code>，该包下面有多个版本实现,目前最新协议包是<code>whisperv6</code>.</p>
@@ -111,7 +197,6 @@
   <li>广播协程负责将该peer未接收过的消息(本节点认为该peer未接收过,并非peer一定没接收过,p2p网络其他节点可能已经将消息广播到该节点了)投递到该peer</li>
 </ul>
 
-<h1 id="section-2">消息收发</h1>
 ]]></content>
   </entry>
   
