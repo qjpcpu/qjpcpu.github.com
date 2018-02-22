@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-08T19:48:32+08:00</updated>
+  <updated>2018-02-22T11:54:22+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -3341,7 +3341,15 @@ list[ 1 ][ 1 ] = d;
 
 <h3 id="section-2">工作履历</h3>
 
-<h4 id="section-3">2014.12 - 2016.03</h4>
+<h4 id="section-3">2016.03 - 至今</h4>
+
+<ul>
+  <li>Company: 咕咚</li>
+  <li>Location: 成都</li>
+  <li>Position: 电商研发</li>
+</ul>
+
+<h4 id="section-4">2014.12 - 2016.03</h4>
 
 <ul>
   <li>
@@ -3355,7 +3363,7 @@ list[ 1 ][ 1 ] = d;
   </li>
 </ul>
 
-<h4 id="section-4">2013.12 - 2014.12</h4>
+<h4 id="section-5">2013.12 - 2014.12</h4>
 
 <ul>
   <li>
@@ -3369,7 +3377,7 @@ list[ 1 ][ 1 ] = d;
   </li>
 </ul>
 
-<h4 id="section-5">2013.1 - 2013.8</h4>
+<h4 id="section-6">2013.1 - 2013.8</h4>
 
 <ul>
   <li>
@@ -3383,9 +3391,29 @@ list[ 1 ][ 1 ] = d;
   </li>
 </ul>
 
-<h3 id="section-6">项目经验</h3>
+<h3 id="section-7">项目经验</h3>
 
-<h4 id="ioptap4fun">1. 智能运维系统iOP(tap4fun)</h4>
+<h4 id="section-8">1. 咕咚电商(咕咚)</h4>
+
+<p><strong>环境及工具:</strong> linux,golang,mysql,redis</p>
+
+<p><strong>项目描述:</strong> 作为咕咚电商核心研发,搭建完成咕咚电商平台,提供咕咚用户购买运动相关商品及赛事奖牌的功能</p>
+
+<ol>
+  <li>商品系统,重构并优化商品系统,组织起sku-spu逻辑概念,简化库存设计,优化性能</li>
+  <li>订单系统优化,拆分并简化订单系统,保证系统的扩展性</li>
+  <li>发货系统,发货系统支持自由仓储及多个三方仓储,提升发货效率至1天</li>
+  <li>促销系统,大规模重构促销系统,使得从产品到研发易于支持新的促销逻辑,目前支持团购、秒杀、套餐等多种促销模式</li>
+  <li>秒杀系统,完成秒杀系统开发,有处理大规模并发流量经验</li>
+</ol>
+
+<h3 id="web">2. Web网关(咕咚)</h3>
+
+<p><strong>环境及工具:</strong> linux,golang,redis</p>
+
+<p><strong>项目描述:</strong> 独立设计完成咕咚H5网关webmiddleware,为咕咚h5请求提供的统一session管理,同时实现流控,服务自动降级,频控等安全策略</p>
+
+<h4 id="ioptap4fun">3. 智能运维系统iOP(tap4fun)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby on rails, mongodb, angularJs, coffee-script</p>
 
@@ -3400,7 +3428,7 @@ list[ 1 ][ 1 ] = d;
   <li>配置: 其他运维元数据的配置管理</li>
 </ol>
 
-<h4 id="tap4fungithubhttpsgithubcomqjpcpuwechatnotifier">2. 微信消息平台(tap4fun)<a href="https://github.com/qjpcpu/WeChatNotifier">github地址</a></h4>
+<h4 id="tap4fungithubhttpsgithubcomqjpcpuwechatnotifier">4. 微信消息平台(tap4fun)<a href="https://github.com/qjpcpu/WeChatNotifier">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, nodejs, requirejs, gulp, coffee-script, leveldb</p>
 
@@ -3412,45 +3440,45 @@ list[ 1 ][ 1 ] = d;
   <li>单点登录: 企业内部系统可以利用微信消息平台作为单点登录,有效解决中小型企业的登录安全性及便利性</li>
 </ol>
 
-<h4 id="tap4fun">3. 统一认证系统(tap4fun)</h4>
+<h4 id="tap4fun">5. 统一认证系统(tap4fun)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby on rails, mongodb</p>
 
 <p><strong>项目描述:</strong> 使用google Oauth2完成内部员工单点登录认证</p>
 
-<h4 id="section-7">4. 流式监控系统(百度)</h4>
+<h4 id="section-9">6. 流式监控系统(百度)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby, mysql, emacs, sinatra</p>
 
 <p><strong>项目描述:</strong> 监控流式计算系统当前的任务处理情况,并能自动定位故障。前端使用sinatra框架完成,使用了ajax和coffeescript等技术,后端任务用ruby+bash完成,数据存储在项目前期后期分别选用了mongodb和mysql</p>
 
-<h4 id="section-8">5. 机器管理系统(百度)</h4>
+<h4 id="section-10">7. 机器管理系统(百度)</h4>
 
 <p><strong>环境及工具:</strong> linux, ruby, mysql, emacs</p>
 
 <p><strong>项目描述:</strong> 管理机器池的机器自动安装,环境自动初始化,机器数量千台以上。首先,自动检测机器是否故障,如果有故障则自动完成送修,送修完成自动挂回。如无故障则进行机器重装,安装各种初始化环境等 。系统前端采用rails编写,后端混合ruby和bash,数据交互使用mysql数据库,自动操作利用状态机设计完成</p>
 
-<h4 id="githubhttpsgithubcomqjpcpujreport">6. 快速报表开发框架(百度)<a href="https://github.com/qjpcpu/jreport">github地址</a></h4>
+<h4 id="githubhttpsgithubcomqjpcpujreport">8. 快速报表开发框架(百度)<a href="https://github.com/qjpcpu/jreport">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, ruby , emacs</p>
 
 <p><strong>项目描述:</strong>  一套快速报表开发框架,基于该框架最快可以在10分钟内开发出一套邮件报表,是一套针对报表专门设计开发的类rails框架</p>
 
-<h4 id="golanggithubhttpsgithubcomqjpcpusexy-ssh">7. 基于golang的批量工具(百度)<a href="https://github.com/qjpcpu/sexy-ssh">github地址</a></h4>
+<h4 id="golanggithubhttpsgithubcomqjpcpusexy-ssh">9. 基于golang的批量工具(百度)<a href="https://github.com/qjpcpu/sexy-ssh">github地址</a></h4>
 
 <p><strong>环境及工具:</strong> linux, golang</p>
 
 <p><strong>项目描述:</strong> 基于ssh协议的批量操作工具,功能强大部署简单。 能完成批量任务执行及文件复制,任务执行能力强,使用go语言开发完成</p>
 
-<h4 id="app">8. 打印机app(惠普中国)</h4>
+<h4 id="app">10. 打印机app(惠普中国)</h4>
 
 <p><strong>环境及工具:</strong> windows, java, serverlet, jsp</p>
 
 <p><strong>项目描述:</strong> 惠普打印机无线打印app。无须电脑,打印机上直接浏览网盘文件进行预览及打印</p>
 
-<h3 id="section-9">技能概览</h3>
+<h3 id="section-11">技能概览</h3>
 
-<h4 id="section-10">编程语言</h4>
+<h4 id="section-12">编程语言</h4>
 
 <ul>
   <li>ruby; 精通ruby,5年+经验</li>
@@ -3460,33 +3488,33 @@ list[ 1 ][ 1 ] = d;
   <li>java/C#/C/Python; 基本了解</li>
 </ul>
 
-<h4 id="section-11">操作系统</h4>
+<h4 id="section-13">操作系统</h4>
 
 <ul>
   <li>2年以上linux运维经验, 长期linux使用经验</li>
   <li>自己编译过linux系统，并翻译过LFS，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
 </ul>
 
-<h4 id="section-12">数据库</h4>
+<h4 id="section-14">数据库</h4>
 
 <ul>
   <li>有基于mongodb, mysql开发经验</li>
 </ul>
 
-<h4 id="web">web开发</h4>
+<h4 id="web-1">web开发</h4>
 
 <ul>
   <li>熟悉ruby及js的web开发技术</li>
   <li>熟悉前端新技术angularJS</li>
 </ul>
 
-<h4 id="section-13">服务器开发</h4>
+<h4 id="section-15">服务器开发</h4>
 
 <ul>
   <li>熟练利用ruby/golang进行服务端开发</li>
 </ul>
 
-<h3 id="section-14">自我评价</h3>
+<h3 id="section-16">自我评价</h3>
 
 <ul>
   <li>好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向</li>
