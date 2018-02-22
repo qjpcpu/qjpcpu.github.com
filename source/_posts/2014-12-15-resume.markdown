@@ -29,6 +29,12 @@ categories: life
 
 ### 工作履历
 
+#### 2016.03 - 至今
+
+* Company: 咕咚
+* Location: 成都
+* Position: 电商研发
+
 #### 2014.12 - 2016.03
 
 * Company: tap4fun
@@ -55,7 +61,25 @@ categories: life
 
 ### 项目经验
 
-#### 1. 智能运维系统iOP(tap4fun)
+#### 1. 咕咚电商(咕咚)
+
+**环境及工具:** linux,golang,mysql,redis
+
+**项目描述:** 作为咕咚电商核心研发,搭建完成咕咚电商平台,提供咕咚用户购买运动相关商品及赛事奖牌的功能
+
+1. 商品系统,重构并优化商品系统,组织起sku-spu逻辑概念,简化库存设计,优化性能
+2. 订单系统优化,拆分并简化订单系统,保证系统的扩展性
+3. 发货系统,发货系统支持自由仓储及多个三方仓储,提升发货效率至1天
+4. 促销系统,大规模重构促销系统,使得从产品到研发易于支持新的促销逻辑,目前支持团购、秒杀、套餐等多种促销模式
+5. 秒杀系统,完成秒杀系统开发,有处理大规模并发流量经验
+
+### 2. Web网关(咕咚)
+
+**环境及工具:** linux,golang,redis
+
+**项目描述:** 独立设计完成咕咚H5网关webmiddleware,为咕咚h5请求提供的统一session管理,同时实现流控,服务自动降级,频控等安全策略
+
+#### 3. 智能运维系统iOP(tap4fun)
 
 **环境及工具:** linux, ruby on rails, mongodb, angularJs, coffee-script
 
@@ -68,7 +92,7 @@ categories: life
 5. 权限管理: 所有用户根据自己角色决定了资源的可见性和可操作性，同时和线上机器登录权限保持同步
 6. 配置: 其他运维元数据的配置管理
 
-#### 2. 微信消息平台(tap4fun)[github地址](https://github.com/qjpcpu/WeChatNotifier)
+#### 4. 微信消息平台(tap4fun)[github地址](https://github.com/qjpcpu/WeChatNotifier)
 
 **环境及工具:** linux, nodejs, requirejs, gulp, coffee-script, leveldb
 
@@ -78,37 +102,37 @@ categories: life
 2. 消息响应: 内部系统可以被动响应消息，从而达到将微信作为交互平台的目的
 3. 单点登录: 企业内部系统可以利用微信消息平台作为单点登录,有效解决中小型企业的登录安全性及便利性
 
-#### 3. 统一认证系统(tap4fun)
+#### 5. 统一认证系统(tap4fun)
 
 **环境及工具:** linux, ruby on rails, mongodb
 
 **项目描述:** 使用google Oauth2完成内部员工单点登录认证
 
-#### 4. 流式监控系统(百度)
+#### 6. 流式监控系统(百度)
 
 **环境及工具:** linux, ruby, mysql, emacs, sinatra
 
 **项目描述:** 监控流式计算系统当前的任务处理情况,并能自动定位故障。前端使用sinatra框架完成,使用了ajax和coffeescript等技术,后端任务用ruby+bash完成,数据存储在项目前期后期分别选用了mongodb和mysql
 
-#### 5. 机器管理系统(百度)
+#### 7. 机器管理系统(百度)
 
 **环境及工具:** linux, ruby, mysql, emacs
 
 **项目描述:** 管理机器池的机器自动安装,环境自动初始化,机器数量千台以上。首先,自动检测机器是否故障,如果有故障则自动完成送修,送修完成自动挂回。如无故障则进行机器重装,安装各种初始化环境等 。系统前端采用rails编写,后端混合ruby和bash,数据交互使用mysql数据库,自动操作利用状态机设计完成
 
-#### 6. 快速报表开发框架(百度)[github地址](https://github.com/qjpcpu/jreport)
+#### 8. 快速报表开发框架(百度)[github地址](https://github.com/qjpcpu/jreport)
 
 **环境及工具:** linux, ruby , emacs
 
 **项目描述:**  一套快速报表开发框架,基于该框架最快可以在10分钟内开发出一套邮件报表,是一套针对报表专门设计开发的类rails框架
 
-#### 7. 基于golang的批量工具(百度)[github地址](https://github.com/qjpcpu/sexy-ssh)
+#### 9. 基于golang的批量工具(百度)[github地址](https://github.com/qjpcpu/sexy-ssh)
 
 **环境及工具:** linux, golang
 
 **项目描述:** 基于ssh协议的批量操作工具,功能强大部署简单。 能完成批量任务执行及文件复制,任务执行能力强,使用go语言开发完成
 
-#### 8. 打印机app(惠普中国)
+#### 10. 打印机app(惠普中国)
 
 **环境及工具:** windows, java, serverlet, jsp
 
