@@ -1,0 +1,570 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>深入ethereum源码-从区块头看共识挖矿 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="区块是区块链的基本组成单位,而区块头又是区块的核心数据,本文希望从区块头延展开来,看看区块链的挖矿机制。 区块头的基本数据结构 结构信息 挖矿基础信息 状态信息 挖矿难度控制 PoW参数 DAG hashimoto 其他 参考文献 区块头的基本数据结构 废话不多说,直接看代码: github. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Jason's space" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">深入ethereum源码-从区块头看共识挖矿</h2>
+	<div class="entry-content"><p>区块是区块链的基本组成单位,而区块头又是区块的核心数据,本文希望从区块头延展开来,看看区块链的挖矿机制。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">区块头的基本数据结构</a></li>
+  <li><a href="#section-1">结构信息</a></li>
+  <li><a href="#section-2">挖矿基础信息</a></li>
+  <li><a href="#section-3">状态信息</a></li>
+  <li><a href="#section-4">挖矿难度控制</a></li>
+  <li><a href="#pow">PoW参数</a>    <ul>
+      <li><a href="#dag">DAG</a></li>
+      <li><a href="#hashimoto">hashimoto</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-5">其他</a></li>
+  <li><a href="#section-6">参考文献</a></li>
+</ul>
+
+<h1 id="section">区块头的基本数据结构</h1>
+
+<p>废话不多说,直接看代码:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/core/types/block.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Header represents a block header in the Ethereum blockchain.</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Header</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 1.结构信息</span>
+</span><span class="line">    <span class="nx">ParentHash</span>  <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;parentHash&quot;       gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">UncleHash</span>   <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;sha3Uncles&quot;       gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Number</span>      <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>       <span class="s">`json:&quot;number&quot;           gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 2.挖矿基础信息</span>
+</span><span class="line">    <span class="nx">Coinbase</span>    <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="s">`json:&quot;miner&quot;            gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">GasLimit</span>    <span class="kt">uint64</span>         <span class="s">`json:&quot;gasLimit&quot;         gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">GasUsed</span>     <span class="kt">uint64</span>         <span class="s">`json:&quot;gasUsed&quot;          gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 3.状态信息</span>
+</span><span class="line">    <span class="nx">Time</span>        <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>       <span class="s">`json:&quot;timestamp&quot;        gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Root</span>        <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;stateRoot&quot;        gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">TxHash</span>      <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;transactionsRoot&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">ReceiptHash</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;receiptsRoot&quot;     gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Bloom</span>       <span class="nx">Bloom</span>          <span class="s">`json:&quot;logsBloom&quot;        gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 4.挖矿难度控制</span>
+</span><span class="line">    <span class="nx">Difficulty</span>  <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>       <span class="s">`json:&quot;difficulty&quot;       gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 5.PoW参数</span>
+</span><span class="line">    <span class="nx">MixDigest</span>   <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;mixHash&quot;          gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Nonce</span>       <span class="nx">BlockNonce</span>     <span class="s">`json:&quot;nonce&quot;            gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 6.其他</span>
+</span><span class="line">    <span class="nx">Extra</span>       <span class="p">[]</span><span class="kt">byte</span>         <span class="s">`json:&quot;extraData&quot;        gencodec:&quot;required&quot;`</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>乍一看区块头的字段非常多,别着急,接下来我们逐个分析。按照字段的作用,我们可以将这些字段分成6大类(如代码注释所示),分别控制结构、状态、挖矿等信息,下面我们依次查看.</p>
+
+<blockquote>
+  <p>本文引用源码大部分均位于miner/consensus两个包中,代码引用均会给出文件名</p>
+</blockquote>
+
+<h1 id="section-1">结构信息</h1>
+
+<p>1.<code>ParentHash</code></p>
+
+<p>简单来说,区块链其实是一个单向链表。那么单向链表中必然存在一个将链表串起来的指针,这个指针在区块链里就是<code>ParentHash</code>.每个新挖出来的区块都包含了父区块的hash值,这样我们就可以从当前区块一直溯源到创世区块,创世区块hash值为<code>0x00</code>.</p>
+
+<p>2.<code>UncleHash</code></p>
+
+<p>类似ParentHash,指向叔区块hash值。</p>
+
+<p>3.<code>Number</code></p>
+
+<p>用于标记当前区块高度,子区块高度一定是父区块+1.</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/blockchain-link.png" alt="blockchain-link" /></p>
+
+<p>构建区块的代码包含在<code>commitNewWork</code>函数中,该函数其实就是挖矿主流程所在位置。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/miner/worker.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">self</span> <span class="o">*</span><span class="nx">worker</span><span class="p">)</span> <span class="nx">commitNewWork</span><span class="p">(){</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line">    <span class="nx">num</span> <span class="o">:=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">Number</span><span class="p">()</span>
+</span><span class="line">    <span class="nx">header</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">types</span><span class="p">.</span><span class="nx">Header</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">ParentHash</span><span class="p">:</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">Hash</span><span class="p">(),</span>          <span class="c1">// 父区块的hash</span>
+</span><span class="line">        <span class="nx">Number</span><span class="p">:</span>     <span class="nx">num</span><span class="p">.</span><span class="nx">Add</span><span class="p">(</span><span class="nx">num</span><span class="p">,</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Big1</span><span class="p">),</span>  <span class="c1">// 父区块的number+1</span>
+</span><span class="line">        <span class="nx">GasLimit</span><span class="p">:</span>   <span class="nx">core</span><span class="p">.</span><span class="nx">CalcGasLimit</span><span class="p">(</span><span class="nx">parent</span><span class="p">),</span>
+</span><span class="line">        <span class="nx">Extra</span><span class="p">:</span>      <span class="nx">self</span><span class="p">.</span><span class="nx">extra</span><span class="p">,</span>
+</span><span class="line">        <span class="nx">Time</span><span class="p">:</span>       <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="nx">tstamp</span><span class="p">),</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-2">挖矿基础信息</h1>
+
+<p>1.<code>Coinbase</code></p>
+
+<p>区块链中矿工没挖出一个新区块,都会得到两部分奖励收益:挖矿奖励+手续费,那么这个奖励是到哪个账户的,就是这个coinbase帐号,默认通常是矿工本地第一个账户。</p>
+
+<p>2.<code>GasUsed</code></p>
+
+<p>实际使用的gas,每执行一笔交易往该字段上累积gas值,具体代码可查看<code>ethereum/go-ethereum/core/state_processor.go:ApplyTransaction</code>.</p>
+
+<p>3.<code>GasLimit</code></p>
+
+<p>矿工执行交易的上限gas用量,如果执行某个交易时发现gas使用超过这个值则放弃执行后续交易。其数值是基于父区块gas用量来调整,如果<code>parentGasUsed &gt; parentGasLimit * (2/3)</code>,则增大该数值，反之则减小。具体实现可参考下面代码实现。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/core/block_validator.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// CalcGasLimit computes the gas limit of the next block after parent.</span>
+</span><span class="line"><span class="c1">// This is miner strategy, not consensus protocol.</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">CalcGasLimit</span><span class="p">(</span><span class="nx">parent</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Block</span><span class="p">)</span> <span class="kt">uint64</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// contrib = (parentGasUsed * 3 / 2) / 1024</span>
+</span><span class="line">    <span class="nx">contrib</span> <span class="o">:=</span> <span class="p">(</span><span class="nx">parent</span><span class="p">.</span><span class="nx">GasUsed</span><span class="p">()</span> <span class="o">+</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">GasUsed</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="nx">params</span><span class="p">.</span><span class="nx">GasLimitBoundDivisor</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// decay = parentGasLimit / 1024 -1</span>
+</span><span class="line">    <span class="nx">decay</span> <span class="o">:=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">GasLimit</span><span class="p">()</span><span class="o">/</span><span class="nx">params</span><span class="p">.</span><span class="nx">GasLimitBoundDivisor</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/*</span>
+</span><span class="line"><span class="cm">        strategy: gasLimit of block-to-mine is set based on parent&#39;s</span>
+</span><span class="line"><span class="cm">        gasUsed value.  if parentGasUsed &gt; parentGasLimit * (2/3) then we</span>
+</span><span class="line"><span class="cm">        increase it, otherwise lower it (or leave it unchanged if it&#39;s right</span>
+</span><span class="line"><span class="cm">        at that usage) the amount increased/decreased depends on how far away</span>
+</span><span class="line"><span class="cm">        from parentGasLimit * (2/3) parentGasUsed is.</span>
+</span><span class="line"><span class="cm">    */</span>
+</span><span class="line">    <span class="nx">limit</span> <span class="o">:=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">GasLimit</span><span class="p">()</span> <span class="o">-</span> <span class="nx">decay</span> <span class="o">+</span> <span class="nx">contrib</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">limit</span> <span class="p">&lt;</span> <span class="nx">params</span><span class="p">.</span><span class="nx">MinGasLimit</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">limit</span> <span class="p">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">MinGasLimit</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">// however, if we&#39;re now below the target (TargetGasLimit) we increase the</span>
+</span><span class="line">    <span class="c1">// limit as much as we can (parentGasLimit / 1024 -1)</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">limit</span> <span class="p">&lt;</span> <span class="nx">params</span><span class="p">.</span><span class="nx">TargetGasLimit</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">limit</span> <span class="p">=</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">GasLimit</span><span class="p">()</span> <span class="o">+</span> <span class="nx">decay</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">limit</span> <span class="p">&gt;</span> <span class="nx">params</span><span class="p">.</span><span class="nx">TargetGasLimit</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">limit</span> <span class="p">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">TargetGasLimit</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">limit</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-3">状态信息</h1>
+
+<p>1.<code>Time</code></p>
+
+<p>新区块的出块时间(按代码描述,严格来说其实是开始挖矿的时间)。</p>
+
+<p>2.<code>Root</code>,<code>TxHash</code>,<code>ReceiptHash</code></p>
+
+<p>这三个hash值对验证区块意义重大.</p>
+
+<p><code>Root</code>代表的区块链当前所有账户的状态,<code>TxHash</code>是本区块所有交易摘要,<code>ReceiptHash</code>是本区块所有收据的摘要。</p>
+
+<p>这几个值都是MPT树的root hash值,只要树中任意节点数据有更改，那么这个root hash必然会跟着更改,这就为轻钱包实现提供了可能：不需要下载整个区块的数据,仅使用区块头就可以验证区块的合法性。</p>
+
+<blockquote>
+  <p>MPT树可以参考文章<a href="http://ethfans.org/posts/Merkle-Patricia-Tree">Merkle树</a></p>
+</blockquote>
+
+<p>3.<code>Bloom</code></p>
+
+<p>区块头里的布隆过滤器是用于搜索收据而构建的。</p>
+
+<blockquote>
+  <p><a href="https://github.com/cpselvis/zhihu-crawler/wiki/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0">布隆过滤器</a></p>
+</blockquote>
+
+<h1 id="section-4">挖矿难度控制</h1>
+
+<p>1.<code>Difficulty</code></p>
+
+<p>以太坊的挖矿难度是动态调整的,它的难度调整仅和父区块和本区块挖矿时间有关。 而该函数实现里根据启动参数目前有三种难度调整方案:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/consensus/ethash/consensus.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">CalcDifficulty</span><span class="p">(</span><span class="nx">config</span> <span class="o">*</span><span class="nx">params</span><span class="p">.</span><span class="nx">ChainConfig</span><span class="p">,</span> <span class="nx">time</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">parent</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Header</span><span class="p">)</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">next</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">Add</span><span class="p">(</span><span class="nx">parent</span><span class="p">.</span><span class="nx">Number</span><span class="p">,</span> <span class="nx">big1</span><span class="p">)</span>
+</span><span class="line">    <span class="k">switch</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">case</span> <span class="nx">config</span><span class="p">.</span><span class="nx">IsByzantium</span><span class="p">(</span><span class="nx">next</span><span class="p">):</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">calcDifficultyByzantium</span><span class="p">(</span><span class="nx">time</span><span class="p">,</span> <span class="nx">parent</span><span class="p">)</span>
+</span><span class="line">    <span class="k">case</span> <span class="nx">config</span><span class="p">.</span><span class="nx">IsHomestead</span><span class="p">(</span><span class="nx">next</span><span class="p">):</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">calcDifficultyHomestead</span><span class="p">(</span><span class="nx">time</span><span class="p">,</span> <span class="nx">parent</span><span class="p">)</span>
+</span><span class="line">    <span class="k">default</span><span class="p">:</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">calcDifficultyFrontier</span><span class="p">(</span><span class="nx">time</span><span class="p">,</span> <span class="nx">parent</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>每种策略代码这里不具体展开,总的来说难度值的计算是这样的:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/consensus/ethash/consensus.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="err">本区块难度</span> <span class="p">=</span> <span class="err">父区块难度</span> <span class="o">+</span> <span class="err">难度调整值</span> <span class="o">+</span> <span class="err">难度炸弹</span>
+</span><span class="line"><span class="err">难度调整值</span> <span class="p">=</span> <span class="nx">f</span><span class="p">(</span><span class="err">父区块难度</span><span class="p">,</span><span class="err">父区块产生时间</span><span class="p">,</span><span class="err">本区块产生时间</span><span class="p">)</span>
+</span><span class="line"><span class="err">难度炸弹</span> <span class="p">=</span> <span class="mi">2</span><span class="p">^(</span><span class="err">区块号</span><span class="o">/</span><span class="mi">100000</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>以太坊的区块难度以单个区块为单位进行调整，可以非常迅速的适应算力的变化，正是这种机制，使以太坊在硬分叉出以太坊经典(ETC)以后没有出现比特币分叉出比特币现金(BCC)后的算力“暴击”问题。同时，以太坊的新区块难度在老区块的基础上有限调整的机制也使区块难度不会出现非常大的跳变</p>
+
+<p>从这个公式可以看出,区块难度短期内仅和难度调整值有关(因为难度炸弹只有每100000个区块才会产生跳变),但是当挖矿到5400000区块后,难度值跳变到非常大,这个时候就不再适合挖矿。 </p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-diff.jpg" alt="eth-diff" /></p>
+
+<h1 id="pow">PoW参数</h1>
+
+<p>接下来的两个参数就和无人不知无人不晓的工作量证明息息相关了,以太坊的工作量证明最终拼的就是谁最先得到这两个参数:<code>MixDigest</code>和<code>Nonce</code>.</p>
+
+<p>目前以太坊线上使用的共识算法是基于PoW的ethash算法,主要实现位于<code>github.com/ethereum/go-ethereum/consensus/ethash</code>包中。</p>
+
+<p>PoW算法的思路都大致是相似的,通过暴力枚举猜测一个nonce值,使得根据这个nonce种子计算出的hash值符合约定的难度,这个难度其实就是要求hash值前缀包含多少个0. </p>
+
+<p>目前以太坊使用的hash是256位,所以将难度折算成前缀0的位数就是:<code>bits0 = (2^256)/difficulty</code>,那么我们的代码不停枚举nonce然后将计算得到的hash值前缀0位数和这个做比较就行了,主逻辑代码如下:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">ethash</span> <span class="o">*</span><span class="nx">Ethash</span><span class="p">)</span> <span class="nx">mine</span><span class="p">(</span><span class="nx">block</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Block</span><span class="p">,</span> <span class="nx">id</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">seed</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">abort</span> <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">found</span> <span class="kd">chan</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Block</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// Extract some data from the header</span>
+</span><span class="line">    <span class="kd">var</span> <span class="p">(</span>
+</span><span class="line">        <span class="nx">header</span>  <span class="p">=</span> <span class="nx">block</span><span class="p">.</span><span class="nx">Header</span><span class="p">()</span>
+</span><span class="line">        <span class="nx">hash</span>    <span class="p">=</span> <span class="nx">header</span><span class="p">.</span><span class="nx">HashNoNonce</span><span class="p">().</span><span class="nx">Bytes</span><span class="p">()</span>
+</span><span class="line">        <span class="c1">// 将难度转换得出前缀0的位数</span>
+</span><span class="line">        <span class="nx">target</span>  <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">Div</span><span class="p">(</span><span class="nx">maxUint256</span><span class="p">,</span> <span class="nx">header</span><span class="p">.</span><span class="nx">Difficulty</span><span class="p">)</span>
+</span><span class="line">        <span class="nx">number</span>  <span class="p">=</span> <span class="nx">header</span><span class="p">.</span><span class="nx">Number</span><span class="p">.</span><span class="nx">Uint64</span><span class="p">()</span>
+</span><span class="line">        <span class="nx">dataset</span> <span class="p">=</span> <span class="nx">ethash</span><span class="p">.</span><span class="nx">dataset</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span>
+</span><span class="line">    <span class="p">)</span>
+</span><span class="line">    <span class="o">...</span>
+</span><span class="line"><span class="nx">search</span><span class="p">:</span>
+</span><span class="line">    <span class="k">for</span> <span class="p">{</span>
+</span><span class="line">        <span class="o">...</span>
+</span><span class="line">            <span class="c1">// Compute the PoW value of this nonce</span>
+</span><span class="line">            <span class="nx">digest</span><span class="p">,</span> <span class="nx">result</span> <span class="o">:=</span> <span class="nx">hashimotoFull</span><span class="p">(</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">dataset</span><span class="p">,</span> <span class="nx">hash</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">)</span>
+</span><span class="line">            <span class="k">if</span> <span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">SetBytes</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">Cmp</span><span class="p">(</span><span class="nx">target</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class="line">                <span class="c1">// Correct nonce found, create a new header with it</span>
+</span><span class="line">                <span class="nx">header</span> <span class="p">=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">CopyHeader</span><span class="p">(</span><span class="nx">header</span><span class="p">)</span>
+</span><span class="line">                <span class="nx">header</span><span class="p">.</span><span class="nx">Nonce</span> <span class="p">=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">EncodeNonce</span><span class="p">(</span><span class="nx">nonce</span><span class="p">)</span>
+</span><span class="line">                <span class="nx">header</span><span class="p">.</span><span class="nx">MixDigest</span> <span class="p">=</span> <span class="nx">common</span><span class="p">.</span><span class="nx">BytesToHash</span><span class="p">(</span><span class="nx">digest</span><span class="p">)</span>
+</span><span class="line">                <span class="o">...</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">            <span class="nx">nonce</span><span class="o">++</span>
+</span><span class="line">         <span class="o">...</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>该函数首先计算出区块难度对应的前缀0位数<code>target</code>,然后生成PoW依赖的计算数据集<code>dataset = ethash.dataset(number)</code>,最终开始死循环尝试计算<code>digest, result := hashimotoFull(dataset.dataset, hash, nonce)</code>,得到结果后将这两个随机数据赋值到区块头对应字段去。</p>
+
+<p>当这个区块成功挖出后，别的区块很容易验证这个区块的PoW是否有效,就使用同样方法产生计算数据集<code>dataset</code>,然后调用<code>hashimotoLight(和hashimotoFull基本一致)</code>计算出<code>digest</code>和区块头的<code>MixDigest</code>做比较就可以了。</p>
+
+<p>这里我们跳过了两个重要的步骤:</p>
+
+<p>a.依赖数据集<code>dataset</code>的生成实现
+b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
+
+<p>依赖数据集的生成就要说到以太坊的DAG</p>
+
+<h2 id="dag">DAG</h2>
+
+<p>ethash将DAG（有向非循环图）用于工作量证明算法，这是为每个epoch(<code>epoch := block / epochLength</code>)生成，例如，每3000个区块（125个小时，大约5.2天）。DAG要花很长时间生成。如果客户端只是按需要生成它，那么在找到新epoch第一个区块之前，每个epoch过渡都要等待很长时间。然而，DAG只取决于区块数量，所以可以预先计算来避免在每个epoch过渡过长的等待时间。Geth和ethminer执行自动的DAG生成，每次维持2个DAG以便epoch过渡流畅。挖矿从控制台操控的时候，自动DAG生成会被打开和关闭。</p>
+
+<h2 id="hashimoto">hashimoto</h2>
+
+<blockquote>
+  <p>下面的描述摘自<a href="http://blog.csdn.net/teaspring/article/details/78050274">挖矿和共识算法的奥秘</a></p>
+</blockquote>
+
+<p>hashimoto()的逻辑比较复杂，包含了多次、多种哈希运算。下面尝试从其中数据结构变化的角度来简单描述之：</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/consensus.png" alt="hashimoto" /></p>
+
+<p>简单介绍一下上图所代表的代码流程：</p>
+
+<ul>
+  <li>首先，hashimoto()函数将入参@hash和@nonce合并成一个40 bytes长的数组，取它的SHA-512哈希值取名seed，长度为64 bytes。</li>
+  <li>然后，将seed[]转化成以uint32为元素的数组mix[]，注意一个uint32数等于4 bytes，故而seed[]只能转化成16个uint32数，而mix[]数组长度32，所以此时mix[]数组前后各半是等值的。</li>
+  <li>接着，lookup()函数登场。用一个循环，不断调用lookup()从外部数据集中取出uint32元素类型数组，向mix[]数组中混入未知的数据。循环的次数可用参数调节，目前设为64次。每次循环中，变化生成参数index，从而使得每次调用lookup()函数取出的数组都各不相同。这里混入数据的方式是一种类似向量“异或”的操作，来自于FNV算法。</li>
+  <li>待混淆数据完成后，得到一个基本上面目全非的mix[]，长度为32的uint32数组。这时，将其折叠(压缩)成一个长度缩小成原长1/4的uint32数组，折叠的操作方法还是来自FNV算法。</li>
+  <li>最后，将折叠后的mix[]由长度为8的uint32型数组直接转化成一个长度32的byte数组，这就是返回值@digest；同时将之前的seed[]数组与digest合并再取一次SHA-256哈希值，得到的长度32的byte数组，即返回值@result。</li>
+</ul>
+
+<p>最终经过一系列多次、多种的哈希运算，hashimoto()返回两个长度均为32的byte数组 - digest[]和result[]。回忆一下ethash.mine()函数中，对于hashimotoFull()的两个返回值，会直接以big.int整型数形式比较result和target；如果符合要求，则将digest取SHA3-256的哈希值(256 bits)，并存于Header.MixDigest中，待以后Ethash.VerifySeal()可以加以验证。</p>
+
+<h1 id="section-5">其他</h1>
+
+<p>1.<code>Extra</code></p>
+
+<h1 id="section-6">参考文献</h1>
+
+<ul>
+  <li><a href="http://blog.csdn.net/teaspring/article/details/78050274">挖矿和共识算法的奥秘</a> </li>
+</ul>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-02-24T16:09:11+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2018
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>
