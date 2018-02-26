@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-24T19:11:33+08:00</updated>
+  <updated>2018-02-26T15:53:43+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -240,7 +240,32 @@
 
 <p><code>Root</code>代表的区块链当前所有账户的状态,<code>TxHash</code>是本区块所有交易摘要,<code>ReceiptHash</code>是本区块所有收据的摘要。</p>
 
-<p>这几个值都是MPT树的root hash值,只要树中任意节点数据有更改，那么这个root hash必然会跟着更改,这就为轻钱包实现提供了可能：不需要下载整个区块的数据,仅使用区块头就可以验证区块的合法性。</p>
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/merkle.png" alt="merkle" /></p>
+
+<p>这几个值都是MPT树的root hash值,只要树中任意节点数据有更改，那么这个root hash必然会跟着更改,这就为轻钱包实现提供了可能:不需要下载整个区块的数据,仅使用区块头就可以验证区块的合法性。具体说来,它允许轻客户端轻松地进行并核实以下类型的查询答案:</p>
+
+<p>这笔交易被包含在特定的区块中了么？</p>
+
+<ul>
+  <li>
+    <p>告诉我这个地址在过去30天中，发出X类型事件的所有实例（例如，一个众筹合约完成了它的目标）</p>
+  </li>
+  <li>
+    <p>目前我的账户余额是多少？</p>
+  </li>
+  <li>
+    <p>这个账户是否存在？</p>
+  </li>
+  <li>
+    <p>假装在这个合约中运行这笔交易，它的输出会是什么？</p>
+  </li>
+</ul>
+
+<p>第一种是由交易树（transaction tree）来处理的；第三和第四种则是由状态树（state tree）负责处理，第二种则由收据树（receipt tree）处理。计算前四个查询任务是相当简单的。服务器简单地找到对象，获取默克尔分支，并通过分支来回复轻客户端。</p>
+
+<p>第五种查询任务同样也是由状态树处理，但它的计算方式会比较复杂。这里，我们需要构建下我们称之为默克尔状态转变的证明（Merkle state transition proof）。从本质上来讲，这样的证明也就是在说“如果你在根S的状态树上运行交易T，其结果状态树将是根为S’，log为L，输出为O” （“输出”作为存在于以太坊的一种概念，因为每一笔交易都是一个函数调用，它在理论上并不是必要的）。</p>
+
+<p>为了推断这个证明，服务器在本地创建了一个假的区块，将状态设为 S，并假装是一个轻客户端，同时请求这笔交易。也就是说，如果请求这笔交易的过程，需要客户端确定一个账户的余额，这个轻客户端会发出一个余额疑问。如果这个轻客户端需要检查存储在一个特定合约的特定项目，该轻客户端会对此发出针对查询。服务器会正确地“回应”它所有的查询，但服务器也会跟踪它所有发回的数据。然后，服务器会把综合数据发送给客户端。客户端会进行相同的步骤，但会使用它的数据库所提供的证明。如果它的结果和服务器要求的是相同的，那客户端就接受证明。</p>
 
 <blockquote>
   <p>MPT树可以参考文章<a href="http://ethfans.org/posts/Merkle-Patricia-Tree">Merkle树</a></p>
