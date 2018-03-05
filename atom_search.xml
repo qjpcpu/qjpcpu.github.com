@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-26T15:53:43+08:00</updated>
+  <updated>2018-03-05T18:17:25+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,245 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[以太坊交易]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi/"/>
+    <updated>2018-03-05T14:26:24+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi</id>
+    <content type="html"><![CDATA[<p>交易是区块链和重中之重,不论是简单的转账还是复杂的智能合约的执行,都是依托于交易来完成。但是我回头仔细研究了一把以太坊的交易,并梳理这篇文章的原因,仅仅是因为在面试的时候没有回答上来,羞愧……</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">交易的主要结构</a></li>
+  <li><a href="#section-1">交易打包流程</a>    <ul>
+      <li><a href="#section-2">拼装交易参数</a></li>
+      <li><a href="#section-3">对交易签名</a></li>
+      <li><a href="#section-4">是否重复交易</a></li>
+      <li><a href="#section-5">验证交易参数</a></li>
+      <li><a href="#section-6">丢弃低价交易</a></li>
+      <li><a href="#section-7">替换重复交易(更新旧交易)</a></li>
+      <li><a href="#section-8">提交交易进入交易队列</a></li>
+      <li><a href="#nonce">关于交易nonce</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">交易的主要结构</h1>
+
+<p>废话不多说,先看看交易的基础数据结构。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>github.com/ethereum/go-ethereum/core/types/transaction.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">txdata</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">AccountNonce</span> <span class="kt">uint64</span>          <span class="s">`json:&quot;nonce&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Price</span>        <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;gasPrice&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">GasLimit</span>     <span class="kt">uint64</span>          <span class="s">`json:&quot;gas&quot;      gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Recipient</span>    <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="s">`json:&quot;to&quot;       rlp:&quot;nil&quot;`</span> <span class="c1">// nil means contract creation</span>
+</span><span class="line">    <span class="nx">Amount</span>       <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;value&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">Payload</span>      <span class="p">[]</span><span class="kt">byte</span>          <span class="s">`json:&quot;input&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// Signature values</span>
+</span><span class="line">    <span class="nx">V</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;v&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">R</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;r&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">    <span class="nx">S</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;s&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// This is only used when marshaling to JSON.</span>
+</span><span class="line">    <span class="nx">Hash</span> <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span> <span class="s">`json:&quot;hash&quot; rlp:&quot;-&quot;`</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<ul>
+  <li><code>AccountNonce</code>,交易发起者内部唯一标识交易的字段,避免交易双重支付</li>
+  <li><code>Price</code>,此交易的gas price</li>
+  <li><code>GasLimit</code>,此交易允许的最大gas量</li>
+  <li><code>Recipient</code>,交易接收者,如果为<code>nil</code>说明是个合同创建交易</li>
+  <li><code>Amount</code>, 交易转移的<code>ETH</code>数量,单位是<code>wei</code></li>
+  <li><code>Payload</code>, 交易数据</li>
+  <li><code>V,R,S</code>, 交易签名,通过交易签名可以计算出交易发送者地址</li>
+</ul>
+
+<h1 id="section-1">交易打包流程</h1>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/transaction-pkg.png" alt="pkg" /></p>
+
+<h2 id="section-2">拼装交易参数</h2>
+
+<p>拼装交易参数主要在<code>github.com/ethereum/go-ethereum/internal/ethapi/api.go setDefaults()</code>实现。</p>
+
+<ul>
+  <li><code>Gas</code>如果未设置,设置未默认值<code>90000</code></li>
+  <li><code>GasPrice</code>如果未设置，设置为建议值</li>
+  <li><code>Nonce</code>如果未设置,自动生成nonce值,该值等于当前账户nonce偏移量加上账户nonces数组长度,由此可见账户交易的nonce值是连续递增量</li>
+</ul>
+
+<h2 id="section-3">对交易签名</h2>
+
+<p>首先使用账户的私钥对交易hash信息生成签名,注意该hash计算了包含了<code>nonce</code>值和<code>chainId</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">EIP155Signer</span><span class="p">)</span> <span class="nx">Hash</span><span class="p">(</span><span class="nx">tx</span> <span class="o">*</span><span class="nx">Transaction</span><span class="p">)</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">rlpHash</span><span class="p">([]</span><span class="kd">interface</span><span class="p">{}{</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">AccountNonce</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Price</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">GasLimit</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Recipient</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Amount</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">tx</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Payload</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">s</span><span class="p">.</span><span class="nx">chainId</span><span class="p">,</span> <span class="nb">uint</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nb">uint</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+</span><span class="line">	<span class="p">})</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>将签名信息的<code>0-31</code>字节放入<code>R</code>,<code>32-63</code>放入<code>S</code>,<code>64</code>放入<code>V</code>(共65字节).</p>
+
+<p>签名完成后,开始向以太坊提交交易.注意,如果交易的<code>To</code>字段为空,说明是个合同创建交易,则自动生成合约地址,合约地址生成规则其实是<code>hash(from_addr,nonce)</code>函数:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Creates an ethereum address given the bytes and the nonce</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">CreateAddress</span><span class="p">(</span><span class="nx">b</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span><span class="p">,</span> <span class="nx">nonce</span> <span class="kt">uint64</span><span class="p">)</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">data</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">rlp</span><span class="p">.</span><span class="nx">EncodeToBytes</span><span class="p">([]</span><span class="kd">interface</span><span class="p">{}{</span><span class="nx">b</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">})</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">common</span><span class="p">.</span><span class="nx">BytesToAddress</span><span class="p">(</span><span class="nx">Keccak256</span><span class="p">(</span><span class="nx">data</span><span class="p">)[</span><span class="mi">12</span><span class="p">:])</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-4">是否重复交易</h2>
+
+<p>通过检查交易池里是否存在该交易hash判断是否是重复交易</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">hash</span> <span class="o">:=</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">Hash</span><span class="p">()</span>
+</span><span class="line"><span class="k">if</span> <span class="nx">pool</span><span class="p">.</span><span class="nx">all</span><span class="p">[</span><span class="nx">hash</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">log</span><span class="p">.</span><span class="nx">Trace</span><span class="p">(</span><span class="s">&quot;Discarding already known transaction&quot;</span><span class="p">,</span> <span class="s">&quot;hash&quot;</span><span class="p">,</span> <span class="nx">hash</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;known transaction: %x&quot;</span><span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-5">验证交易参数</h2>
+
+<ul>
+  <li>检查交易大小是否小于等于<code>32KB</code>,防止DOS攻击</li>
+  <li>检查是否正确签名</li>
+  <li>检查gas是否超过区块gas限制</li>
+  <li>抛弃非local的且gas price偏低的交易</li>
+  <li>检查nonce是否过小</li>
+  <li>检查账户余额是否足够,<code>balance &gt;= gas_price * gas_limit + amount</code></li>
+</ul>
+
+<h2 id="section-6">丢弃低价交易</h2>
+
+<p>如果交易池已满，需要将交易池中低于当前交易的踢出一个,注意踢出的交易仅限于远端交易，本地节点的交易不受影响</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Discard finds a number of most underpriced transactions, removes them from the</span>
+</span><span class="line"><span class="c1">// priced list and returns them for further removal from the entire pool.</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">txPricedList</span><span class="p">)</span> <span class="nx">Discard</span><span class="p">(</span><span class="nx">count</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">local</span> <span class="o">*</span><span class="nx">accountSet</span><span class="p">)</span> <span class="nx">types</span><span class="p">.</span><span class="nx">Transactions</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">drop</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">count</span><span class="p">)</span> <span class="c1">// Remote underpriced transactions to drop</span>
+</span><span class="line">    <span class="nx">save</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>    <span class="c1">// Local underpriced transactions to keep</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="o">*</span><span class="nx">l</span><span class="p">.</span><span class="nx">items</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">count</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// Discard stale transactions if found during cleanup</span>
+</span><span class="line">        <span class="nx">tx</span> <span class="o">:=</span> <span class="nx">heap</span><span class="p">.</span><span class="nx">Pop</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">items</span><span class="p">).(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">)</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="nx">l</span><span class="p">.</span><span class="nx">all</span><span class="p">)[</span><span class="nx">tx</span><span class="p">.</span><span class="nx">Hash</span><span class="p">()];</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">l</span><span class="p">.</span><span class="nx">stales</span><span class="o">--</span>
+</span><span class="line">            <span class="k">continue</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="c1">// Non stale transaction found, discard unless local</span>
+</span><span class="line">        <span class="k">if</span> <span class="nx">local</span><span class="p">.</span><span class="nx">containsTx</span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">save</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">save</span><span class="p">,</span> <span class="nx">tx</span><span class="p">)</span>
+</span><span class="line">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">drop</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">drop</span><span class="p">,</span> <span class="nx">tx</span><span class="p">)</span>
+</span><span class="line">            <span class="nx">count</span><span class="o">--</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">save</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">heap</span><span class="p">.</span><span class="nx">Push</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span> <span class="nx">tx</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">drop</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-7">替换重复交易(更新旧交易)</h2>
+
+<p>因为交易可以使用<code>account+nonce</code>唯一标识,所以如果发现同一账户下已存在同nonce的交易,则视为是对旧交易的一次更新,此时会使用当前交易替换掉旧交易。该机制常用于用来提升gas值避免旧交易长时间得不到处理。</p>
+
+<h2 id="section-8">提交交易进入交易队列</h2>
+
+<p><code>promoteExecutables()</code>将交易从待处理队列移入<code>pending</code>队列</p>
+
+<ul>
+  <li>丢弃过旧的交易,过旧的定义是<code>nonce</code>小于当前账户<code>nonce</code>值的交易</li>
+  <li>丢弃低余额(账户余额不足以支持交易gas燃烧)</li>
+  <li>丢弃超过账户数量限额的交易</li>
+  <li>…</li>
+</ul>
+
+<p>在一系列交易控制之后,将交易写入<code>pending</code>队列,此时交易真正可被矿工打包到区块中。</p>
+
+<h2 id="nonce">关于交易nonce</h2>
+
+<ul>
+  <li>本地节点low gas的交易并不会被丢弃</li>
+  <li>如果nonce出现”空洞”,则空洞后的交易将无法打包,最终导致被丢弃</li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-从区块头看共识挖矿]]></title>

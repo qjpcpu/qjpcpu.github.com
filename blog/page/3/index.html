@@ -7,7 +7,14 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="搭建hadoop环境 hadoop环境搭建具体可以参考官方文档。 搭建配置maven map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。 首先编译安装maven，并将MAVEN_HOME/bin加入PATH环境变量， &hellip;">
+	<meta name="description" content="基本操作 1
+2
+3
+4
+tmux new -s SESSION_NAME # 新建会话
+tmux new -s SESSION_NAME -d # 新建会话并放入后台
+tmux ls # 列出所有会话
+tmux attach -t SESSION_NAME # 进入某会话 Read on & &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +95,60 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/09/08/tmux/">
+		
+			Tmux</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">基本操作</h3>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">tmux new -s SESSION_NAME  <span class="c"># 新建会话</span>
+</span><span class="line">tmux new -s SESSION_NAME -d <span class="c"># 新建会话并放入后台</span>
+</span><span class="line">tmux ls <span class="c"># 列出所有会话</span>
+</span><span class="line">tmux attach -t SESSION_NAME <span class="c"># 进入某会话</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+		
+		<a href="/blog/2014/09/08/tmux/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-08T00:37:23+08:00" pubdate data-updated="true">Sep 8<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/memo/'>memo</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/09/08/tmux/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -647,79 +708,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2014/05/02/ming-ling-xing-can-shu/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/04/15/sort/">
-		
-			Sort</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="sort">sort排序常用参数</h3>
-
-<p>-n : 按照数值排序</p>
-
-<p>-u : 过滤重复的行</p>
-
-<p>-r : 降序排序，默认升序</p>
-
-<p>-t : 指定分段符号</p>
-
-<p>-k : 按照第几个字段(1…)排序</p>
-
-<p>默认sort是按照字符排序的。</p>
-
-<h3 id="sort-1">sort临时目录</h3>
-
-<p>默认情况下sort使用<code>/tmp</code>作为临时文件存放目录，如果根分区很小，可能造成分区磁盘飙升，为避免这种情况可以使用<code>-T</code>参数来指定sort的临时目录：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">sort -T /path/to/tmp_directory
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="sort-2">sort不为人知的一个深坑</h3>
-
-<p>默认情况下，sort将排序对象作为字符串进行排序，并且声称按照ANSII字母顺序进行排序，实际上，如果系统的<code>LC_ALL</code>环境变量为空的话，sort的排序并不一定是按字母顺序进行排序的，这会导致sort的下游依赖程序运行得不稳定，所以，如果要确保sort正确排序，需要正确设置环境变量：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>C
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>为什么这样设置，可以<code>man sort</code>看一下它的warning部分的说明。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-15T20:57:34+08:00" pubdate data-updated="true">Apr 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/04/15/sort/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

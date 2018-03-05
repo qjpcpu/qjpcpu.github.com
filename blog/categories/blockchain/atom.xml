@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-02-26T15:53:43+08:00</updated>
+  <updated>2018-03-05T18:17:25+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,176 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[以太坊交易]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi/"/>
+    <updated>2018-03-05T14:26:24+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi</id>
+    <content type="html"><![CDATA[<p>交易是区块链和重中之重,不论是简单的转账还是复杂的智能合约的执行,都是依托于交易来完成。但是我回头仔细研究了一把以太坊的交易,并梳理这篇文章的原因,仅仅是因为在面试的时候没有回答上来,羞愧……</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">交易的主要结构</a></li>
+  <li><a href="#section-1">交易打包流程</a>    <ul>
+      <li><a href="#section-2">拼装交易参数</a></li>
+      <li><a href="#section-3">对交易签名</a></li>
+      <li><a href="#section-4">是否重复交易</a></li>
+      <li><a href="#section-5">验证交易参数</a></li>
+      <li><a href="#section-6">丢弃低价交易</a></li>
+      <li><a href="#section-7">替换重复交易(更新旧交易)</a></li>
+      <li><a href="#section-8">提交交易进入交易队列</a></li>
+      <li><a href="#nonce">关于交易nonce</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">交易的主要结构</h1>
+
+<p>废话不多说,先看看交易的基础数据结构。</p>
+
+<p>```go github.com/ethereum/go-ethereum/core/types/transaction.go
+type txdata struct {
+    AccountNonce uint64          <code>json:"nonce"    gencodec:"required"</code>
+    Price        *big.Int        <code>json:"gasPrice" gencodec:"required"</code>
+    GasLimit     uint64          <code>json:"gas"      gencodec:"required"</code>
+    Recipient    *common.Address <code>json:"to"       rlp:"nil"</code> // nil means contract creation
+    Amount       *big.Int        <code>json:"value"    gencodec:"required"</code>
+    Payload      []byte          <code>json:"input"    gencodec:"required"</code></p>
+
+<pre><code>// Signature values
+V *big.Int `json:"v" gencodec:"required"`
+R *big.Int `json:"r" gencodec:"required"`
+S *big.Int `json:"s" gencodec:"required"`
+
+// This is only used when marshaling to JSON.
+Hash *common.Hash `json:"hash" rlp:"-"` } ``` * `AccountNonce`,交易发起者内部唯一标识交易的字段,避免交易双重支付 * `Price`,此交易的gas price * `GasLimit`,此交易允许的最大gas量 * `Recipient`,交易接收者,如果为`nil`说明是个合同创建交易 * `Amount`, 交易转移的`ETH`数量,单位是`wei` * `Payload`, 交易数据 * `V,R,S`, 交易签名,通过交易签名可以计算出交易发送者地址
+</code></pre>
+
+<h1 id="section-1">交易打包流程</h1>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/transaction-pkg.png" alt="pkg" /></p>
+
+<h2 id="section-2">拼装交易参数</h2>
+
+<p>拼装交易参数主要在<code>github.com/ethereum/go-ethereum/internal/ethapi/api.go setDefaults()</code>实现。</p>
+
+<ul>
+  <li><code>Gas</code>如果未设置,设置未默认值<code>90000</code></li>
+  <li><code>GasPrice</code>如果未设置，设置为建议值</li>
+  <li><code>Nonce</code>如果未设置,自动生成nonce值,该值等于当前账户nonce偏移量加上账户nonces数组长度,由此可见账户交易的nonce值是连续递增量</li>
+</ul>
+
+<h2 id="section-3">对交易签名</h2>
+
+<p>首先使用账户的私钥对交易hash信息生成签名,注意该hash计算了包含了<code>nonce</code>值和<code>chainId</code>.</p>
+
+<p><code>go
+func (s EIP155Signer) Hash(tx *Transaction) common.Hash {
+	return rlpHash([]interface{}{
+		tx.data.AccountNonce,
+		tx.data.Price,
+		tx.data.GasLimit,
+		tx.data.Recipient,
+		tx.data.Amount,
+		tx.data.Payload,
+		s.chainId, uint(0), uint(0),
+	})
+}
+</code></p>
+
+<p>将签名信息的<code>0-31</code>字节放入<code>R</code>,<code>32-63</code>放入<code>S</code>,<code>64</code>放入<code>V</code>(共65字节).</p>
+
+<p>签名完成后,开始向以太坊提交交易.注意,如果交易的<code>To</code>字段为空,说明是个合同创建交易,则自动生成合约地址,合约地址生成规则其实是<code>hash(from_addr,nonce)</code>函数:</p>
+
+<p><code>go
+// Creates an ethereum address given the bytes and the nonce
+func CreateAddress(b common.Address, nonce uint64) common.Address {
+    data, _ := rlp.EncodeToBytes([]interface{}{b, nonce})
+    return common.BytesToAddress(Keccak256(data)[12:])
+}
+</code></p>
+
+<h2 id="section-4">是否重复交易</h2>
+
+<p>通过检查交易池里是否存在该交易hash判断是否是重复交易</p>
+
+<p><code>go
+    hash := tx.Hash()
+    if pool.all[hash] != nil {
+        log.Trace("Discarding already known transaction", "hash", hash)
+        return false, fmt.Errorf("known transaction: %x", 
+</code></p>
+
+<h2 id="section-5">验证交易参数</h2>
+
+<ul>
+  <li>检查交易大小是否小于等于<code>32KB</code>,防止DOS攻击</li>
+  <li>检查是否正确签名</li>
+  <li>检查gas是否超过区块gas限制</li>
+  <li>抛弃非local的且gas price偏低的交易</li>
+  <li>检查nonce是否过小</li>
+  <li>检查账户余额是否足够,<code>balance &gt;= gas_price * gas_limit + amount</code></li>
+</ul>
+
+<h2 id="section-6">丢弃低价交易</h2>
+
+<p>如果交易池已满，需要将交易池中低于当前交易的踢出一个,注意踢出的交易仅限于远端交易，本地节点的交易不受影响</p>
+
+<p>```go
+// Discard finds a number of most underpriced transactions, removes them from the
+// priced list and returns them for further removal from the entire pool.
+func (l *txPricedList) Discard(count int, local *accountSet) types.Transactions {
+    drop := make(types.Transactions, 0, count) // Remote underpriced transactions to drop
+    save := make(types.Transactions, 0, 64)    // Local underpriced transactions to keep</p>
+
+<pre><code>for len(*l.items) &gt; 0 &amp;&amp; count &gt; 0 {
+    // Discard stale transactions if found during cleanup
+    tx := heap.Pop(l.items).(*types.Transaction)
+    if _, ok := (*l.all)[tx.Hash()]; !ok {
+        l.stales--
+        continue
+    }
+    // Non stale transaction found, discard unless local
+    if local.containsTx(tx) {
+        save = append(save, tx)
+    } else {
+        drop = append(drop, tx)
+        count--
+    }
+}
+for _, tx := range save {
+    heap.Push(l.items, tx)
+}
+return drop } ```
+</code></pre>
+
+<h2 id="section-7">替换重复交易(更新旧交易)</h2>
+
+<p>因为交易可以使用<code>account+nonce</code>唯一标识,所以如果发现同一账户下已存在同nonce的交易,则视为是对旧交易的一次更新,此时会使用当前交易替换掉旧交易。该机制常用于用来提升gas值避免旧交易长时间得不到处理。</p>
+
+<h2 id="section-8">提交交易进入交易队列</h2>
+
+<p><code>promoteExecutables()</code>将交易从待处理队列移入<code>pending</code>队列</p>
+
+<ul>
+  <li>丢弃过旧的交易,过旧的定义是<code>nonce</code>小于当前账户<code>nonce</code>值的交易</li>
+  <li>丢弃低余额(账户余额不足以支持交易gas燃烧)</li>
+  <li>丢弃超过账户数量限额的交易</li>
+  <li>…</li>
+</ul>
+
+<p>在一系列交易控制之后,将交易写入<code>pending</code>队列,此时交易真正可被矿工打包到区块中。</p>
+
+<h2 id="nonce">关于交易nonce</h2>
+
+<ul>
+  <li>本地节点low gas的交易并不会被丢弃</li>
+  <li>如果nonce出现”空洞”,则空洞后的交易将无法打包,最终导致被丢弃</li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-从区块头看共识挖矿]]></title>
@@ -1092,217 +1262,6 @@ p.startProtocols(writeStart, writeErr)
   <li><a href="http://blog.csdn.net/teaspring/article/details/78455046">基于p2p的底层通信</a></li>
   <li><a href="https://github.com/ethereum/wiki/wiki/%5B%E4%B8%AD%E6%96%87%5D-RLP">RLP</a></li>
   <li><a href="http://ethfans.org/posts/415">RLP编码原理</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[p2p之UDP打洞]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/"/>
-    <updated>2018-01-26T22:03:15+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong</id>
-    <content type="html"><![CDATA[<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
-
-<p>在中间件为常见的NAPT的情况下（也是本文主要讨论的），内网中的客户端没有单独的公网IP地址， 而是通过NAPT转换，和其他同一内网用户共享一个公网IP。这种内网主机隐藏在中间件后的不可访问性对于一些客户端软件如浏览器来说 并不是一个问题，因为其只需要初始化对外的链接，从某方面来看反而还对隐私保护有好处。然而在P2P应用中， 内网主机（客户端）需要对另外的终端（Peer）直接建立链接，但是发起者和响应者可能在不同的中间件后面， 两者都没有公网IP地址。而外部对NAT公网IP和端口主动的链接或数据都会因内网未请求被丢弃掉。本文讨论的就是如何跨越NAT实现内网主机直接通讯的问题。</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#section">网络模型</a></li>
-  <li><a href="#section-1">打洞流程</a></li>
-  <li><a href="#section-2">先决条件</a></li>
-  <li><a href="#section-3">源码示例</a></li>
-  <li><a href="#udptcp">udp打洞转tcp通信</a></li>
-  <li><a href="#section-4">参考文献</a></li>
-</ul>
-
-<h1 id="section">网络模型</h1>
-
-<p>假设客户端A和客户端B的地址都是内网地址，且在不同的NAT后面。A、B上运行的P2P应用程序和服务器S都使用了UDP端口9982，A和B分别初始化了 与Server的UDP通信，地址映射如图所示:</p>
-
-<p><code>
-                            Server S
-                        207.148.70.129:9981
-                               |
-                               |
-        +----------------------|----------------------+
-        |                                             |
-      NAT A                                         NAT B
-120.27.209.161:6000                            120.26.10.118:3000
-        |                                             |
-        |                                             |
-     Client A                                      Client B
-  10.0.0.1:9982                                 192.168.0.1:9982
-</code></p>
-
-<p>现在假设客户端A打算与客户端B直接建立一个UDP通信会话。如果A直接给B的公网地址120.26.10.118:3000发送UDP数据，NAT B将很可能会无视进入的 数据（除非是Full Cone NAT），因为源地址和端口与S不匹配，而最初只与S建立过会话。B往A直接发信息也类似。</p>
-
-<p>假设A开始给B的公网地址发送UDP数据的同时，给服务器S发送一个中继请求，要求B开始给A的公网地址发送UDP信息。A往B的输出信息会导致NAT A打开 一个A的内网地址与与B的外网地址之间的新通讯会话，B往A亦然。一旦新的UDP会话在两个方向都打开之后，客户端A和客户端B就能直接通讯， 而无须再通过引导服务器S了。</p>
-
-<p>UDP打洞技术有许多有用的性质。一旦一个的P2P链接建立，链接的双方都能反过来作为“引导服务器”来帮助其他中间件后的客户端进行打洞， 极大减少了服务器的负载。应用程序不需要知道中间件具体是什么（如果有的话），因为以上的过程在没有中间件或者有多个中间件的情况下 也一样能建立通信链路。</p>
-
-<h1 id="section-1">打洞流程</h1>
-
-<p>假设A现在希望建立一条到B的udp会话，那么这个建立基本流程是:</p>
-
-<p><code>
-1. A,B分别建立到Server S的udp会话,那么Server S此时是知道A,B各自的外网ip+端口
-2. Server S在和B的udp会话里告诉A的地址(外网ip+端口: 120.27.209.161:6000),同理把B的地址(120.26.10.118:3000)告诉A
-3. B向A地址(120.27.209.161:6000)发送一个"握手"udp包,打通A-&gt;B的udp链路
-4. 此时A可以向B(120.26.10.118:3000)发送udp包,A-&gt;B的会话建立成功
-</code></p>
-
-<h1 id="section-2">先决条件</h1>
-
-<p>能够完成打洞有几个先决条件:</p>
-
-<p><code>
-1. A,B所在的nat网络类型(Full cone, Restricted cone, Port-restricted cone, Symmetric NAT)
-2. 在一次udp会话期间,nat设备(路由器)会保持内网进程 inner_ip:inner_port &lt;-&gt; share_public_ip:share_port的映射关系,一般根据具体路由器实现,这个映射关系可以维持几分钟到几个小时不等
-3. 流程中第3步,nat A收到这个握手包后并不会转发给A,因为它发现自己的没有保存过B的地址,认为这是一个来历不明的包而直接丢弃,然而这个包的作用在于在nat B留下了A的记录,使得nat B认为A是可达或者说可通过了,这样当A-&gt;B再发送udp包时就可以真正到达B了。所以这个"握手"包的作用是可以打通A-&gt;B的通路,是必要的
-</code></p>
-
-<h1 id="section-3">源码示例</h1>
-
-<p>使用三台设备模拟,外网设备207.148.70.129模拟Server S,执行server.go代码:</p>
-
-<p>```go server.go 
-package main</p>
-
-<p>import (
-	“fmt”
-	“log”
-	“net”
-	“time”
-)</p>
-
-<p>func main() {
-	listener, err := net.ListenUDP(“udp”, &amp;net.UDPAddr{IP: net.IPv4zero, Port: 9981})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	log.Printf(“本地地址: &lt;%s&gt; \n”, listener.LocalAddr().String())
-	peers := make([]net.UDPAddr, 0, 2)
-	data := make([]byte, 1024)
-	for {
-		n, remoteAddr, err := listener.ReadFromUDP(data)
-		if err != nil {
-			fmt.Printf(“error during read: %s”, err)
-		}
-		log.Printf(“&lt;%s&gt; %s\n”, remoteAddr.String(), data[:n])
-		peers = append(peers, *remoteAddr)
-		if len(peers) == 2 {</p>
-
-<pre><code>		log.Printf("进行UDP打洞,建立 %s &lt;--&gt; %s 的连接\n", peers[0].String(), peers[1].String())
-		listener.WriteToUDP([]byte(peers[1].String()), &amp;peers[0])
-		listener.WriteToUDP([]byte(peers[0].String()), &amp;peers[1])
-		time.Sleep(time.Second * 8)
-		log.Println("中转服务器退出,仍不影响peers间通信")
-		return
-	}
-} } ```
-</code></pre>
-
-<p>另外两台分别位于不同内网后的设备,均运行相同代码peer.go:</p>
-
-<p>```go peer.go
-package main</p>
-
-<p>import (
-	“fmt”
-	“log”
-	“net”
-	“os”
-	“strconv”
-	“strings”
-	“time”
-)</p>
-
-<p>var tag string</p>
-
-<p>const HAND_SHAKE_MSG = “我是打洞消息”</p>
-
-<p>func main() {
-	// 当前进程标记字符串,便于显示
-	tag = os.Args[1]
-	srcAddr := &amp;net.UDPAddr{IP: net.IPv4zero, Port: 9982} // 注意端口必须固定
-	dstAddr := &amp;net.UDPAddr{IP: net.ParseIP(“207.148.70.129”), Port: 9981}
-	conn, err := net.DialUDP(“udp”, srcAddr, dstAddr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	if _, err = conn.Write([]byte(“hello, I’m new peer:” + tag)); err != nil {
-		log.Panic(err)
-	}
-	data := make([]byte, 1024)
-	n, remoteAddr, err := conn.ReadFromUDP(data)
-	if err != nil {
-		fmt.Printf(“error during read: %s”, err)
-	}
-	conn.Close()
-	anotherPeer := parseAddr(string(data[:n]))
-	fmt.Printf(“local:%s server:%s another:%s\n”, srcAddr, remoteAddr, anotherPeer.String())</p>
-
-<pre><code>// 开始打洞
-bidirectionHole(srcAddr, &amp;anotherPeer)
-</code></pre>
-
-<p>}</p>
-
-<p>func parseAddr(addr string) net.UDPAddr {
-	t := strings.Split(addr, “:”)
-	port, _ := strconv.Atoi(t[1])
-	return net.UDPAddr{
-		IP:   net.ParseIP(t[0]),
-		Port: port,
-	}
-}</p>
-
-<p>func bidirectionHole(srcAddr *net.UDPAddr, anotherAddr *net.UDPAddr) {
-	conn, err := net.DialUDP(“udp”, srcAddr, anotherAddr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer conn.Close()
-	// 向另一个peer发送一条udp消息(对方peer的nat设备会丢弃该消息,非法来源),用意是在自身的nat设备打开一条可进入的通道,这样对方peer就可以发过来udp消息
-	if _, err = conn.Write([]byte(HAND_SHAKE_MSG)); err != nil {
-		log.Println(“send handshake:”, err)
-	}
-	go func() {
-		for {
-			time.Sleep(10 * time.Second)
-			if _, err = conn.Write([]byte(“from [” + tag + “]”)); err != nil {
-				log.Println(“send msg fail”, err)
-			}
-		}
-	}()
-	for {
-		data := make([]byte, 1024)
-		n, _, err := conn.ReadFromUDP(data)
-		if err != nil {
-			log.Printf(“error during read: %s\n”, err)
-		} else {
-			log.Printf(“收到数据:%s\n”, data[:n])
-		}
-	}
-}
-```</p>
-
-<p>注意代码仅模拟打洞基础流程,如果读者测试网络情况较差发生udp丢包,可能看不到预期结果,此时简单重启server,peer即可.</p>
-
-<p>完整代码参考<a href="https://github.com/qjpcpu/p2pbyudp">github</a></p>
-
-<h1 id="udptcp">udp打洞转tcp通信</h1>
-
-<p>通常,由于udp打洞实现简单,p2p的实现采用udp打洞较多,然而当通路建立起来后使用tcp进行节点间通信可以获取更好的通信效果。因为udp打洞完成后形成的nat映射是和tcp/udp无关的,所以此时可以转为使用tcp建立连接,达到最终的p2p的tcp通信.由于代码较简单,这里就不给出示例了。</p>
-
-<h1 id="section-4">参考文献</h1>
-
-<ul>
-  <li><a href="https://yq.aliyun.com/articles/227421">UDP用打洞技术穿透NAT的原理与实现</a></li>
-  <li><a href="https://zhuanlan.zhihu.com/p/26796476">P2P通信原理与实现</a></li>
-  <li><a href="https://github.com/jtriley/pystun">NAT类型检测工具</a></li>
 </ul>
 ]]></content>
   </entry>
