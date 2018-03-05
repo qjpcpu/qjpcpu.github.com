@@ -157,5 +157,47 @@ func (l *txPricedList) Discard(count int, local *accountSet) types.Transactions 
 
 ## 关于交易nonce
 
+流程中涉及到`nonce`的几个地方:
+
+#### TxPool.validateTx()检查当前交易的`nonce`大于最新区块中账户`nonce`值
+
+```go
+// Ensure the transaction adheres to nonce ordering
+if pool.currentState.GetNonce(from) > tx.Nonce() {
+	return ErrNonceTooLow
+}
+```
+
+#### 检查`pending`队列中是否有旧交易需要更新
+
+```go
+if list := pool.pending[from]; list != nil && list.Overlaps(tx) {
+   ...
+}
+```
+
+`Overlaps()`函数即根据`account,nonce`参数对进行重复检测
+
+#### 尝试将交易加入`pending`队列时检查是否需要剔除过期的nonce
+
+```go
+// 检查并剔除小于最新区块的交易
+for _, tx := range list.Forward(pool.currentState.GetNonce(addr)) {
+   ...
+}
+```
+
+#### 从队列中获取所有`nonce`值小于等于账户`pending`状态的`nonce`值
+
+```go
+for _, tx := range list.Ready(pool.pendingState.GetNonce(addr)) {
+   ...
+}
+```
+
+
+
+另外,
+
 * 本地节点low gas的交易并不会被丢弃
-* 如果nonce出现"空洞",则空洞后的交易将无法打包,最终导致被丢弃
+* 如果nonce出现"空洞",则空洞后的交易将无法打包
