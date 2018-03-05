@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-05T18:54:07+08:00</updated>
+  <updated>2018-03-05T22:47:40+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -33,7 +33,13 @@
       <li><a href="#section-6">丢弃低价交易</a></li>
       <li><a href="#section-7">替换重复交易(更新旧交易)</a></li>
       <li><a href="#section-8">提交交易进入交易队列</a></li>
-      <li><a href="#nonce">关于交易nonce</a></li>
+      <li><a href="#nonce">关于交易nonce</a>        <ul>
+          <li><a href="#txpoolvalidatetxnoncenonce">TxPool.validateTx()检查当前交易的<code>nonce</code>大于最新区块中账户<code>nonce</code>值</a></li>
+          <li><a href="#pending">检查<code>pending</code>队列中是否有旧交易需要更新</a></li>
+          <li><a href="#pendingnonce">尝试将交易加入<code>pending</code>队列时检查是否需要剔除过期的nonce</a></li>
+          <li><a href="#noncependingnonce">从队列中获取所有<code>nonce</code>值小于等于账户<code>pending</code>状态的<code>nonce</code>值</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -245,9 +251,59 @@
 
 <h2 id="nonce">关于交易nonce</h2>
 
+<p>流程中涉及到<code>nonce</code>的几个地方:</p>
+
+<h4 id="txpoolvalidatetxnoncenonce">TxPool.validateTx()检查当前交易的<code>nonce</code>大于最新区块中账户<code>nonce</code>值</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Ensure the transaction adheres to nonce ordering</span>
+</span><span class="line"><span class="k">if</span> <span class="nx">pool</span><span class="p">.</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">GetNonce</span><span class="p">(</span><span class="nx">from</span><span class="p">)</span> <span class="p">&gt;</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">Nonce</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">ErrNonceTooLow</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="pending">检查<code>pending</code>队列中是否有旧交易需要更新</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">if</span> <span class="nx">list</span> <span class="o">:=</span> <span class="nx">pool</span><span class="p">.</span><span class="nx">pending</span><span class="p">[</span><span class="nx">from</span><span class="p">];</span> <span class="nx">list</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">list</span><span class="p">.</span><span class="nx">Overlaps</span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">   <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>Overlaps()</code>函数即根据<code>account,nonce</code>参数对进行重复检测</p>
+
+<h4 id="pendingnonce">尝试将交易加入<code>pending</code>队列时检查是否需要剔除过期的nonce</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 检查并剔除小于最新区块的交易</span>
+</span><span class="line"><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">list</span><span class="p">.</span><span class="nx">Forward</span><span class="p">(</span><span class="nx">pool</span><span class="p">.</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">GetNonce</span><span class="p">(</span><span class="nx">addr</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">   <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="noncependingnonce">从队列中获取所有<code>nonce</code>值小于等于账户<code>pending</code>状态的<code>nonce</code>值</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">list</span><span class="p">.</span><span class="nx">Ready</span><span class="p">(</span><span class="nx">pool</span><span class="p">.</span><span class="nx">pendingState</span><span class="p">.</span><span class="nx">GetNonce</span><span class="p">(</span><span class="nx">addr</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">   <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>另外,</p>
+
 <ul>
   <li>本地节点low gas的交易并不会被丢弃</li>
-  <li>如果nonce出现”空洞”,则空洞后的交易将无法打包,最终导致被丢弃</li>
+  <li>如果nonce出现”空洞”,则空洞后的交易将无法打包</li>
 </ul>
 ]]></content>
   </entry>
