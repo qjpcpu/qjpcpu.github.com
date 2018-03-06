@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-07T00:12:24+08:00</updated>
+  <updated>2018-03-07T00:15:38+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -247,16 +247,7 @@
 <h1 id="section-12">参考文献</h1>
 
 <ul>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>[干货</td>
-          <td>ERC721： Non-fungible Token Standard](http://ethfans.org/posts/eip-721-non-fungible-token-standard)</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
+  <li><a href="http://ethfans.org/posts/eip-721-non-fungible-token-standard">干货ERC721 Non-fungible Token Standard</a></li>
   <li><a href="https://ethereum.org/token">Create your own CRYPTO-CURRENCY with Ethereum</a></li>
 </ul>
 ]]></content>
