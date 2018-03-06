@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="sort排序常用参数 -n : 按照数值排序 -u : 过滤重复的行 -r : 降序排序，默认升序 -t : 指定分段符号 -k : 按照第几个字段(1…)排序 默认sort是按照字符排序的。 sort临时目录 默认情况下sort使用/tmp作为临时文件存放目录，如果根分区很小， &hellip;">
+	<meta name="description" content="阅读docker源码第一个文件DOCKER/docker/docker.go，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。 Read on &rarr; May 2nd, 2014 docker &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +88,50 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/05/02/ming-ling-xing-can-shu/">
+		
+			命令行参数</a>
+	</h2>
+	<div class="entry-content">
+		<p>阅读docker源码第一个文件<code>DOCKER/docker/docker.go</code>，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。</p>
+
+
+		
+		<a href="/blog/2014/05/02/ming-ling-xing-can-shu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-02T01:14:33+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/docker/'>docker</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/05/02/ming-ling-xing-can-shu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -616,66 +660,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/03/07/compile-ruby-from-source/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/05/curl/">
-		
-			Curl</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">基本用法</h3>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">curl http://www.google.com
-</span><span class="line">curl --proxy http://proxy.com:8888 http://ww.google.com <span class="c">#使用代理</span>
-</span><span class="line">curl http://user:password@example.org/  <span class="c">#http验证</span>
-</span><span class="line">curl -u user:password http://example.org/ <span class="c">#http验证</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>获取响应头</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
-</span><span class="line">curl -IL http://example.com  <span class="c">#仅返回响应头</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-		
-		<a href="/blog/2014/03/05/curl/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-05T23:29:56+08:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/03/05/curl/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

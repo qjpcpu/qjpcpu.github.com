@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-05T22:47:40+08:00</updated>
+  <updated>2018-03-07T00:12:24+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,200 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[基于以太坊的数字资产]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan/"/>
+    <updated>2018-03-06T18:24:35+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan</id>
+    <content type="html"><![CDATA[<p>代币(token)是什么?</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">什么是代币</a>    <ul>
+      <li><a href="#section-1">最小可用代币</a></li>
+    </ul>
+  </li>
+  <li><a href="#erc20">ERC20</a>    <ul>
+      <li><a href="#section-2">大纲</a></li>
+      <li><a href="#section-3">摘要</a></li>
+      <li><a href="#section-4">动机</a></li>
+      <li><a href="#section-5">标准内容</a>        <ul>
+          <li><a href="#section-6">方法定义</a></li>
+          <li><a href="#section-7">事件定义</a></li>
+          <li><a href="#section-8">范例</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#erc721">ERC721</a>    <ul>
+      <li><a href="#section-9">实用性</a></li>
+      <li><a href="#nft-ids">NFT IDs</a></li>
+      <li><a href="#section-10">向后兼容性</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-11">其他问题</a>    <ul>
+      <li><a href="#gas">自动装填gas</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-12">参考文献</a></li>
+</ul>
+
+<h1 id="section">什么是代币</h1>
+
+<p>通常区块链上由矿工挖出的币种,我们把它称之为初代币，初代币是该区块链最底层的货币，链上的转账及各类基础交易都是以初代币作为结算依据。比如比特币对于比特币区块链，以太币之于以太坊等等。</p>
+
+<p>而通常我们说的代币,或者token(令牌),又指的是什么呢？代币是基于区块链的智能合约定义出的二代币,如果把比特币/以太币比作tcp层的数据包，那么代币就可以类比为http层的http包，它是一个更加上层的概念。</p>
+
+<p>目前市场上发行的代币大部分都是基于以太坊，这是因为以太坊本身是一个图灵完备的区块链，即它的智能合约语言是图灵完备语言。对比起来比特币链上的脚本是非图灵完备的。正是因为以太坊的图灵完备性，使得基于以太坊的开发者可以根据自己的业务需求设计出各种特性各异的代币,它们可以代表任何可替代的可交易商品: 虚拟货币，忠诚点，金牌，白条，游戏内物品等。</p>
+
+<h2 id="section-1">最小可用代币</h2>
+
+<p>标准令牌合约可能相当复杂。但实际上，一个非常基本的令牌归结为:</p>
+
+<p>```javascript
+contract MyToken {
+    /* This creates an array with all balances */
+    mapping (address =&gt; uint256) public balanceOf;</p>
+
+<pre><code>/* Initializes contract with initial supply tokens to the creator of the contract */
+function MyToken(uint256 initialSupply) {
+    balanceOf[msg.sender] = initialSupply;              // Give the creator all initial tokens
+}
+
+/* Send coins */
+function transfer(address _to, uint256 _value) {
+    require(balanceOf[msg.sender] &gt;= _value);           // Check if the sender has enough
+    require(balanceOf[_to] + _value &gt;= balanceOf[_to]); // Check for overflows
+    balanceOf[msg.sender] -= _value;                    // Subtract from the sender
+    balanceOf[_to] += _value;                           // Add the same to the recipient
+} } ```
+</code></pre>
+
+<p>阅读这段代码时，请不要拘泥于<code>token</code>的字面意思。这里的<code>MyToken</code>在发行时限定了发行总额(合约构造函数),同时具备了转账功能<code>transfer</code>。那么其实他就是一个简易的货币,具备作为物物交易的中间桥梁来转移价值的能力。</p>
+
+<h1 id="erc20">ERC20</h1>
+
+<p>以以太坊为例，由于大家均在链上以大致相同的方式发行了各自的代币，逐渐发现其实这里面有共同的模式可以被提炼出来:由于所有代币都以标准方式实施一些基本功能，这也意味着您的代币将立即与以太坊钱包和任何其他使用相同标准的客户或合同兼容.于是就出现了<code>ERC20</code>提案。</p>
+
+<h2 id="section-2">大纲</h2>
+
+<p><code>
+EIP: 20
+Title: ERC-20 Token Standard
+Author: Fabian Vogelsteller &lt;fabian@ethereum.org&gt;, Vitalik Buterin &lt;vitalik.buterin@ethereum.org&gt;
+Type: Standard
+Category: ERC
+Status: Accepted
+Created: 2015-11-19
+</code></p>
+
+<h2 id="section-3">摘要</h2>
+
+<p>以下标准定义了在智能合约中实施代币的标准API。该标准提供了传送代币的基本功能，并允许代币被批准，以便其他链上第三方可以使用它们。</p>
+
+<h2 id="section-4">动机</h2>
+
+<p>标准接口允许其他应用程序重新使用以太坊上的任何令牌：从钱包到分散式交换。</p>
+
+<h2 id="section-5">标准内容</h2>
+
+<h3 id="section-6">方法定义</h3>
+
+<p>```javascript
+// 可选方法,返回代币名称,如MyToken
+function name() constant returns (string name)
+// 可选方法，返回代币符号，如EOS
+function symbol() constant returns (string symbol)
+// 可选方法,返回代币小数位数，如8
+function decimals() constant returns (uint8 decimals)</p>
+
+<p>// 货币总发行量
+function totalSupply() constant returns (uint256 totalSupply)
+// 获取某个账户的代币余额
+function balanceOf(address _owner) constant returns (uint256 balance)
+// (本人)向某人转账
+function transfer(address _to, uint256 _value) returns (bool success)
+// (本人)批准只能合约可以向某人转账
+function approve(address _spender, uint256 _value) returns (bool success)
+// 合约代理from向to转账(须先经过from账户approve)
+function transferFrom(address _from, address _to, uint256 _value) returns (bool success)
+// 查询_owner允许合约代理向_spender转账的金额
+function allowance(address _owner, address _spender) constant returns (uint256 remaining)
+```</p>
+
+<h3 id="section-7">事件定义</h3>
+
+<p><code>javascript
+// 转移代币时必须触发该事件
+event Transfer(address indexed _from, address indexed _to, uint256 _value)
+// 批准代币时必须触发该事件
+event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+</code></p>
+
+<h3 id="section-8">范例</h3>
+
+<p><a href="https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC20/StandardToken.sol">https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC20/StandardToken.sol</a>
+<a href="https://github.com/ConsenSys/Tokens/blob/master/contracts/eip20/EIP20.sol">https://github.com/ConsenSys/Tokens/blob/master/contracts/eip20/EIP20.sol</a></p>
+
+<h1 id="erc721">ERC721</h1>
+
+<p>至于erc721的产生是为了解决数字资产唯一性问题。本质上说，erc20的两个代币之间是没有任何区别的，所以它适合作为通用的数字货币来流通，单还有一类有区别的场景，比如数字世界里我的一栋房子和你的一栋房子，他们的面积，朝向，颜色等等都会有区别，是无法同质化标识的，所以就有了erc721.</p>
+
+<p>ERC721官方称谓是:Non-fungible Token Standard(NFT),非同质化代币标准。</p>
+
+<p>ERC721的标准内容我这里不再详述，具体标准可以参考github上以太坊提案,实现实例的话，以太猫就是最好的代表。</p>
+
+<h3 id="section-9">实用性</h3>
+
+<p>许多以太坊智能合约的建议用途都依赖于跟踪单个非同质币（NFTs）。现有或计划中的NFTs 有很多，例如 Decentraland 中的 LAND，与CryptoPunks 项目同名的punks（朋克），以及Dmarket 或 EnjinCoin 等系统的游戏内物品。未来的用途包括检测真实世界中的非同质资产，例如房地产（例如 Ubitquity 或 Propy 等公司所设想的）。在这些情况下，项目在账本中不是“集中在一起的”，相反，每单位代币必须有独立的所有权并自动跟踪，这非常重要。无论这些项目的性质如何，如果我们有一个标准化的接口，并且建立跨功能的NFTs管理和销售平台，这将使得生态系统更加强大。</p>
+
+<h3 id="nft-ids">NFT IDs</h3>
+
+<p>该标准的基础是，每一个 NFT 在跟踪它的合约中，用唯一的一个256 位无符号整数进行标识。每个NFT 的 ID 标号在智能合约的生命周期内不允许改变。元组 ( contract address, asset ID ) 是每个特定 NFT 在以太坊生态系统中的全局唯一且完全合格的标识。虽然某些合约可能觉得 ID 从 0 开始编码，并且对于每一个新 NFT 的 ID 简单增 1 进行编码更加简便，但是使用者绝不能假设 ID 编号具有任何特定模式，并且需要将 ID 编码看做 “黑盒”。</p>
+
+<h3 id="section-10">向后兼容性</h3>
+
+<p>本标准尽可能遵循 ERC-20 的语义，但由于同质代币与非同质代币之间的根本差异，并不能完全兼容 ERC-20。</p>
+
+<h1 id="section-11">其他问题</h1>
+
+<h2 id="gas">自动装填gas</h2>
+
+<p>每次，您在Ethereum上进行交易，您需要向该块矿工支付费用，以计算您的智能合约的结果。虽然这可能会在未来发生变化，但目前费用只能在以太网中支付，因此您的代币的所有用户都需要它。账户余额小于费用的账户被卡住，直到业主可以支付必要的费用。但在某些使用案例中，您可能不希望用户考虑以太坊，区块链或如何获得以太网，因此只要检测到平衡危险性低，您的硬币就会自动重新填充用户余额。</p>
+
+<p>```javascript
+uint minBalanceForAccounts;</p>
+
+<p>function setMinBalance(uint minimumBalanceInFinney) onlyOwner {
+     minBalanceForAccounts = minimumBalanceInFinney * 1 finney;
+}
+/* Send coins */
+function transfer(address _to, uint256 _value) {
+    …
+    if(msg.sender.balance &lt; minBalanceForAccounts)
+        sell((minBalanceForAccounts - msg.sender.balance) / sellPrice);
+}
+```</p>
+
+<h1 id="section-12">参考文献</h1>
+
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>[干货</td>
+          <td>ERC721： Non-fungible Token Standard](http://ethfans.org/posts/eip-721-non-fungible-token-standard)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li><a href="https://ethereum.org/token">Create your own CRYPTO-CURRENCY with Ethereum</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[以太坊交易]]></title>
@@ -970,345 +1164,6 @@ func (srv *Server) Start() (err error) {
   <li><a href="http://www.8btc.com/etc-p2p">P2P网络及节点发现机制</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[深入ethereum源码-p2p模块基础结构]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-01-29T11:19:23+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou</id>
-    <content type="html"><![CDATA[<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
-
-<p>如果将以太坊的p2p类比做tcp协议,那么p2p暴露出来的子协议就类似http,使得以太坊能够在基础p2p基础上构建出whisper网络。</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#peer-to-peer">Peer to peer</a></li>
-  <li><a href="#peer">peer接入</a></li>
-  <li><a href="#rlp">数据传输格式RLP</a></li>
-  <li><a href="#section">总述</a></li>
-  <li><a href="#section-1">参考文献</a></li>
-</ul>
-
-<h1 id="peer-to-peer">Peer to peer</h1>
-
-<p>在深入了解前,最好先看看基于p2p包怎么实现一个自己子协议,建立对其的直观印象</p>
-
-<blockquote>
-  <p>下面示例来基于官方[Peer to peer]wiki文档(官方文档有个小bug, ^_^),详细参考文献</p>
-</blockquote>
-
-<p>启动一个p2p节点仅需要对<code>p2p.Server</code>做一些简单配置:</p>
-
-<p><code>go
-nodekey, _ := crypto.GenerateKey()
-srv := p2p.Server{
-    Config: p2p.Config{
-        MaxPeers:   10,
-        PrivateKey: nodekey,
-        Name:       "my node name",
-        ListenAddr: ":30300",
-        Protocols:  []p2p.Protocol{},
-        NAT:        nat.Any(),   // 支持内网穿透
-        Logger:     log.New(),
-    },
-}
-</code></p>
-
-<p>这样启动的节点仅包含了以太坊自身的基础协议:</p>
-
-<p>要实现自己的子协议,就需要拓展<code>Protocols:  []p2p.Protocol{}</code>,实现自己的<code>p2p.Protocol</code></p>
-
-<p><code>go
-func MyProtocol() p2p.Protocol {
-	return p2p.Protocol{                                                          // 1.
-		Name:    "MyProtocol",                                                    // 2.
-		Version: 1,                                                               // 3.
-		Length:  1,                                                               // 4.
-		Run:     func(peer *p2p.Peer, ws p2p.MsgReadWriter) error { return nil }, // 5.
-	}
-}
-</code></p>
-
-<ol>
-  <li>一个子协议即一个<code>p2p.Protocol</code></li>
-  <li>子协议名,需要唯一标识该子协议</li>
-  <li>协议版本号,当一个子协议有多个版本时,采纳最高版本的协议</li>
-  <li>该协议拥有的消息类型个数,因为p2p网络是可扩展的，因此其需要具有能够发送随意个数的信息的能力（需要携带type，在下文中我们能够看到说明）,p2p的handler需要知道应该预留多少空间以用来服务你的协议。这是也是共识信息能够通过message ID到达各个peer并实现协商的保障。我们的协议仅仅支持一种类型</li>
-  <li>在你的协议主要的handler中，我们现在故意将其留空。这个peer变量是指代连接到当前节点，其携带了一些peer本身的信息。其ws变量是reader和writer允许你同该peer进行通信，如果信息能够发送到当前节点，则反之也能够从本节点发送到对端peer节点</li>
-</ol>
-
-<p>现在让我们将前面留空的handler代码实现，以让它能够同别的peer通信:</p>
-
-<p>```go
-const messageId = 0   // 1.
-type Message string   // 2.</p>
-
-<p>func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
-    for {
-        msg, err := ws.ReadMsg()   // 3.
-        if err != nil {            // 4.
-            return err // if reading fails return err which will disconnect the peer.
-        }</p>
-
-<pre><code>    var myMessage [1]Message
-    err = msg.Decode(&amp;myMessage) // 5.
-    if err != nil {
-        // handle decode error
-        continue
-    }
-    
-    switch myMessage[0] {
-    case "foo":
-        err := p2p.SendItems(ws, messageId, "bar")  // 6.
-        if err != nil {
-            return err // return (and disconnect) error if writing fails.
-        }
-     default:
-         fmt.Println("recv:", myMessage)
-     }
-}
-
-return nil } ```
-</code></pre>
-
-<ol>
-  <li>其中有且唯一的已知信息ID；</li>
-  <li>将Messages alias 为string类型；</li>
-  <li>ReadMsg将一直阻塞等待，直到其收到了一条新的信息，一个错误或者EOF；</li>
-  <li>如果在读取流信息的过程当中收到了一个错误，最好的解决实践是将其返回给p2p server进行处理。这种错误通常是对端节点已经断开连接；</li>
-  <li>msg包括两个属性和一个decode方法
-    <ol>
-      <li>Code 包括了信息ID，Code == messageId (i.e.0)</li>
-      <li>Payload 是信息的内容</li>
-      <li>Decode(<ptr>) 是一个工具方法：取得 msg.Payload并将其解码，并将其内容设置到传入的message指针中，如果失败了则返回一个error</ptr></li>
-    </ol>
-  </li>
-  <li>如果解码出来的信息是foo将发回一个NewMessage并用messageId标记信息类型，信息内容是bar；而bar信息在被对端收到之后将被defaultcase捕获。</li>
-</ol>
-
-<p>现在，我们将上述的所有部分整合起来，得到下面的p2p样例代码:</p>
-
-<p>```go
-package main</p>
-
-<p>import (
-	“fmt”
-	“github.com/ethereum/go-ethereum/crypto”
-	“github.com/ethereum/go-ethereum/log”
-	“github.com/ethereum/go-ethereum/p2p”
-	“github.com/ethereum/go-ethereum/p2p/discover”
-	“github.com/ethereum/go-ethereum/p2p/nat”
-	“net”
-	“os”
-)</p>
-
-<p>const messageId = 0</p>
-
-<p>type Message string</p>
-
-<p>func MyProtocol() p2p.Protocol {
-	return p2p.Protocol{
-		Name:    “MyProtocol”,
-		Version: 1,
-		Length:  1,
-		Run:     msgHandler,
-	}
-}
-func main() {
-	nodekey, _ := crypto.GenerateKey()
-	logger := log.New()
-	logger.SetHandler(log.StderrHandler)
-	srv := p2p.Server{
-		Config: p2p.Config{
-			MaxPeers:   10,
-			PrivateKey: nodekey,
-			Name:       “my node name”,
-			ListenAddr: “:30300”,
-			Protocols:  []p2p.Protocol{MyProtocol()},
-			NAT:        nat.Any(),
-			Logger:     logger,
-		},
-	}
-	if err := srv.Start(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	fmt.Println(“started..”, srv.NodeInfo())
-	select {}
-}</p>
-
-<p>func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
-	for {
-		msg, err := ws.ReadMsg()
-		if err != nil {
-			return err
-		}</p>
-
-<pre><code>	var myMessage [1]Message
-	err = msg.Decode(&amp;myMessage)
-	if err != nil {
-		// handle decode error
-		continue
-	}
-
-	fmt.Println("code:", msg.Code, "receiver at:", msg.ReceivedAt, "msg:", myMessage)
-	switch myMessage[0] {
-	case "foo":
-		err := p2p.SendItems(ws, messageId, "bar")
-		if err != nil {
-			return err
-		}
-	default:
-		fmt.Println("recv:", myMessage)
-	}
-} } ```
-</code></pre>
-
-<h1 id="peer">peer接入</h1>
-
-<p>从上面的例子,我们可以看出来实现ethereum是非常便利的,那么下一步,我们可以看看一个节点是怎么处理新peer的接入的?梳理出这个接入过程,也就明白了节点间基本的数据流通方式.</p>
-
-<p>首先,每个节点启动入口都在<code>func (srv *Server) Start() (err error)</code>.该函数调用<code>srv.startListening()</code>在传入的ip地址监听tcp连接:</p>
-
-<p><code>go
-func (srv *Server) startListening() error {
-    // Launch the TCP listener.
-    listener, err := net.Listen("tcp", srv.ListenAddr)
-    ...
-    go srv.listenLoop()
-    ...
-    // 主执行逻辑
-    go srv.run(dialer)
-    return nil
-}
-</code></p>
-
-<p>当接收到一个新的tcp连接,节点开始检查并初始化peer</p>
-
-<p><code>go
-func (srv *Server) setupConn(c *conn, flags connFlag, dialDest *discover.Node) error {
-    ...
-    // 从这里开始,其实已经开始了ethereum的自有协议,doEncHandshake是RLPX协议的握手方法
-    if c.id, err = c.doEncHandshake(srv.PrivateKey, dialDest); err != nil {
-        srv.log.Trace("Failed RLPx handshake", "addr", c.fd.RemoteAddr(), "conn", c.flags, "err", err)
-        return err
-    }
-    ...
-    // 两次握手消息代码(handshakeMsg = 0x00)和(discMsg = 0x01)
-    phs, err := c.doProtoHandshake(srv.ourHandshake)
-    ...
-    // 握手完毕,将新连接对象*p2p.conn压入server.addpeer
-    err = srv.checkpoint(c, srv.addpeer)
-    // If the checks completed successfully, runPeer has now been
-    // launched by run.
-    return nil
-}
-</code></p>
-
-<p>下面开始看<code>Start()</code>函数里的节点主逻辑,主逻辑位于<code>Start()</code>末尾的<code>srv.run()</code>,该函数逻辑较复杂,我们现在主要看新peer接入的代码:</p>
-
-<p>```go 
-func (srv *Server) run(dialstate dialer) {
-      …
-      select{
-          …
-          case c := &lt;-srv.addpeer:  // 在这里取出之前压入addpeer的连接对象conn
-          // 执行到这里表明握手完成,并且通过了节点验证
-          err := srv.protoHandshakeChecks(peers, c)
-          if err == nil {
-              // 创建节点peer对象,传入所有子协议实现,自己实现的子协议就是在这里传入peer的,传入的所以协议通过matchProtocols函数格式化组织
-              p := newPeer(c, srv.Protocols)
-              …
-              go srv.runPeer(p)
-          }
-          …
-      }
-      …</p>
-
-<p>}
-```</p>
-
-<p>这里补充说一下<code>newPeer()</code>对子协议的一个组织方式:</p>
-
-<p>```go
-func matchProtocols(protocols []Protocol, caps []Cap, rw MsgReadWriter) map[string]<em>protoRW {
-    // 按协议(name asc,version asc)排序子协议
-    sort.Sort(capsByNameAndVersion(caps))
-    // 自定义协议偏移
-    offset := baseProtocolLength
-    result := make(map[string]</em>protoRW)</p>
-
-<p>outer:
-    for _, cap := range caps {
-        for _, proto := range protocols {
-            if proto.Name == cap.Name &amp;&amp; proto.Version == cap.Version {
-                // If an old protocol version matched, revert it
-                if old := result[cap.Name]; old != nil {
-                    offset -= old.Length
-                }
-                // Assign the new match
-                result[cap.Name] = &amp;protoRW{Protocol: proto, offset: offset, in: make(chan Msg), w: rw}
-                offset += proto.Length</p>
-
-<pre><code>            continue outer
-        }
-    }
-}
-return result } ```
-</code></pre>
-
-<p>最终每个子协议以<code>name=&gt;protocol</code>的map格式组织起来,然后每个协议根据自身支持消息类型数量<code>Protocol.Length</code>在整个以太坊消息类型轴上占据了<code>[proto.offset,proto.offset+proto.Length)</code>的左闭右开消息类型段,理解这个结构,才好理解最终根据消息类型<code>Msg.Code</code>去找handler的逻辑(<code>func (p *Peer) getProto(code uint64) (*protoRW, error)</code>)。</p>
-
-<p>下面继续看最终peer处理逻辑<code>srv.runPeer</code>:</p>
-
-<p>```go
-func (p *Peer) run() (remoteRequested bool, err error) {
-    …
-    // peer逻辑里最重要两个循环逻辑</p>
-
-<pre><code>// 收取消息循环,核心逻辑是根据消息的代号proto, err := p.getProto(msg.Code),
-// 取得对应的子协议,然后投放到对应协议的读队列proto.in &lt;- msg
-go p.readLoop(readErr)
-// 不停发送ping心跳包到远端peer
-go p.pingLoop()
-
-// 在startProtocols里最终调用我们自定义子协议的Run方法proto.Run(p, rw)
-p.startProtocols(writeStart, writeErr)
-... } ```
-</code></pre>
-
-<h1 id="rlp">数据传输格式RLP</h1>
-
-<p>以太坊数据传输都是基于RLP编码,下面文字摘自<a href="http://ethfans.org/posts/415">RLP编码原理</a></p>
-
-<blockquote>
-  <p>RLP(Recursive Length Prefix，递归长度前缀)是一种编码算法，用于编码任意的嵌套结构的二进制数据，它是以太坊中数据序列化/反序列化的主要方法，区块、交易等数据结构在持久化时会先经过RLP编码后再存储到数据库中</p>
-</blockquote>
-
-<p>定义</p>
-
-<blockquote>
-  <p>RLP编码的定义只处理两类数据：一类是字符串（例如字节数组），一类是列表。字符串指的是一串二进制数据，列表是一个嵌套递归的结构，里面可以包含字符串和列表，例如<code>["cat",["puppy","cow"],"horse",[[]],"pig",[""],"sheep"]</code>就是一个复杂的列表。其他类型的数据需要转成以上的两类，转换的规则不是RLP编码定义的，可以根据自己的规则转换，例如struct可以转成列表，int可以转成二进制（属于字符串一类），以太坊中整数都以大端形式存储。</p>
-</blockquote>
-
-<p>这部分代码均位于<code>github.com/ethereum/go-ethereum/rlp</code>包中,代码相对独立,我也没深入研究改算法,就不详细说明了。</p>
-
-<h1 id="section">总述</h1>
-
-<p>本文主要梳理了以太坊p2p模块的主流程,描述了核心的peer间数据读写的来龙去脉,从代码里也能够比较容易理解以太坊子协议的概念,理清这个主干流程,以后也就能够从每个细节发散开来,深入细节。</p>
-
-<h1 id="section-1">参考文献</h1>
-
-<ul>
-  <li><a href="https://github.com/ethereum/go-ethereum">go-ethereum github地址</a></li>
-  <li><a href="https://github.com/ethereum/go-ethereum/wiki/Peer-to-Peer">Peer to Peer</a></li>
-  <li><a href="http://blog.csdn.net/teaspring/article/details/78455046">基于p2p的底层通信</a></li>
-  <li><a href="https://github.com/ethereum/wiki/wiki/%5B%E4%B8%AD%E6%96%87%5D-RLP">RLP</a></li>
-  <li><a href="http://ethfans.org/posts/415">RLP编码原理</a></li>
-</ul>
 ]]></content>
   </entry>
   

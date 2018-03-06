@@ -7,29 +7,13 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="最简单美观的方法tree tree命令是专门用来罗列目录结构的，输出树形结果，很漂亮。 1
+	<meta name="description" content="基本用法 1
 2
 3
 4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-$ tree demo
-demo
-├── Gemfile
-├── boot.rb
-├── collectors &hellip;">
+curl http://www.google.com
+curl --proxy http://proxy.com:8888 http://ww.google.com #使用代理
+curl http://user:password@example.org/ #http验证 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -110,6 +94,66 @@ demo
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/05/curl/">
+		
+			Curl</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">基本用法</h3>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">curl http://www.google.com
+</span><span class="line">curl --proxy http://proxy.com:8888 http://ww.google.com <span class="c">#使用代理</span>
+</span><span class="line">curl http://user:password@example.org/  <span class="c">#http验证</span>
+</span><span class="line">curl -u user:password http://example.org/ <span class="c">#http验证</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>获取响应头</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">curl -i http://example.com  <span class="c">#在返回结果中包含响应头 </span>
+</span><span class="line">curl -IL http://example.com  <span class="c">#仅返回响应头</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+		
+		<a href="/blog/2014/03/05/curl/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T23:29:56+08:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/05/curl/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -657,54 +701,6 @@ Content-Type:text/html
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/">
-		
-			一步一步搭建mysql主从同步</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="mysql">下载mysql数据库</h3>
-
-<pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
-tar vzxf mysql-5.1.73.tar.gz
-</code></pre>
-
-
-		
-		<a href="/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T00:24:49+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/linux/'>linux</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
