@@ -154,5 +154,5 @@ function transfer(address _to, uint256 _value) {
 
 # 参考文献
 
-* [干货 | ERC721： Non-fungible Token Standard](http://ethfans.org/posts/eip-721-non-fungible-token-standard)
+* [干货ERC721 Non-fungible Token Standard](http://ethfans.org/posts/eip-721-non-fungible-token-standard)
 * [Create your own CRYPTO-CURRENCY with Ethereum](https://ethereum.org/token)
