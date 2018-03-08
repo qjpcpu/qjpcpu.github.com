@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-07T00:15:38+08:00</updated>
+  <updated>2018-03-08T14:19:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,274 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[solidity备忘录]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu/"/>
+    <updated>2018-03-08T09:38:45+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu</id>
+    <content type="html"><![CDATA[<p>关于以太坊solidity语言一些有趣或者有意义的tips.</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#basic-sytax">basic sytax</a>    <ul>
+      <li><a href="#section">字符串比较</a></li>
+      <li><a href="#storage-vs-memory">storage vs memory</a></li>
+    </ul>
+  </li>
+  <li><a href="#function">function</a>    <ul>
+      <li><a href="#section-1">访问修饰符</a></li>
+      <li><a href="#section-2">函数修饰符</a></li>
+    </ul>
+  </li>
+  <li><a href="#msg">msg</a></li>
+  <li><a href="#section-3">接口</a></li>
+  <li><a href="#ownable">Ownable</a></li>
+  <li><a href="#section-4">性能优化</a></li>
+</ul>
+
+<h1 id="basic-sytax">basic sytax</h1>
+
+<h2 id="section">字符串比较</h2>
+
+<p><code>solidity</code>本身无法直接比较字符串,需要转换成整数比较</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;aaaab&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;bbbbbc&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="storage-vs-memory">storage vs memory</h2>
+
+<ul>
+  <li><code>storage</code>,变量将存储到链上,如合约变量默认即storage</li>
+  <li><code>memory</code>, 内存临时变量</li>
+</ul>
+
+<h1 id="function">function</h1>
+
+<h2 id="section-1">访问修饰符</h2>
+
+<ul>
+  <li><code>public</code>, 任何人可以调用,包括其他合约</li>
+  <li><code>private</code>, 仅本合约可调用</li>
+  <li><code>internal</code>, 本合约和继承本合约的合约可调用</li>
+  <li><code>external</code>, 仅能外部调用</li>
+</ul>
+
+<h2 id="section-2">函数修饰符</h2>
+
+<ul>
+  <li><code>view</code>, 仅查看数据不修改数据,另外注意<code>view</code>修饰符不耗费gas,因为它只做本地查询</li>
+  <li><code>pure</code>, 根本不访问(区块链)数据,如仅做内存数学计算</li>
+</ul>
+
+<p>函数修饰符还可以带参数:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// 存储用户年龄的映射</span>
+</span><span class="line"><span class="nx">mapping</span> <span class="p">(</span><span class="nx">uint</span> <span class="o">=&gt;</span> <span class="nx">uint</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">age</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 限定用户年龄的修饰符</span>
+</span><span class="line"><span class="nx">modifier</span> <span class="nx">olderThan</span><span class="p">(</span><span class="nx">uint</span> <span class="nx">_age</span><span class="p">,</span> <span class="nx">uint</span> <span class="nx">_userId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">require</span><span class="p">(</span><span class="nx">age</span><span class="p">[</span><span class="nx">_userId</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nx">_age</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">_</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 必须年满16周岁才允许开车 (至少在美国是这样的).</span>
+</span><span class="line"><span class="c1">// 我们可以用如下参数调用`olderThan` 修饰符:</span>
+</span><span class="line"><span class="kd">function</span> <span class="nx">driveCar</span><span class="p">(</span><span class="nx">uint</span> <span class="nx">_userId</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">olderThan</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="nx">_userId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="c1">// 其余的程序逻辑</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="msg">msg</h1>
+
+<p>msg对象有几个常用属性</p>
+
+<ul>
+  <li><code>msg.sender</code>, 合约调用者</li>
+  <li><code>msg.value</code>, 合约调用者发送的ETH金额</li>
+</ul>
+
+<h1 id="section-3">接口</h1>
+
+<p>接口定义及使用非常简单,不需要额外语言描述.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// 声明</span>
+</span><span class="line"><span class="nx">contract</span> <span class="nx">NumberInterface</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">getNum</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_myAddress</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">view</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">uint</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">contract</span> <span class="nx">MyContract</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">address</span> <span class="nx">NumberInterfaceAddress</span> <span class="o">=</span> <span class="mh">0x06012c8cf97BEaD5deAe237070F9587f8E</span><span class="p">....;</span>
+</span><span class="line">  <span class="c1">// ^ The address of the FavoriteNumber contract on Ethereum</span>
+</span><span class="line">  <span class="nx">NumberInterface</span> <span class="nx">numberContract</span> <span class="o">=</span> <span class="nx">NumberInterface</span><span class="p">(</span><span class="nx">NumberInterfaceAddress</span><span class="p">);</span>
+</span><span class="line">  <span class="c1">// Now numberContract is pointing to the other contract</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">function</span> <span class="nx">someFunction</span><span class="p">()</span> <span class="kr">public</span> <span class="p">{</span>
+</span><span class="line">     <span class="c1">// Now we can call getNum from that contract:</span>
+</span><span class="line">     <span class="nx">uint</span> <span class="nx">num</span> <span class="o">=</span> <span class="nx">numberContract</span><span class="p">.</span><span class="nx">getNum</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// ...and do something with num here</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接口的使用和实现分离的特点,也是实战中重要特性:解决bugfix,调用外部合同等等灵活场景.</p>
+
+<h1 id="ownable">Ownable</h1>
+
+<p><code>Ownable</code>是进行合约管理的常用手段</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm"> * @title Ownable</span>
+</span><span class="line"><span class="cm"> * @dev The Ownable contract has an owner address, and provides basic authorization control</span>
+</span><span class="line"><span class="cm"> * functions, this simplifies the implementation of &quot;user permissions&quot;.</span>
+</span><span class="line"><span class="cm"> */</span>
+</span><span class="line"><span class="nx">contract</span> <span class="nx">Ownable</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">address</span> <span class="kr">public</span> <span class="nx">owner</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">event</span> <span class="nx">OwnershipTransferred</span><span class="p">(</span><span class="nx">address</span> <span class="nx">indexed</span> <span class="nx">previousOwner</span><span class="p">,</span> <span class="nx">address</span> <span class="nx">indexed</span> <span class="nx">newOwner</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">  <span class="cm">/**</span>
+</span><span class="line"><span class="cm">   * @dev The Ownable constructor sets the original `owner` of the contract to the sender</span>
+</span><span class="line"><span class="cm">   * account.</span>
+</span><span class="line"><span class="cm">   */</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">Ownable</span><span class="p">()</span> <span class="kr">public</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">owner</span> <span class="o">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="cm">/**</span>
+</span><span class="line"><span class="cm">   * @dev Throws if called by any account other than the owner.</span>
+</span><span class="line"><span class="cm">   */</span>
+</span><span class="line">  <span class="nx">modifier</span> <span class="nx">onlyOwner</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">require</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">==</span> <span class="nx">owner</span><span class="p">);</span>
+</span><span class="line">    <span class="nx">_</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="cm">/**</span>
+</span><span class="line"><span class="cm">   * @dev Allows the current owner to transfer control of the contract to a newOwner.</span>
+</span><span class="line"><span class="cm">   * @param newOwner The address to transfer ownership to.</span>
+</span><span class="line"><span class="cm">   */</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">transferOwnership</span><span class="p">(</span><span class="nx">address</span> <span class="nx">newOwner</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">onlyOwner</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">require</span><span class="p">(</span><span class="nx">newOwner</span> <span class="o">!=</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</span><span class="line">    <span class="nx">OwnershipTransferred</span><span class="p">(</span><span class="nx">owner</span><span class="p">,</span> <span class="nx">newOwner</span><span class="p">);</span>
+</span><span class="line">    <span class="nx">owner</span> <span class="o">=</span> <span class="nx">newOwner</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-4">性能优化</h1>
+
+<p>通常情况下我们不会考虑使用 unit 变种，因为无论如何定义 uint的大小，Solidity 为它保留256位的存储空间。例如，使用 uint8 而不是uint（uint256）不会为你节省任何gas。</p>
+
+<p>除非，把 unit 绑定到 struct 里面。</p>
+
+<p>如果一个 struct 中有多个 uint，则尽可能使用较小的 uint, Solidity 会将这些 uint 打包在一起，从而占用较少的存储空间。例如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">struct</span> <span class="nx">NormalStruct</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">uint</span> <span class="nx">a</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">uint</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">uint</span> <span class="nx">c</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">struct</span> <span class="nx">MiniMe</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">uint32</span> <span class="nx">a</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">uint32</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">uint</span> <span class="nx">c</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>// 因为使用了结构打包，<code>mini</code> 比 <code>normal</code> 占用的空间更少</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">NormalStruct</span> <span class="nx">normal</span> <span class="o">=</span> <span class="nx">NormalStruct</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+</span><span class="line"><span class="nx">MiniMe</span> <span class="nx">mini</span> <span class="o">=</span> <span class="nx">MiniMe</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以，当 uint 定义在一个 struct 中的时候，尽量使用最小的整数子类型以节约空间。 并且把同样类型的变量放一起（即在struct中将把变量按照类型依次放置），这样 Solidity 可以将存储空间最小化。例如，有两个 struct：</p>
+
+<p>uint c; uint32 a; uint32 b; 和 uint32 a; uint c; uint32 b;</p>
+
+<p>前者比后者需要的gas更少，因为前者把uint32放一起了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[基于以太坊的数字资产]]></title>
@@ -4242,245 +4510,6 @@ list[ 1 ][ 1 ] = d;
 </span><span class="line">      <span class="nv">viewB:</span>
 </span><span class="line">        <span class="nv">template: </span><span class="s">&quot;route2.viewB&quot;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[我的简历]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/12/15/resume/"/>
-    <updated>2014-12-15T20:20:58+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/12/15/resume</id>
-    <content type="html"><![CDATA[<h4 id="section">联系方式</h4>
-
-<ul>
-  <li>
-    <p>姓名: JasonQu</p>
-  </li>
-  <li>
-    <p>邮箱: qjpcpu@gmail.com</p>
-  </li>
-  <li>
-    <p>电话: 终端执行<code>(uname -a |grep -i linux &gt;/dev/null) &amp;&amp; (echo MTU4ODQ1NDIyMzgK | base64 -d) || (echo MTU4ODQ1NDIyMzgK | base64 -D)</code></p>
-  </li>
-  <li>
-    <p>微信: </p>
-  </li>
-</ul>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
-
-<!-- more -->
-
-<h3 id="section-1">教育经历</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>时间</th>
-      <th>学校</th>
-      <th>学位</th>
-      <th>描述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>2011.9~2014.3</td>
-      <td>同济大学</td>
-      <td>硕士研究生</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>2007.9~2011.7</td>
-      <td>同济大学</td>
-      <td>本科学士学位</td>
-      <td>-</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="section-2">工作履历</h3>
-
-<h4 id="section-3">2016.03 - 至今</h4>
-
-<ul>
-  <li>Company: 咕咚</li>
-  <li>Location: 成都</li>
-  <li>Position: 电商研发</li>
-</ul>
-
-<h4 id="section-4">2014.12 - 2016.03</h4>
-
-<ul>
-  <li>
-    <p>Company: tap4fun</p>
-  </li>
-  <li>
-    <p>Location: 成都</p>
-  </li>
-  <li>
-    <p>Position: 运维开发</p>
-  </li>
-</ul>
-
-<h4 id="section-5">2013.12 - 2014.12</h4>
-
-<ul>
-  <li>
-    <p>Company: 百度</p>
-  </li>
-  <li>
-    <p>Location: 上海</p>
-  </li>
-  <li>
-    <p>Position: 运维开发</p>
-  </li>
-</ul>
-
-<h4 id="section-6">2013.1 - 2013.8</h4>
-
-<ul>
-  <li>
-    <p>Company: 惠普(中国)</p>
-  </li>
-  <li>
-    <p>Location: 上海</p>
-  </li>
-  <li>
-    <p>Position: 打印机app开发(实习)</p>
-  </li>
-</ul>
-
-<h3 id="section-7">项目经验</h3>
-
-<h4 id="section-8">1. 咕咚电商(咕咚)</h4>
-
-<p><strong>环境及工具:</strong> linux,golang,mysql,redis</p>
-
-<p><strong>项目描述:</strong> 作为咕咚电商核心研发,搭建完成咕咚电商平台,提供咕咚用户购买运动相关商品及赛事奖牌的功能</p>
-
-<ol>
-  <li>商品系统,重构并优化商品系统,组织起sku-spu逻辑概念,简化库存设计,优化性能</li>
-  <li>订单系统,拆分并简化订单系统,保证系统的扩展性</li>
-  <li>发货系统,发货系统支持自由仓储及多个三方仓储,提升发货效率至1天</li>
-  <li>促销系统,大规模重构促销系统,使得从产品到研发易于支持新的促销逻辑,目前支持团购、秒杀、套餐等多种促销模式</li>
-  <li>秒杀系统,完成秒杀系统开发,有处理大规模并发流量经验</li>
-</ol>
-
-<h4 id="web">2. Web网关(咕咚)</h4>
-
-<p><strong>环境及工具:</strong> linux,golang,redis</p>
-
-<p><strong>项目描述:</strong> 独立设计完成咕咚H5网关webmiddleware,为咕咚h5请求提供的统一session管理,同时实现流控,服务自动降级,频控等安全策略</p>
-
-<h4 id="ioptap4fun">3. 智能运维系统iOP(tap4fun)</h4>
-
-<p><strong>环境及工具:</strong> linux, ruby on rails, mongodb, angularJs, coffee-script</p>
-
-<p><strong>项目描述:</strong>  系统为了完成运维自动化，提升运维效率，主要包含了以下几大功能:</p>
-
-<ol>
-  <li>自动部署: 运维同学在iOP中编辑部署模板，配置好部署针对的目标机器，需要执行的命令及每个命令脚本的执行顺序，提交后iOP按照配置自动完成代码从产品库到线上的发布变更</li>
-  <li>流程管理: iOP内部抽象完成出一套工作流引擎<a href="https://github.com/qjpcpu/taskflow-mongoid">TaskFlow</a>，该引擎的执行步骤可重用可配置，驱动整个iOP的工单数据流</li>
-  <li>机器操作: 底层封装aws及阿里云，屏蔽其细节，统一对运维提供开服/关服/开关机等机器操作</li>
-  <li>镜像备份: 根据配置自动备份机器实例，完成灾备</li>
-  <li>权限管理: 所有用户根据自己角色决定了资源的可见性和可操作性，同时和线上机器登录权限保持同步</li>
-  <li>配置: 其他运维元数据的配置管理</li>
-</ol>
-
-<h4 id="tap4fungithubhttpsgithubcomqjpcpuwechatnotifier">4. 微信消息平台(tap4fun)<a href="https://github.com/qjpcpu/WeChatNotifier">github地址</a></h4>
-
-<p><strong>环境及工具:</strong> linux, nodejs, requirejs, gulp, coffee-script, leveldb</p>
-
-<p><strong>项目描述:</strong> 为企业内部提供消息推送服务及单点登录</p>
-
-<ol>
-  <li>消息推送: 利用该平台，企业各内部系统可以利用微信向员工推送消息</li>
-  <li>消息响应: 内部系统可以被动响应消息，从而达到将微信作为交互平台的目的</li>
-  <li>单点登录: 企业内部系统可以利用微信消息平台作为单点登录,有效解决中小型企业的登录安全性及便利性</li>
-</ol>
-
-<h4 id="tap4fun">5. 统一认证系统(tap4fun)</h4>
-
-<p><strong>环境及工具:</strong> linux, ruby on rails, mongodb</p>
-
-<p><strong>项目描述:</strong> 使用google Oauth2完成内部员工单点登录认证</p>
-
-<h4 id="section-9">6. 流式监控系统(百度)</h4>
-
-<p><strong>环境及工具:</strong> linux, ruby, mysql, emacs, sinatra</p>
-
-<p><strong>项目描述:</strong> 监控流式计算系统当前的任务处理情况,并能自动定位故障。前端使用sinatra框架完成,使用了ajax和coffeescript等技术,后端任务用ruby+bash完成,数据存储在项目前期后期分别选用了mongodb和mysql</p>
-
-<h4 id="section-10">7. 机器管理系统(百度)</h4>
-
-<p><strong>环境及工具:</strong> linux, ruby, mysql, emacs</p>
-
-<p><strong>项目描述:</strong> 管理机器池的机器自动安装,环境自动初始化,机器数量千台以上。首先,自动检测机器是否故障,如果有故障则自动完成送修,送修完成自动挂回。如无故障则进行机器重装,安装各种初始化环境等 。系统前端采用rails编写,后端混合ruby和bash,数据交互使用mysql数据库,自动操作利用状态机设计完成</p>
-
-<h4 id="githubhttpsgithubcomqjpcpujreport">8. 快速报表开发框架(百度)<a href="https://github.com/qjpcpu/jreport">github地址</a></h4>
-
-<p><strong>环境及工具:</strong> linux, ruby , emacs</p>
-
-<p><strong>项目描述:</strong>  一套快速报表开发框架,基于该框架最快可以在10分钟内开发出一套邮件报表,是一套针对报表专门设计开发的类rails框架</p>
-
-<h4 id="golanggithubhttpsgithubcomqjpcpusexy-ssh">9. 基于golang的批量工具(百度)<a href="https://github.com/qjpcpu/sexy-ssh">github地址</a></h4>
-
-<p><strong>环境及工具:</strong> linux, golang</p>
-
-<p><strong>项目描述:</strong> 基于ssh协议的批量操作工具,功能强大部署简单。 能完成批量任务执行及文件复制,任务执行能力强,使用go语言开发完成</p>
-
-<h4 id="app">10. 打印机app(惠普中国)</h4>
-
-<p><strong>环境及工具:</strong> windows, java, serverlet, jsp</p>
-
-<p><strong>项目描述:</strong> 惠普打印机无线打印app。无须电脑,打印机上直接浏览网盘文件进行预览及打印</p>
-
-<h3 id="section-11">技能概览</h3>
-
-<h4 id="section-12">编程语言</h4>
-
-<ul>
-  <li>ruby; 精通ruby,5年+经验</li>
-  <li>coffee-script; 熟悉coffee，能熟练用来开发前端页面或后端node程序</li>
-  <li>golang; 熟悉go语言，有小型项目经验</li>
-  <li>shell; 2年以上linux运维，能熟练使用shell管理linux</li>
-  <li>java/C#/C/Python; 基本了解</li>
-</ul>
-
-<h4 id="section-13">操作系统</h4>
-
-<ul>
-  <li>2年以上linux运维经验, 长期linux使用经验</li>
-  <li>自己编译过linux系统，并翻译过LFS，译本见<a href="https://github.com/qjpcpu/LFS">Linux from scratch</a></li>
-</ul>
-
-<h4 id="section-14">数据库</h4>
-
-<ul>
-  <li>有基于mongodb, mysql开发经验</li>
-</ul>
-
-<h4 id="web-1">web开发</h4>
-
-<ul>
-  <li>熟悉ruby及js的web开发技术</li>
-  <li>熟悉前端新技术angularJS</li>
-</ul>
-
-<h4 id="section-15">服务器开发</h4>
-
-<ul>
-  <li>熟练利用ruby/golang进行服务端开发</li>
-</ul>
-
-<h3 id="section-16">自我评价</h3>
-
-<ul>
-  <li>好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向</li>
-  <li>自我激励，一旦认定目标，会投入100%精力完成</li>
-  <li>崇拜Google</li>
-</ul>
-
 ]]></content>
   </entry>
   

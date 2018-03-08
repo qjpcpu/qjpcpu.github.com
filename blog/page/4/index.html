@@ -7,7 +7,8 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="阅读docker源码第一个文件DOCKER/docker/docker.go，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。 Read on &rarr; May 2nd, 2014 docker &hellip;">
+	<meta name="description" content="建立host1到host2的信任关系 如果A的rsa文件不存在可以这样建立 首先在host1上： create_rsa.sh 1
+ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa 添加信任关系 在host2上，将host1的~/.ssh/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +89,70 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/">
+		
+			信任关系建立</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="host1host2">建立host1到host2的信任关系</h3>
+
+<h4 id="arsa">如果A的rsa文件不存在可以这样建立</h4>
+
+<p>首先在<code>host1</code>上：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>create_rsa.sh   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section">添加信任关系</h4>
+
+<p>在<code>host2</code>上，将<code>host1</code>的<code>~/.ssh/id_rsa.pub</code>文件内容<code>追加</code>到<code>host2</code>的<code>authorized_keys</code>文件中</p>
+
+<h4 id="fingerprint">避免第一次连接出现添加fingerprint的询问</h4>
+
+<p>在<code>host1</code>上执行：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ssh-keyscan host2 &gt;&gt; ~/.ssh/known_hosts
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+		
+		<a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-21T14:58:28+08:00" pubdate data-updated="true">May 21<span>st</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/05/21/xin-ren-guan-xi-jian-li/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -608,58 +673,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/03/10/shellshu-zu/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/07/compile-ruby-from-source/">
-		
-			Compile Ruby From Source</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">下载需要的软件包</h3>
-
-<ul>
-  <li><a href="http://www.openssl.org/source/">openssl</a></li>
-  <li><a href="http://pyyaml.org/wiki/PyYAML">yaml</a></li>
-  <li><a href="https://www.ruby-lang.org">ruby</a></li>
-  <li><a href="http://sqlite.org/2014/sqlite-autoconf-3080301.tar.gz">sqlite3</a>(可选)</li>
-  <li><a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz">pkg-config</a>(可选)</li>
-</ul>
-
-
-		
-		<a href="/blog/2014/03/07/compile-ruby-from-source/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-07T15:35:02+08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/03/07/compile-ruby-from-source/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
