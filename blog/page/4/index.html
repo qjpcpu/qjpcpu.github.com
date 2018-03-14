@@ -7,8 +7,22 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="建立host1到host2的信任关系 如果A的rsa文件不存在可以这样建立 首先在host1上： create_rsa.sh 1
-ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa 添加信任关系 在host2上，将host1的~/.ssh/ &hellip;">
+	<meta name="description" content="1.匿名结构 1
+2
+3
+4
+5
+var person struct { name string age int
+}
+person.name=&quot;jack&quot; 声明时初始化： 1
+2
+3
+4
+5
+6
+7
+8
+st := struct { name string age int &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +103,82 @@ ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa 添加信任关系 在host2�
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/">
+		
+			你不知道的Go</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">1.匿名结构</h3>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">name</span>      <span class="kt">string</span>
+</span><span class="line">    <span class="nx">age</span> <span class="kt">int</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>声明时初始化：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">name</span> <span class="kt">string</span>
+</span><span class="line">	<span class="nx">age</span>  <span class="kt">int</span>
+</span><span class="line"><span class="p">}{</span>
+</span><span class="line">	<span class="s">&quot;Jack&quot;</span><span class="p">,</span>
+</span><span class="line">	<span class="mi">12</span><span class="p">,</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+		
+		<a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-23T14:37:47+08:00" pubdate data-updated="true">Jun 23<span>rd</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -621,58 +711,6 @@ $ stat -c %z access.log #获取change time
 </div>
 	
 	<div class="comments"><a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/10/shellshu-zu/">
-		
-			Shell数组</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">数组定义</h3>
-
-<p>定义数组需要用括号把元素包裹起来。</p>
-
-<pre><code>colors=(red green blue black white)
-# 打印整个数组
-echo ${colors[*]}  # red green blue black white
-echo ${colors[@]}  # red green blue black white
-</code></pre>
-
-
-		
-		<a href="/blog/2014/03/10/shellshu-zu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-10T00:22:25+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/03/10/shellshu-zu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

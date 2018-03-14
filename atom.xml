@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-08T14:19:50+08:00</updated>
+  <updated>2018-03-14T11:20:39+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,310 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[以太坊实战-交易爬虫]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong/"/>
+    <updated>2018-03-13T19:46:40+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong</id>
+    <content type="html"><![CDATA[<p>本文从一个区块链跑路项目说起,怎么通过大家可见的区块数据进行自己的业务分析,目的主要是讲述中间涉及到的技术,如果你能从中获益,并因此构建自己更加强大的分析工具,我深感荣幸.</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">防止区块链项目跑路</a></li>
+  <li><a href="#section-1">服务端控制智能合约</a></li>
+  <li><a href="#erc20">ERC20关键参数获取</a>    <ul>
+      <li><a href="#section-2">某个地址是否合约</a></li>
+      <li><a href="#from">From</a></li>
+      <li><a href="#to">To</a>        <ul>
+          <li><a href="#section-3">函数签名</a></li>
+          <li><a href="#section-4">参数编码</a></li>
+          <li><a href="#transfer">transfer</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#put-it-together">Put it together</a></li>
+  <li><a href="#section-5">参考文献</a></li>
+</ul>
+
+<h1 id="section">防止区块链项目跑路</h1>
+
+<p>首先要说说这个争议颇多的英雄链: 做为首个全球加密数字货币区块链博彩平台的建设者，HeroChain致力打造数字货币一站式博彩娱乐互动平台，是实现在区块链上加密数字货币的娱乐和产品集合服务平台。HeroChain团队目标是落地与合作全球85个博彩合法的国家和地区，或博彩业合法牌照或与当地博彩业紧密合作，未来使得HEC能与线下赌场打通，使得HEC拥有更大的交易场景。团队认为：HEC的应用覆盖和使用领域确实足以支撑这个巨量加密数字货币的流通市值。由于没有税收，使得HeroChain团队每年可以拿出收益的30%，在进行市场回购HEC， 让参与者获利。关键这个博彩业市场不像之前其它项目的预测的预期市场，是庞大而真实的网络娱乐刚需市场。</p>
+
+<p>从这段描述来看，英雄链所针对的应用场景和未来目标都是非常有说服力的。然而目前出现有用户和项目团队因为破发矛盾激化,进而对该项目本身也产生各种质疑。媒体也对其核心人员的资金流向进行了分析:</p>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/JFoxiaVESXq0R8KvzDkcyicO28Yyo94Ngzl8JoqNXcPxFBgibetLQ74ENNDiaFY1S3gQokIAddFrxI9snaPooY4dWA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="balance flow" /></p>
+
+<p>从结果来看，项目募集的资金都最终流向了某一个地址，确实存在发行者卷款跑路的可能(详细分析可以查阅参考文献两篇文章)。</p>
+
+<p>我这里只是以这件事件做一个引子，由于区块链的数据对大众完全透明公开,所有人的资金流向其实都摆在眼前，只是说现在链上基础工具不完善，普通人很难去分析这庞大而精细的交易记录。如果我们做一个交易爬虫，能够轻松分析任意账户的资金流动，那么不论是对普通小白验证项目的可信度还是金融从业者分析深度数据，都是很有价值的。</p>
+
+<p>下面，我就介绍下，如果要产生ERC20某个代币的资金流向图(类似下图)，要注意哪些技术关键点。</p>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/JFoxiaVESXq0R8KvzDkcyicO28Yyo94NgzgqH5wW9TgI5o4zoBZB3owgvXNbykPhEkEep9zHS5rjqm0GD12BfgRg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="hec" /></p>
+
+<h1 id="section-1">服务端控制智能合约</h1>
+
+<p>要和只能合约进行交互,显然需要完成通用编程语言对合约的控制,这里我们以<code>golang</code>代码为例,展示怎么从<code>golang</code>中调用合约函数。<a href="https://github.com/ethereum/go-ethereum">官方go-ethereum</a>已经提供了这样的工具<code>abigen</code>,直接从合约<code>sol</code>代码生成go代码:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Command</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code>abigen</code></td>
+      <td>Source code generator to convert Ethereum contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain <a href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI">Ethereum contract ABIs</a> with expanded functionality if the contract bytecode is also available. However it also accepts Solidity source files, making development much more streamlined. Please see our <a href="https://github.com/ethereum/go-ethereum/wiki/Native-DApps:-Go-bindings-to-Ethereum-contracts">Native DApps</a> wiki page for details.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>那我们要分析erc20的代币，所以定义好一份接口合约即可:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">Token</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">name</span><span class="p">()</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">string</span> <span class="nx">name</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// 可选方法，返回代币符号，如EOS</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">symbol</span><span class="p">()</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">string</span> <span class="nx">symbol</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// 可选方法,返回代币小数位数，如8</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">decimals</span><span class="p">()</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">uint8</span> <span class="nx">decimals</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 货币总发行量</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">totalSupply</span><span class="p">()</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">uint256</span> <span class="nx">totalSupply</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// 获取某个账户的代币余额</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">balanceOf</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_owner</span><span class="p">)</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">uint256</span> <span class="nx">balance</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// (本人)向某人转账</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">transfer</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_to</span><span class="p">,</span> <span class="nx">uint256</span> <span class="nx">_value</span><span class="p">)</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">bool</span> <span class="nx">success</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// (本人)批准只能合约可以向某人转账</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">approve</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_spender</span><span class="p">,</span> <span class="nx">uint256</span> <span class="nx">_value</span><span class="p">)</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">bool</span> <span class="nx">success</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// 合约代理from向to转账(须先经过from账户approve)</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">transferFrom</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_from</span><span class="p">,</span> <span class="nx">address</span> <span class="nx">_to</span><span class="p">,</span> <span class="nx">uint256</span> <span class="nx">_value</span><span class="p">)</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">bool</span> <span class="nx">success</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">// 查询_owner允许合约代理向_spender转账的金额</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">allowance</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_owner</span><span class="p">,</span> <span class="nx">address</span> <span class="nx">_spender</span><span class="p">)</span> <span class="nx">constant</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">uint256</span> <span class="nx">remaining</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后使用<code>abigen</code>工具生成go代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">abigen --sol ./erc20.sol --pkg erc20 --out token.go
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后在<code>golang</code>中就可以像这样调用合约函数:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
+</span><span class="line">	<span class="s">&quot;log&quot;</span>
+</span><span class="line">
+</span><span class="line">	<span class="s">&quot;github.com/ethereum/go-ethereum/common&quot;</span>
+</span><span class="line">	<span class="s">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="c1">// Create an IPC based RPC connection to a remote node</span>
+</span><span class="line">	<span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ethclient</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="s">&quot;/home/karalabe/.ethereum/testnet/geth.ipc&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to connect to the Ethereum client: %v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="c1">// Instantiate the contract and display its name</span>
+</span><span class="line">	<span class="nx">token</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">NewToken</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">&quot;0x21e6fc92f93c8a1bb41e2be64b4e1f88a54d3576&quot;</span><span class="p">),</span> <span class="nx">conn</span><span class="p">)</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to instantiate a Token contract: %v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="nx">name</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">token</span><span class="p">.</span><span class="nx">Name</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to retrieve token name: %v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Token name:&quot;</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="erc20">ERC20关键参数获取</h1>
+
+<p>做交易爬虫,现在最关键的是分析交易参数,比如这是<code>etherscan.io</code>上一个<code>MCAP</code>转账交易:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-tx.png" alt="tx" /></p>
+
+<h2 id="section-2">某个地址是否合约</h2>
+
+<p>在交易里，如果是合约的调用那么<code>To</code>字段必然是一个合约地址,那么当我们拿到一个交易时，怎么判断这个交易是否一次合约调用呢，或者怎么判断<code>To</code>是合约地址而不是用户钱包地址呢？</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="err">很简单</span><span class="p">,</span><span class="err">地址对应存储位置上有代码则是合约地址</span><span class="p">,</span><span class="err">反之是用户钱包</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>理解了这个原理,那么在go代码里就很容易判断了:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 某个地址是否合约</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">IsContract</span><span class="p">(</span><span class="nx">conn</span> <span class="o">*</span><span class="nx">ethclient</span><span class="p">.</span><span class="nx">Client</span><span class="p">,</span> <span class="nx">hexAddr</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">code</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">CodeAt</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="nx">hexAddr</span><span class="p">),</span> <span class="kc">nil</span><span class="p">)</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <p>这里附上其他环境判断是否合约的方法</p>
+</blockquote>
+
+<p>在合约solidity代码里判断:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">function</span> <span class="nx">isContract</span><span class="p">(</span><span class="nx">address</span> <span class="nx">addr</span><span class="p">)</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">uint</span> <span class="nx">size</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">assembly</span> <span class="p">{</span> <span class="nx">size</span> <span class="o">:=</span> <span class="nx">extcodesize</span><span class="p">(</span><span class="nx">addr</span><span class="p">)</span> <span class="p">}</span>
+</span><span class="line">  <span class="k">return</span> <span class="nx">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在<code>geth</code>的console:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">eth.getCode<span class="o">(</span><span class="s2">&quot;0xbfb2e296d9cf3e593e79981235aed29ab9984c0f&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="from">From</h2>
+
+<p><code>From</code>无法直接从交易函数里获取,因为来源地址可以从签名里反解出来,为了拿取到这个字段,用的方法是解析交易的<code>String()</code>输出来获取,虽然办法效率不高,但为了不改动源码这是最简单的。</p>
+
+<h2 id="to">To</h2>
+
+<p>收款地址的获取就比较麻烦一些了，它不像eth的直接转账,交易的<code>to</code>字段就是收款地址,合约调用的<code>To</code>是合约地址,真正的收款地址存放在<code>Data</code>字段里,那么我们来看看<code>Data</code>字段怎么编码的。</p>
+
+<h3 id="section-3">函数签名</h3>
+
+<p><code>Data</code>的起始4个字节是函数签名的sha3结果的前缀,举个例子,对于下面的合约</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">Foo</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">bar</span><span class="p">(</span><span class="nx">fixed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">xy</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">baz</span><span class="p">(</span><span class="nx">uint32</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">bool</span> <span class="nx">y</span><span class="p">)</span> <span class="nx">returns</span> <span class="p">(</span><span class="nx">bool</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">32</span> <span class="o">||</span> <span class="nx">y</span><span class="p">;</span> <span class="p">}</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">sam</span><span class="p">(</span><span class="nx">bytes</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">bool</span> <span class="nx">z</span><span class="p">,</span> <span class="nx">uint</span><span class="p">[]</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><code>
+如果要调用</code>baz<code>函数,则结果应该是</code>keccak256(“baz(uint32,bool)”)[0:4]<code>转换为16进制是</code>0xcdcd77c0`</p>
+
+<h3 id="section-4">参数编码</h3>
+
+<p>参数编码是依次对函数签名每个参数进行32字节左补齐编码,如<code>baz(69,true)</code>这次调用,参数<code>69</code>和<code>true</code>分别编码结果是:</p>
+
+<ul>
+  <li><code>69</code>,编码为<code>0x0000000000000000000000000000000000000000000000000000000000000045</code></li>
+  <li><code>true</code>,编码为<code>0x0000000000000000000000000000000000000000000000000000000000000001</code></li>
+</ul>
+
+<p>那么整合起来,<code>baz(69,true)</code>调用时交易的<code>Data</code>应该为:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="mh">0xcdcd77c000000000000000000000000000000000000000000000000000000000000000450000000000000000000000000000000000000000000000000000000000000001</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="transfer">transfer</h3>
+
+<p>回到我们的需求,我们要分析的20代币的转账，其实就是分析<code>transfer(address _to,unit256 _value)</code>的合约函数调用,该函数签名编码是<code>0xa9059cbb</code>,比如我们要对<code>0x54d28e24df3a2381d4c072118da0ef0a51a4fcd9</code>转账<code>493480000</code>个MCAP,编码过程为:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nb">Function</span><span class="o">:</span> <span class="nx">transfer</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_to</span><span class="p">,</span> <span class="nx">uint256</span> <span class="nx">_value</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">MethodID</span><span class="o">:</span> <span class="mh">0xa9059cbb</span>
+</span><span class="line"><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">:</span>  <span class="mi">00000000000000000000000054</span><span class="nx">d28e24df3a2381d4c072118da0ef0a51a4fcd9</span>
+</span><span class="line"><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span>  <span class="mi">000000000000000000000000000000000000000000000000000000001</span><span class="nx">d69e840</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最终结果<code>Data</code>是<code>0xa9059cbb00000000000000000000000054d28e24df3a2381d4c072118da0ef0a51a4fcd9000000000000000000000000000000000000000000000000000000001d69e840</code></p>
+
+<h1 id="put-it-together">Put it together</h1>
+
+<p>把这上面关键点整合起来,就可以构建一个简单爬虫,这个爬虫执行流程应该是:</p>
+
+<ul>
+  <li>遍历区块交易,取到我们关注的某个合约的所有转账交易</li>
+  <li>解析交易关键字段,包含交易ID,from,to,金额,时间戳</li>
+  <li>入库,提供webAPI给应用层</li>
+</ul>
+
+<p>目前我的示例代码仅实现了关键字段解析,但已经足够作为基础函数去做上层分析工具了: <a href="https://github.com/qjpcpu/ethereum/blob/master/stats/erc20_crawl.go">代码地址</a></p>
+
+<h1 id="section-5">参考文献</h1>
+
+<ul>
+  <li><a href="https://mp.weixin.qq.com/s/2wG9-NyeHwan8pgmlaLSwQ">英雄链深度调查 永不说谎的地址</a></li>
+  <li><a href="https://mp.weixin.qq.com/s/KPIDMwujSZI_MhpmMIG5Gg?scene=25#wechat_redirect">谁是英雄链背后的英雄</a></li>
+  <li><a href="https://github.com/ethereum/go-ethereum/wiki/Native-DApps:-Go-bindings-to-Ethereum-contracts">Go bindings to Ethereum contracts</a></li>
+  <li><a href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI#argument-encoding">Ethereum Contract ABI</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[solidity备忘录]]></title>
@@ -4250,266 +4554,6 @@ list[ 1 ][ 1 ] = d;
 </span><span class="line"><span class="nt">&lt;/ul&gt;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
-    <updated>2014-12-29T17:32:53+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
-    <content type="html"><![CDATA[<h1 id="section">简介</h1>
-<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
-
-<!-- more -->
-
-<h1 id="demo">Demo</h1>
-<p>直接使用<code>ui-router</code>的方式可以参考其github文档，这里以yeoman为例简单展示下ui-router的使用。</p>
-
-<p>在<code>bower.json</code>中加入ui-router依赖包,然后<code>bower install</code>执行安装</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>bower.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
-</span><span class="line">  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;learn-angular&quot;</span><span class="p">,</span>
-</span><span class="line">  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0&quot;</span><span class="p">,</span>
-</span><span class="line">  <span class="nt">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class="line">    <span class="err">/*省略其他*/</span>
-</span><span class="line">    <span class="nt">&quot;angular-ui-router&quot;</span><span class="p">:</span> <span class="s2">&quot;^0.2.13&quot;</span>
-</span><span class="line">  <span class="p">},</span>
-</span><span class="line"> <span class="err">/*省略其他*/</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在<code>index.html</code>中添加引用：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bower_components/angular-ui-router/release/angular-ui-router.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>在app.coffee中设置路由：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/scripts/app.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="s">&#39;use strict&#39;</span>
-</span><span class="line">
-</span><span class="line"><span class="nx">angular</span>
-</span><span class="line">  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;learnAngularApp&#39;</span><span class="p">,</span> <span class="p">[</span>
-</span><span class="line">    <span class="s">&#39;ui.router&#39;</span>    <span class="c1"># 添加模块依赖</span>
-</span><span class="line">  <span class="p">])</span>
-</span><span class="line">  <span class="p">.</span><span class="nx">run</span> <span class="p">[</span><span class="s">&#39;$rootScope&#39;</span><span class="p">,</span> <span class="s">&#39;$state&#39;</span><span class="p">,</span> <span class="s">&#39;$stateParams&#39;</span><span class="p">,</span> <span class="nf">($rootScope,   $state,   $stateParams) -&gt;</span>
-</span><span class="line">    <span class="nv">$rootScope.$state = </span><span class="nx">$state</span>
-</span><span class="line">    <span class="nv">$rootScope.$stateParams = </span><span class="nx">$stateParams</span>
-</span><span class="line">    <span class="p">]</span>
-</span><span class="line">  <span class="p">.</span><span class="nx">config</span> <span class="nf">($stateProvider,$urlRouterProvider) -&gt;</span>
-</span><span class="line">    <span class="nx">$urlRouterProvider</span><span class="p">.</span><span class="nx">otherwise</span> <span class="s">&quot;/&quot;</span>
-</span><span class="line">    <span class="nx">$stateProvider</span>
-</span><span class="line">      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;home&#39;</span><span class="p">,</span>
-</span><span class="line">        <span class="nv">url: </span><span class="s">&#39;/&#39;</span>                      <span class="c1"># 可见默认路由状态是home</span>
-</span><span class="line">        <span class="nv">templateUrl: </span><span class="s">&#39;views/home.html&#39;</span>
-</span><span class="line">      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state1&#39;</span><span class="p">,</span>
-</span><span class="line">        <span class="nv">url: </span><span class="s">&#39;/state1&#39;</span>
-</span><span class="line">        <span class="nv">templateUrl: </span><span class="s">&#39;views/state1.html&#39;</span>
-</span><span class="line">      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state1.list&#39;</span><span class="p">,</span>
-</span><span class="line">        <span class="nv">url: </span><span class="s">&#39;/list&#39;</span>
-</span><span class="line">        <span class="nv">templateUrl: </span><span class="s">&#39;views/state1.list.html&#39;</span>
-</span><span class="line">        <span class="nv">controller: </span><span class="nf">($scope) -&gt;</span>
-</span><span class="line">          <span class="nv">$scope.items = </span><span class="p">[</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="s">&quot;Of&quot;</span><span class="p">,</span> <span class="s">&quot;Items&quot;</span><span class="p">]</span>
-</span><span class="line">      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state2&#39;</span><span class="p">,</span>
-</span><span class="line">        <span class="nv">url: </span><span class="s">&#39;/state2&#39;</span>
-</span><span class="line">        <span class="nv">templateUrl: </span><span class="s">&#39;views/state2.html&#39;</span>
-</span><span class="line">      <span class="p">.</span><span class="nx">state</span> <span class="s">&#39;state2.list&#39;</span><span class="p">,</span>
-</span><span class="line">        <span class="nv">url: </span><span class="s">&#39;/list&#39;</span>
-</span><span class="line">        <span class="nv">templateUrl: </span><span class="s">&#39;views/state2.list.html&#39;</span>
-</span><span class="line">        <span class="nv">controller: </span><span class="nf">($scope) -&gt;</span>
-</span><span class="line">          <span class="nv">$scope.things = </span><span class="p">[</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;Set&quot;</span><span class="p">,</span> <span class="s">&quot;Of&quot;</span><span class="p">,</span> <span class="s">&quot;Things&quot;</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>ui-router最重要的三个服务<code>$state</code>,<code>$stateProvider</code>,<code>$urlRouterProvider</code>。在<code>$stateProvider</code>上配置所有的状态，state方法的第一个参数是状态名，第二个参数是一个hash对象，里面可以配置<code>url</code>,<code>templateUrl</code>,<code>controller</code>等。</p>
-
-<p>注意其中类似<code>state1.list</code>和<code>state1</code>的状态，<code>state1.list</code>是<code>state1</code>的子状态，所以触发<code>state1.list</code>的url是父子状态的联合，即<code>/state1</code>+<code>/list</code> =&gt; <code>/state1/list</code>,所以当浏览器导航到<code>/state1/list</code>（或手动触发<code>$state.go()</code>）时，<code>state1.list.html</code>才被插入父模板渲染。</p>
-
-<p>下图非常清晰反映了ui-router的渲染逻辑：</p>
-
-<ul>
-  <li>绿色 = 初始状态</li>
-  <li>黄色 = 即时渲染</li>
-  <li>蓝色 = 最终状态</li>
-</ul>
-
-<p><img src="https://camo.githubusercontent.com/15b1f1780e3a88cc1d6e0055dda298279d66fad7/68747470733a2f2f7261772e6769746875622e636f6d2f77696b692f616e67756c61722d75692f75692d726f757465722f5374617465476f4578616d706c65732e706e67" alt="渲染逻辑" /></p>
-
-<p>主模板index.html:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;div&gt;</span>
-</span><span class="line">    <span class="nt">&lt;ul&gt;</span>
-</span><span class="line">      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;home&quot;</span><span class="nt">&gt;</span>home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span> <span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state1&quot;</span><span class="nt">&gt;</span>state1<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;li</span> <span class="na">ui-sref-active=</span><span class="s">&quot;active&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state2&quot;</span><span class="nt">&gt;</span>state2<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">    <span class="nt">&lt;/ul&gt;</span>
-</span><span class="line"><span class="nt">&lt;/div&gt;</span>
-</span><span class="line"><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这里出现了两个ui-router的指令，<code>ui-sref</code>类似于angularjs的<code>ng-href</code>，只不过后面指定的是路由状态。</p>
-
-<p>另一个指令就是<code>ui-view</code>，ui-router根据激活的状态向该指令中插入子模板。ui-router插入模板的规则是：<code>ui-router会将激活状态的模板插入父状态模板的ui-view处</code>。home状态是根状态，所以<code>app/index.html</code>的<code>ui-view</code>中插入的就是home状态的模板片段<code>app/views/home.html</code>。</p>
-
-<p>其他模板：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- app/views/state1.html --&gt;</span>
-</span><span class="line"><span class="nt">&lt;h1&gt;</span>State 1<span class="nt">&lt;/h1&gt;</span>
-</span><span class="line"><span class="nt">&lt;hr/&gt;</span>
-</span><span class="line"><span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state1.list&quot;</span><span class="nt">&gt;</span>Show List<span class="nt">&lt;/a&gt;</span>
-</span><span class="line"><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class="line"><span class="c">&lt;!-- app/views/state1.list.html --&gt;</span>
-</span><span class="line"><span class="nt">&lt;h3&gt;</span>List of State 1 Items<span class="nt">&lt;/h3&gt;</span>
-</span><span class="line"><span class="nt">&lt;ul&gt;</span>
-</span><span class="line">  <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">&quot;item in items&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/li&gt;</span>
-</span><span class="line"><span class="nt">&lt;/ul&gt;</span>
-</span><span class="line"><span class="c">&lt;!-- app/views/state2.html --&gt;</span>
-</span><span class="line"><span class="nt">&lt;h1&gt;</span>State 2<span class="nt">&lt;/h1&gt;</span>
-</span><span class="line"><span class="nt">&lt;hr/&gt;</span>
-</span><span class="line"><span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;state2.list&quot;</span><span class="nt">&gt;</span>Show List<span class="nt">&lt;/a&gt;</span>
-</span><span class="line"><span class="nt">&lt;div</span> <span class="na">ui-view</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class="line"><span class="c">&lt;!-- app/views/state2.list.html --&gt;</span>
-</span><span class="line"><span class="nt">&lt;h3&gt;</span>List of State 2 Things<span class="nt">&lt;/h3&gt;</span>
-</span><span class="line"><span class="nt">&lt;ul&gt;</span>
-</span><span class="line">  <span class="nt">&lt;li</span> <span class="na">ng-repeat=</span><span class="s">&quot;thing in things&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/li&gt;</span>
-</span><span class="line"><span class="nt">&lt;/ul&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>由上面的规则可以同理推出，当url为<code>/state1/list</code>时，会渲染主模板<code>state1.html</code>，并且会将子模板<code>state1.list.html</code>嵌入<code>state1.html</code>的<code>ui-view</code>中一起渲染出来。cool，路由渲染的灵活性非常高！</p>
-
-<p>另外还有一个常用指令<code>ui-sref-active="classname"</code>,它通常和<code>ui-sref</code>一起使用，含义是当前状态被激活则会在所属html标签上class属性添加classname,如果不再是激活状态则去除classname。</p>
-
-<p>另外，ui-router还支持多模板：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/views/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;body&gt;</span>
-</span><span class="line">    <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;viewA&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class="line">    <span class="nt">&lt;div</span> <span class="na">ui-view=</span><span class="s">&quot;viewB&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class="line">    <span class="c">&lt;!-- Also a way to navigate --&gt;</span>
-</span><span class="line">    <span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;route1&quot;</span><span class="nt">&gt;</span>Route 1<span class="nt">&lt;/a&gt;</span>
-</span><span class="line">    <span class="nt">&lt;a</span> <span class="na">ui-sref=</span><span class="s">&quot;route2&quot;</span><span class="nt">&gt;</span>Route 2<span class="nt">&lt;/a&gt;</span>
-</span><span class="line"><span class="nt">&lt;/body&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/scripts/app.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">myApp</span><span class="p">.</span><span class="nx">config</span> <span class="nf">($stateProvider) -&gt;</span>
-</span><span class="line">  <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">,</span>
-</span><span class="line">    <span class="nv">url: </span><span class="s">&quot;&quot;</span>
-</span><span class="line">    <span class="nv">views:</span>
-</span><span class="line">      <span class="nv">viewA:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;index.viewA&quot;</span>
-</span><span class="line">      <span class="nv">viewB:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;index.viewB&quot;</span>
-</span><span class="line">  <span class="p">).</span><span class="nx">state</span><span class="p">(</span><span class="s">&quot;route1&quot;</span><span class="p">,</span>
-</span><span class="line">    <span class="nv">url: </span><span class="s">&quot;/route1&quot;</span>
-</span><span class="line">    <span class="nv">views:</span>
-</span><span class="line">      <span class="nv">viewA:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;route1.viewA&quot;</span>
-</span><span class="line">      <span class="nv">viewB:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;route1.viewB&quot;</span>
-</span><span class="line">  <span class="p">).</span><span class="nx">state</span> <span class="s">&quot;route2&quot;</span><span class="p">,</span>
-</span><span class="line">    <span class="nv">url: </span><span class="s">&quot;/route2&quot;</span>
-</span><span class="line">    <span class="nv">views:</span>
-</span><span class="line">      <span class="nv">viewA:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;route2.viewA&quot;</span>
-</span><span class="line">      <span class="nv">viewB:</span>
-</span><span class="line">        <span class="nv">template: </span><span class="s">&quot;route2.viewB&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>
   

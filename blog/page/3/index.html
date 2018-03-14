@@ -7,7 +7,8 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="联系方式 姓名: JasonQu 邮箱: qjpcpu@gmail.com 电话: 终端执行(uname -a |grep -i linux &gt;/dev/null) &amp;&amp; (echo MTU4ODQ1NDIyMzgK | base64 -d) || (echo &hellip;">
+	<meta name="description" content="简介
+AngularUI Router是AngularJS的路由框架，和默认的$route不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +89,51 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/">
+		
+			angularJS路由框架ui-router</a>
+	</h2>
+	<div class="entry-content">
+		<h1 id="section">简介</h1>
+<p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
+
+
+		
+		<a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-29T17:32:53+08:00" pubdate data-updated="true">Dec 29<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/angularjs/'>angularjs</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -631,82 +677,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2014/07/12/struct-tags/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/">
-		
-			你不知道的Go</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">1.匿名结构</h3>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">    <span class="nx">name</span>      <span class="kt">string</span>
-</span><span class="line">    <span class="nx">age</span> <span class="kt">int</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>声明时初始化：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">name</span> <span class="kt">string</span>
-</span><span class="line">	<span class="nx">age</span>  <span class="kt">int</span>
-</span><span class="line"><span class="p">}{</span>
-</span><span class="line">	<span class="s">&quot;Jack&quot;</span><span class="p">,</span>
-</span><span class="line">	<span class="mi">12</span><span class="p">,</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
-		
-		<a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-06-23T14:37:47+08:00" pubdate data-updated="true">Jun 23<span>rd</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/go/'>go</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
