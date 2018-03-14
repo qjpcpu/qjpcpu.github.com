@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-08T14:19:50+08:00</updated>
+  <updated>2018-03-14T11:16:25+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -299,7 +299,7 @@ menuItems = [
 &lt;div ng-controller="ExampleController"&gt;
   &lt;div ng-repeat="innerList in list" ng-init="outerIndex = $index"&gt;
     &lt;div ng-repeat="value in innerList" ng-init="innerIndex = $index"&gt;
-       &lt;span class="example-init"&gt;list[  ][  ] = ;&lt;/span&gt;
+       &lt;span class="example-init"&gt;list[ {{outerIndex}} ][ {{innerIndex}} ] = {{value}};&lt;/span&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;
@@ -318,20 +318,20 @@ list[ 1 ][ 1 ] = d;
 
 <p>```html
 <script type="text/ng-template" id="menu-item-link-tpl">
-    <span class="title"></span>			
-    <span ng-if="item.label"></span>
+    <span class="title">{{item.title}}</span>			
+    <span ng-if="item.label">{{item.label.text}}</span>
 </script></p>
 
 <script type="text/ng-template" id="menu-items-tpl">
     <li ng-repeat="item in menuItems">
-	<a href="#" ng-include="'menu-item-link-tpl'"></a>
+	<a href="#{{item.link}}" ng-include="'menu-item-link-tpl'"></a>
 	<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
     </li>
 </script>
 
 <script type="text/ng-template" id="menu-items-recursive-tpl">
     <li ng-repeat="item in subItems">
-	<a href="#" ng-include="'menu-item-link-tpl'"></a>
+	<a href="#{{item.link}}" ng-include="'menu-item-link-tpl'"></a>
 	<ul ng-if="item.menuItems.length" ng-init="subItems = item.menuItems" ng-include="'menu-items-recursive-tpl'"></ul>
     </li>
 </script>
@@ -455,7 +455,7 @@ list[ 1 ][ 1 ] = d;
 <!-- app/views/state1.list.html --></p>
 <h3>List of State 1 Items</h3>
 <ul>
-  <li ng-repeat="item in items"></li>
+  <li ng-repeat="item in items">{{ item }}</li>
 </ul>
 <!-- app/views/state2.html -->
 <h1>State 2</h1>
@@ -466,7 +466,7 @@ list[ 1 ][ 1 ] = d;
 <!-- app/views/state2.list.html --></p>
 <h3>List of State 2 Things</h3>
 <ul>
-  <li ng-repeat="thing in things"></li>
+  <li ng-repeat="thing in things">{{ thing }}</li>
 </ul>
 <p>```</p>
 
