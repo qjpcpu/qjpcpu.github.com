@@ -70,7 +70,7 @@ abigen --sol ./erc20.sol --pkg erc20 --out token.go
 
 然后在`golang`中就可以像这样调用合约函数:
 
-```golang
+```go
 package main
 
 import (
@@ -116,7 +116,7 @@ func main() {
 
 理解了这个原理,那么在go代码里就很容易判断了:
 
-```golang
+```go
 // 某个地址是否合约
 func IsContract(conn *ethclient.Client, hexAddr string) bool {
 	code, err := conn.CodeAt(context.Background(), common.HexToAddress(hexAddr), nil)
