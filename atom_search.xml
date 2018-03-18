@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-14T11:26:04+08:00</updated>
+  <updated>2018-03-18T16:37:10+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[以太坊合约开发中那些危险的坑]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng/"/>
+    <updated>2018-03-18T16:29:02+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng</id>
+    <content type="html"><![CDATA[<p>列举合约开发中那些危险的操作.</p>
+
+<!-- more -->
+
+<p><a href="https://github.com/ConsenSys/smart-contract-best-practices/blob/master/README-zh.md">以太坊智能合约 —— 最佳安全开发指南</a></p>
+
+<p><a href="http://me.tryblockchain.org/blockchain-solidity-fallback.html">Solidity的fallback函数</a></p>
+
+<p><a href="http://me.tryblockchain.org/Solidity-call-callcode-delegatecall.html">深入浅出Solidity call相关函数</a></p>
+
+<p><a href="http://me.tryblockchain.org/blockchain-solidity-send-ether-bestpractice.html">Solidity发送ether最佳实践</a></p>
+
+<p><a href="http://solidity.readthedocs.io/en/v0.4.21/contracts.html#fallback-function">Fallback Function</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[以太坊实战-交易爬虫]]></title>
