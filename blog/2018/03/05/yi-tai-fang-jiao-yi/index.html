@@ -112,6 +112,7 @@
       </li>
     </ul>
   </li>
+  <li><a href="#section-9">关于失败的交易</a></li>
 </ul>
 
 <h1 id="section">交易的主要结构</h1>
@@ -374,6 +375,165 @@
 <ul>
   <li>本地节点low gas的交易并不会被丢弃</li>
   <li>如果nonce出现”空洞”,则空洞后的交易将无法打包</li>
+</ul>
+
+<h1 id="section-9">关于失败的交易</h1>
+
+<p>有时候我们在使用以太坊时交易(转账)时,会遇到一些令人迷惑的失败交易,比如在imToken上转账失败,然而在etherscan.io上无法查到该交易;而有时候又发现失败的转账能够在以太坊浏览器里成功查看到,说明交易是被正确打包上链了,只是交易本身是失败的交易而已，如下图所示,这是一笔因gas过低而失败的交易:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/fail-tx.png" alt="fail-tx" /></p>
+
+<p>那么我们深入源码来看看是怎么回事.这里我们只跟踪挖矿过程中的失败交易处理,因为普通交易在还没进入到pending队列时的失败的话,是根本不会打包到区块里的。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">env</span> <span class="o">*</span><span class="nx">Work</span><span class="p">)</span> <span class="nx">commitTransaction</span><span class="p">(</span><span class="nx">tx</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">,</span> <span class="nx">bc</span> <span class="o">*</span><span class="nx">core</span><span class="p">.</span><span class="nx">BlockChain</span><span class="p">,</span> <span class="nx">coinbase</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span><span class="p">,</span> <span class="nx">gp</span> <span class="o">*</span><span class="nx">core</span><span class="p">.</span><span class="nx">GasPool</span><span class="p">)</span> <span class="p">(</span><span class="kt">error</span><span class="p">,</span> <span class="p">[]</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Log</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="o">...</span>
+</span><span class="line">  <span class="c1">// 如果执行交易报错,则回滚账户状态(即不从用户账户扣钱,完全回滚,交易不会打包)</span>
+</span><span class="line">  <span class="nx">receipt</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">core</span><span class="p">.</span><span class="nx">ApplyTransaction</span><span class="p">(</span><span class="nx">env</span><span class="p">.</span><span class="nx">config</span><span class="p">,</span> <span class="nx">bc</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">coinbase</span><span class="p">,</span> <span class="nx">gp</span><span class="p">,</span> <span class="nx">env</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">env</span><span class="p">.</span><span class="nx">header</span><span class="p">,</span> <span class="nx">tx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">env</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">GasUsed</span><span class="p">,</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">Config</span><span class="p">{})</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">env</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">RevertToSnapshot</span><span class="p">(</span><span class="nx">snap</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">err</span><span class="p">,</span> <span class="kc">nil</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="nx">env</span><span class="p">.</span><span class="nx">txs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">env</span><span class="p">.</span><span class="nx">txs</span><span class="p">,</span> <span class="nx">tx</span><span class="p">)</span>
+</span><span class="line">  <span class="nx">env</span><span class="p">.</span><span class="nx">receipts</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">env</span><span class="p">.</span><span class="nx">receipts</span><span class="p">,</span> <span class="nx">receipt</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">receipt</span><span class="p">.</span><span class="nx">Logs</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>commitTransaction()</code>就是在”挖矿”中调用的交易执行函数,其实从该函数就可以看出来:如果执行交易报错,则回滚账户状态,那么交易是不会被打包到区块的.</p>
+
+<p>那么我们继续进入<code>ApplyTransaction()</code>看看什么情况下交易会报错,</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">ApplyTransaction</span><span class="p">(</span><span class="nx">config</span> <span class="o">*</span><span class="nx">params</span><span class="p">.</span><span class="nx">ChainConfig</span><span class="p">,</span> <span class="nx">bc</span> <span class="o">*</span><span class="nx">BlockChain</span><span class="p">,</span> <span class="nx">author</span> <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Address</span><span class="p">,</span> <span class="nx">gp</span> <span class="o">*</span><span class="nx">GasPool</span><span class="p">,</span> <span class="nx">statedb</span> <span class="o">*</span><span class="nx">state</span><span class="p">.</span><span class="nx">StateDB</span><span class="p">,</span> <span class="nx">header</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Header</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">*</span><span class="kd">type</span><span class="err">$</span>
+</span><span class="line">  <span class="c1">// 1.参数检查类错误</span>
+</span><span class="line">  <span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">AsMessage</span><span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">MakeSigner</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="nx">header</span><span class="p">.</span><span class="nx">Number</span><span class="p">))</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="o">...</span>
+</span><span class="line">  <span class="c1">// 2.执行类,稍后再看</span>
+</span><span class="line">  <span class="nx">_</span><span class="p">,</span> <span class="nx">gas</span><span class="p">,</span> <span class="nx">failed</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ApplyMessage</span><span class="p">(</span><span class="nx">vmenv</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">gp</span><span class="p">)</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="c1">// 3.存储交易收据,注意失败的交易也会创建收据</span>
+</span><span class="line">  <span class="nx">receipt</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">NewReceipt</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span> <span class="nx">failed</span><span class="p">,</span> <span class="o">*</span><span class="nx">usedGas</span><span class="p">)</span>
+</span><span class="line">  <span class="nx">receipt</span><span class="p">.</span><span class="nx">TxHash</span> <span class="p">=</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">Hash</span><span class="p">()</span>
+</span><span class="line">  <span class="nx">receipt</span><span class="p">.</span><span class="nx">GasUsed</span> <span class="p">=</span> <span class="nx">gas</span>
+</span><span class="line">  <span class="o">...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>ApplyTransaction()</code>就比较有意思了,由代码可以看出来,如果是参数检查类错误就直接返回错误,到上层后继续返回就相当于回滚了交易。然而该函数的第二步<code>ApplyMessage()</code>实际执行交易返回的后两个值<code>bool,error</code>就是关键所在了:</p>
+
+<p>如果返回<code>error</code>,那么没什么好说的,错误逐层冒泡出去回滚交易;但如果返回<code>bool==false,error==nil</code>,则交易就正确打包了(生成了交易收据打包到区块),但是此时其实交易是执行失败了的,具体我们在进入<code>ApplyMessage()</code>,这个函数最终调用到<code>TransitionDb()</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">unc</span> <span class="p">(</span><span class="nx">st</span> <span class="o">*</span><span class="nx">StateTransition</span><span class="p">)</span> <span class="nx">TransitionDb</span><span class="p">()</span> <span class="p">(</span><span class="nx">ret</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">usedGas</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">failed</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="o">...</span>
+</span><span class="line">  <span class="c1">// 1. 该函数根据交易数据检查是否超出基本gas限制,会抛出我们常见的vm.ErrOutOfGas(out of gas),注意此处抛出的错误会使得交易完全回滚</span>
+</span><span class="line">  <span class="nx">gas</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">IntrinsicGas</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">contractCreation</span><span class="p">,</span> <span class="nx">homestead</span><span class="p">)</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">useGas</span><span class="p">(</span><span class="nx">gas</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">err</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">var</span> <span class="p">(</span>
+</span><span class="line">    <span class="nx">evm</span> <span class="p">=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">evm</span>
+</span><span class="line">    <span class="nx">vmerr</span> <span class="kt">error</span>
+</span><span class="line">  <span class="p">)</span>
+</span><span class="line">  <span class="c1">// 2.这里如果返回错误(vmerr!=nil)则说明交易执行失败</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">contractCreation</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">ret</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gas</span><span class="p">,</span> <span class="nx">vmerr</span> <span class="p">=</span> <span class="nx">evm</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gas</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+</span><span class="line">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// Increment the nonce for the next transaction</span>
+</span><span class="line">    <span class="nx">st</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">SetNonce</span><span class="p">(</span><span class="nx">sender</span><span class="p">.</span><span class="nx">Address</span><span class="p">(),</span> <span class="nx">st</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">GetNonce</span><span class="p">(</span><span class="nx">sender</span><span class="p">.</span><span class="nx">Address</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">ret</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gas</span><span class="p">,</span> <span class="nx">vmerr</span> <span class="p">=</span> <span class="nx">evm</span><span class="p">.</span><span class="nx">Call</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">to</span><span class="p">().</span><span class="nx">Address</span><span class="p">(),</span> <span class="nx">st</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gas</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">vmerr</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 余额不足(&quot;insufficient balance for transfer&quot;)错误也会导致交易完全回滚</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">vmerr</span> <span class="o">==</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">ErrInsufficientBalance</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">vmerr</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="c1">// 退回剩余的gas</span>
+</span><span class="line">  <span class="nx">st</span><span class="p">.</span><span class="nx">refundGas</span><span class="p">()</span>
+</span><span class="line">  <span class="nx">st</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">AddBalance</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">evm</span><span class="p">.</span><span class="nx">Coinbase</span><span class="p">,</span> <span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">Mul</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">).</span><span class="nx">SetUint64</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">gasUsed</span><span class="p">()),</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gasPrice</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 3.vmerr不为空将导致交易失败,但仍能正确打包</span>
+</span><span class="line">  <span class="k">return</span> <span class="nx">ret</span><span class="p">,</span> <span class="nx">st</span><span class="p">.</span><span class="nx">gasUsed</span><span class="p">(),</span> <span class="nx">vmerr</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在这个函数里可以看出来,如果交易在以太坊交易执行前报错,那么交易可以完全回滚,然而一旦交易在以太坊虚拟机内执行过程中出错,交易终止退出,消耗的gas并不会退还,这个失败的交易也会被打包到区块中.此外,以太坊中多给的gas并不会浪费掉,gas的消耗完全是按需的,多余的gas会正确退还给发起者:<code>st.refundGas()</code>.</p>
+
+<p>综上,对于失败的交易我们能总结出以下几点性质:</p>
+
+<ul>
+  <li>失败的交易一旦被执行,就一定会被打包到区块链中,并且执行过程中消耗的gas也不会退还,交易的成功与失败可以使用交易的收据状态进行判断</li>
+  <li>失败的交易如果没有打包到区块,那么可能的原因就有很多了,根据交易所处的阶段不同大概有这么几种可能: a.交易gas过低或参数错误根本没有进入到pending队列 b.交易进入pending进行处理,然而在检查gas等参数时报错被丢弃</li>
 </ul>
 </div>
 
