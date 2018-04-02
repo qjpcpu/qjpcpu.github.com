@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-03-20T23:15:58+08:00</updated>
+  <updated>2018-04-02T11:02:38+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,45 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ethereum-solidity的坑]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng/"/>
+    <updated>2018-04-02T10:54:43+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng</id>
+    <content type="html"><![CDATA[<h1 id="section">被意外更改的合约变量</h1>
+
+<p>```javascript
+pragma solidity ^0.4.11;</p>
+
+<p>contract Test{
+    address public a;
+    address public b;
+    function Test() public{
+        a=msg.sender;
+        b=msg.sender;
+        uint256[2] g=[uint256(0),uint256(0)];
+        g[0]=uint256(-1);</p>
+
+<pre><code>} } ```
+</code></pre>
+
+<p>如果<code>msg.sender</code>是 <code>0xca35b7d915458ef540ade6068dfe2f44e8fa733c</code>,那么想象中的合约变量<code>a,b</code>都应该是这个值,但是结果却是:</p>
+
+<p><code>
+// a: address: 0xffffffffffffffffffffffffffffffffffffffff
+// b: address: 0xca35b7d915458ef540ade6068dfe2f44e8fa733c
+</code></p>
+
+<p>可以看出<code>a</code>变成了 <code>g[0]</code>的值。 这是因为solidity对于这个未初始化的数组时,把它指向了合约变量地址,所以修改 <code>g[0]</code>就相当于修改了 <code>a</code>,读者可以试试修改 <code>g[1]</code>实际是修改了 <code>b</code>.</p>
+
+<p>解决办法是将数组改成<code>memory</code>,防止他变成<code>storage</code></p>
+
+<p><code>javascript
+uint256[2] memory g = [uint256(-1),uint256(-1)];
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[以太坊合约开发中那些危险的坑]]></title>
@@ -652,321 +691,6 @@ function transfer(address _to, uint256 _value) {
 <ul>
   <li><a href="http://ethfans.org/posts/eip-721-non-fungible-token-standard">干货ERC721 Non-fungible Token Standard</a></li>
   <li><a href="https://ethereum.org/token">Create your own CRYPTO-CURRENCY with Ethereum</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[以太坊交易]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi/"/>
-    <updated>2018-03-05T14:26:24+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi</id>
-    <content type="html"><![CDATA[<p>交易是区块链和重中之重,不论是简单的转账还是复杂的智能合约的执行,都是依托于交易来完成。但是我回头仔细研究了一把以太坊的交易,并梳理这篇文章的原因,仅仅是因为在面试的时候没有回答上来,羞愧……</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#section">交易的主要结构</a></li>
-  <li><a href="#section-1">交易打包流程</a>    <ul>
-      <li><a href="#section-2">拼装交易参数</a></li>
-      <li><a href="#section-3">对交易签名</a></li>
-      <li><a href="#section-4">是否重复交易</a></li>
-      <li><a href="#section-5">验证交易参数</a></li>
-      <li><a href="#section-6">丢弃低价交易</a></li>
-      <li><a href="#section-7">替换重复交易(更新旧交易)</a></li>
-      <li><a href="#section-8">提交交易进入交易队列</a></li>
-      <li><a href="#nonce">关于交易nonce</a>        <ul>
-          <li><a href="#txpoolvalidatetxnoncenonce">TxPool.validateTx()检查当前交易的<code>nonce</code>大于最新区块中账户<code>nonce</code>值</a></li>
-          <li><a href="#pending">检查<code>pending</code>队列中是否有旧交易需要更新</a></li>
-          <li><a href="#pendingnonce">尝试将交易加入<code>pending</code>队列时检查是否需要剔除过期的nonce</a></li>
-          <li><a href="#noncependingnonce">从队列中获取所有<code>nonce</code>值小于等于账户<code>pending</code>状态的<code>nonce</code>值</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#section-9">关于失败的交易</a></li>
-</ul>
-
-<h1 id="section">交易的主要结构</h1>
-
-<p>废话不多说,先看看交易的基础数据结构。</p>
-
-<p>```go github.com/ethereum/go-ethereum/core/types/transaction.go
-type txdata struct {
-    AccountNonce uint64          <code>json:"nonce"    gencodec:"required"</code>
-    Price        *big.Int        <code>json:"gasPrice" gencodec:"required"</code>
-    GasLimit     uint64          <code>json:"gas"      gencodec:"required"</code>
-    Recipient    *common.Address <code>json:"to"       rlp:"nil"</code> // nil means contract creation
-    Amount       *big.Int        <code>json:"value"    gencodec:"required"</code>
-    Payload      []byte          <code>json:"input"    gencodec:"required"</code></p>
-
-<pre><code>// Signature values
-V *big.Int `json:"v" gencodec:"required"`
-R *big.Int `json:"r" gencodec:"required"`
-S *big.Int `json:"s" gencodec:"required"`
-
-// This is only used when marshaling to JSON.
-Hash *common.Hash `json:"hash" rlp:"-"` } ``` * `AccountNonce`,交易发起者内部唯一标识交易的字段,避免交易双重支付 * `Price`,此交易的gas price * `GasLimit`,此交易允许的最大gas量 * `Recipient`,交易接收者,如果为`nil`说明是个合同创建交易 * `Amount`, 交易转移的`ETH`数量,单位是`wei` * `Payload`, 交易数据 * `V,R,S`, 交易签名,通过交易签名可以计算出交易发送者地址
-</code></pre>
-
-<h1 id="section-1">交易打包流程</h1>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/transaction-pkg.png" alt="pkg" /></p>
-
-<h2 id="section-2">拼装交易参数</h2>
-
-<p>拼装交易参数主要在<code>github.com/ethereum/go-ethereum/internal/ethapi/api.go setDefaults()</code>实现。</p>
-
-<ul>
-  <li><code>Gas</code>如果未设置,设置未默认值<code>90000</code></li>
-  <li><code>GasPrice</code>如果未设置，设置为建议值</li>
-  <li><code>Nonce</code>如果未设置,自动生成nonce值,该值等于当前账户nonce偏移量加上账户nonces数组长度,由此可见账户交易的nonce值是连续递增量</li>
-</ul>
-
-<h2 id="section-3">对交易签名</h2>
-
-<p>首先使用账户的私钥对交易hash信息生成签名,注意该hash计算了包含了<code>nonce</code>值和<code>chainId</code>.</p>
-
-<p><code>go
-func (s EIP155Signer) Hash(tx *Transaction) common.Hash {
-	return rlpHash([]interface{}{
-		tx.data.AccountNonce,
-		tx.data.Price,
-		tx.data.GasLimit,
-		tx.data.Recipient,
-		tx.data.Amount,
-		tx.data.Payload,
-		s.chainId, uint(0), uint(0),
-	})
-}
-</code></p>
-
-<p>将签名信息的<code>0-31</code>字节放入<code>R</code>,<code>32-63</code>放入<code>S</code>,<code>64</code>放入<code>V</code>(共65字节).</p>
-
-<p>签名完成后,开始向以太坊提交交易.注意,如果交易的<code>To</code>字段为空,说明是个合同创建交易,则自动生成合约地址,合约地址生成规则其实是<code>hash(from_addr,nonce)</code>函数:</p>
-
-<p><code>go
-// Creates an ethereum address given the bytes and the nonce
-func CreateAddress(b common.Address, nonce uint64) common.Address {
-    data, _ := rlp.EncodeToBytes([]interface{}{b, nonce})
-    return common.BytesToAddress(Keccak256(data)[12:])
-}
-</code></p>
-
-<h2 id="section-4">是否重复交易</h2>
-
-<p>通过检查交易池里是否存在该交易hash判断是否是重复交易</p>
-
-<p><code>go
-    hash := tx.Hash()
-    if pool.all[hash] != nil {
-        log.Trace("Discarding already known transaction", "hash", hash)
-        return false, fmt.Errorf("known transaction: %x", 
-</code></p>
-
-<h2 id="section-5">验证交易参数</h2>
-
-<ul>
-  <li>检查交易大小是否小于等于<code>32KB</code>,防止DOS攻击</li>
-  <li>检查是否正确签名</li>
-  <li>检查gas是否超过区块gas限制</li>
-  <li>抛弃非local的且gas price偏低的交易</li>
-  <li>检查nonce是否过小</li>
-  <li>检查账户余额是否足够,<code>balance &gt;= gas_price * gas_limit + amount</code></li>
-</ul>
-
-<h2 id="section-6">丢弃低价交易</h2>
-
-<p>如果交易池已满，需要将交易池中低于当前交易的踢出一个,注意踢出的交易仅限于远端交易，本地节点的交易不受影响</p>
-
-<p>```go
-// Discard finds a number of most underpriced transactions, removes them from the
-// priced list and returns them for further removal from the entire pool.
-func (l *txPricedList) Discard(count int, local *accountSet) types.Transactions {
-    drop := make(types.Transactions, 0, count) // Remote underpriced transactions to drop
-    save := make(types.Transactions, 0, 64)    // Local underpriced transactions to keep</p>
-
-<pre><code>for len(*l.items) &gt; 0 &amp;&amp; count &gt; 0 {
-    // Discard stale transactions if found during cleanup
-    tx := heap.Pop(l.items).(*types.Transaction)
-    if _, ok := (*l.all)[tx.Hash()]; !ok {
-        l.stales--
-        continue
-    }
-    // Non stale transaction found, discard unless local
-    if local.containsTx(tx) {
-        save = append(save, tx)
-    } else {
-        drop = append(drop, tx)
-        count--
-    }
-}
-for _, tx := range save {
-    heap.Push(l.items, tx)
-}
-return drop } ```
-</code></pre>
-
-<h2 id="section-7">替换重复交易(更新旧交易)</h2>
-
-<p>因为交易可以使用<code>account+nonce</code>唯一标识,所以如果发现同一账户下已存在同nonce的交易,则视为是对旧交易的一次更新,此时会使用当前交易替换掉旧交易。该机制常用于用来提升gas值避免旧交易长时间得不到处理。</p>
-
-<h2 id="section-8">提交交易进入交易队列</h2>
-
-<p><code>promoteExecutables()</code>将交易从待处理队列移入<code>pending</code>队列</p>
-
-<ul>
-  <li>丢弃过旧的交易,过旧的定义是<code>nonce</code>小于当前账户<code>nonce</code>值的交易</li>
-  <li>丢弃低余额(账户余额不足以支持交易gas燃烧)</li>
-  <li>丢弃超过账户数量限额的交易</li>
-  <li>…</li>
-</ul>
-
-<p>在一系列交易控制之后,将交易写入<code>pending</code>队列,此时交易真正可被矿工打包到区块中。</p>
-
-<h2 id="nonce">关于交易nonce</h2>
-
-<p>流程中涉及到<code>nonce</code>的几个地方:</p>
-
-<h4 id="txpoolvalidatetxnoncenonce">TxPool.validateTx()检查当前交易的<code>nonce</code>大于最新区块中账户<code>nonce</code>值</h4>
-
-<p><code>go
-// Ensure the transaction adheres to nonce ordering
-if pool.currentState.GetNonce(from) &gt; tx.Nonce() {
-	return ErrNonceTooLow
-}
-</code></p>
-
-<h4 id="pending">检查<code>pending</code>队列中是否有旧交易需要更新</h4>
-
-<p><code>go
-if list := pool.pending[from]; list != nil &amp;&amp; list.Overlaps(tx) {
-   ...
-}
-</code></p>
-
-<p><code>Overlaps()</code>函数即根据<code>account,nonce</code>参数对进行重复检测</p>
-
-<h4 id="pendingnonce">尝试将交易加入<code>pending</code>队列时检查是否需要剔除过期的nonce</h4>
-
-<p><code>go
-// 检查并剔除小于最新区块的交易
-for _, tx := range list.Forward(pool.currentState.GetNonce(addr)) {
-   ...
-}
-</code></p>
-
-<h4 id="noncependingnonce">从队列中获取所有<code>nonce</code>值小于等于账户<code>pending</code>状态的<code>nonce</code>值</h4>
-
-<p><code>go
-for _, tx := range list.Ready(pool.pendingState.GetNonce(addr)) {
-   ...
-}
-</code></p>
-
-<p>另外,</p>
-
-<ul>
-  <li>本地节点low gas的交易并不会被丢弃</li>
-  <li>如果nonce出现”空洞”,则空洞后的交易将无法打包</li>
-</ul>
-
-<h1 id="section-9">关于失败的交易</h1>
-
-<p>有时候我们在使用以太坊时交易(转账)时,会遇到一些令人迷惑的失败交易,比如在imToken上转账失败,然而在etherscan.io上无法查到该交易;而有时候又发现失败的转账能够在以太坊浏览器里成功查看到,说明交易是被正确打包上链了,只是交易本身是失败的交易而已，如下图所示,这是一笔因gas过低而失败的交易:</p>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/fail-tx.png" alt="fail-tx" /></p>
-
-<p>那么我们深入源码来看看是怎么回事.这里我们只跟踪挖矿过程中的失败交易处理,因为普通交易在还没进入到pending队列时的失败的话,是根本不会打包到区块里的。</p>
-
-<p>```go 
-func (env <em>Work) commitTransaction(tx *types.Transaction, bc *core.BlockChain, coinbase common.Address, gp *core.GasPool) (error, []</em>types.Log) {
-  …
-  // 如果执行交易报错,则回滚账户状态(即不从用户账户扣钱,完全回滚,交易不会打包)
-  receipt, _, err := core.ApplyTransaction(env.config, bc, &amp;coinbase, gp, env.state, env.header, tx, &amp;env.header.GasUsed, vm.Config{})
-  if err != nil {
-    env.state.RevertToSnapshot(snap)
-    return err, nil
-  }
-  env.txs = append(env.txs, tx)
-  env.receipts = append(env.receipts, receipt)</p>
-
-<p>return nil, receipt.Logs
-}
-```</p>
-
-<p><code>commitTransaction()</code>就是在”挖矿”中调用的交易执行函数,其实从该函数就可以看出来:如果执行交易报错,则回滚账户状态,那么交易是不会被打包到区块的.</p>
-
-<p>那么我们继续进入<code>ApplyTransaction()</code>看看什么情况下交易会报错,</p>
-
-<p><code>go
-func ApplyTransaction(config *params.ChainConfig, bc *BlockChain, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *type$
-  // 1.参数检查类错误
-  msg, err := tx.AsMessage(types.MakeSigner(config, header.Number))
-  if err != nil {
-    return nil, 0, err
-  }
-  ...
-  // 2.执行类,稍后再看
-  _, gas, failed, err := ApplyMessage(vmenv, msg, gp)
-  if err != nil {
-    return nil, 0, err
-  }
-  // 3.存储交易收据,注意失败的交易也会创建收据
-  receipt := types.NewReceipt(root, failed, *usedGas)
-  receipt.TxHash = tx.Hash()
-  receipt.GasUsed = gas
-  ...
-}
-</code></p>
-
-<p><code>ApplyTransaction()</code>就比较有意思了,由代码可以看出来,如果是参数检查类错误就直接返回错误,到上层后继续返回就相当于回滚了交易。然而该函数的第二步<code>ApplyMessage()</code>实际执行交易返回的后两个值<code>bool,error</code>就是关键所在了:</p>
-
-<p>如果返回<code>error</code>,那么没什么好说的,错误逐层冒泡出去回滚交易;但如果返回<code>bool==false,error==nil</code>,则交易就正确打包了(生成了交易收据打包到区块),但是此时其实交易是执行失败了的,具体我们在进入<code>ApplyMessage()</code>,这个函数最终调用到<code>TransitionDb()</code>:</p>
-
-<p>```go
-unc (st *StateTransition) TransitionDb() (ret []byte, usedGas uint64, failed bool, err error) {
-  …
-  // 1. 该函数根据交易数据检查是否超出基本gas限制,会抛出我们常见的vm.ErrOutOfGas(out of gas),注意此处抛出的错误会使得交易完全回滚
-  gas, err := IntrinsicGas(st.data, contractCreation, homestead)
-  if err = st.useGas(gas); err != nil {
-    return nil, 0, false, err
-  }</p>
-
-<p>var (
-    evm = st.evm
-    vmerr error
-  )
-  // 2.这里如果返回错误(vmerr!=nil)则说明交易执行失败
-  if contractCreation {
-    ret, _, st.gas, vmerr = evm.Create(sender, st.data, st.gas, st.value)
-  } else {
-    // Increment the nonce for the next transaction
-    st.state.SetNonce(sender.Address(), st.state.GetNonce(sender.Address())+1)
-    ret, st.gas, vmerr = evm.Call(sender, st.to().Address(), st.data, st.gas, st.value)
-  }
-  if vmerr != nil {
-    // 余额不足(“insufficient balance for transfer”)错误也会导致交易完全回滚
-    if vmerr == vm.ErrInsufficientBalance {
-      return nil, 0, false, vmerr
-    }
-  }
-  // 退回剩余的gas
-  st.refundGas()
-  st.state.AddBalance(st.evm.Coinbase, new(big.Int).Mul(new(big.Int).SetUint64(st.gasUsed()), st.gasPrice))</p>
-
-<p>// 3.vmerr不为空将导致交易失败,但仍能正确打包
-  return ret, st.gasUsed(), vmerr != nil, err
-}
-```</p>
-
-<p>在这个函数里可以看出来,如果交易在以太坊交易执行前报错,那么交易可以完全回滚,然而一旦交易在以太坊虚拟机内执行过程中出错,交易终止退出,消耗的gas并不会退还,这个失败的交易也会被打包到区块中.此外,以太坊中多给的gas并不会浪费掉,gas的消耗完全是按需的,多余的gas会正确退还给发起者:<code>st.refundGas()</code>.</p>
-
-<p>综上,对于失败的交易我们能总结出以下几点性质:</p>
-
-<ul>
-  <li>失败的交易一旦被执行,就一定会被打包到区块链中,并且执行过程中消耗的gas也不会退还,交易的成功与失败可以使用交易的收据状态进行判断</li>
-  <li>失败的交易如果没有打包到区块,那么可能的原因就有很多了,根据交易所处的阶段不同大概有这么几种可能: a.交易gas过低或参数错误根本没有进入到pending队列 b.交易进入pending进行处理,然而在检查gas等参数时报错被丢弃</li>
 </ul>
 ]]></content>
   </entry>
