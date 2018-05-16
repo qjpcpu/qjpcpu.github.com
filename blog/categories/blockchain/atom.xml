@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-05-16T18:32:47+08:00</updated>
+  <updated>2018-05-16T18:37:16+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -210,7 +210,11 @@ package main</p>
     <link href="http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng/"/>
     <updated>2018-04-02T10:54:43+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng</id>
-    <content type="html"><![CDATA[<h1 id="section">被意外更改的合约变量</h1>
+    <content type="html"><![CDATA[<p>以太坊合约的坑.</p>
+
+<!-- more -->
+
+<h1 id="section">被意外更改的合约变量</h1>
 
 <p>```javascript
 pragma solidity ^0.4.11;</p>

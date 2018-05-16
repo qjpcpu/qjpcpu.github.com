@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="被意外更改的合约变量 1
+	<meta name="description" content="以太坊合约的坑. 被意外更改的合约变量 1
 2
 3
 4
@@ -20,7 +20,7 @@
 11
 12
 13
-pragma solidity ^0.4.11; contract Test{ address public a; address public b; function Test() public{ a=msg. &hellip;">
+pragma solidity ^0.4.11; contract Test{ address public a; address public b; function Test() public &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -102,7 +102,11 @@ pragma solidity ^0.4.11; contract Test{ address public a; address public b; func
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Ethereum-solidity的坑</h2>
-	<div class="entry-content"><h1 id="section">被意外更改的合约变量</h1>
+	<div class="entry-content"><p>以太坊合约的坑.</p>
+
+<!-- more -->
+
+<h1 id="section">被意外更改的合约变量</h1>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
