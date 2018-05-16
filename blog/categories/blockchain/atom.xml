@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-05-16T18:37:16+08:00</updated>
+  <updated>2018-05-16T18:44:39+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -130,6 +130,22 @@ func PackArgumentsWithString(_abi abi.ABI, method string, params ...interface{})
 
 <p><code>go
 func SendRawTransaction(conn *ethclient.Client, from, to common.Address, value *big.Int, data []byte, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int, gasLimit uint64) (*types.Transaction, error)
+</code></p>
+
+<p>简单的代码示例(不可直接运行):</p>
+
+<p><code>go
+mgr := GetNonceManager()
+_abi, _ := contracts.ParseABI(myABI)
+signer := contracts.SignerFuncOf(keyjson, keypwd)
+tx, err := mgr.GiveNonceForTx(from_addr, func(nonce uint64) (*types.Transaction, error) {
+    // 该合约方法function_name只有一个number参数,后面额外的参数2是备注
+	data, err := contracts.PackArgumentsWithNumber(_abi, "function_name", big.Int(1), big.Int(2))
+	if err != nil {
+		return nil, err
+	}
+	return contracts.SendRawTransaction(conf.EthConn(), from_addr, getContractAddress(), nil, data, signer, nonce, nil, 0)
+})
 </code></p>
 
 <h1 id="section-3">事件扫描器</h1>
