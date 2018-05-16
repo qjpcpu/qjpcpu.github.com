@@ -6,6 +6,9 @@ comments: true
 categories: blockchain 
 ---
 
+以太坊合约的坑.
+
+<!-- more -->
 
 # 被意外更改的合约变量
 
