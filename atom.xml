@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-04-02T11:02:38+08:00</updated>
+  <updated>2018-05-16T18:32:47+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,263 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[那些以太坊DApp服务端开发期望已久的轮子]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi/"/>
+    <updated>2018-05-16T17:20:33+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi</id>
+    <content type="html"><![CDATA[<p>以太坊虽说是一个去中心化的东西,但DApp却并非是完全去中心化的应用,其主要原因不外乎是以太坊的处理能力和资源有限,无法承载一个完整应用全部的逻辑。所以，目前市面上所有的DApp应用都是需要中心化服务解释的。那么，本文就是列举一些可能会用到的轮子,帮助快速构建应用。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#nonce">nonce管理</a></li>
+  <li><a href="#section">交易重发</a></li>
+  <li><a href="#section-1">交易备注</a>    <ul>
+      <li><a href="#eth">裸交易(仅发送eth的交易)</a></li>
+      <li><a href="#section-2">合约调用交易</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-3">事件扫描器</a></li>
+  <li><a href="#section-4">其他</a></li>
+  <li><a href="#qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></a></li>
+</ul>
+
+<h1 id="nonce">nonce管理</h1>
+
+<p>重要的放在前面,nonce管理应该是所有以太坊开发者遇到的第一个问题。nonce类似于账户的自增主键,必须连续提交,如果每次都使用<code>pending nonce</code>自动提交交易,就会造成之前交易被丢弃,除非你想要替换原交易，否则这可能不是我们期望的结果。</p>
+
+<p><code>github.com/qjpcpu/ethereum/ethnonce</code>包将nonce存储在redis中,使用类似事务的方式申请、使用nonce。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">TestWrap</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">mgr</span> <span class="o">:=</span> <span class="nx">_testinit</span><span class="p">()</span>
+</span><span class="line">	<span class="nx">addr</span> <span class="o">:=</span> <span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">`0xe35f3e2a93322b61e5d8931f806ff38f4a4f4d88`</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">mgr</span><span class="p">.</span><span class="nx">SyncNonce</span><span class="p">(</span><span class="nx">addr</span><span class="p">)</span>  <span class="c1">// 注意,该方法仅在程序第一次运行做初始化时需要调用,或者nonce发生不一致时调用</span>
+</span><span class="line">	<span class="nx">tx</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">mgr</span><span class="p">.</span><span class="nx">GiveNonceForTx</span><span class="p">(</span><span class="nx">addr</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">nonce</span> <span class="kt">uint64</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// 向以太坊提交交易</span>
+</span><span class="line">        <span class="c1">// 使用nonce manager注入的nonce进行交易提交</span>
+</span><span class="line">		<span class="k">return</span> <span class="nb">new</span><span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">),</span> <span class="kc">nil</span>
+</span><span class="line">	<span class="p">})</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">t</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">    <span class="nx">t</span><span class="p">.</span><span class="nx">Log</span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>P.S. 该包基于redis lua脚本,实现nonce的原子读写,可适用于多协程并行操作。</p>
+
+<h1 id="section">交易重发</h1>
+
+<p>对于要做以太坊交易的可靠提交,我相信交易重发绝对是DApp后端程序员的痛点需求。通常,在以太坊拥堵的时候,常常提交的交易会发生”丢失”,以太坊浏览器上搜索这笔交易会被提示: <code>Sorry, we are unable to locate this Transaction Hash</code>。发生这种情况主要有两个可能: 1.用户给的gas太低,导致交易长时间挂在pending队列不能打包进区块 2. 网络环境恶劣,导致投放的节点丢弃交易(网络环境恶劣只是诱因,其真实的丢包原因是及其复杂的)</p>
+
+<p><code>github.com/qjpcpu/ethereum/contracts</code>提交交易重发的函数</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">ResendTransaction</span><span class="p">(</span><span class="nx">conn</span> <span class="o">*</span><span class="nx">ethclient</span><span class="p">.</span><span class="nx">Client</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">,</span> <span class="nx">signerFunc</span> <span class="nx">bind</span><span class="p">.</span><span class="nx">SignerFn</span><span class="p">,</span> <span class="nx">nonce</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">gasPrice</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>conn, eth client</li>
+  <li>tx, 需要重发的交易</li>
+  <li>signerFunc, 交易签名函数</li>
+  <li>nonce, 可选参数,为0表示将交易重发为全新的交易,非0表示替换之前未被打包的交易</li>
+  <li>gasPrice,可选参数,为nil表示自动选择合适的price</li>
+</ul>
+
+<p>返回值为重发的新交易数据结构。</p>
+
+<p>通常的使用场景是:</p>
+
+<ol>
+  <li>发送交易,并将返回的交易tx marshal为json存储到数据库</li>
+  <li>定时检查交易是否成功打包</li>
+  <li>超过超时时间后,调用ResendTransaction重发交易，再进入第1步循环</li>
+</ol>
+
+<p>结合第一步<code>ethnonce</code>包管理nonce,可以比较完美实现以太坊可靠交易提交。</p>
+
+<p>简单的代码示例:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">signerFunc</span> <span class="o">:=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">SignerFuncOf</span><span class="p">(</span><span class="nx">keyJson</span><span class="p">,</span> <span class="nx">keyPwd</span><span class="p">)</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">oldTx</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span> <span class="p">=</span> <span class="nx">getLastTxFromDB</span><span class="p">()</span>
+</span><span class="line"><span class="nx">contracts</span><span class="p">.</span><span class="nx">ResendTransaction</span><span class="p">(</span><span class="nx">conn</span><span class="p">,</span> <span class="nx">oldTx</span><span class="p">,</span> <span class="nx">signerFunc</span><span class="p">,</span> <span class="nx">oldTx</span><span class="p">.</span><span class="nx">Nonce</span><span class="p">(),</span> <span class="kc">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-1">交易备注</h1>
+
+<p>交易备注其实就是在交易<code>data</code>字段附加一些额外的数据,前端时间有人收费在以太坊永久”刻字”其实就是干的这个事情。那么，抛开这个噱头不说,正常开发中怎么会有这个需求呢?</p>
+
+<p>比如,我们要基于以太坊做一个区块链商品抢购,前端在提交了交易后拿到<code>metafox</code>回调后,才能通知到后端是抢购的哪个商品,但是很多时候<code>metafox</code>的回调并不可靠,那其实就可以使用交易备注,等后端收到这个交易的event log后,再去查询交易的备注信息就知道了是哪个商品。</p>
+
+<p>相关辅助方法还是在<code>github.com/qjpcpu/ethereum/contracts</code>包中,目前交易备注有两种场景</p>
+
+<h2 id="eth">裸交易(仅发送eth的交易)</h2>
+
+<p>有两个生成交易数据的辅助方法:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 备注字符串</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">PackString</span><span class="p">(</span><span class="nx">str</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">byte</span>
+</span><span class="line"><span class="c1">// 备注一个数字</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">PackNum</span><span class="p">(</span><span class="nx">num</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-2">合约调用交易</h2>
+
+<p>也有两个辅助方法,他们均是将备注信息放置在合约方法参数最后:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">PackArgumentsWithNumber</span><span class="p">(</span><span class="nx">_abi</span> <span class="nx">abi</span><span class="p">.</span><span class="nx">ABI</span><span class="p">,</span> <span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">params</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">PackArgumentsWithString</span><span class="p">(</span><span class="nx">_abi</span> <span class="nx">abi</span><span class="p">.</span><span class="nx">ABI</span><span class="p">,</span> <span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">params</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最后调用发送<code>raw</code>交易的方法提交:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">SendRawTransaction</span><span class="p">(</span><span class="nx">conn</span> <span class="o">*</span><span class="nx">ethclient</span><span class="p">.</span><span class="nx">Client</span><span class="p">,</span> <span class="nx">from</span><span class="p">,</span> <span class="nx">to</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Address</span><span class="p">,</span> <span class="nx">value</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">signerFunc</span> <span class="nx">bind</span><span class="p">.</span><span class="nx">SignerFn</span><span class="p">,</span> <span class="nx">nonce</span> <span class="kt">uint64</span><span class="p">,</span> <span class="nx">gasPrice</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span><span class="p">,</span> <span class="nx">gasLimit</span> <span class="kt">uint64</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-3">事件扫描器</h1>
+
+<p>扫描某个/某些事件并更改中心化服务器数据状态,这个需求很常见,直接上代码.</p>
+
+<p>举个例子,扫描 <code>CryptoKitties</code> 的怀孕事件:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
+</span><span class="line">	<span class="s">&quot;github.com/ethereum/go-ethereum/common&quot;</span>
+</span><span class="line">	<span class="s">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span>
+</span><span class="line">	<span class="s">&quot;github.com/qjpcpu/ethereum/events&quot;</span>
+</span><span class="line">	<span class="s">&quot;os&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ethclient</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="s">&quot;https://api.myetherapi.com/eth&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">		<span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="nx">dataCh</span><span class="p">,</span> <span class="nx">errCh</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">events</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">error</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">b</span> <span class="o">:=</span> <span class="nx">events</span><span class="p">.</span><span class="nx">NewScanBuilder</span><span class="p">()</span>
+</span><span class="line">	<span class="nx">rep</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">b</span><span class="p">.</span><span class="nx">SetClient</span><span class="p">(</span><span class="nx">conn</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">SetEvents</span><span class="p">(</span><span class="s">&quot;Pregnant&quot;</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">SetContract</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">`0x06012c8cf97BEaD5deAe237070F9587f8E7A266d`</span><span class="p">)).</span>
+</span><span class="line">		<span class="nx">SetABI</span><span class="p">(</span><span class="nx">abi_text</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">SetFrom</span><span class="p">(</span><span class="mi">5547829</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">SetGracefullExit</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">BuildAndRun</span><span class="p">(</span><span class="nx">dataCh</span><span class="p">,</span> <span class="nx">errCh</span><span class="p">)</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">		<span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">done</span> <span class="o">:=</span> <span class="nx">rep</span><span class="p">.</span><span class="nx">WaitChan</span><span class="p">()</span>
+</span><span class="line">		<span class="k">for</span> <span class="p">{</span>
+</span><span class="line">			<span class="k">select</span> <span class="p">{</span>
+</span><span class="line">			<span class="k">case</span> <span class="nx">data</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">dataCh</span><span class="p">:</span>
+</span><span class="line">				<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s\n&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span>
+</span><span class="line">			<span class="k">case</span> <span class="nx">err1</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">errCh</span><span class="p">:</span>
+</span><span class="line">				<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;error:&quot;</span><span class="p">,</span> <span class="nx">err1</span><span class="p">)</span>
+</span><span class="line">			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">done</span><span class="p">:</span>
+</span><span class="line">				<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;EXIT&quot;</span><span class="p">)</span>
+</span><span class="line">				<span class="k">return</span>
+</span><span class="line">			<span class="p">}</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">	<span class="p">}()</span>
+</span><span class="line">
+</span><span class="line">	<span class="nx">rep</span><span class="p">.</span><span class="nx">Wait</span><span class="p">()</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-4">其他</h1>
+
+<p>其他辅助小方法,可能痛点不是那么强烈,我简单列举,有需要的自行参看代码 <a href="https://github.com/qjpcpu/ethereum">qjpcpu/ethereum</a></p>
+
+<ul>
+  <li>获取合约From自段 <code>func (tx *TransactionWithExtra) From() common.Address</code></li>
+  <li>合约是否执行成功 <code>func (tx *TransactionWithExtra) IsSuccess(conn *ethclient.Client) (bool, error)</code></li>
+  <li>某个地址是否是个合约 <code>func IsContract(conn *ethclient.Client, hexAddr string) bool</code></li>
+  <li>交易构造builder <code>func NewTxOptsBuilder(keyJson, keyPwd string) *TxOptsBuilder</code></li>
+  <li>等待交易完成 <code>func WaitTxDone(conn *ethclient.Client, txhash common.Hash, timeout ...time.Duration) error</code></li>
+  <li>根据keystore私钥生成签名方法 <code>func SignerFuncOf(keyJson, keyPasswd string) bind.SignerFn</code></li>
+  <li>直接发送ETH <code>func TransferETH(conn *ethclient.Client, from, to common.Address, amount *big.Int, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int, notes ...string) (*types.Transaction, error)</code></li>
+  <li>私钥导入导出 <code>key</code>包</li>
+</ul>
+
+<h1 id="qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></h1>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ethereum-solidity的坑]]></title>
@@ -4557,31 +4814,6 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
 
 <p>P.S. 无法和其他读取excel的gem做对比，因为试着做对比测试时发现其他gem根本卡在读取操作那不动了。</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[脚下的路]]></title>
-    <link href="http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu/"/>
-    <updated>2015-02-16T09:22:38+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu</id>
-    <content type="html"><![CDATA[<p>本来之前就想写写关于2014年的经历，但一直心里都是满满的负能量，所以一直没有下笔。今天其实也是，和家人闹得不开心，然后愤懑地来公司上班，没想到在路上反而突然想明白了，所以就回顾一下过去的2014，还有现在心里的想法吧。</p>
-
-<p>在<code>life</code>分类下，之前的两篇文字都是非常积极的，我之前耕耘多年，凭着自己的努力进入了百度，我自己其实是非常自豪的。即便进入了百度后，能力也被非常认可。所以在2014上半年，其实我是感觉意气风发的，在工作中，也做出了一些很cool的事情。那时候的我，感觉自己离梦想只有一步之遥，仿佛站在天梯之巅，拨开云层再踏一步，可能我就能出去，去Google朝圣。那是在朋友们眼中，我就是个疯子，什么都可以不要。那时，我是幸福的，虽然在别人眼里，那时的我是一个不负责任，狂热的人。</p>
-
-<p>但是在下半年，我逐渐感受到狂热背后的东西，尽管在百度，也要做很多机械重复的事情，此外更重要的是，我发现自己很孤独，除开工作，我一无所有，独自在上海漂泊，心里非常寂寞。再加上后来家人生病，我选择了离开，回到成都。</p>
-
-<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过……</p>
-
-<p><code>people must pay for their choices</code>，每个人必须为他的选择付出代价。</p>
-
-<!-- more -->
-
-<p>回来的好长日子里，我无法适应。逐渐地，我开始怀念在百度的那段日子。这时我才体会到，百度真正优秀的地方，不在于她的大公司地位和光环，在于百度的人，在于那些身上深深烙上了百度刻印而不自知的优秀同学。不论懂的多少，总是怀着一种谦逊求知的态度，对技术和知识的真正渴望，塑造了百度人自己的气质。</p>
-
-<p><code>怀疑和迷茫</code>，占据了我。我不知道自己要干什么，不知道下一步的路在哪里。每天回到家，和家人在一起，其实也挺开心的，上班也能尽情雕琢自己的代码，这不是我以前想要的吗？曾经有人问我毕业后想要什么样的工作，我说能写代码就行。但现在我发现，其实我远远不能满足于这些，我需要舞台，需要一个大的舞台展示自己，希望被听到。</p>
-
-<p>我告诉自己：我是优秀的人，到哪里我都必须要优秀!</p>
 ]]></content>
   </entry>
   

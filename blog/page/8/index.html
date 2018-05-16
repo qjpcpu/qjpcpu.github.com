@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。 Read on &rarr; Feb 14th, 2014 rails Comments ">
+	<meta name="description" content="如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。 建立数据表 $ rails g model customer name:string $ rails g model order &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +88,63 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/">
+		
+			Rails ActiveRecord数据库关系1:n</a>
+	</h2>
+	<div class="entry-content">
+		<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
+
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
+
+<ol>
+  <li>
+    <p>建立数据表</p>
+
+    <pre><code> $ rails g model customer name:string
+ $ rails g model order customer_id:integer order_date:datetime
+ $ rails g model rake db:migrate
+</code></pre>
+  </li>
+</ol>
+
+
+		
+		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T22:05:20+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -570,52 +627,6 @@ MN
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/">
-		
-			Ruby之周期性任务</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">1.前言</h3>
-
-<p>无论是用ruby做系统管理，还是用rails做web开发，都可能遇到周期性任务，它们按照一定时间周期（1小时，2天……）持续地触发。在ruby中，我认为一次性任务使用sidekiq来完成是非常方便的，而周期性的任务就需要用到whenever，sidetiq，clockwork等等gem了。</p>
-
-
-		
-		<a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T17:38:41+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

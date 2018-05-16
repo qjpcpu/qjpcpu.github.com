@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的， &hellip;">
+	<meta name="description" content="(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +88,52 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/">
+		
+			深入ethereum源码-p2p模块基础结构</a>
+	</h2>
+	<div class="entry-content">
+		<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
+
+<p>如果将以太坊的p2p类比做tcp协议,那么p2p暴露出来的子协议就类似http,使得以太坊能够在基础p2p基础上构建出whisper网络。</p>
+
+
+		
+		<a href="/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-01-29T11:19:23+08:00" pubdate data-updated="true">Jan 29<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -508,58 +554,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2015/05/25/gao-xiao-du-qu-excel/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2015/02/16/jiao-xia-de-lu/">
-		
-			脚下的路</a>
-	</h2>
-	<div class="entry-content">
-		<p>本来之前就想写写关于2014年的经历，但一直心里都是满满的负能量，所以一直没有下笔。今天其实也是，和家人闹得不开心，然后愤懑地来公司上班，没想到在路上反而突然想明白了，所以就回顾一下过去的2014，还有现在心里的想法吧。</p>
-
-<p>在<code>life</code>分类下，之前的两篇文字都是非常积极的，我之前耕耘多年，凭着自己的努力进入了百度，我自己其实是非常自豪的。即便进入了百度后，能力也被非常认可。所以在2014上半年，其实我是感觉意气风发的，在工作中，也做出了一些很cool的事情。那时候的我，感觉自己离梦想只有一步之遥，仿佛站在天梯之巅，拨开云层再踏一步，可能我就能出去，去Google朝圣。那是在朋友们眼中，我就是个疯子，什么都可以不要。那时，我是幸福的，虽然在别人眼里，那时的我是一个不负责任，狂热的人。</p>
-
-<p>但是在下半年，我逐渐感受到狂热背后的东西，尽管在百度，也要做很多机械重复的事情，此外更重要的是，我发现自己很孤独，除开工作，我一无所有，独自在上海漂泊，心里非常寂寞。再加上后来家人生病，我选择了离开，回到成都。</p>
-
-<p>在离开百度的那段日子，我的情绪非常低落，每天只吃一点东西。真的，人有时候在失去时才知道珍惜。回到成都小半年里，我常常回忆起临走前一天，在食堂吃过饭后翠姐问我:你不是想去Google吗，你怎么办？ 那时我心里如遭重锤，是啊，有路吗？我沉默了下，算是安慰自己回答她：走一步看一步吧。这种答案，我自己都觉得好难过……</p>
-
-<p><code>people must pay for their choices</code>，每个人必须为他的选择付出代价。</p>
-
-
-		
-		<a href="/blog/2015/02/16/jiao-xia-de-lu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-02-16T09:22:38+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2015</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/life/'>life</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2015/02/16/jiao-xia-de-lu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

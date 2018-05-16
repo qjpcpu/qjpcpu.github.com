@@ -7,9 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="lambda{ shared=10 Kernel.send :define_method, :counter do shared+=1 end Kernel.send :define_method, :show do shared end
-}.call show #=&gt;10
-3.times &hellip;">
+	<meta name="description" content="1. prerequesite 假设你已经安装好了jruby，并且使用的jdk最好是1.7。 2. 安装rails 安装rails4.0.0： C:\&gt;jruby -S gem install rails -V 查看安装的rails版本： C:\&gt;jruby -S rails -v &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -90,6 +88,65 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/">
+		
+			初识jruby之安装配置jrubyonrails</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="prerequesite">1. prerequesite</h3>
+
+<p>假设你已经安装好了jruby，并且使用的jdk最好是1.7。</p>
+
+<h3 id="rails">2. 安装rails</h3>
+
+<p>安装rails4.0.0：</p>
+
+<pre><code>C:\&gt;jruby -S gem install rails -V
+</code></pre>
+
+<p>查看安装的rails版本：</p>
+
+<pre><code>C:\&gt;jruby -S rails -v
+Rails 4.0.0
+</code></pre>
+
+
+		
+		<a href="/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:49:23+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jruby/'>jruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -603,63 +660,6 @@ puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/rubyxian-cheng/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/">
-		
-			Rails ActiveRecord数据库关系1:n</a>
-	</h2>
-	<div class="entry-content">
-		<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
-
-<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=12b2395769600c33f479decd2a772032/f7246b600c3387449229d53f530fd9f9d62aa081.jpg?referer=20537dc4d2a20cf41f87caef009f&amp;x=.jpg" alt="1:n" /></p>
-
-<ol>
-  <li>
-    <p>建立数据表</p>
-
-    <pre><code> $ rails g model customer name:string
- $ rails g model order customer_id:integer order_date:datetime
- $ rails g model rake db:migrate
-</code></pre>
-  </li>
-</ol>
-
-
-		
-		<a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T22:05:20+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

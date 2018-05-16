@@ -7,7 +7,12 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 首先看看常用的格式字符串 %Y 年 %m 月 %d 日 %H 时 %M 分 %S 秒 %s 时间戳(秒) date命令常用操作 获取当前时间 date +%Y-%m-%d # 2014-02-21 Read on &rarr; Mar 12th, 2014 shell Comments ">
+	<meta name="description" content="先说说原因：for循环是利用空格做分隔符，所以可以这样打印句子中的单词： centence="Linux is cool"
+for word in $centence;do echo $word
+done 有时用ls命令遍历目录会遇到空目录： 1
+2
+3
+for d in $(ls);do &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +93,77 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/">
+		
+			Ls遍历空目录处理</a>
+	</h2>
+	<div class="entry-content">
+		<p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
+
+<pre><code>centence="Linux is cool"
+for word in $centence;do
+	echo $word
+done
+</code></pre>
+
+<p>有时用ls命令遍历目录会遇到空目录：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="k">for </span>d in <span class="k">$(</span>ls<span class="k">)</span>;<span class="k">do</span>
+</span><span class="line"><span class="k">	</span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class="line"><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>处理办法是：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">ls -1 | <span class="k">while </span><span class="nb">read </span>d
+</span><span class="line"><span class="k">do</span>
+</span><span class="line"><span class="k">	</span><span class="nb">echo</span> <span class="s2">&quot;$d&quot;</span>
+</span><span class="line"><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-12T23:18:02+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -646,84 +722,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/21/linuxri-chang-wei-hu/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/">
-		
-			Sendmail发邮件中文乱码</a>
-	</h2>
-	<div class="entry-content">
-		<p>如果这是要使用sendmail命令发送的邮件file内容：</p>
-
-<pre><code>Subject:标题
-TO:to@example.com
-From:from@example
-Content-Type:text/html
-&lt;html&gt;
-	&lt;body&gt;
-		邮件内容
-	&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-
-<h3 id="section">解决内容乱码</h3>
-
-<p>内容乱码比较好解决，首先内容先使用utf-8编码，然后在修改邮件的<code>Content-Type</code>为：</p>
-
-<pre><code>Content-Type:text/html;charset=UTF-8
-</code></pre>
-
-<h3 id="section-1">解决标题乱码</h3>
-
-<p>需要利用base64编码标题内容，例如，如果UTF-8编码的字符串<code>标题</code>进行base64编码后的内容为<code>5qCH6aKY</code>,则邮件标题为：</p>
-
-<pre><code>Subject:=?UTF-8?B?5qCH6aKY?=
-</code></pre>
-
-<p>即邮件标题<code>Subject:</code>后字符串格式为：”<code>=?UTF-8?B?</code><em>base64编码的utf-8字串</em><code>?=</code>”</p>
-
-<h3 id="section-2">发送邮件</h3>
-
-<p>最后发送文件可以正确显示：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">cat file | sendmail -t
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-19T23:23:15+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
