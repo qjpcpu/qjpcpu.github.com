@@ -106,6 +106,23 @@ func PackArgumentsWithString(_abi abi.ABI, method string, params ...interface{})
 func SendRawTransaction(conn *ethclient.Client, from, to common.Address, value *big.Int, data []byte, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int, gasLimit uint64) (*types.Transaction, error)
 ```
 
+简单的代码示例(不可直接运行):
+
+
+```go
+mgr := GetNonceManager()
+_abi, _ := contracts.ParseABI(myABI)
+signer := contracts.SignerFuncOf(keyjson, keypwd)
+tx, err := mgr.GiveNonceForTx(from_addr, func(nonce uint64) (*types.Transaction, error) {
+    // 该合约方法function_name只有一个number参数,后面额外的参数2是备注
+	data, err := contracts.PackArgumentsWithNumber(_abi, "function_name", big.Int(1), big.Int(2))
+	if err != nil {
+		return nil, err
+	}
+	return contracts.SendRawTransaction(conf.EthConn(), from_addr, getContractAddress(), nil, data, signer, nonce, nil, 0)
+})
+```
+
 # 事件扫描器
 
 扫描某个/某些事件并更改中心化服务器数据状态,这个需求很常见,直接上代码.
