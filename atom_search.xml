@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-05-16T18:44:39+08:00</updated>
+  <updated>2018-05-18T10:34:33+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -32,7 +32,8 @@
     </ul>
   </li>
   <li><a href="#section-3">事件扫描器</a></li>
-  <li><a href="#section-4">其他</a></li>
+  <li><a href="#section-4">登录</a></li>
+  <li><a href="#section-5">其他</a></li>
   <li><a href="#qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></a></li>
 </ul>
 
@@ -278,7 +279,67 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h1 id="section-4">其他</h1>
+<h1 id="section-4">登录</h1>
+
+<p>以太坊登录其实就是签名和验签.</p>
+
+<p>代码位于包<code>github.com/qjpcpu/ethereum/key</code></p>
+
+<p>示例:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">key</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">    <span class="nx">crand</span> <span class="s">&quot;crypto/rand&quot;</span>
+</span><span class="line">    <span class="s">&quot;github.com/ethereum/go-ethereum/common/hexutil&quot;</span>
+</span><span class="line">    <span class="s">&quot;github.com/ethereum/go-ethereum/crypto&quot;</span>
+</span><span class="line">    <span class="s">&quot;testing&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">TestSignature</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">pk</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">newKey</span><span class="p">(</span><span class="nx">crand</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">t</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="nx">msg</span> <span class="o">:=</span> <span class="s">&quot;JasonGeek&quot;</span>
+</span><span class="line">    <span class="nx">sign</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">Sign</span><span class="p">(</span><span class="nx">pk</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">msg</span><span class="p">))</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">t</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="nx">from</span> <span class="o">:=</span> <span class="nx">crypto</span><span class="p">.</span><span class="nx">PubkeyToAddress</span><span class="p">(</span><span class="nx">pk</span><span class="p">.</span><span class="nx">PublicKey</span><span class="p">).</span><span class="nx">Hex</span><span class="p">()</span>
+</span><span class="line">    <span class="nx">signHex</span> <span class="o">:=</span> <span class="nx">hexutil</span><span class="p">.</span><span class="nx">Encode</span><span class="p">(</span><span class="nx">sign</span><span class="p">)</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">VerifySign</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">signHex</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">msg</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">t</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-5">其他</h1>
 
 <p>其他辅助小方法,可能痛点不是那么强烈,我简单列举,有需要的自行参看代码 <a href="https://github.com/qjpcpu/ethereum">qjpcpu/ethereum</a></p>
 

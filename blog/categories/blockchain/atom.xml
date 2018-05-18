@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-05-16T18:44:39+08:00</updated>
+  <updated>2018-05-18T10:34:33+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -31,7 +31,8 @@
     </ul>
   </li>
   <li><a href="#section-3">事件扫描器</a></li>
-  <li><a href="#section-4">其他</a></li>
+  <li><a href="#section-4">登录</a></li>
+  <li><a href="#section-5">其他</a></li>
   <li><a href="#qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></a></li>
 </ul>
 
@@ -202,7 +203,43 @@ package main</p>
 <pre><code>rep.Wait() } ```
 </code></pre>
 
-<h1 id="section-4">其他</h1>
+<h1 id="section-4">登录</h1>
+
+<p>以太坊登录其实就是签名和验签.</p>
+
+<p>代码位于包<code>github.com/qjpcpu/ethereum/key</code></p>
+
+<p>示例:</p>
+
+<p>```go
+package key</p>
+
+<p>import (
+    crand “crypto/rand”
+    “github.com/ethereum/go-ethereum/common/hexutil”
+    “github.com/ethereum/go-ethereum/crypto”
+    “testing”
+)</p>
+
+<p>func TestSignature(t *testing.T) {
+    pk, err := newKey(crand.Reader)
+    if err != nil {
+        t.Fatal(err)
+    }
+    msg := “JasonGeek”
+    sign, err := Sign(pk, []byte(msg))
+    if err != nil {
+        t.Fatal(err)
+    }
+    from := crypto.PubkeyToAddress(pk.PublicKey).Hex()
+    signHex := hexutil.Encode(sign)
+    if err := VerifySign(from, signHex, []byte(msg)); err != nil {
+        t.Fatal(err)
+    }
+}
+```</p>
+
+<h1 id="section-5">其他</h1>
 
 <p>其他辅助小方法,可能痛点不是那么强烈,我简单列举,有需要的自行参看代码 <a href="https://github.com/qjpcpu/ethereum">qjpcpu/ethereum</a></p>
 
