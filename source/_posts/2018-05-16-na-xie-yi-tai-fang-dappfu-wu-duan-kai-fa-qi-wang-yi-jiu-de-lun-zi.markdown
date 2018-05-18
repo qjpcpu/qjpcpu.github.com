@@ -178,6 +178,42 @@ func main() {
 }
 ```
 
+# 登录
+
+以太坊登录其实就是签名和验签.
+
+代码位于包`github.com/qjpcpu/ethereum/key`
+
+示例:
+
+```go
+package key
+
+import (
+    crand "crypto/rand"
+    "github.com/ethereum/go-ethereum/common/hexutil"
+    "github.com/ethereum/go-ethereum/crypto"
+    "testing"
+)
+
+func TestSignature(t *testing.T) {
+    pk, err := newKey(crand.Reader)
+    if err != nil {
+        t.Fatal(err)
+    }
+    msg := "JasonGeek"
+    sign, err := Sign(pk, []byte(msg))
+    if err != nil {
+        t.Fatal(err)
+    }
+    from := crypto.PubkeyToAddress(pk.PublicKey).Hex()
+    signHex := hexutil.Encode(sign)
+    if err := VerifySign(from, signHex, []byte(msg)); err != nil {
+        t.Fatal(err)
+    }
+}
+```
+
 # 其他
 
 其他辅助小方法,可能痛点不是那么强烈,我简单列举,有需要的自行参看代码 [qjpcpu/ethereum](https://github.com/qjpcpu/ethereum)
