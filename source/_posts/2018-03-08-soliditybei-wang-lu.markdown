@@ -172,3 +172,36 @@ MiniMe mini = MiniMe(10, 20, 30);
 uint c; uint32 a; uint32 b; 和 uint32 a; uint c; uint32 b;
 
 前者比后者需要的gas更少，因为前者把uint32放一起了。
+
+# 间接转账
+
+直接转账用`who.transfer(value)`,这个很常见, 但有时候还是需要间接转账
+
+## 将发到合约的转账再转给另一个地址
+
+```javascript
+function delayTransfer(address _to) public payable {
+    _to.transfer(msg.value);
+}
+```
+
+这个示例就是一个间接转账,这笔转账能够完成的原因其实是,调用这个函数时，用户发过来的eth已经加到合约上了，所以可以再转给第三个地址。
+
+## 将发到合约的eth再转发给另一个合约调用
+
+```javascript
+contract Sub {
+   address realReceiver;
+   function recevice() public payable {
+       realReceiver.transfer(msg.value);
+   }
+}
+contract Main{
+  Sub sub;
+  function transferToSub() public payable{
+      sub.recevice.value(msg.value)();
+  }
+}
+```
+
+上面示例将用户的eth通过两次转发最终发给了`realReceiver`.
