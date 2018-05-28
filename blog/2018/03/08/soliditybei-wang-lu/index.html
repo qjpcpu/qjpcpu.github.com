@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="关于以太坊solidity语言一些有趣或者有意义的tips. basic sytax 字符串比较 storage vs memory function 访问修饰符 函数修饰符 msg 接口 Ownable 性能优化 basic sytax 字符串比较 solidity本身无法直接比较字符串, &hellip;">
+	<meta name="description" content="关于以太坊solidity语言一些有趣或者有意义的tips. basic sytax 字符串比较 storage vs memory function 访问修饰符 函数修饰符 msg 接口 Ownable 性能优化 间接转账 将发到合约的转账再转给另一个地址 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -108,6 +108,11 @@
   <li><a href="#section-3">接口</a></li>
   <li><a href="#ownable">Ownable</a></li>
   <li><a href="#section-4">性能优化</a></li>
+  <li><a href="#section-5">间接转账</a>    <ul>
+      <li><a href="#section-6">将发到合约的转账再转给另一个地址</a></li>
+      <li><a href="#eth">将发到合约的eth再转发给另一个合约调用</a></li>
+    </ul>
+  </li>
 </ul>
 
 <h1 id="basic-sytax">basic sytax</h1>
@@ -349,6 +354,52 @@
 <p>uint c; uint32 a; uint32 b; 和 uint32 a; uint c; uint32 b;</p>
 
 <p>前者比后者需要的gas更少，因为前者把uint32放一起了。</p>
+
+<h1 id="section-5">间接转账</h1>
+
+<p>直接转账用<code>who.transfer(value)</code>,这个很常见, 但有时候还是需要间接转账</p>
+
+<h2 id="section-6">将发到合约的转账再转给另一个地址</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">function</span> <span class="nx">delayTransfer</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_to</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">payable</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">_to</span><span class="p">.</span><span class="nx">transfer</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这个示例就是一个间接转账,这笔转账能够完成的原因其实是,调用这个函数时，用户发过来的eth已经加到合约上了，所以可以再转给第三个地址。</p>
+
+<h2 id="eth">将发到合约的eth再转发给另一个合约调用</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">Sub</span> <span class="p">{</span>
+</span><span class="line">   <span class="nx">address</span> <span class="nx">realReceiver</span><span class="p">;</span>
+</span><span class="line">   <span class="kd">function</span> <span class="nx">recevice</span><span class="p">()</span> <span class="kr">public</span> <span class="nx">payable</span> <span class="p">{</span>
+</span><span class="line">       <span class="nx">realReceiver</span><span class="p">.</span><span class="nx">transfer</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+</span><span class="line">   <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">contract</span> <span class="nx">Main</span><span class="p">{</span>
+</span><span class="line">  <span class="nx">Sub</span> <span class="nx">sub</span><span class="p">;</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">transferToSub</span><span class="p">()</span> <span class="kr">public</span> <span class="nx">payable</span><span class="p">{</span>
+</span><span class="line">      <span class="nx">sub</span><span class="p">.</span><span class="nx">recevice</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">)();</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上面示例将用户的eth通过两次转发最终发给了<code>realReceiver</code>.</p>
 </div>
 
 
