@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-01T11:48:58+08:00</updated>
+  <updated>2018-06-08T15:53:46+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -229,8 +229,6 @@
 <span class="line-number">42</span>
 <span class="line-number">43</span>
 <span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
 </pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
 </span><span class="line">
 </span><span class="line"><span class="kn">import</span> <span class="p">(</span>
@@ -250,9 +248,7 @@
 </span><span class="line">	<span class="nx">dataCh</span><span class="p">,</span> <span class="nx">errCh</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">events</span><span class="p">.</span><span class="nx">Event</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">error</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </span><span class="line">	<span class="nx">b</span> <span class="o">:=</span> <span class="nx">events</span><span class="p">.</span><span class="nx">NewScanBuilder</span><span class="p">()</span>
 </span><span class="line">	<span class="nx">rep</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">b</span><span class="p">.</span><span class="nx">SetClient</span><span class="p">(</span><span class="nx">conn</span><span class="p">).</span>
-</span><span class="line">		<span class="nx">SetEvents</span><span class="p">(</span><span class="s">&quot;Pregnant&quot;</span><span class="p">).</span>
-</span><span class="line">		<span class="nx">SetContract</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">`0x06012c8cf97BEaD5deAe237070F9587f8E7A266d`</span><span class="p">)).</span>
-</span><span class="line">		<span class="nx">SetABI</span><span class="p">(</span><span class="nx">abi_text</span><span class="p">).</span>
+</span><span class="line">		<span class="nx">SetContract</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">`0x06012c8cf97BEaD5deAe237070F9587f8E7A266d`</span><span class="p">),</span><span class="nx">abi_text</span><span class="p">,</span><span class="s">&quot;Pregnant&quot;</span><span class="p">).</span>
 </span><span class="line">		<span class="nx">SetFrom</span><span class="p">(</span><span class="mi">5547829</span><span class="p">).</span>
 </span><span class="line">		<span class="nx">SetGracefullExit</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span>
 </span><span class="line">		<span class="nx">BuildAndRun</span><span class="p">(</span><span class="nx">dataCh</span><span class="p">,</span> <span class="nx">errCh</span><span class="p">)</span>
