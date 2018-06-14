@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-14T15:53:49+08:00</updated>
+  <updated>2018-06-14T15:57:57+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -163,7 +163,7 @@
 
 <h2 id="section-6">1.安全性</h2>
 
-<p>这是最大的问题,因为调用<code>web3.eth.sign</code>进行数据签名时，metamask无法展示签名的数据，所以用户更本不了解他到底是在对什么授权签名。这是非常可怕的，这可能被骇客利用，让用户对一笔转出自己账户所有余额的交易进行签名，导致资金盗窃。</p>
+<p>这是最大的问题,因为调用<code>web3.eth.sign</code>进行数据签名时，metamask无法展示签名的数据，所以用户根本不了解他到底是在对什么授权签名。这是非常可怕的，这可能被骇客利用，让用户对一笔转出自己账户所有余额的交易进行签名，导致资金盗窃。</p>
 
 <h2 id="section-7">2.用户体验</h2>
 
