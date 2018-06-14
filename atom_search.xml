@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-08T15:53:46+08:00</updated>
+  <updated>2018-06-14T15:53:49+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,171 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[怎样实现以太坊交易可靠提交]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/"/>
+    <updated>2018-06-14T14:54:01+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao</id>
+    <content type="html"><![CDATA[<p>在真实环境下的以太坊Dapp开发,是一定涉及到链上链下逻辑的交互的。那么开发者可能会遇到这样一种场景,当用户使用metamask签名交易并提交后,Dapp的中心服务端需要拿到这个交易ID,并跟踪这个交易的执行,甚至会根据这笔交易去触发后端逻辑(当然使用event可以一定程度避开这个问题,但这种回避式的解决方案不在此讨论)，但现实情况往往是令人痛苦的，因为很可能会因为种种原因，我们无法取到metamask的回调，导致开发者因此”丢失”掉这笔交易。</p>
+
+<p>那么，如果我们要直面这个问题，要怎么样实现交易可靠提交呢？</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">提炼问题</a>    <ul>
+      <li><a href="#metamask">1. 最显而易见,metamask能够提供可靠回调</a></li>
+      <li><a href="#metamask-1">2. metamask将交易签名和发送拆分开来</a></li>
+      <li><a href="#section-1">3. 弄脏手自己做</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-2">关键实现</a>    <ul>
+      <li><a href="#section-3">1.前端获取裸交易数据</a></li>
+      <li><a href="#hash">2.后端计算裸交易hash</a></li>
+      <li><a href="#metamask-2">3.前端唤起metamask签名</a></li>
+      <li><a href="#section-4">4.后端发送交易</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-5">反思</a>    <ul>
+      <li><a href="#section-6">1.安全性</a></li>
+      <li><a href="#section-7">2.用户体验</a></li>
+      <li><a href="#section-8">3.时效性</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">提炼问题</h1>
+
+<p>首先，我再次描述下问题的发生场景: 在metamask环境下，我们需要拿到用户提交的交易来触发后续中心化逻辑，但是在现实情况下很可能拿不到这个回调交易ID.</p>
+
+<p>看起来，问题的核心并不是交易可靠提交，而是可靠地拿到交易提交的回调。那么解决问题，就有两种思路:</p>
+
+<h5 id="metamask">1. 最显而易见,metamask能够提供可靠回调</h5>
+
+<p>这个解决方案最无痛，然而完全依赖于metamask团队的开发意愿。所幸的是metamask团队在接收开发者的反馈后，有意愿往这方面努力。但开发时间不确定，甚至于我认为，在浏览器环境下，可能无法完美解决。所以短期内，这个方向是无法在生产环境实施的。</p>
+
+<h5 id="metamask-1">2. metamask将交易签名和发送拆分开来</h5>
+
+<p>如果没做过以太坊Dapp开发，可能不清楚metamask提交交易其实是串行执行了两步操作： 一.先对交易裸数据签名，得到签名后的交易,二.将签名后的交易提交到以太坊。</p>
+
+<p>实际上，在metamask完成第一步签名后，这个交易就已经是一笔以太坊合法交易了，任何一个以太坊节点都可以拿着这笔交易进行全网广播，要求矿工打包。试想，如果metamsk将这两个操作拆分开来，那么开发者就可以要求metamask先对裸交易签名，然后客户端将这笔交易发送给服务端，让服务端向以太坊节点提交交易，这样应用开发者就能够使用各种传统手段保证交易提交，并且能够实施后续各种中心化逻辑了。</p>
+
+<p>看似很美好，然而metamask目前不提供这样的接口。虽然web3js已经有这样的接口，但metamask并没有对接。不过前景还是可以期望的,metamask团队表示已经会进行操作拆分，将来可以这样做。详细可以参考<a href="https://github.com/MetaMask/metamask-extension/issues/3475">Issue#3475</a>.</p>
+
+<h5 id="section-1">3. 弄脏手自己做</h5>
+
+<p>既然靠不了别人，就自己来解决。这第3种解决方案，其实和第二种思路是一样的，只是达到这个目的有些纠结。</p>
+
+<p>首先，metamsk支持web3js一个比较原始的签名方法<code>web3.eth.sign</code>,他是对一段数据进行以太坊签名，看起来可以满足我们的需求，不过为了使用这个方法我们还需要做很多工作。</p>
+
+<p>该方法输入是交易的hash，但web3并没有提供从裸交易数据计算hash的方法，所以我选择让前端提交裸交易数据到服务端，服务端计算出hash值返还给前端;</p>
+
+<p>前端拿到这个交易hash后，就可以调用<code>web3.eth.sign</code>唤起metamask签名，然后将签名字段和裸交易数据再次发送给服务端，服务端负责验证签名并且将交易和签名拼装好后发送到以太坊。</p>
+
+<h1 id="section-2">关键实现</h1>
+
+<h2 id="section-3">1.前端获取裸交易数据</h2>
+
+<p>前端直面用户，可以拿到裸交易全部数据</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{
+</span><span class="line">    from: "0x...",
+</span><span class="line">    to: "0x....",
+</span><span class="line">    value: "0x...",
+</span><span class="line">    gas: 10000,
+</span><span class="line">    gasPrice: 21000,
+</span><span class="line">    data: "0x...",
+</span><span class="line">    nonce: "0x..."
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="hash">2.后端计算裸交易hash</h2>
+
+<p>后端拿到前端的裸交易json，可以很容易计算出交易hash，下面给出计算的golang代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">tx</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">NewTransaction</span><span class="p">(</span><span class="o">...</span><span class="p">.)</span>
+</span><span class="line"><span class="nx">hash</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">HomesteadSigner</span><span class="p">{}.</span><span class="nx">Hash</span><span class="p">(</span><span class="nx">tx</span><span class="p">).</span><span class="nx">Hex</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后将计算出的hash返回给前端</p>
+
+<h2 id="metamask-2">3.前端唤起metamask签名</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// 第一个参数是返回的交易hash</span>
+</span><span class="line"><span class="c1">// 第二个参数是用户地址</span>
+</span><span class="line"><span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span> <span class="s2">&quot;0x...&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里将唤起metamask.</p>
+
+<h2 id="section-4">4.后端发送交易</h2>
+
+<p>前端将裸交易数据和第3步得到的签名发送给后端，后端验证签名并发送到以太坊,关键go代码如下:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">sign</span> <span class="o">:=</span> <span class="nx">common</span><span class="p">.</span><span class="nx">Hex2Bytes</span><span class="p">(</span><span class="nx">txSign</span><span class="p">)</span>
+</span><span class="line"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">sign</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">65</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;bad sign&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="k">if</span> <span class="nx">sign</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">27</span> <span class="o">&amp;&amp;</span> <span class="nx">sign</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">28</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;invalid Ethereum signature (V is not 27 or 28)&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">sign</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">27</span>
+</span><span class="line"><span class="nx">signer</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">HomesteadSigner</span><span class="p">{}</span>
+</span><span class="line"><span class="nx">signedTx</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">WithSignature</span><span class="p">(</span><span class="nx">signer</span><span class="p">,</span> <span class="nx">sign</span><span class="p">)</span>
+</span><span class="line"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">ethConn</span><span class="p">.</span><span class="nx">SendTransaction</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span> <span class="nx">signedTx</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-5">反思</h1>
+
+<p>看起来，上面的技术方案好像完美解决了问题，实则不然，这只是当前环境下的较优方案罢了，并且这个方案还是存在诸多问题:</p>
+
+<h2 id="section-6">1.安全性</h2>
+
+<p>这是最大的问题,因为调用<code>web3.eth.sign</code>进行数据签名时，metamask无法展示签名的数据，所以用户更本不了解他到底是在对什么授权签名。这是非常可怕的，这可能被骇客利用，让用户对一笔转出自己账户所有余额的交易进行签名，导致资金盗窃。</p>
+
+<h2 id="section-7">2.用户体验</h2>
+
+<p>还是因为签名的方法，metamask在签名时会展示一段红色警告，导致用户体验下降。</p>
+
+<h2 id="section-8">3.时效性</h2>
+
+<p>因为这个安全原因，metamask团队将来也许会放弃对这个方法的支持，不过我倒是觉得，保留对这个方法的支持，将签名数据做详细展示，让开发者自己做安全性的权衡。</p>
+
+<p>最后聊一点感想吧，目前区块链上簇拥了太多投机者，真正致力于深耕技术的人不多，metamask团队算一个，区块链是个有意思的技术，因为它的技术背后，隐含了人类社会化的意识，它目前的基础组件都还不够完善，需要我们热爱技术的所有人，去投入，去发展。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[那些以太坊DApp服务端开发期望已久的轮子]]></title>

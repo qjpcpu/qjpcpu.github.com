@@ -7,12 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="先说说原因：for循环是利用空格做分隔符，所以可以这样打印句子中的单词： centence="Linux is cool"
-for word in $centence;do echo $word
-done 有时用ls命令遍历目录会遇到空目录： 1
-2
-3
-for d in $(ls);do &hellip;">
+	<meta name="description" content="算是记录一个教训吧。 下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示connect: Network is unreachable，nslookup查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(route - &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -93,6 +88,58 @@ for d in $(ls);do &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/14/route/">
+		
+			Route</a>
+	</h2>
+	<div class="entry-content">
+		<p>算是记录一个教训吧。</p>
+
+<p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(<code>route -n</code>)，外网ip没得路由规则走，添加默认网关后ok：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">route add default gw 10.46.148.1
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>提醒自己以后把学到的东西利用起来！</p>
+
+
+		
+		<a href="/blog/2014/03/14/route/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-14T00:03:30+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/14/route/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -666,62 +713,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/21/linuxri-chang-wei-hu/">
-		
-			Linux日常维护</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="cron">某些用户cron任务失败</h3>
-
-<p>有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。</p>
-
-<p>解决办法是在crontab任务前先执行<code>source /home/username/.bash_profile</code>，后面再接用户自己的任务命令即可。</p>
-
-<p>ps.<code>/etc/profile</code>,<code>~/.bash_profile</code>,<code>~/.bashrc</code>三个脚本的区别：</p>
-
-<ul>
-  <li>/etc/profile     #系统级初始化脚本，会被登录shell执行</li>
-  <li>~/.bash_profile  #用户配置，会被登录shell执行，非登录shell不执行</li>
-  <li>~/.bashrc        #非登录shell执行，但通常~/.bash_profile都会在代码里调用~/.bashrc，所以登录shell也执行它</li>
-</ul>
-
-
-		
-		<a href="/blog/2014/02/21/linuxri-chang-wei-hu/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-21T22:58:13+08:00" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/linux/'>linux</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/21/linuxri-chang-wei-hu/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

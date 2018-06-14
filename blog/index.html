@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="以太坊虽说是一个去中心化的东西,但DApp却并非是完全去中心化的应用,其主要原因不外乎是以太坊的处理能力和资源有限,无法承载一个完整应用全部的逻辑。所以，目前市面上所有的DApp应用都是需要中心化服务解释的。那么，本文就是列举一些可能会用到的轮子,帮助快速构建应用。 Read on &rarr &hellip;">
+	<meta name="description" content="在真实环境下的以太坊Dapp开发,是一定涉及到链上链下逻辑的交互的。那么开发者可能会遇到这样一种场景,当用户使用metamask签名交易并提交后,Dapp的中心服务端需要拿到这个交易ID,并跟踪这个交易的执行,甚至会根据这笔交易去触发后端逻辑(当然使用event可以一定程度避开这个问题, &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +88,52 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/">
+		
+			怎样实现以太坊交易可靠提交</a>
+	</h2>
+	<div class="entry-content">
+		<p>在真实环境下的以太坊Dapp开发,是一定涉及到链上链下逻辑的交互的。那么开发者可能会遇到这样一种场景,当用户使用metamask签名交易并提交后,Dapp的中心服务端需要拿到这个交易ID,并跟踪这个交易的执行,甚至会根据这笔交易去触发后端逻辑(当然使用event可以一定程度避开这个问题,但这种回避式的解决方案不在此讨论)，但现实情况往往是令人痛苦的，因为很可能会因为种种原因，我们无法取到metamask的回调，导致开发者因此”丢失”掉这笔交易。</p>
+
+<p>那么，如果我们要直面这个问题，要怎么样实现交易可靠提交呢？</p>
+
+
+		
+		<a href="/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-06-14T14:54:01+08:00" pubdate data-updated="true">Jun 14<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -481,49 +527,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/">
-		
-			深入ethereum源码-p2p模块节点发现机制</a>
-	</h2>
-	<div class="entry-content">
-		<p>ethereum是基于kademlia协议实现其节点自动发现机制,完整整个网络拓扑关系的构建刷新。
-
-		
-		<a href="/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2018-01-30T11:40:37+08:00" pubdate data-updated="true">Jan 30<span>th</span>, 2018</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
