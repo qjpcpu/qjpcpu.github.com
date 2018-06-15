@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-15T18:50:26+08:00</updated>
+  <updated>2018-06-15T18:56:13+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -5763,7 +5763,7 @@ list[ 1 ][ 1 ] = d;
 
 <p><strong>环境及工具:</strong> ethereum,solidity,golang,mysql,cayley,web3js etc.</p>
 
-<p><strong>项目描述:</strong> 此项目为自发的兴趣项目，主要将基于以太坊的有趣的想法实现集成到一个工具箱，比如，以太备注，交易取消，资金网络等等.</p>
+<p><strong>项目描述:</strong> 此项目为自发的个人兴趣项目，前后端及其区块链均个人独立完成;主要将基于以太坊的有趣的想法实现集成到一个工具箱，比如，以太备注，交易取消，资金网络等等.</p>
 
 <h4 id="section-9">3. 咕咚电商(咕咚)</h4>
 
