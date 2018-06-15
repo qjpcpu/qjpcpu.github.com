@@ -14,6 +14,10 @@ categories: life
 
 * 电话: 终端执行`(uname -a |grep -i linux >/dev/null) && (echo MTU4ODQ1NDIyMzgK | base64 -d) || (echo MTU4ODQ1NDIyMzgK | base64 -D)`
 
+或扫描二维码
+
+![phone](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/myphone.png)
+
 * 微信: 
 
 ![qrcode](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg)
