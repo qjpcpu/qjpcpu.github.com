@@ -10,17 +10,11 @@ categories: life
 
 * 姓名: JasonQu
 
-* 邮箱: qjpcpu@gmail.com
-
-* 电话: 终端执行`(uname -a |grep -i linux >/dev/null) && (echo MTU4ODQ1NDIyMzgK | base64 -d) || (echo MTU4ODQ1NDIyMzgK | base64 -D)`
-
-或扫描二维码
-
-![phone](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/myphone.png)
-
 * 微信: 
 
 ![qrcode](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg)
+
+* 详细联系方式: 打开[以太坊浏览器](https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959)点击页面InputData文本框下面"Convert To Utf8"即可看到
 
 <!-- more -->
 
