@@ -31,7 +31,7 @@ categories: blockchain
 
 # 服务端控制智能合约
 
-要和只能合约进行交互,显然需要完成通用编程语言对合约的控制,这里我们以`golang`代码为例,展示怎么从`golang`中调用合约函数。[官方go-ethereum](https://github.com/ethereum/go-ethereum)已经提供了这样的工具`abigen`,直接从合约`sol`代码生成go代码:
+要和智能合约进行交互,显然需要完成通用编程语言对合约的控制,这里我们以`golang`代码为例,展示怎么从`golang`中调用合约函数。[官方go-ethereum](https://github.com/ethereum/go-ethereum)已经提供了这样的工具`abigen`,直接从合约`sol`代码生成go代码:
 
 | Command    | Description |
 |:----------:|-------------|
@@ -146,6 +146,8 @@ eth.getCode("0xbfb2e296d9cf3e593e79981235aed29ab9984c0f")
 
 `From`无法直接从交易函数里获取,因为来源地址可以从签名里反解出来,为了拿取到这个字段,用的方法是解析交易的`String()`输出来获取,虽然办法效率不高,但为了不改动源码这是最简单的。
 
+[update]`from`获取已经更新,不再使用正则解析,详见代码[get from field](https://github.com/qjpcpu/ethereum/blob/f3fa29e5d9ef3762d69dd838a465ee0e8b116e1f/contracts/helper.go#L35)
+
 ## To
 
 收款地址的获取就比较麻烦一些了，它不像eth的直接转账,交易的`to`字段就是收款地址,合约调用的`To`是合约地址,真正的收款地址存放在`Data`字段里,那么我们来看看`Data`字段怎么编码的。
@@ -199,8 +201,6 @@ MethodID: 0xa9059cbb
 * 遍历区块交易,取到我们关注的某个合约的所有转账交易
 * 解析交易关键字段,包含交易ID,from,to,金额,时间戳
 * 入库,提供webAPI给应用层
-
-目前我的示例代码仅实现了关键字段解析,但已经足够作为基础函数去做上层分析工具了: [代码地址](https://github.com/qjpcpu/ethereum/blob/master/stats/erc20_crawl.go)
 
 # 参考文献
 
