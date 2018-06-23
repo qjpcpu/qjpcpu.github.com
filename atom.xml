@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-15T19:12:27+08:00</updated>
+  <updated>2018-06-24T00:02:47+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -640,7 +640,7 @@
 
 <h1 id="section-1">服务端控制智能合约</h1>
 
-<p>要和只能合约进行交互,显然需要完成通用编程语言对合约的控制,这里我们以<code>golang</code>代码为例,展示怎么从<code>golang</code>中调用合约函数。<a href="https://github.com/ethereum/go-ethereum">官方go-ethereum</a>已经提供了这样的工具<code>abigen</code>,直接从合约<code>sol</code>代码生成go代码:</p>
+<p>要和智能合约进行交互,显然需要完成通用编程语言对合约的控制,这里我们以<code>golang</code>代码为例,展示怎么从<code>golang</code>中调用合约函数。<a href="https://github.com/ethereum/go-ethereum">官方go-ethereum</a>已经提供了这样的工具<code>abigen</code>,直接从合约<code>sol</code>代码生成go代码:</p>
 
 <table>
   <thead>
@@ -821,6 +821,8 @@
 
 <p><code>From</code>无法直接从交易函数里获取,因为来源地址可以从签名里反解出来,为了拿取到这个字段,用的方法是解析交易的<code>String()</code>输出来获取,虽然办法效率不高,但为了不改动源码这是最简单的。</p>
 
+<p>[update]<code>from</code>获取已经更新,不再使用正则解析,详见代码<a href="https://github.com/qjpcpu/ethereum/blob/f3fa29e5d9ef3762d69dd838a465ee0e8b116e1f/contracts/helper.go#L35">get from field</a></p>
+
 <h2 id="to">To</h2>
 
 <p>收款地址的获取就比较麻烦一些了，它不像eth的直接转账,交易的<code>to</code>字段就是收款地址,合约调用的<code>To</code>是合约地址,真正的收款地址存放在<code>Data</code>字段里,那么我们来看看<code>Data</code>字段怎么编码的。</p>
@@ -887,8 +889,6 @@
   <li>解析交易关键字段,包含交易ID,from,to,金额,时间戳</li>
   <li>入库,提供webAPI给应用层</li>
 </ul>
-
-<p>目前我的示例代码仅实现了关键字段解析,但已经足够作为基础函数去做上层分析工具了: <a href="https://github.com/qjpcpu/ethereum/blob/master/stats/erc20_crawl.go">代码地址</a></p>
 
 <h1 id="section-5">参考文献</h1>
 
