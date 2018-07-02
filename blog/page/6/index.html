@@ -7,7 +7,18 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="某些用户cron任务失败 有时某些普通用户的crontab任务会失败，这可能是由于crond执行普通用户的任务时，是以非登录shell的形式切换到普通用户来执行的，所以可能缺失了某些环境变量。 解决办法是在crontab任务前先执行source /home/username/. &hellip;">
+	<meta name="description" content="网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
+我希望直接在bash脚本里使用expect命令来实现自动登录。 利用expect命令实现自动登录并执行命令 1
+2
+3
+4
+5
+6
+7
+8
+9
+#!/bin/bash
+expect -c &#39; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +99,75 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/">
+		
+			使用expect实现自动登录</a>
+	</h2>
+	<div class="entry-content">
+		<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
+我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
+
+<h3 id="expect">利用expect命令实现自动登录并执行命令</h3>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
+</span><span class="line">expect -c <span class="s1">&#39;</span>
+</span><span class="line"><span class="s1">spawn ssh USER@HOST &quot;commands&quot;</span>
+</span><span class="line"><span class="s1">expect {</span>
+</span><span class="line"><span class="s1">&quot;*(yes/no)?&quot; { send &quot;yes\r&quot;;exp_continue }</span>
+</span><span class="line"><span class="s1">&quot;*assword:&quot; { send &quot;PASSWORD\r&quot; }</span>
+</span><span class="line"><span class="s1">}</span>
+</span><span class="line"><span class="s1">expect eof</span>
+</span><span class="line"><span class="s1">&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>关于expect的命令在网上有很多资料，这里不在赘述。下面讲讲怎么在bash和expect传递变量。</p>
+
+
+		
+		<a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T20:13:57+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -560,65 +640,6 @@ tar vzxf mysql-5.1.73.tar.gz
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/15/rspec/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/15/rack-based-application/">
-		
-			Rack Based Application</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="rack">1.什么是rack</h3>
-
-<p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
-
-<pre><code>app = lambda do |env|
-  body = "Hello, World!"
-  [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
-end
- 
-run app
-</code></pre>
-
-<p>重点是第三行，一个基于rack的ruby应用只需要一个包含call方法的对象，在调用call方法后该对象会返回形如第三行的一个列表，该列表包含三个元素：第一个元素是这次http请求的返回状态码200，第二个元素是一个返回的http响应headers的hash表，第三个元素是http响应体的列表，所以该列表的形式为：</p>
-
-<pre><code>[ status_code, headers, body ]
-</code></pre>
-
-
-		
-		<a href="/blog/2014/02/15/rack-based-application/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T00:04:13+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/15/rack-based-application/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

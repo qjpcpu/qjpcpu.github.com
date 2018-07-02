@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="还记得大概一年前，也是在CSDN博客上读过一篇文章，拜读某个大牛描述了他为心仪的公司准备的过程，当时觉得很受触动，于是在博客下留言自勉，还记得他回复的话说：跨专业，更要提早准备。而现在，作为一个机械专业的学生，一路过关斩将拿到百度offer，除了激动之余，我能清晰的感觉到， &hellip;">
+	<meta name="description" content="Rake，顾名思义，就是Ruby的Make工具。 Rake的特性 Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语法。不需要编辑XML文件，也不需要记忆古怪的makefile语法。 可以定义任务（task），并为任务定义依赖。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -88,6 +88,64 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rake-rubys-make/">
+		
+			Rake-ruby&#8217;s Make</a>
+	</h2>
+	<div class="entry-content">
+		<p>Rake，顾名思义，就是Ruby的Make工具。</p>
+
+<h2 id="rake">Rake的特性</h2>
+
+<p>Rakefile就是rake版本的makefile文件，它使用的就是标准的ruby语法。不需要编辑XML文件，也不需要记忆古怪的makefile语法。</p>
+
+<ul>
+  <li>可以定义任务（task），并为任务定义依赖。</li>
+  <li>rake支持利用规则模式来合成隐式任务。</li>
+  <li>灵活的文件列表，可以像列表一样操作。</li>
+  <li>预置的库使得编写rakefile变得更加简单。</li>
+  <li>支持并行执行多个任务。</li>
+</ul>
+
+<p>所以说，rakefile文件没有特殊的格式，仅仅是一个包含ruby代码的文件，不过，仍然有一些关于rakefile的约定，遵循这些约定，使得rake能够更好地处理任务和行为。</p>
+
+
+		
+		<a href="/blog/2014/02/14/rake-rubys-make/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T17:49:14+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rake-rubys-make/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -508,67 +566,6 @@ man.fall_in_love
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/railsshi-yong-bootstrapji-bootswatch/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/">
-		
-			在CentOS上搭建git服务器</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">0.定义</h3>
-
-<p>这里的示例中出现的主机有三台：localhost是一台centos主机，也是git服务器；ubuntu是git服务器管理员的workstation；linux是某个git用户jason的workstation。</p>
-
-<p>localhost即git服务器上有两个账户test和git，test是用来搭建git服务器的已存在账户，
-git是为git服务器创建的专有账户。</p>
-
-<p>ubuntu是git服务器管理员的workstation，该管理员在自己的这台workstation上的账户是user。</p>
-
-<p>linux是jason的workstation。</p>
-
-<ul>
-  <li>git server:                 [test@localhost]     [git@localhost]</li>
-  <li>git administrator:      [user@ubuntu]</li>
-  <li>git user:                    [jason@linux]</li>
-</ul>
-
-<p>文中省略了ssh在各主机间的登录命令及scp复制公钥的过程，注意观察命令前的用户及主机名提示即可。</p>
-
-
-		
-		<a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T15:01:55+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/git/'>git</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

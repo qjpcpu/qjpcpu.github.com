@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-06-24T00:02:47+08:00</updated>
+  <updated>2018-07-02T15:24:08+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,138 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[利用call实现合约任意调用]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong/"/>
+    <updated>2018-07-02T13:50:25+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong</id>
+    <content type="html"><![CDATA[<p>call()是一个底层的接口，用来向一个合约发送消息，也就是说如果你想实现自己的消息传递，可以使用这个函数。</p>
+
+<ul id="markdown-toc">
+  <li><a href="#section">需求场景</a>    <ul>
+      <li><a href="#section-1">业务需求</a></li>
+      <li><a href="#section-2">明确需求</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-3">调用任意合约</a></li>
+</ul>
+
+<h1 id="section">需求场景</h1>
+
+<p>“合约动态调用”的需求场景是什么呢,答案是”热钱包”。为什么是热钱包呢,我们可以从最终需求出发一步步来推导:</p>
+
+<h2 id="section-1">业务需求</h2>
+
+<p>首先,假设一个业务需求，我们现在要做一个ERC721的热钱包，用户可以托管他全部的数字资产给项目方，项目方代表用户对其资产进行任意操作，这样我们可以向用户屏蔽以太坊的细节，大大提升用户体验，只有当用户想要提现资产的时候，才把资产归还到用户的冷钱包地址中去。</p>
+
+<h2 id="section-2">明确需求</h2>
+
+<p>初看这个需求很简单，我们可以为每个用户生成一个私钥从而建立对应地址。每次需要对资产进行操作的时候，读取这个私钥进行链上交互就行了。</p>
+
+<p>好像很完美，但细想下来，在真正生产环境中实践却会有诸多问题: 首先带来的就是管理问题，众多的私钥不容许有一丝数据的丢失损坏，否则就需要承担用户资产的遗失风险; 其次是泄露的风险，私钥的众多更加大了泄露的风险系数，一旦有任何一个私钥泄露，项目方基本上是属于束手无策的，以太坊上可没有账户封禁这一说。</p>
+
+<p>那么，怎么解决这个问题呢？我这里提供的一个解决方案就是利用合约。</p>
+
+<p>我们为每个用户创建的热钱包并不是一个普通钱包地址，而是一个合约。所有的用户的热钱包都统一受控于项目方的管理账户地址,只有管理账户有权操作合约，如果有任何问题，我们只需要更换管理账户就行，不需要更改其他东西。 但利用合约来做热钱包又带来另一个问题，合约能调用的方法在上链之后就无法更改了或新增了，如果我们要对接的某个721藏品后续支持了某个新方法，那么我们的热钱包岂不是不能完成这个调用了？所以，如果使用合约做热钱包，还必须能够实现这个钱包合约能够动态调用其他合约。</p>
+
+<p>归纳一下，这个721热钱包细化下来的技术需求有这样几点需要满足:</p>
+
+<ol>
+  <li>管理收敛，所有热钱包管理最好收敛到一个管理账户下</li>
+  <li>管理账户能更改</li>
+  <li>如果是合约热钱包,这个钱包必须能适配各类标准非标准藏品合约的调用</li>
+</ol>
+
+<p>这里对第3点补充说明一下，可能有的读者会疑惑，既然erc721都是标准化的协议，为什么还需要适配各种非标接口呢？原因之一是我们业务需求里已经说了，要能对用户资产进行任意操作，不仅仅限制于基本721的几个API。此外，ERC721的藏品通常都不会只包含721协议里几个基础接口，各个项目方会根据自己的业务研发出诸如繁殖、战斗等等资产操作，一个好的721钱包最好是能适配这些功能。还有，即便是ERC721协议本身，也可能出现变动，比如日前刚确认的721协议的最终版和以CryptoKitty所代表的beta版，协议本身就差别不小。</p>
+
+<h1 id="section-3">调用任意合约</h1>
+
+<p>其实要实现这个功能,使用<code>call</code>方法就可以了。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">DynamicCaller</span><span class="p">{</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">dyn_call</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_constract</span><span class="p">,</span> <span class="nx">bytes</span> <span class="nx">_data</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">payable</span><span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_constract</span><span class="p">.</span><span class="nx">call</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">)(</span><span class="nx">_data</span><span class="p">)){</span>
+</span><span class="line">            <span class="nx">revert</span><span class="p">();</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果<code>DynamicCaller</code>就是我们的热钱包合约，那么这个<code>dyn_call</code>方法就可以实现任意调用，注意这个动态方法最终调用的合约和对应方法都是由参数传递进来；</p>
+
+<p>在ropsten部署这个合约,合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>。现在我们有一份任意合约<code>AnyContract</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">AnyContract</span><span class="p">{</span>
+</span><span class="line">    <span class="nx">mapping</span><span class="p">(</span><span class="nx">address</span> <span class="o">=&gt;</span> <span class="nx">uint256</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">numbers</span><span class="p">;</span>
+</span><span class="line">    <span class="nx">mapping</span><span class="p">(</span><span class="nx">address</span> <span class="o">=&gt;</span> <span class="nx">string</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">texts</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">uint256</span> <span class="nx">_a</span><span class="p">,</span><span class="nx">uint256</span> <span class="nx">_b</span><span class="p">)</span> <span class="kr">public</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">numbers</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">=</span><span class="nx">_a</span><span class="o">+</span><span class="nx">_b</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">write</span><span class="p">(</span><span class="nx">string</span> <span class="nx">_text</span><span class="p">)</span> <span class="kr">public</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">texts</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_text</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">batchWrite</span><span class="p">(</span><span class="nx">uint256</span> <span class="nx">_a</span><span class="p">,</span><span class="nx">uint256</span> <span class="nx">_b</span><span class="p">,</span><span class="nx">string</span> <span class="nx">_text</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">payable</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">numbers</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">=</span><span class="nx">_a</span><span class="o">+</span><span class="nx">_b</span><span class="p">;</span>
+</span><span class="line">        <span class="nx">texts</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_text</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">getBalance</span><span class="p">()</span> <span class="kr">public</span> <span class="nx">view</span> <span class="nx">returns</span><span class="p">(</span><span class="nx">uint256</span><span class="p">){</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">address</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">balance</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>现在我们怎么进行调用呢？我们可以使用<code>github.com/qjpcpu/ethereum/contracts</code>提供的参数打包方法<code>PackArguments</code>生成<code>dyn_call</code>要的数据，比如我们要从<code>DynamicCaller</code>调用<code>AnyContract</code>的add方法:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">PackArguments</span><span class="p">(</span><span class="nx">anyABI</span><span class="p">,</span> <span class="s">&quot;add&quot;</span><span class="p">,</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</span><span class="line"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">err</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nx">builder</span> <span class="o">:=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">NewTxOptsBuilderFromPK</span><span class="p">(</span><span class="nx">pk</span><span class="p">)</span>
+</span><span class="line"><span class="nx">dc</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">NewDynamicCaller</span><span class="p">(</span><span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="nx">DynamicCallerAddres</span><span class="p">),</span> <span class="nx">conn</span><span class="p">)</span>
+</span><span class="line"><span class="nx">tx</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">dc</span><span class="p">.</span><span class="nx">DynCall</span><span class="p">(</span><span class="nx">builder</span><span class="p">.</span><span class="nx">Get</span><span class="p">(),</span> <span class="nx">common</span><span class="p">.</span><span class="nx">HexToAddress</span><span class="p">(</span><span class="s">&quot;0x2f44fc640F9708FD969620466F9eddD21859e8E9&quot;</span><span class="p">),</span> <span class="nx">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>完整代码示例参考<a href="https://github.com/qjpcpu/dynamic-caller">dynamic-caller</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[怎样实现以太坊交易可靠提交]]></title>
@@ -4918,133 +5050,6 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><code>MrDarcy.all_promises</code>的块会等待其中列表的每一个promise完成。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>
-    <link href="http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope/"/>
-    <updated>2015-05-25T14:12:42+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope</id>
-    <content type="html"><![CDATA[<h3 id="scopeisolated-scope">分离式scope（Isolated Scope）</h3>
-<p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
-
-<!--more-->
-
-<blockquote>
-  <p>注意，下面的示例为了突出重点，使用CoffeeScript展示代码</p>
-</blockquote>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s">&#39;docsIsolateScopeDirective&#39;</span><span class="p">,</span> <span class="p">[]).</span><span class="nx">controller</span><span class="p">(</span><span class="s">&#39;Controller&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
-</span><span class="line">  <span class="nv">$scope.naomi =</span>
-</span><span class="line">    <span class="nv">name: </span><span class="s">&#39;Naomi&#39;</span>
-</span><span class="line">    <span class="nv">address: </span><span class="s">&#39;1600 Amphitheatre&#39;</span>
-</span><span class="line">  <span class="nv">$scope.igor =</span>
-</span><span class="line">    <span class="nv">name: </span><span class="s">&#39;Igor&#39;</span>
-</span><span class="line">    <span class="nv">address: </span><span class="s">&#39;123 Somewhere&#39;</span>
-</span><span class="line"><span class="p">]).</span><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
-</span><span class="line">  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
-</span><span class="line">  <span class="nv">scope: customerInfo: </span><span class="s">&#39;=info&#39;</span>
-</span><span class="line">  <span class="nv">template: </span><span class="s">&quot;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;Controller&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;naomi&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
-</span><span class="line">  <span class="nt">&lt;hr&gt;</span>
-</span><span class="line">  <span class="nt">&lt;my</span><span class="na">-customer</span> <span class="na">info=</span><span class="s">&quot;igor&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-customer&gt;
-</span><span class="line"><span class="nt">&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>输出为</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="text"><span class="line">Name: Naomi Address: 1600 Amphitheatre Name: Igor Address: 123 Somewhere
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>由输出可以看出，指令<code>my-customer</code>中的<code>info</code>属性被分别绑定到了外部scope的两个变量<code>naomi</code>和<code>igor</code>，虽然是同一指令，但相互之间没有干扰或污染。这样<code>my-customer</code>指令可以非常漂亮的被重用。</p>
-
-<p>其实，如果不需要特意在指令间共享scope，最好都使用分离式scope来写指令。</p>
-
-<p>另外，指令内属性名如果和绑定的外部属性相同，可以采用简写模式，如这里<code>my-customer</code>的<code>info</code>属性映射到内部也用<code>info</code>引用的化:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">directive</span> <span class="s">&#39;myCustomer&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
-</span><span class="line">  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
-</span><span class="line">  <span class="nv">scope: info: </span><span class="s">&#39;=&#39;</span>
-</span><span class="line">  <span class="nv">template: </span><span class="s">&#39;Name: { {customerInfo.name} } Address: { {customerInfo.address} }&#39;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="section">@单向绑定</h3>
-<p>对于仅仅需要在指令中反应外部scope变量变化的情况下，可以仅使用单向绑定，将controller的变量映射到指令中，一旦在controller中修改变量，指令中可以立即看到变化，然而反过来则不可，即外部scope中看不到指令内部对变量的修改。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class="line"><span class="s">  scope: attributeFoo: &#39;</span><span class="nx">@</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;my</span><span class="na">-component</span> <span class="na">attribute-foo=</span><span class="s">&quot;{ {foo} }&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-component&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>即，在控制器里修改foo，在<code>my-directive</code>中可以感知到。通常单向绑定对于取字符串值很常见，所以这里的html中使用双花括号插值。因此，单向绑定的官方名称其实是叫属性绑定。</p>
-
-<h3 id="section-1">=双向绑定</h3>
-<p>看名称就知道用途了，双向绑定使用<code>=</code>定义，直接看例子:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class="line"><span class="s">  scope: bindingFoo: &#39;</span><span class="o">=</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="section-2">&amp;表达式绑定</h3>
-<p>或者换个更human的名称，函数绑定，如果需要在指令内调用controler的函数，这就是说我们可以在指令内部定义接口，controller定义具体实现，这样指令就能够变得非常灵活，用在分离式scope中，既避免了变量污染又达到了灵活性，太cool了。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>my-directive.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;myDirective, -&gt;</span>
-</span><span class="line"><span class="s">  scope: myHandler: &#39;</span><span class="o">&amp;</span><span class="s">&#39;</span>
-</span><span class="line"><span class="s">  template: &#39;</span><span class="o">&lt;</span><span class="nx">button</span> <span class="nx">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span> <span class="nx">ng</span><span class="o">-</span><span class="nx">click</span><span class="o">=</span><span class="s">&quot;myHandler({$count: 123})&quot;</span><span class="o">&gt;&lt;/</span><span class="nx">button</span><span class="o">&gt;</span><span class="s">&#39;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>my-controller.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;MyCtrl&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;$scope&#39;</span><span class="p">,</span><span class="nf">($scope) -&gt;</span>
-</span><span class="line">    <span class="nv">$scope.getCounts = </span><span class="nf">(countNum) -&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Button click count: </span><span class="si">#{</span><span class="nx">countNum</span><span class="si">}</span><span class="s">&quot;</span>
-</span><span class="line"><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;my</span><span class="na">-directive</span> <span class="na">my-handler=</span><span class="s">&quot;getCounts($count)&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/my-directive&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h4 id="section-3">非常重要:函数传参</h4>
-<p>对于无参函数的绑定，没什么好说的。但对应上例中的情况，需要把参数从指令中传到外部函数，则需要注意了。</p>
-
-<ul>
-  <li>参数必须是hash类型的json对象，即参数是k-v类型的对象，如示例中的<code>{$count: 123}</code></li>
-  <li>html中使用指令的地方函数的参数必须和指令中函数传递的参数的key一一对应，即指令中传递的参数的key是<code>$count</code>，那么html中指令绑定的函数接受的参数必须是<code>$count</code>，否则无法接受正确的参数。但是在controller里的函数参数名不必和他们保持一致。</li>
-</ul>
 ]]></content>
   </entry>
   
