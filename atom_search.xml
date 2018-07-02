@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-02T15:24:08+08:00</updated>
+  <updated>2018-07-02T16:42:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -21,13 +21,25 @@
     <id>http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong</id>
     <content type="html"><![CDATA[<p>call()是一个底层的接口，用来向一个合约发送消息，也就是说如果你想实现自己的消息传递，可以使用这个函数。</p>
 
+<!-- more -->
+
 <ul id="markdown-toc">
   <li><a href="#section">需求场景</a>    <ul>
       <li><a href="#section-1">业务需求</a></li>
       <li><a href="#section-2">明确需求</a></li>
     </ul>
   </li>
-  <li><a href="#section-3">调用任意合约</a></li>
+  <li><a href="#section-3">实现关键点</a>    <ul>
+      <li><a href="#section-4">调用任意合约</a></li>
+      <li><a href="#section-5">权限控制</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-6">实现参考</a>    <ul>
+      <li><a href="#section-7">热钱包工厂</a></li>
+      <li><a href="#section-8">热钱包合约</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-9">后记</a></li>
 </ul>
 
 <h1 id="section">需求场景</h1>
@@ -58,9 +70,13 @@
 
 <p>这里对第3点补充说明一下，可能有的读者会疑惑，既然erc721都是标准化的协议，为什么还需要适配各种非标接口呢？原因之一是我们业务需求里已经说了，要能对用户资产进行任意操作，不仅仅限制于基本721的几个API。此外，ERC721的藏品通常都不会只包含721协议里几个基础接口，各个项目方会根据自己的业务研发出诸如繁殖、战斗等等资产操作，一个好的721钱包最好是能适配这些功能。还有，即便是ERC721协议本身，也可能出现变动，比如日前刚确认的721协议的最终版和以CryptoKitty所代表的beta版，协议本身就差别不小。</p>
 
-<h1 id="section-3">调用任意合约</h1>
+<h1 id="section-3">实现关键点</h1>
 
-<p>其实要实现这个功能,使用<code>call</code>方法就可以了。</p>
+<h2 id="section-4">调用任意合约</h2>
+
+<p>这是本文要讲述的关键点。</p>
+
+<p>其实要实现这个功能,使用<code>call</code>方法就可以了。call调用失败会返回一个调用成功与否的布尔值，需要检查一下</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -80,7 +96,7 @@
 
 <p>如果<code>DynamicCaller</code>就是我们的热钱包合约，那么这个<code>dyn_call</code>方法就可以实现任意调用，注意这个动态方法最终调用的合约和对应方法都是由参数传递进来；</p>
 
-<p>在ropsten部署这个合约,合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>。现在我们有一份任意合约<code>AnyContract</code></p>
+<p>在ropsten部署这个合约,合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>。现在我们有一份任意合约<code>AnyContract</code>(这里先不以ERC721合约举例，为了阐明任意调用这个点，使用了一个简单合约示例)</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -133,7 +149,9 @@
 <span class="line-number">5</span>
 <span class="line-number">6</span>
 <span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">PackArguments</span><span class="p">(</span><span class="nx">anyABI</span><span class="p">,</span> <span class="s">&quot;add&quot;</span><span class="p">,</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">anyABI</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">ParseABI</span><span class="p">(</span><span class="s">&quot;[{\&quot;constant\&quot;:true,\&quot;inputs\&quot;:[{\&quot;name\&quot;:\&quot;\&quot;,\&quot;type\&quot;:\&quot;address\&quot;}],\&quot;name\&quot;:\&quot;texts\&quot;,\&quot;outputs\&quot;:[{\&quot;name\&quot;:\&quot;\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}],\&quot;payable\&quot;:false,\&quot;stateMutability\&quot;:\&quot;view\&quot;,\&quot;type\&quot;:\&quot;function\&quot;},{\&quot;constant\&quot;:true,\&quot;inputs\&quot;:[],\&quot;name\&quot;:\&quot;getBalance\&quot;,\&quot;outputs\&quot;:[{\&quot;name\&quot;:\&quot;\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;}],\&quot;payable\&quot;:false,\&quot;stateMutability\&quot;:\&quot;view\&quot;,\&quot;type\&quot;:\&quot;function\&quot;},{\&quot;constant\&quot;:false,\&quot;inputs\&quot;:[{\&quot;name\&quot;:\&quot;_a\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;},{\&quot;name\&quot;:\&quot;_b\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;}],\&quot;name\&quot;:\&quot;add\&quot;,\&quot;outputs\&quot;:[],\&quot;payable\&quot;:false,\&quot;stateMutability\&quot;:\&quot;nonpayable\&quot;,\&quot;type\&quot;:\&quot;function\&quot;},{\&quot;constant\&quot;:false,\&quot;inputs\&quot;:[{\&quot;name\&quot;:\&quot;_a\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;},{\&quot;name\&quot;:\&quot;_b\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;},{\&quot;name\&quot;:\&quot;_text\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}],\&quot;name\&quot;:\&quot;batchWrite\&quot;,\&quot;outputs\&quot;:[],\&quot;payable\&quot;:true,\&quot;stateMutability\&quot;:\&quot;payable\&quot;,\&quot;type\&quot;:\&quot;function\&quot;},{\&quot;constant\&quot;:true,\&quot;inputs\&quot;:[{\&quot;name\&quot;:\&quot;\&quot;,\&quot;type\&quot;:\&quot;address\&quot;}],\&quot;name\&quot;:\&quot;numbers\&quot;,\&quot;outputs\&quot;:[{\&quot;name\&quot;:\&quot;\&quot;,\&quot;type\&quot;:\&quot;uint256\&quot;}],\&quot;payable\&quot;:false,\&quot;stateMutability\&quot;:\&quot;view\&quot;,\&quot;type\&quot;:\&quot;function\&quot;},{\&quot;constant\&quot;:false,\&quot;inputs\&quot;:[{\&quot;name\&quot;:\&quot;_text\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}],\&quot;name\&quot;:\&quot;write\&quot;,\&quot;outputs\&quot;:[],\&quot;payable\&quot;:false,\&quot;stateMutability\&quot;:\&quot;nonpayable\&quot;,\&quot;type\&quot;:\&quot;function\&quot;}]&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">contracts</span><span class="p">.</span><span class="nx">PackArguments</span><span class="p">(</span><span class="nx">anyABI</span><span class="p">,</span> <span class="s">&quot;add&quot;</span><span class="p">,</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </span><span class="line"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
 </span><span class="line">	<span class="k">return</span> <span class="nx">err</span>
 </span><span class="line"><span class="p">}</span>
@@ -143,6 +161,204 @@
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>完整代码示例参考<a href="https://github.com/qjpcpu/dynamic-caller">dynamic-caller</a></p>
+
+<h2 id="section-5">权限控制</h2>
+
+<p>对于热钱包创建合约,需要能更改管理账户,并且<code>dyn_call</code>这个函数只有管理账户能够调用,这个继承<code>Ownable</code>合约就可能办到了。</p>
+
+<p>对于热钱包合约本身,除了提现操作，所有方法调用必须来自管理合约。</p>
+
+<h1 id="section-6">实现参考</h1>
+
+<h2 id="section-7">热钱包工厂</h2>
+
+<p>热钱包工厂唯一作用就是创建热并记录用户的热钱包，唯一需要注意的就是控制权的管理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">Ownable</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">address</span> <span class="kr">public</span> <span class="nx">owner</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">constructor</span><span class="p">()</span> <span class="kr">public</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">owner</span> <span class="o">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">modifier</span> <span class="nx">onlyOwner</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">==</span> <span class="nx">owner</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">_</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">transferOwnership</span><span class="p">(</span><span class="nx">address</span> <span class="nx">newOwner</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">onlyOwner</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">newOwner</span> <span class="o">!=</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">owner</span> <span class="o">=</span> <span class="nx">newOwner</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">getOwner</span><span class="p">()</span> <span class="kr">public</span> <span class="nx">view</span> <span class="nx">returns</span><span class="p">(</span><span class="nx">address</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">owner</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">contract</span> <span class="nx">WalletFactory</span> <span class="nx">is</span> <span class="nx">Ownable</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 记录用户热钱包地址</span>
+</span><span class="line">    <span class="nx">mapping</span><span class="p">(</span><span class="nx">address</span> <span class="o">=&gt;</span> <span class="nx">address</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">hotwallets</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 仅管理员owner可以创建热钱包</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">createWallet</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_owner</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">onlyOwner</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// 每个用户仅有一个热钱包</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">hotwallets</span><span class="p">[</span><span class="nx">_owner</span><span class="p">]</span> <span class="o">==</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</span><span class="line">        <span class="nx">HotWallet</span> <span class="nx">w</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HotWallet</span><span class="p">(</span><span class="nx">address</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="nx">_owner</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">hotwallets</span><span class="p">[</span><span class="nx">_owner</span><span class="p">]</span> <span class="o">=</span> <span class="nx">address</span><span class="p">(</span><span class="nx">w</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">isWalletFactory</span><span class="p">()</span> <span class="nx">external</span> <span class="nx">pure</span> <span class="nx">returns</span><span class="p">(</span><span class="nx">bool</span><span class="p">){</span>
+</span><span class="line">        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>其实，在实际应用中,这里还潜藏了一个问题: 比如通常的产品逻辑会在用户注册完成时就生成热钱包备用,但这个以太坊交易被打包最快可能也要15秒左右，如果我们要在用户注册完成就显示用户热钱包地址好像是不可能的。实际上呢？交易打包确认确实要很长时间,但是我们却可以提前获知热钱包的地址:</p>
+
+<p>以太坊中合约地址的生成规则是这样的:根据<code>(msg.sender + nonce)</code>二元组的hash来生成合约地址的,这个生成算法很简单,有兴趣可以查阅源码<code>crypto</code>包。</p>
+
+<p>举个例子,加入<code>WalletFactory</code>这个合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>,那么第一次调用<code>createWallet</code>时nonce肯定是1，则对应生成的<code>HotWallet</code>地址可以这样算出: <code>addr := crypto.CreateAddress(common.HexToAddress("0x5ec567cf2137da526945f4820d0c0621ddcd02ce"), 1) // 热钱包地址是:0xE139cd3E5FcC127A54B0fF8687c703265E282842</code></p>
+
+<h2 id="section-8">热钱包合约</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">contract</span> <span class="nx">HotWallet</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">address</span> <span class="kr">public</span> <span class="nx">owner</span><span class="p">;</span>
+</span><span class="line">    <span class="nx">WalletFactory</span> <span class="kr">public</span> <span class="nx">factory</span><span class="p">;</span>
+</span><span class="line">    <span class="c1">// 这里的owner是热钱包所属用户</span>
+</span><span class="line">    <span class="nx">modifier</span> <span class="nx">onlyOwner</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">==</span> <span class="nx">owner</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">_</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">// 保证动态方法的调用者一定是管理员</span>
+</span><span class="line">    <span class="nx">modifier</span> <span class="nx">onlyAdmin</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">==</span> <span class="nx">factory</span><span class="p">.</span><span class="nx">getOwner</span><span class="p">());</span>
+</span><span class="line">        <span class="nx">_</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">constructor</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_admin</span><span class="p">,</span> <span class="nx">address</span> <span class="nx">_owner</span><span class="p">)</span> <span class="kr">public</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">_admin</span> <span class="o">!=</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">_owner</span> <span class="o">!=</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</span><span class="line">        <span class="nx">factory</span> <span class="o">=</span> <span class="nx">WalletFactory</span><span class="p">(</span><span class="nx">_admin</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">factory</span><span class="p">.</span><span class="nx">isWalletFactory</span><span class="p">());</span>
+</span><span class="line">        <span class="nx">owner</span> <span class="o">=</span> <span class="nx">_owner</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">isHotWallet</span><span class="p">()</span> <span class="nx">external</span> <span class="nx">pure</span> <span class="nx">returns</span><span class="p">(</span><span class="nx">bool</span><span class="p">){</span>
+</span><span class="line">        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// the msg.sender must be factory.owner</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">dyn_call</span><span class="p">(</span><span class="nx">address</span> <span class="nx">_constract</span><span class="p">,</span> <span class="nx">bytes</span> <span class="nx">_data</span><span class="p">)</span> <span class="kr">public</span> <span class="nx">payable</span> <span class="nx">onlyAdmin</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_constract</span><span class="p">.</span><span class="nx">call</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">)(</span><span class="nx">_data</span><span class="p">)){</span>
+</span><span class="line">            <span class="nx">revert</span><span class="p">();</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 能提现eth</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">withdraw</span><span class="p">()</span> <span class="nx">external</span> <span class="nx">onlyOwner</span><span class="p">{</span>
+</span><span class="line">        <span class="nx">require</span><span class="p">(</span><span class="nx">owner</span> <span class="o">!=</span> <span class="nx">address</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</span><span class="line">        <span class="nx">owner</span><span class="p">.</span><span class="nx">transfer</span><span class="p">(</span><span class="nx">address</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">balance</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 很多场景下都需要能接受eth转账</span>
+</span><span class="line">    <span class="kd">function</span><span class="p">()</span> <span class="kr">public</span> <span class="nx">payable</span><span class="p">{}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// other functions</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><a href="https://github.com/qjpcpu/dynamic-caller/blob/master/wallets.sol">完整合约代码</a></p>
+
+<h1 id="section-9">后记</h1>
+
+<p>要完成个业务特定热钱包,可以在这个基础上修改HotWallet代码即可,比如数字资产的提现等等,但要特别注意: <code>call</code>方法是一个非常底层方法，为了合约安全，该方法不应该接受直接来自用户的数据。</p>
+
+<p>此外,我观察到一些交易所给用户分配的以太热钱包地址也是一份用户独立的合约而不是普通地址,所以我猜想他们可能也是为了业务灵活性和管理性才这样做的，不过是不是使用call来实现，就不得而知了。</p>
 ]]></content>
   </entry>
   
