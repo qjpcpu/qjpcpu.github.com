@@ -80,7 +80,7 @@ docker network create --attachable --driver overlay byfn
 
 ```bash
 #!/bin/bash
-NETWORK=byfn
+NETWORK=byfn    # 网络名称必须和创建的集群网络名称一致
 IMAGETAG=latest
 
 function startOrderer()
@@ -225,3 +225,7 @@ scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
 ```
 
 出现的配置及测试输出应该和单机部署一样,至此部署完成。
+
+# 后记
+
+按这个步骤，应该是可以将这个分布式fabric搭建起来的，但是其他优化还需要自行完成，比如为了测试方便，我并没有将区块链数据挂载出来，所以docker重启后区块数据就没有了，生产环境得自己将数据卷挂载上去；还有，为了权限隔离，一般也不会将整个crypto-config文件夹分发给各个联盟节点，而是需要什么给什么，保持目录结构一致即可。
