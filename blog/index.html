@@ -115,6 +115,7 @@
       </li>
     </ul>
   </li>
+  <li><a href="#section-5">后记</a></li>
 </ul>
 
 <h1 id="section">基本思路</h1>
@@ -285,7 +286,7 @@
 <span class="line-number">98</span>
 <span class="line-number">99</span>
 </pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="c">#!/bin/bash</span>
-</span><span class="line"><span class="nv">NETWORK</span><span class="o">=</span>byfn
+</span><span class="line"><span class="nv">NETWORK</span><span class="o">=</span>byfn    <span class="c"># 网络名称必须和创建的集群网络名称一致</span>
 </span><span class="line"><span class="nv">IMAGETAG</span><span class="o">=</span>latest
 </span><span class="line">
 </span><span class="line"><span class="k">function </span>startOrderer<span class="o">()</span>
@@ -434,6 +435,10 @@
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>出现的配置及测试输出应该和单机部署一样,至此部署完成。</p>
+
+<h1 id="section-5">后记</h1>
+
+<p>按这个步骤，应该是可以将这个分布式fabric搭建起来的，但是其他优化还需要自行完成，比如为了测试方便，我并没有将区块链数据挂载出来，所以docker重启后区块数据就没有了，生产环境得自己将数据卷挂载上去；还有，为了权限隔离，一般也不会将整个crypto-config文件夹分发给各个联盟节点，而是需要什么给什么，保持目录结构一致即可。</p>
 
 		
 		
