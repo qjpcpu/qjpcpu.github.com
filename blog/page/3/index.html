@@ -7,8 +7,8 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="分离式scope（Isolated Scope）
-在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染， &hellip;">
+	<meta name="description" content="关于sidekiq
+在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。 Read on &rarr; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +89,51 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/">
+		
+			关于后台任务</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="sidekiq">关于sidekiq</h3>
+<p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
+
+
+		
+		<a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-27T17:16:34+08:00" pubdate data-updated="true">May 27<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2015/05/27/guan-yu-hou-tai-ren-wu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -574,65 +619,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2014/09/08/tmux/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/">
-		
-			初识hadoop及map-reduce</a>
-	</h2>
-	<div class="entry-content">
-		<h2 id="hadoop">搭建hadoop环境</h2>
-
-<p>hadoop环境搭建具体可以参考<a href="http://hadoop.apache.org/docs/r1.2.1/single_node_setup.html">官方文档</a>。</p>
-
-<h2 id="maven">搭建配置maven</h2>
-
-<p>map-reduce任务支持多种语言，但对java支持是最好的，所以这里说一下怎么搭建java的编译环境。</p>
-
-<p>首先编译安装maven，并将<code>MAVEN_HOME/bin</code>加入PATH环境变量，这样就可以直接使用<code>mvn</code>命令了。这里说一下怎么利用maven编译生成我们后续示例中的jar包。</p>
-
-<h3 id="maven-1">1. 使用maven新建一个工程</h3>
-
-<p>下面的命令创建一个包含java类<code>org.myorg.WordCount</code>的工程<code>WordCount</code>.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">mvn archetype:create -DgroupId<span class="o">=</span>org.myorg -DartifactId<span class="o">=</span>WordCount
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-		
-		<a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-03T20:40:36+08:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hadoop/'>hadoop</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/09/03/chu-shi-hadoopji-map-reduce/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

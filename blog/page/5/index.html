@@ -7,8 +7,10 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 1. cat /proc/${pid}/status
-### 2. ps -mp &lt;PID&gt; Mar 25th, 2014 shell Comments ">
+	<meta name="description" content="先看几个处理器 1
+grep -c &#39;model name&#39; /proc/cpuinfo 比如结果是4 top查看系统整体情况 执行top命令查看系统负载情况：
+1. 关注load average系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
+2. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +91,67 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/27/server-load/">
+		
+			Server Load</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">先看几个处理器</h3>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">grep -c <span class="s1">&#39;model name&#39;</span> /proc/cpuinfo
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>比如结果是4</p>
+
+<h3 id="top">top查看系统整体情况</h3>
+
+<p>执行<code>top</code>命令查看系统负载情况：
+1. 关注<code>load average</code>系统负载的当前，5分钟前，15分钟前负载，最好小于cpu个数
+2. 第二行显示系统进程概况
+3. 第四行us用户占用cpu，sy系统占用cpu，ni，id空闲比例，wa io等待，hi，si swap交换
+4. 最后是内存情况和交换分区</p>
+
+<h3 id="iostatio">iostat检查io情况</h3>
+
+<p><code>iostat -x</code>，需要关注await即io等待时间，单位ms，一般要小于5ms； %util是io处理时间除以总时间，代表io繁忙度，大于70%需要注意。</p>
+
+
+		
+		<a href="/blog/2014/03/27/server-load/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-27T09:39:14+08:00" pubdate data-updated="true">Mar 27<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/linux/'>linux</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/27/server-load/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -626,69 +689,6 @@ echo ${colors[@]}  # red green blue black white
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/27/lie-chu-mu-lu-jie-gou/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/27/findming-ling/">
-		
-			Find命令</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="find">find的基本语法</h3>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">find PATH OPTIONS <span class="o">[</span>-exec COMMANDD <span class="o">{}</span> <span class="se">\;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><code>find</code>命令可以使用多个OPTION，不同OPTION之间默认是<code>and</code>关系，除了<code>and</code>关系还有<code>not</code>和<code>or</code>关系，如：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -type f  <span class="c">#查找/目录下名称为n1且为普通文件的文件</span>
-</span><span class="line">find / -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="c">#查找名称为n1或n2的文件</span>
-</span><span class="line">find / ! -name <span class="s1">&#39;n1&#39;</span>  <span class="c"># 查找名称不为n1的文件</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>当使用的OPTION很多时，可以将OPTIONS括起来增加可读性，注意括号需要用<code>\</code>来转义，同时<code>\(</code>和<code>\)</code>两边都需要有空格：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">find / <span class="se">\(</span> -name <span class="s1">&#39;n1&#39;</span> -o -name <span class="s1">&#39;n2&#39;</span> <span class="se">\)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-		
-		<a href="/blog/2014/02/27/findming-ling/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-27T20:10:37+08:00" pubdate data-updated="true">Feb 27<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/shell/'>shell</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/27/findming-ling/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

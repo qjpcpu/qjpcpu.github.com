@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-02T18:31:30+08:00</updated>
+  <updated>2018-07-23T11:47:04+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,253 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[hyperledger-fabric分布式部署]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu/"/>
+    <updated>2018-07-23T10:48:30+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu</id>
+    <content type="html"><![CDATA[<p>fabric官方文档给出了怎样搭建第一个联盟网络(<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a>),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#section">基本思路</a></li>
+  <li><a href="#section-1">搭建流程</a>    <ul>
+      <li><a href="#section-2">创建必要配置文件</a></li>
+      <li><a href="#swarm">创建swarm集群</a></li>
+      <li><a href="#section-3">创建集群网络</a></li>
+      <li><a href="#fabric">创建fabric控制脚本</a></li>
+    </ul>
+  </li>
+  <li><a href="#startpeer-0-1-means-start-peer-0-of-org-1">startPeer 0 1 means start peer 0 of org 1</a></li>
+  <li><a href="#scriptsscriptsh-channelname-clidelay-language-clitimeout">scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT</a>    <ul>
+      <li><a href="#section-4">启动网络</a>        <ul>
+          <li><a href="#orderer">启动orderer</a></li>
+          <li><a href="#peer">启动peer</a></li>
+          <li><a href="#fabric-1">配置fabric网络</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">基本思路</h1>
+
+<blockquote>
+  <p>题外话:老实说，fabric这个部署文档写得并不漂亮。因为他引入了过多的先决知识，譬如docker,docker-compose等多个docker组件，虽然使用docker大大提高了部署成功率，然而这样做对于fabric入门来说却走偏了，容易让初学者产生一种疑惑: 好似很容易就”得到”了一个完整的fabric网络，然而实际上，好像对于fabric是怎么运行起来的仍然一无所知。如果想要了解怎么样一步步将fabric搭建起来的话，可以仔细看看<code>fabric-samples/first-network</code>文件夹的脚本及compose配置文件，或者参考<code>[区块链原理、设计、与应用] 作者:杨保华,陈昌</code>这本书第9章,相信这样的搭建教程才能让人有直观的了解。所以，本文也不必一步步拆分搭建步骤，本文的目的是为了想读者展示如果利用现有的BYFN文档及脚本搭建真正分布式网络。</p>
+</blockquote>
+
+<p>所有的宿主机环境以及fabric二进制程序的安装还是按照Build Your First Network文档所说进行，在完成后，用docker swarm将各个宿主机上的docker实例连接起来。</p>
+
+<h1 id="section-1">搭建流程</h1>
+
+<p>假设我们有5台宿主机</p>
+
+<ul>
+  <li>orderer(cli) 我们将在orderer宿主机上启动客户端cli配置网络，实际上这个cli可以在任意机器上启动</li>
+  <li>peer0.org1</li>
+  <li>peer1.org1</li>
+  <li>peer0.org2</li>
+  <li>peer1.org2</li>
+</ul>
+
+<p>在5台宿主机上同构部署fabric环境，具体操作参考<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a></p>
+
+<h2 id="section-2">创建必要配置文件</h2>
+
+<p>在任意一台机器上生成配置文件:</p>
+
+<p><code>
+cd ./fabric-samples/first-network
+./byfn.sh generate
+</code></p>
+
+<p>然后将生成的配置同步到所有其他几台宿主机的相同目录,同步的文件包含</p>
+
+<ul>
+  <li>channel-artifacts</li>
+  <li>crypto-config</li>
+</ul>
+
+<h2 id="swarm">创建swarm集群</h2>
+
+<p>假设我们将cli作为集群manager，则在cli上创建swarm集群:</p>
+
+<p><code>
+docker swarm init
+</code></p>
+
+<p>查看集群join token:</p>
+
+<p><code>
+docker swarm join-token manager
+</code></p>
+
+<p>输出可能类似这样:</p>
+
+<p><code>
+docker swarm join — token SWMTKN-1–3as8cvf3yxk8e7zj98954jhjza3w75mngmxh543llgpo0c8k7z-61zyibtaqjjimkqj8p6t9lwgu 172.16.0.153:2377
+</code></p>
+
+<p>在其他所有机器上执行这条输出的命令，完成后说明所以机器处于同一集群.</p>
+
+<h2 id="section-3">创建集群网络</h2>
+
+<p>在cli宿主机执行</p>
+
+<p><code>
+docker network create --attachable --driver overlay byfn
+</code></p>
+
+<h2 id="fabric">创建fabric控制脚本</h2>
+
+<p>现在，所有宿主均处于swarm集群，然而docker-compose并不直接使用swarm,所以我这里不再使用docker-compose，原因有两个: 1.docker-compose主要用于多个服务打包部署，然而我们在每个宿主机仅部署单个docker，不必非要使用compose 2.docker-compose还需要单独配置才能运行在swarm模式下。 所以，我将docker启动命令独立出来，写入一个shell脚本，将这个shell脚本放入所有宿主机<code>./fabric-samples/first-network/</code>下命令为<code>control</code>文件.</p>
+
+<p>```bash
+#!/bin/bash
+NETWORK=byfn
+IMAGETAG=latest</p>
+
+<p>function startOrderer()
+{
+    docker run –rm -d –network=${NETWORK} –name orderer.example.com -p 7050:7050 \
+    -e ORDERER_GENERAL_LOGLEVEL=INFO \
+    -e ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 \
+    -e ORDERER_GENERAL_GENESISMETHOD=file \
+    -e ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block \
+    -e ORDERER_GENERAL_LOCALMSPID=OrdererMSP \
+    -e ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp \
+    -e ORDERER_GENERAL_TLS_ENABLED=true \
+    -e ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key \
+    -e ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt \
+    -e ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt] \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/channel-artifacts/genesis.block,target=/var/hyperledger/orderer/orderer.genesis.block    \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp,target=/var/hyperledger/orderer/msp    \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/,target=/var/hyperledger/orderer/tls    \
+    hyperledger/fabric-orderer:${IMAGETAG} orderer
+}</p>
+
+<h1 id="startpeer-0-1-means-start-peer-0-of-org-1">startPeer 0 1 means start peer 0 of org 1</h1>
+<p>function startPeer()
+{
+	PEER=$1
+	ORG=$2
+	PEER2=1
+	[ $PEER -eq 1 ] &amp;&amp; PEER2=0
+	BOOT=peer${PEER2}.org${ORG}.example.com:7051
+    docker run –rm -d  –network=${NETWORK} –name peer${PEER}.org${ORG}.example.com -p 7051:7051 -p 7053:7053 \
+    -e CORE_PEER_ID=peer${PEER}.org${ORG}.example.com \
+    -e CORE_PEER_ADDRESS=peer${PEER}.org${ORG}.example.com:7051 \
+    -e CORE_PEER_GOSSIP_BOOTSTRAP=${BOOT} \
+    -e CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer${PEER}.org${ORG}.example.com:7051 \
+    -e CORE_PEER_LOCALMSPID=Org${ORG}MSP \
+    -e CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock \
+    -e CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${NETWORK} \
+    -e CORE_LOGGING_LEVEL=INFO \
+    -e CORE_PEER_TLS_ENABLED=true \
+    -e CORE_PEER_GOSSIP_USELEADERELECTION=true \
+    -e CORE_PEER_GOSSIP_ORGLEADER=false \
+    -e CORE_PEER_PROFILE_ENABLED=true \
+    -e CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt \
+    -e CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt \
+    –mount type=bind,source=/var/run/,target=/host/var/run/ \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org${ORG}.example.com/peers/peer${PEER}.org${ORG}.example.com/msp,target=/etc/hyperledger/fabric/msp \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org${ORG}.example.com/peers/peer${PEER}.org${ORG}.example.com/tls,target=/etc/hyperledger/fabric/tls \
+    hyperledger/fabric-peer:${IMAGETAG}  peer node start
+}</p>
+
+<h1 id="scriptsscriptsh-channelname-clidelay-language-clitimeout">scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT</h1>
+<p>function startCli()
+{
+    docker run –rm -it –network=${NETWORK} –name cli \
+    -e  CHANNEL_NAME=”mychannel” \
+    -e  CLI_DELAY=3 \
+    -e  LANGUAGE=golang \
+    -e  CLI_TIMEOUT=10 \
+    -e  GOPATH=/opt/gopath \
+    -e  CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock \
+    -e  CORE_LOGGING_LEVEL=INFO \
+    -e  CORE_PEER_ID=cli \
+    -e  CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
+    -e  CORE_PEER_LOCALMSPID=Org1MSP \
+    -e  CORE_PEER_TLS_ENABLED=true \
+    -e  CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt \
+    -e  CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key \
+    -e  CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
+    -e  CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp \
+    –mount type=bind,source=/var/run/,target=/host/var/run/ \
+    –mount type=bind,source=/root/fabric/fabric-samples/chaincode/,target=/opt/gopath/src/github.com/chaincode \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/scripts,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/ \
+    –mount type=bind,source=/root/fabric/fabric-samples/first-network/channel-artifacts,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts \
+    –workdir /opt/gopath/src/github.com/hyperledger/fabric/peer \
+    hyperledger/fabric-tools:${IMAGETAG} /bin/bash
+}</p>
+
+<p>case X$1 in
+    Xorderer)
+        startOrderer
+        ;;
+    Xpeer)
+        startPeer $2 $3
+        ;;
+    Xcli)
+        startCli
+        ;;      <br />
+    X*)
+        echo “Usage: $0 orderer|peer|cli”
+        exit -1
+        ;;
+esac
+```</p>
+
+<h2 id="section-4">启动网络</h2>
+
+<h3 id="orderer">启动orderer</h3>
+
+<p>在orderer宿主机执行</p>
+
+<p><code>
+cd ./fabric-samples/first-network
+./contrl orderer
+</code></p>
+
+<h3 id="peer">启动peer</h3>
+
+<p>在peer0.org1宿主机执行</p>
+
+<p><code>
+cd ./fabric-samples/first-network
+./contrl peer 0 1
+</code></p>
+
+<p>在peer1.org1宿主机执行</p>
+
+<p><code>
+cd ./fabric-samples/first-network
+./contrl peer 1 1
+</code></p>
+
+<p>同理启动org2的peer</p>
+
+<h3 id="fabric-1">配置fabric网络</h3>
+
+<p>在任意宿主机,这里我们就用orderer宿主机:</p>
+
+<p><code>
+cd ./fabric-samples/first-network
+./control cli
+</code></p>
+
+<p>执行这个命令后进入客户端配置实例,直接运行配置脚本即可:</p>
+
+<p><code>
+scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+</code></p>
+
+<p>出现的配置及测试输出应该和单机部署一样,至此部署完成。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[利用call实现合约任意调用]]></title>
@@ -670,27 +917,6 @@ pragma solidity ^0.4.11;</p>
 <p><code>javascript
 uint256[2] memory g = [uint256(-1),uint256(-1)];
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[以太坊合约开发中那些危险的坑]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng/"/>
-    <updated>2018-03-18T16:29:02+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng</id>
-    <content type="html"><![CDATA[<p>列举合约开发中那些危险的操作.</p>
-
-<!-- more -->
-
-<p><a href="https://github.com/ConsenSys/smart-contract-best-practices/blob/master/README-zh.md">以太坊智能合约 —— 最佳安全开发指南</a></p>
-
-<p><a href="http://me.tryblockchain.org/blockchain-solidity-fallback.html">Solidity的fallback函数</a></p>
-
-<p><a href="http://me.tryblockchain.org/Solidity-call-callcode-delegatecall.html">深入浅出Solidity call相关函数</a></p>
-
-<p><a href="http://me.tryblockchain.org/blockchain-solidity-send-ether-bestpractice.html">Solidity发送ether最佳实践</a></p>
-
-<p><a href="http://solidity.readthedocs.io/en/v0.4.21/contracts.html#fallback-function">Fallback Function</a></p>
 ]]></content>
   </entry>
   
