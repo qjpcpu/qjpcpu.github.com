@@ -8,6 +8,8 @@ categories: blockchain
 
 fabric官方文档给出了怎样搭建第一个联盟网络([Build your first network](https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html)),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.
 
+<!-- more -->
+
 * 目录
 {:toc}
 
