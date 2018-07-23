@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-23T11:56:32+08:00</updated>
+  <updated>2018-07-23T11:58:53+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -19,6 +19,8 @@
     <updated>2018-07-23T10:48:30+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu</id>
     <content type="html"><![CDATA[<p>fabric官方文档给出了怎样搭建第一个联盟网络(<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a>),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.</p>
+
+<!-- more -->
 
 <ul id="markdown-toc">
   <li><a href="#section">基本思路</a></li>
