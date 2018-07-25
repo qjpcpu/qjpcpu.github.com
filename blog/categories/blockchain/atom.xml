@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-25T14:56:26+08:00</updated>
+  <updated>2018-07-25T16:31:48+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -501,11 +501,11 @@ fmt.Println("b", string(queryCC(client, "b"))) }
 <h1 id="section-3">其他官方示例</h1>
 
 <ul>
-  <li><a href="test/integration/e2e/end_to_end.go">E2E Test</a>: Basic example that uses SDK to query and execute transaction</li>
-  <li><a href="test/integration/pkg/client/ledger/ledger_queries_test.go">Ledger Query Test</a>: Basic example that uses SDK to query a channel’s underlying ledger</li>
-  <li><a href="test/integration/e2e/orgs/multiple_orgs_test.go">Multi Org Test</a>: An example that has multiple organisations involved in transaction</li>
-  <li><a href="test/integration/pkg/fabsdk/provider/sdk_provider_test.go">Dynamic Endorser Selection</a>: An example that uses dynamic endorser selection (based on chaincode policy)</li>
-  <li><a href="test/integration/e2e/pkcs11/e2e_test.go">E2E PKCS11 Test</a>: E2E Test using a PKCS11 crypto suite and configuration</li>
+  <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/e2e/end_to_end.go">E2E Test</a>: Basic example that uses SDK to query and execute transaction</li>
+  <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/pkg/client/ledger/ledger_queries_test.go">Ledger Query Test</a>: Basic example that uses SDK to query a channel’s underlying ledger</li>
+  <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/e2e/orgs/multiple_orgs_test.go">Multi Org Test</a>: An example that has multiple organisations involved in transaction</li>
+  <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/pkg/fabsdk/provider/sdk_provider_test.go">Dynamic Endorser Selection</a>: An example that uses dynamic endorser selection (based on chaincode policy)</li>
+  <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/e2e/pkcs11/e2e_test.go">E2E PKCS11 Test</a>: E2E Test using a PKCS11 crypto suite and configuration</li>
   <li><a href="https://github.com/securekey/fabric-examples/tree/master/fabric-cli/">CLI</a>: An example CLI for Fabric built with the Go SDK.</li>
 </ul>
 ]]></content>
