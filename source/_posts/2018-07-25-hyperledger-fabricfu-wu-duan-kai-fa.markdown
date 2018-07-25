@@ -15,7 +15,7 @@ categories: blockchain
 
 # fabric-sdk-go
 
-fabric目前主要提供了`node`和`go`的SDK，我们将以`[go](https://github.com/hyperledger/fabric-sdk-go)`为例搭建一个简单服务端程序。
+fabric目前主要提供了`node`和`go`的SDK，我们将以[fabric-sdk-go](https://github.com/hyperledger/fabric-sdk-go)为例搭建一个简单服务端程序。
 
 首先安装fabric开发基础库:
 
@@ -285,6 +285,7 @@ if err != nil {
 }
 defer sdk.Close()
 ```
+
 # 初始化通道
 
 初始化channelContext及channel,至此初始化工作完成，可以操作chain code或者查询账本。
