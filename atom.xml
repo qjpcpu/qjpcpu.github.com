@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-25T14:52:41+08:00</updated>
+  <updated>2018-07-25T14:56:26+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -26,14 +26,15 @@
   <li><a href="#fabric-sdk-go">fabric-sdk-go</a></li>
   <li><a href="#section">准备基础配置文件</a></li>
   <li><a href="#sdk">初始化sdk</a></li>
+  <li><a href="#section-1">初始化通道</a></li>
   <li><a href="#chaincode">操作ChainCode</a></li>
-  <li><a href="#section-1">完整示例</a></li>
-  <li><a href="#section-2">其他官方示例</a></li>
+  <li><a href="#section-2">完整示例</a></li>
+  <li><a href="#section-3">其他官方示例</a></li>
 </ul>
 
 <h1 id="fabric-sdk-go">fabric-sdk-go</h1>
 
-<p>fabric目前主要提供了<code>node</code>和<code>go</code>的SDK，我们将以<code>[go](https://github.com/hyperledger/fabric-sdk-go)</code>为例搭建一个简单服务端程序。</p>
+<p>fabric目前主要提供了<code>node</code>和<code>go</code>的SDK，我们将以<a href="https://github.com/hyperledger/fabric-sdk-go">fabric-sdk-go</a>为例搭建一个简单服务端程序。</p>
 
 <p>首先安装fabric开发基础库:</p>
 
@@ -550,7 +551,8 @@
 </span><span class="line"><span class="p">}</span>
 </span><span class="line"><span class="k">defer</span> <span class="nx">sdk</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
-<p># 初始化通道</p>
+
+<h1 id="section-1">初始化通道</h1>
 
 <p>初始化channelContext及channel,至此初始化工作完成，可以操作chain code或者查询账本。</p>
 
@@ -626,7 +628,7 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h1 id="section-1">完整示例</h1>
+<h1 id="section-2">完整示例</h1>
 
 <p>完整示例很简单，包含代币转让及查询、底层账本查询（对应fabric1.1，BYFN示例网络）</p>
 
@@ -896,7 +898,7 @@
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h1 id="section-2">其他官方示例</h1>
+<h1 id="section-3">其他官方示例</h1>
 
 <ul>
   <li><a href="test/integration/e2e/end_to_end.go">E2E Test</a>: Basic example that uses SDK to query and execute transaction</li>

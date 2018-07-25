@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-25T14:52:41+08:00</updated>
+  <updated>2018-07-25T14:56:26+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -27,14 +27,15 @@
   <li><a href="#optional---populate-vendor-directory-if-needed-by-your-downstream-vendoring-solution">Optional - populate vendor directory (if needed by your downstream vendoring solution)</a></li>
   <li><a href="#section">准备基础配置文件</a></li>
   <li><a href="#sdk">初始化sdk</a></li>
+  <li><a href="#section-1">初始化通道</a></li>
   <li><a href="#chaincode">操作ChainCode</a></li>
-  <li><a href="#section-1">完整示例</a></li>
-  <li><a href="#section-2">其他官方示例</a></li>
+  <li><a href="#section-2">完整示例</a></li>
+  <li><a href="#section-3">其他官方示例</a></li>
 </ul>
 
 <h1 id="fabric-sdk-go">fabric-sdk-go</h1>
 
-<p>fabric目前主要提供了<code>node</code>和<code>go</code>的SDK，我们将以<code>[go](https://github.com/hyperledger/fabric-sdk-go)</code>为例搭建一个简单服务端程序。</p>
+<p>fabric目前主要提供了<code>node</code>和<code>go</code>的SDK，我们将以<a href="https://github.com/hyperledger/fabric-sdk-go">fabric-sdk-go</a>为例搭建一个简单服务端程序。</p>
 
 <p>首先安装fabric开发基础库:</p>
 
@@ -310,8 +311,9 @@ if err != nil {
 	os.Exit(1)
 }
 defer sdk.Close()
-</code>
-# 初始化通道</p>
+</code></p>
+
+<h1 id="section-1">初始化通道</h1>
 
 <p>初始化channelContext及channel,至此初始化工作完成，可以操作chain code或者查询账本。</p>
 
@@ -357,7 +359,7 @@ func queryCC(client *channel.Client, who string) []byte {
 }
 </code></p>
 
-<h1 id="section-1">完整示例</h1>
+<h1 id="section-2">完整示例</h1>
 
 <p>完整示例很简单，包含代币转让及查询、底层账本查询（对应fabric1.1，BYFN示例网络）</p>
 
@@ -496,7 +498,7 @@ fmt.Println("b", string(queryCC(client, "b"))) }
 }
 ```</p>
 
-<h1 id="section-2">其他官方示例</h1>
+<h1 id="section-3">其他官方示例</h1>
 
 <ul>
   <li><a href="test/integration/e2e/end_to_end.go">E2E Test</a>: Basic example that uses SDK to query and execute transaction</li>
