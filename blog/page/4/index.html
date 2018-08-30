@@ -537,41 +537,7 @@ tmux attach -t SESSION_NAME # 进入某会话 Read on & &hellip;">
 			你不知道的Go</a>
 	</h2>
 	<div class="entry-content">
-		<h3 id="section">1.匿名结构</h3>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">var</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">    <span class="nx">name</span>      <span class="kt">string</span>
-</span><span class="line">    <span class="nx">age</span> <span class="kt">int</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;jack&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>声明时初始化：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">st</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">name</span> <span class="kt">string</span>
-</span><span class="line">	<span class="nx">age</span>  <span class="kt">int</span>
-</span><span class="line"><span class="p">}{</span>
-</span><span class="line">	<span class="s">&quot;Jack&quot;</span><span class="p">,</span>
-</span><span class="line">	<span class="mi">12</span><span class="p">,</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">st</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-
+		
 		
 		<a href="/blog/2014/06/23/ni-bu-zhi-dao-de-go/" class="more-link">Read on &rarr;</a>
 	</div>
