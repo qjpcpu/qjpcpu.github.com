@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-25T16:31:48+08:00</updated>
+  <updated>2018-08-30T11:24:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -8999,6 +8999,20 @@ list[ 1 ][ 1 ] = d;
 </blockquote>
 
 <p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
+
+<h3 id="slice">3.清空slice</h3>
+
+<p>清空slice并保留内存空间</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">a</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">,</span> <span class="s">&quot;D&quot;</span><span class="p">,</span> <span class="s">&quot;E&quot;</span><span class="p">}</span>
+</span><span class="line"><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">a</span><span class="p">))</span> <span class="c1">// [] 0 5</span>
+</span><span class="line"><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>  <span class="c1">// [A,B]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>
   

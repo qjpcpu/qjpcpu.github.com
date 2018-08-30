@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-07-25T16:31:48+08:00</updated>
+  <updated>2018-08-30T11:24:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -490,6 +490,17 @@ fmt.Println(st.name)
 </blockquote>
 
 <p>从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。</p>
+
+<h3 id="slice">3.清空slice</h3>
+
+<p>清空slice并保留内存空间</p>
+
+<p><code>go
+a := []string{"A", "B", "C", "D", "E"}
+a = a[:0]
+fmt.Println(a, len(a), cap(a)) // [] 0 5
+fmt.Println(a[:2])  // [A,B]
+</code></p>
 ]]></content>
   </entry>
   
