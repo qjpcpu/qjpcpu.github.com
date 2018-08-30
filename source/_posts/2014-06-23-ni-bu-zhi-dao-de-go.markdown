@@ -36,3 +36,14 @@ fmt.Println(st.name)
 >In prior releases, a goroutine that was looping forever could starve out other goroutines on the same thread, a serious problem when GOMAXPROCS provided only one user thread. In Go 1.2, this is partially addressed: The scheduler is invoked occasionally upon entry to a function. This means that any loop that includes a (non-inlined) function call can be pre-empted, allowing other goroutines to run on the same thread.
 
 从golang1.2起，携程调度器为抢占式的，但抢占发生在每次进入函数前，所以，如果循环内的函数被编译器优化成了inline function，那么自然不会发生调度。
+
+### 3.清空slice
+
+清空slice并保留内存空间
+
+```go
+a := []string{"A", "B", "C", "D", "E"}
+a = a[:0]
+fmt.Println(a, len(a), cap(a)) // [] 0 5
+fmt.Println(a[:2])  // [A,B]
+```
