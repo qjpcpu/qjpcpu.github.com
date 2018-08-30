@@ -6,6 +6,8 @@ comments: true
 categories: go
 ---
 
+<!-- more -->
+
 ### 1.匿名结构
 
 ```go
@@ -29,7 +31,6 @@ st := struct {
 fmt.Println(st.name)
 ```
 
-<!-- more -->
 
 ### 2.抢占式调度器
 
