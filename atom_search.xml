@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-08-31T17:11:04+08:00</updated>
+  <updated>2018-09-01T13:01:53+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -4694,7 +4694,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
   <li>如果在读取流信息的过程当中收到了一个错误，最好的解决实践是将其返回给p2p server进行处理。这种错误通常是对端节点已经断开连接；</li>
   <li>msg包括两个属性和一个decode方法
     <ol>
-      <li>Code 包括了信息ID，Code == messageId (i.e.0)</li>
+      <li>Code 包括了信息ID，Code == messageId (i.e.0),取值范围为[0,p2p.Protocol.Length)</li>
       <li>Payload 是信息的内容</li>
       <li>Decode(<ptr>) 是一个工具方法：取得 msg.Payload并将其解码，并将其内容设置到传入的message指针中，如果失败了则返回一个error</ptr></li>
     </ol>
@@ -4778,6 +4778,18 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 <span class="line-number">72</span>
 <span class="line-number">73</span>
 <span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
 </pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
 </span><span class="line">
 </span><span class="line"><span class="kn">import</span> <span class="p">(</span>
@@ -4792,6 +4804,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 </span><span class="line"><span class="p">)</span>
 </span><span class="line">
 </span><span class="line"><span class="kd">const</span> <span class="nx">messageId</span> <span class="p">=</span> <span class="mi">0</span>
+</span><span class="line"><span class="kd">const</span> <span class="nx">messageId1</span> <span class="p">=</span> <span class="mi">1</span>
 </span><span class="line">
 </span><span class="line"><span class="kd">type</span> <span class="nx">Message</span> <span class="kt">string</span>
 </span><span class="line">
@@ -4799,7 +4812,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 </span><span class="line">	<span class="k">return</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{</span>
 </span><span class="line">		<span class="nx">Name</span><span class="p">:</span>    <span class="s">&quot;MyProtocol&quot;</span><span class="p">,</span>
 </span><span class="line">		<span class="nx">Version</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class="line">		<span class="nx">Length</span><span class="p">:</span>  <span class="mi">1</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">Length</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
 </span><span class="line">		<span class="nx">Run</span><span class="p">:</span>     <span class="nx">msgHandler</span><span class="p">,</span>
 </span><span class="line">	<span class="p">}</span>
 </span><span class="line"><span class="p">}</span>
@@ -4827,12 +4840,23 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 </span><span class="line"><span class="p">}</span>
 </span><span class="line">
 </span><span class="line"><span class="kd">func</span> <span class="nx">msgHandler</span><span class="p">(</span><span class="nx">peer</span> <span class="o">*</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Peer</span><span class="p">,</span> <span class="nx">ws</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;peer&quot;</span><span class="p">,</span><span class="nx">peer</span><span class="p">.</span><span class="nx">Name</span><span class="p">(),</span><span class="s">&quot;connected.&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">messageId</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
 </span><span class="line">	<span class="k">for</span> <span class="p">{</span>
 </span><span class="line">		<span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ws</span><span class="p">.</span><span class="nx">ReadMsg</span><span class="p">()</span>
 </span><span class="line">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;peer&quot;</span><span class="p">,</span><span class="nx">peer</span><span class="p">.</span><span class="nx">Name</span><span class="p">(),</span><span class="s">&quot;disconnected&quot;</span><span class="p">)</span>
 </span><span class="line">			<span class="k">return</span> <span class="nx">err</span>
 </span><span class="line">		<span class="p">}</span>
-</span><span class="line">
+</span><span class="line">        <span class="c1">// SendItems writes an RLP with the given code and data elements.</span>
+</span><span class="line">        <span class="c1">// For a call such as:</span>
+</span><span class="line">        <span class="c1">//</span>
+</span><span class="line">        <span class="c1">//    SendItems(w, code, e1, e2, e3)</span>
+</span><span class="line">        <span class="c1">//</span>
+</span><span class="line">        <span class="c1">// the message payload will be an RLP list containing the items:</span>
+</span><span class="line">        <span class="c1">//</span>
+</span><span class="line">        <span class="c1">//    [e1, e2, e3]</span>
+</span><span class="line">        <span class="c1">// 所以这里收消息应该定义为数组</span>
 </span><span class="line">		<span class="kd">var</span> <span class="nx">myMessage</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nx">Message</span>
 </span><span class="line">		<span class="nx">err</span> <span class="p">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">myMessage</span><span class="p">)</span>
 </span><span class="line">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
@@ -4843,7 +4867,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 </span><span class="line">		<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;code:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Code</span><span class="p">,</span> <span class="s">&quot;receiver at:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">ReceivedAt</span><span class="p">,</span> <span class="s">&quot;msg:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
 </span><span class="line">		<span class="k">switch</span> <span class="nx">myMessage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">{</span>
 </span><span class="line">		<span class="k">case</span> <span class="s">&quot;foo&quot;</span><span class="p">:</span>
-</span><span class="line">			<span class="nx">err</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">messageId</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>
+</span><span class="line">			<span class="nx">err</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">messageId1</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>
 </span><span class="line">			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
 </span><span class="line">				<span class="k">return</span> <span class="nx">err</span>
 </span><span class="line">			<span class="p">}</span>
