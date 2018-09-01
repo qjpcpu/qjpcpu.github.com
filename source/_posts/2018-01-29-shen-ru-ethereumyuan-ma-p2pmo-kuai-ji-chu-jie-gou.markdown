@@ -99,7 +99,7 @@ func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
 3. ReadMsg将一直阻塞等待，直到其收到了一条新的信息，一个错误或者EOF；
 4. 如果在读取流信息的过程当中收到了一个错误，最好的解决实践是将其返回给p2p server进行处理。这种错误通常是对端节点已经断开连接；
 5. msg包括两个属性和一个decode方法
-    1. Code 包括了信息ID，Code == messageId (i.e.0)
+    1. Code 包括了信息ID，Code == messageId (i.e.0),取值范围为[0,p2p.Protocol.Length)
     2. Payload 是信息的内容
     3. Decode(<ptr>) 是一个工具方法：取得 msg.Payload并将其解码，并将其内容设置到传入的message指针中，如果失败了则返回一个error
 6. 如果解码出来的信息是foo将发回一个NewMessage并用messageId标记信息类型，信息内容是bar；而bar信息在被对端收到之后将被defaultcase捕获。
@@ -121,6 +121,7 @@ import (
 )
 
 const messageId = 0
+const messageId1 = 1
 
 type Message string
 
@@ -128,7 +129,7 @@ func MyProtocol() p2p.Protocol {
 	return p2p.Protocol{
 		Name:    "MyProtocol",
 		Version: 1,
-		Length:  1,
+		Length:  2,
 		Run:     msgHandler,
 	}
 }
@@ -156,12 +157,23 @@ func main() {
 }
 
 func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
+    fmt.Println("peer",peer.Name(),"connected.")
+	p2p.SendItems(ws, messageId, "foo")
 	for {
 		msg, err := ws.ReadMsg()
 		if err != nil {
+            fmt.Println("peer",peer.Name(),"disconnected")
 			return err
 		}
-
+        // SendItems writes an RLP with the given code and data elements.
+        // For a call such as:
+        //
+        //    SendItems(w, code, e1, e2, e3)
+        //
+        // the message payload will be an RLP list containing the items:
+        //
+        //    [e1, e2, e3]
+        // 所以这里收消息应该定义为数组
 		var myMessage [1]Message
 		err = msg.Decode(&myMessage)
 		if err != nil {
@@ -172,7 +184,7 @@ func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
 		fmt.Println("code:", msg.Code, "receiver at:", msg.ReceivedAt, "msg:", myMessage)
 		switch myMessage[0] {
 		case "foo":
-			err := p2p.SendItems(ws, messageId, "bar")
+			err := p2p.SendItems(ws, messageId1, "bar")
 			if err != nil {
 				return err
 			}
