@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-02T16:23:17+08:00</updated>
+  <updated>2018-09-02T16:28:49+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -202,7 +202,11 @@
 </span><span class="line"><span class="p">.</span><span class="o">/</span><span class="nx">start_node3</span><span class="p">.</span><span class="nx">sh</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar.png" alt="foo-bar" /></p>
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node1.png" alt="foo-bar1" /></p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node2.png" alt="foo-bar2" /></p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node3.png" alt="foo-bar3" /></p>
 
 <h2 id="section-3">观察模块运行</h2>
 

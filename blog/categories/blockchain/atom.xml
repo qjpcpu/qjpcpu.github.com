@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-02T16:23:17+08:00</updated>
+  <updated>2018-09-02T16:28:49+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -148,7 +148,11 @@ cd ethereum-from-scratch/p2p-network &amp;&amp; go build
 <p>./start_node3.sh
 ```</p>
 
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar.png" alt="foo-bar" /></p>
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node1.png" alt="foo-bar1" /></p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node2.png" alt="foo-bar2" /></p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node3.png" alt="foo-bar3" /></p>
 
 <h2 id="section-5">观察模块运行</h2>
 
