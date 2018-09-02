@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-01T13:01:53+08:00</updated>
+  <updated>2018-09-02T16:23:17+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,199 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[rebuild ethereum](一) 搭建p2p网络]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/"/>
+    <updated>2018-09-02T14:24:16+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo</id>
+    <content type="html"><![CDATA[<p>接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。</p>
+
+<p>比如动手做linux from scratch来学习linux的五脏六腑，rebuild rails来学习rails，所以我想尝试做一个rebuild ethereum系列,来解构ethereum。</p>
+
+<p>在该rebuild系列中，我将把视角定在构成区块链的大模块纬度,先从以太坊源码中抽离该模块,然后使用该模块编写一个可执行的程序，这样能够真实感受到这个模块的运行机制和使用方法；最终能产生”以太坊(区块链)不外乎就是这几个模块组装起来的”这种印象就达到我的目的的。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">前言</a></li>
+  <li><a href="#section-1">基本诉求</a></li>
+  <li><a href="#ethereum-p2pp2p">基于ethereum-p2p实现一个自定义协议的p2p网络</a>    <ul>
+      <li><a href="#foo-bar">foo-bar网络</a></li>
+      <li><a href="#section-2">启动网络</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-3">打开新终端窗口启动节点2</a></li>
+  <li><a href="#section-4">打开新终端窗口启动节点3</a>    <ul>
+      <li><a href="#section-5">观察模块运行</a></li>
+    </ul>
+  </li>
+  <li><a href="#real-ethereum-p2p">real ethereum p2p</a></li>
+  <li><a href="#section-6">本文源码</a></li>
+</ul>
+
+<h1 id="section">前言</h1>
+
+<p>这是rebuild ethereum的第一篇,我将尝试抽离以太坊底层的p2p网络模块,搭建一个可执行的3节点的p2p网络。在这里，我不会深入介绍具体细节，其中涉及到技术细节读者可以直接查看ethereum源代码,也可以参考我之前关于以太坊p2p实现细节的几篇博客。</p>
+
+<h1 id="section-1">基本诉求</h1>
+
+<p>先来看看我们对于一个p2p网络模块的基本诉求:</p>
+
+<ul>
+  <li>接入网络的便利性,其实也可以表述成网络易于建立，有足够的内网穿透能力</li>
+  <li>具备节点发现和维护的能力</li>
+  <li>提供上层协议的拓展能力,以tcp类比,能做到在不清楚tcp的底层细节就能够开发出http协议</li>
+</ul>
+
+<h1 id="ethereum-p2pp2p">基于ethereum-p2p实现一个自定义协议的p2p网络</h1>
+
+<h2 id="foo-bar">foo-bar网络</h2>
+
+<p>我们实现的这个p2p网络叫foo-bar网络,她的功能很简单,接入网络后向新节点发一条<code>welcome</code>消息,然后再发一条<code>foo</code>,当节点收到后会回复一条<code>bar</code>消息.</p>
+
+<p>定义foo-bar协议:</p>
+
+<p>```go
+type MessageType = uint64</p>
+
+<p>// 消息类型必须从0开始递增
+const (
+	MT_HelloWorld MessageType = iota
+	MT_FooBar
+)</p>
+
+<p>type Message string</p>
+
+<p>func FooBarProtocol() p2p.Protocol {
+	return p2p.Protocol{
+		Name:    “FooBarProtocol”,
+		Version: 1,
+		Length:  2,  // 有几种消息类型就是几
+		Run:     msgHandler,
+	}
+}
+```</p>
+
+<p>要注意关于协议支持的消息类型的定义，具体原因和以太坊实现细节有关,具体可以查阅<a href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/">p2p模块基础结构</a></p>
+
+<p>实现foo-bar协议handler内容:</p>
+
+<p>```go
+func msgHandler(peer *p2p.Peer, ws p2p.MsgReadWriter) error {
+	// send msg
+	log.Infof(“new peer connected:%v”, peer.String())
+	p2p.SendItems(ws, MT_HelloWorld, srv.NodeInfo().Name+”:welcome “+peer.Name())
+	p2p.SendItems(ws, MT_FooBar, “foo”)
+	for {
+		msg, err := ws.ReadMsg()
+		if err != nil {
+			log.Warningf(“peer %s disconnected”, peer.Name())
+			return err
+		}</p>
+
+<pre><code>	var myMessage [1]Message
+	err = msg.Decode(&amp;myMessage)
+	if err != nil {
+		log.Errorf("decode msg err:%v", err)
+		// handle decode error
+		continue
+	}
+
+	log.Info("code:", msg.Code, "receiver at:", msg.ReceivedAt, "msg:", myMessage)
+	switch myMessage[0] {
+	case "foo":
+		err := p2p.SendItems(ws, MT_FooBar, "bar")
+		if err != nil {
+			log.Errorf("send bar error:%v", err)
+			return err
+		}
+	default:
+		log.Info("recv:", myMessage)
+	}
+} } ```
+</code></pre>
+
+<h2 id="section-2">启动网络</h2>
+
+<p>这里我们启动3个节点,对于测试网络结构及运转已经足够了.</p>
+
+<p>首先编译二进制程序:</p>
+
+<p><code>
+cd ethereum-from-scratch/p2p-network &amp;&amp; go build
+</code></p>
+
+<p>启动3个节点</p>
+
+<p>```
+# 启动节点1
+./start_node1.sh</p>
+
+<h1 id="section-3">打开新终端窗口启动节点2</h1>
+<p>./start_node2.sh</p>
+
+<h1 id="section-4">打开新终端窗口启动节点3</h1>
+<p>./start_node3.sh
+```</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar.png" alt="foo-bar" /></p>
+
+<h2 id="section-5">观察模块运行</h2>
+
+<p>从日志可以看出,ethereum的p2p模块功能非常完备，在由种子节点接入网络后,可以自动完成节点发现，并且不断刷新自身的连接表，对已经建立的节点链路发送心跳保持连接。协议数据包使用rlp格式打包,不管是消息发送还是分拆都对上层提供了极为简单的接口，所以基于次实现高级协议就非常方便了，比如以太坊whisper协议。这是向上的延展。</p>
+
+<p>如果要向下深入，那么就可以逐个了解，rlp拆包解包，子协议拓展规则,kad网络节点发现机制,内网穿透，等等</p>
+
+<h1 id="real-ethereum-p2p">real ethereum p2p</h1>
+
+<p>回到真实以太坊,geth节点启动最终执行启动p2p网络的地方位于<code>github.com/ethereum/go-ethereum/node/node.go</code>文件:</p>
+
+<p>```go
+// Start create a live P2P node and starts running it.
+func (n *Node) Start() error {
+	n.lock.Lock()
+	defer n.lock.Unlock()</p>
+
+<pre><code>// Short circuit if the node's already running
+if n.server != nil {
+	return ErrNodeRunning
+}
+if err := n.openDataDir(); err != nil {
+	return err
+}
+
+// Initialize the p2p server. This creates the node key and
+// discovery databases.
+n.serverConfig = n.config.P2P
+n.serverConfig.PrivateKey = n.config.NodeKey()
+n.serverConfig.Name = n.config.NodeName()
+n.serverConfig.Logger = n.log
+if n.serverConfig.StaticNodes == nil {
+	n.serverConfig.StaticNodes = n.config.StaticNodes()
+}
+if n.serverConfig.TrustedNodes == nil {
+	n.serverConfig.TrustedNodes = n.config.TrustedNodes()
+}
+if n.serverConfig.NodeDatabase == "" {
+	n.serverConfig.NodeDatabase = n.config.NodeDB()
+}
+running := &amp;p2p.Server{Config: n.serverConfig}
+n.log.Info("Starting peer-to-peer node", "instance", n.serverConfig.Name)
+
+// Otherwise copy and specialize the P2P configuration
+........ } ```
+</code></pre>
+
+<p>是不是和我们的demo基本一模一样.</p>
+
+<p>具体的协议参考源码文件<code>github.com/ethereum/go-ethereum/eth/handler.go</code>子协议管理器<code>ProtocolManager</code></p>
+
+<h1 id="section-6">本文源码</h1>
+
+<p><a href="https://github.com/qjpcpu/ethereum-from-scratch/tree/master/p2p-network">本文源码</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[hyperledger-fabric服务端开发]]></title>
@@ -1136,249 +1329,6 @@ ethConn.SendTransaction(context.Background(), signedTx)
 <p>因为这个安全原因，metamask团队将来也许会放弃对这个方法的支持，不过我倒是觉得，保留对这个方法的支持，将签名数据做详细展示，让开发者自己做安全性的权衡。</p>
 
 <p>最后聊一点感想吧，目前区块链上簇拥了太多投机者，真正致力于深耕技术的人不多，metamask团队算一个，区块链是个有意思的技术，因为它的技术背后，隐含了人类社会化的意识，它目前的基础组件都还不够完善，需要我们热爱技术的所有人，去投入，去发展。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[那些以太坊DApp服务端开发期望已久的轮子]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi/"/>
-    <updated>2018-05-16T17:20:33+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi</id>
-    <content type="html"><![CDATA[<p>以太坊虽说是一个去中心化的东西,但DApp却并非是完全去中心化的应用,其主要原因不外乎是以太坊的处理能力和资源有限,无法承载一个完整应用全部的逻辑。所以，目前市面上所有的DApp应用都是需要中心化服务解释的。那么，本文就是列举一些可能会用到的轮子,帮助快速构建应用。</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#nonce">nonce管理</a></li>
-  <li><a href="#section">交易重发</a></li>
-  <li><a href="#section-1">交易备注</a>    <ul>
-      <li><a href="#eth">裸交易(仅发送eth的交易)</a></li>
-      <li><a href="#section-2">合约调用交易</a></li>
-    </ul>
-  </li>
-  <li><a href="#section-3">事件扫描器</a></li>
-  <li><a href="#section-4">登录</a></li>
-  <li><a href="#section-5">其他</a></li>
-  <li><a href="#qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></a></li>
-</ul>
-
-<h1 id="nonce">nonce管理</h1>
-
-<p>重要的放在前面,nonce管理应该是所有以太坊开发者遇到的第一个问题。nonce类似于账户的自增主键,必须连续提交,如果每次都使用<code>pending nonce</code>自动提交交易,就会造成之前交易被丢弃,除非你想要替换原交易，否则这可能不是我们期望的结果。</p>
-
-<p><code>github.com/qjpcpu/ethereum/ethnonce</code>包将nonce存储在redis中,使用类似事务的方式申请、使用nonce。</p>
-
-<p><code>go
-func TestWrap(t *testing.T) {
-	mgr := _testinit()
-	addr := common.HexToAddress(`0xe35f3e2a93322b61e5d8931f806ff38f4a4f4d88`)
-    mgr.SyncNonce(addr)  // 注意,该方法仅在程序第一次运行做初始化时需要调用,或者nonce发生不一致时调用
-	tx,err:=mgr.GiveNonceForTx(addr, func(nonce uint64) (*types.Transaction, error) {
-        // 向以太坊提交交易
-        // 使用nonce manager注入的nonce进行交易提交
-		return new(types.Transaction), nil
-	})
-	if err!=nil {
-		t.Fatal(err)
-	}
-    t.Log(tx)
-}
-</code></p>
-
-<p>P.S. 该包基于redis lua脚本,实现nonce的原子读写,可适用于多协程并行操作。</p>
-
-<h1 id="section">交易重发</h1>
-
-<p>对于要做以太坊交易的可靠提交,我相信交易重发绝对是DApp后端程序员的痛点需求。通常,在以太坊拥堵的时候,常常提交的交易会发生”丢失”,以太坊浏览器上搜索这笔交易会被提示: <code>Sorry, we are unable to locate this Transaction Hash</code>。发生这种情况主要有两个可能: 1.用户给的gas太低,导致交易长时间挂在pending队列不能打包进区块 2. 网络环境恶劣,导致投放的节点丢弃交易(网络环境恶劣只是诱因,其真实的丢包原因是及其复杂的)</p>
-
-<p><code>github.com/qjpcpu/ethereum/contracts</code>提交交易重发的函数</p>
-
-<p><code>go
-func ResendTransaction(conn *ethclient.Client, tx *types.Transaction, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int) (*types.Transaction, error)
-</code></p>
-
-<ul>
-  <li>conn, eth client</li>
-  <li>tx, 需要重发的交易</li>
-  <li>signerFunc, 交易签名函数</li>
-  <li>nonce, 可选参数,为0表示将交易重发为全新的交易,非0表示替换之前未被打包的交易</li>
-  <li>gasPrice,可选参数,为nil表示自动选择合适的price</li>
-</ul>
-
-<p>返回值为重发的新交易数据结构。</p>
-
-<p>通常的使用场景是:</p>
-
-<ol>
-  <li>发送交易,并将返回的交易tx marshal为json存储到数据库</li>
-  <li>定时检查交易是否成功打包</li>
-  <li>超过超时时间后,调用ResendTransaction重发交易，再进入第1步循环</li>
-</ol>
-
-<p>结合第一步<code>ethnonce</code>包管理nonce,可以比较完美实现以太坊可靠交易提交。</p>
-
-<p>简单的代码示例:</p>
-
-<p><code>go
-signerFunc := contracts.SignerFuncOf(keyJson, keyPwd)
-var oldTx *types.Transaction = getLastTxFromDB()
-contracts.ResendTransaction(conn, oldTx, signerFunc, oldTx.Nonce(), nil)
-</code></p>
-
-<h1 id="section-1">交易备注</h1>
-
-<p>交易备注其实就是在交易<code>data</code>字段附加一些额外的数据,前端时间有人收费在以太坊永久”刻字”其实就是干的这个事情。那么，抛开这个噱头不说,正常开发中怎么会有这个需求呢?</p>
-
-<p>比如,我们要基于以太坊做一个区块链商品抢购,前端在提交了交易后拿到<code>metafox</code>回调后,才能通知到后端是抢购的哪个商品,但是很多时候<code>metafox</code>的回调并不可靠,那其实就可以使用交易备注,等后端收到这个交易的event log后,再去查询交易的备注信息就知道了是哪个商品。</p>
-
-<p>相关辅助方法还是在<code>github.com/qjpcpu/ethereum/contracts</code>包中,目前交易备注有两种场景</p>
-
-<h2 id="eth">裸交易(仅发送eth的交易)</h2>
-
-<p>有两个生成交易数据的辅助方法:</p>
-
-<p><code>go
-// 备注字符串
-func PackString(str string) []byte
-// 备注一个数字
-func PackNum(num *big.Int) []byte
-</code></p>
-
-<h2 id="section-2">合约调用交易</h2>
-
-<p>也有两个辅助方法,他们均是将备注信息放置在合约方法参数最后:</p>
-
-<p><code>go
-func PackArgumentsWithNumber(_abi abi.ABI, method string, params ...interface{}) ([]byte, error)
-func PackArgumentsWithString(_abi abi.ABI, method string, params ...interface{}) ([]byte, error)
-</code></p>
-
-<p>最后调用发送<code>raw</code>交易的方法提交:</p>
-
-<p><code>go
-func SendRawTransaction(conn *ethclient.Client, from, to common.Address, value *big.Int, data []byte, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int, gasLimit uint64) (*types.Transaction, error)
-</code></p>
-
-<p>简单的代码示例(不可直接运行):</p>
-
-<p><code>go
-mgr := GetNonceManager()
-_abi, _ := contracts.ParseABI(myABI)
-signer := contracts.SignerFuncOf(keyjson, keypwd)
-tx, err := mgr.GiveNonceForTx(from_addr, func(nonce uint64) (*types.Transaction, error) {
-    // 该合约方法function_name只有一个number参数,后面额外的参数2是备注
-	data, err := contracts.PackArgumentsWithNumber(_abi, "function_name", big.Int(1), big.Int(2))
-	if err != nil {
-		return nil, err
-	}
-	return contracts.SendRawTransaction(conf.EthConn(), from_addr, getContractAddress(), nil, data, signer, nonce, nil, 0)
-})
-</code></p>
-
-<h1 id="section-3">事件扫描器</h1>
-
-<p>扫描某个/某些事件并更改中心化服务器数据状态,这个需求很常见,直接上代码.</p>
-
-<p>举个例子,扫描 <code>CryptoKitties</code> 的怀孕事件:</p>
-
-<p>```go
-package main</p>
-
-<p>import (
-	“fmt”
-	“github.com/ethereum/go-ethereum/common”
-	“github.com/ethereum/go-ethereum/ethclient”
-	“github.com/qjpcpu/ethereum/events”
-	“os”
-)</p>
-
-<p>func main() {
-	conn, err := ethclient.Dial(“https://api.myetherapi.com/eth”)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	dataCh, errCh := make(chan events.Event, 1000), make(chan error, 1)
-	b := events.NewScanBuilder()
-	rep, err := b.SetClient(conn).
-		SetContract(common.HexToAddress(<code>0x06012c8cf97BEaD5deAe237070F9587f8E7A266d</code>),abi_text,”Pregnant”).
-		SetFrom(5547829).
-		SetGracefullExit(true).
-		BuildAndRun(dataCh, errCh)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	go func() {
-		done := rep.WaitChan()
-		for {
-			select {
-			case data := &lt;-dataCh:
-				fmt.Printf(“%s\n”, data.String())
-			case err1 := &lt;-errCh:
-				fmt.Println(“error:”, err1)
-			case &lt;-done:
-				fmt.Println(“EXIT”)
-				return
-			}
-		}
-	}()</p>
-
-<pre><code>rep.Wait() } ```
-</code></pre>
-
-<h1 id="section-4">登录</h1>
-
-<p>以太坊登录其实就是签名和验签.</p>
-
-<p>代码位于包<code>github.com/qjpcpu/ethereum/key</code></p>
-
-<p>示例:</p>
-
-<p>```go
-package key</p>
-
-<p>import (
-    crand “crypto/rand”
-    “github.com/ethereum/go-ethereum/common/hexutil”
-    “github.com/ethereum/go-ethereum/crypto”
-    “testing”
-)</p>
-
-<p>func TestSignature(t *testing.T) {
-    pk, err := newKey(crand.Reader)
-    if err != nil {
-        t.Fatal(err)
-    }
-    msg := “JasonGeek”
-    sign, err := Sign(pk, []byte(msg))
-    if err != nil {
-        t.Fatal(err)
-    }
-    from := crypto.PubkeyToAddress(pk.PublicKey).Hex()
-    signHex := hexutil.Encode(sign)
-    if err := VerifySign(from, signHex, []byte(msg)); err != nil {
-        t.Fatal(err)
-    }
-}
-```</p>
-
-<h1 id="section-5">其他</h1>
-
-<p>其他辅助小方法,可能痛点不是那么强烈,我简单列举,有需要的自行参看代码 <a href="https://github.com/qjpcpu/ethereum">qjpcpu/ethereum</a></p>
-
-<ul>
-  <li>获取合约From自段 <code>func (tx *TransactionWithExtra) From() common.Address</code></li>
-  <li>合约是否执行成功 <code>func (tx *TransactionWithExtra) IsSuccess(conn *ethclient.Client) (bool, error)</code></li>
-  <li>某个地址是否是个合约 <code>func IsContract(conn *ethclient.Client, hexAddr string) bool</code></li>
-  <li>交易构造builder <code>func NewTxOptsBuilder(keyJson, keyPwd string) *TxOptsBuilder</code></li>
-  <li>等待交易完成 <code>func WaitTxDone(conn *ethclient.Client, txhash common.Hash, timeout ...time.Duration) error</code></li>
-  <li>根据keystore私钥生成签名方法 <code>func SignerFuncOf(keyJson, keyPasswd string) bind.SignerFn</code></li>
-  <li>直接发送ETH <code>func TransferETH(conn *ethclient.Client, from, to common.Address, amount *big.Int, signerFunc bind.SignerFn, nonce uint64, gasPrice *big.Int, notes ...string) (*types.Transaction, error)</code></li>
-  <li>私钥导入导出 <code>key</code>包</li>
-</ul>
-
-<h1 id="qjpcpuethereumhttpsgithubcomqjpcpuethereum"><a href="https://github.com/qjpcpu/ethereum">代码地址qjpcpu/ethereum</a></h1>
 ]]></content>
   </entry>
   

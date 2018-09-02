@@ -1,0 +1,450 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[rebuild ethereum](一) 搭建p2p网络 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">[Rebuild Ethereum](一) 搭建p2p网络</h2>
+	<div class="entry-content"><p>接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。</p>
+
+<p>比如动手做linux from scratch来学习linux的五脏六腑，rebuild rails来学习rails，所以我想尝试做一个rebuild ethereum系列,来解构ethereum。</p>
+
+<p>在该rebuild系列中，我将把视角定在构成区块链的大模块纬度,先从以太坊源码中抽离该模块,然后使用该模块编写一个可执行的程序，这样能够真实感受到这个模块的运行机制和使用方法；最终能产生”以太坊(区块链)不外乎就是这几个模块组装起来的”这种印象就达到我的目的的。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">前言</a></li>
+  <li><a href="#section-1">基本诉求</a></li>
+  <li><a href="#ethereum-p2pp2p">基于ethereum-p2p实现一个自定义协议的p2p网络</a>    <ul>
+      <li><a href="#foo-bar">foo-bar网络</a></li>
+      <li><a href="#section-2">启动网络</a></li>
+      <li><a href="#section-3">观察模块运行</a></li>
+    </ul>
+  </li>
+  <li><a href="#real-ethereum-p2p">real ethereum p2p</a></li>
+  <li><a href="#section-4">本文源码</a></li>
+</ul>
+
+<h1 id="section">前言</h1>
+
+<p>这是rebuild ethereum的第一篇,我将尝试抽离以太坊底层的p2p网络模块,搭建一个可执行的3节点的p2p网络。在这里，我不会深入介绍具体细节，其中涉及到技术细节读者可以直接查看ethereum源代码,也可以参考我之前关于以太坊p2p实现细节的几篇博客。</p>
+
+<h1 id="section-1">基本诉求</h1>
+
+<p>先来看看我们对于一个p2p网络模块的基本诉求:</p>
+
+<ul>
+  <li>接入网络的便利性,其实也可以表述成网络易于建立，有足够的内网穿透能力</li>
+  <li>具备节点发现和维护的能力</li>
+  <li>提供上层协议的拓展能力,以tcp类比,能做到在不清楚tcp的底层细节就能够开发出http协议</li>
+</ul>
+
+<h1 id="ethereum-p2pp2p">基于ethereum-p2p实现一个自定义协议的p2p网络</h1>
+
+<h2 id="foo-bar">foo-bar网络</h2>
+
+<p>我们实现的这个p2p网络叫foo-bar网络,她的功能很简单,接入网络后向新节点发一条<code>welcome</code>消息,然后再发一条<code>foo</code>,当节点收到后会回复一条<code>bar</code>消息.</p>
+
+<p>定义foo-bar协议:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">MessageType</span> <span class="p">=</span> <span class="kt">uint64</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 消息类型必须从0开始递增</span>
+</span><span class="line"><span class="kd">const</span> <span class="p">(</span>
+</span><span class="line">	<span class="nx">MT_HelloWorld</span> <span class="nx">MessageType</span> <span class="p">=</span> <span class="kc">iota</span>
+</span><span class="line">	<span class="nx">MT_FooBar</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">type</span> <span class="nx">Message</span> <span class="kt">string</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">FooBarProtocol</span><span class="p">()</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">{</span>
+</span><span class="line">		<span class="nx">Name</span><span class="p">:</span>    <span class="s">&quot;FooBarProtocol&quot;</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">Version</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class="line">		<span class="nx">Length</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>  <span class="c1">// 有几种消息类型就是几</span>
+</span><span class="line">		<span class="nx">Run</span><span class="p">:</span>     <span class="nx">msgHandler</span><span class="p">,</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>要注意关于协议支持的消息类型的定义，具体原因和以太坊实现细节有关,具体可以查阅<a href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/">p2p模块基础结构</a></p>
+
+<p>实现foo-bar协议handler内容:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">msgHandler</span><span class="p">(</span><span class="nx">peer</span> <span class="o">*</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Peer</span><span class="p">,</span> <span class="nx">ws</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">MsgReadWriter</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">	<span class="c1">// send msg</span>
+</span><span class="line">	<span class="nx">log</span><span class="p">.</span><span class="nx">Infof</span><span class="p">(</span><span class="s">&quot;new peer connected:%v&quot;</span><span class="p">,</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span>
+</span><span class="line">	<span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">MT_HelloWorld</span><span class="p">,</span> <span class="nx">srv</span><span class="p">.</span><span class="nx">NodeInfo</span><span class="p">().</span><span class="nx">Name</span><span class="o">+</span><span class="s">&quot;:welcome &quot;</span><span class="o">+</span><span class="nx">peer</span><span class="p">.</span><span class="nx">Name</span><span class="p">())</span>
+</span><span class="line">	<span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">MT_FooBar</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="k">for</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ws</span><span class="p">.</span><span class="nx">ReadMsg</span><span class="p">()</span>
+</span><span class="line">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">			<span class="nx">log</span><span class="p">.</span><span class="nx">Warningf</span><span class="p">(</span><span class="s">&quot;peer %s disconnected&quot;</span><span class="p">,</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Name</span><span class="p">())</span>
+</span><span class="line">			<span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">
+</span><span class="line">		<span class="kd">var</span> <span class="nx">myMessage</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nx">Message</span>
+</span><span class="line">		<span class="nx">err</span> <span class="p">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">myMessage</span><span class="p">)</span>
+</span><span class="line">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">			<span class="nx">log</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;decode msg err:%v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">			<span class="c1">// handle decode error</span>
+</span><span class="line">			<span class="k">continue</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">
+</span><span class="line">		<span class="nx">log</span><span class="p">.</span><span class="nx">Info</span><span class="p">(</span><span class="s">&quot;code:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">Code</span><span class="p">,</span> <span class="s">&quot;receiver at:&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">ReceivedAt</span><span class="p">,</span> <span class="s">&quot;msg:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
+</span><span class="line">		<span class="k">switch</span> <span class="nx">myMessage</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">case</span> <span class="s">&quot;foo&quot;</span><span class="p">:</span>
+</span><span class="line">			<span class="nx">err</span> <span class="o">:=</span> <span class="nx">p2p</span><span class="p">.</span><span class="nx">SendItems</span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span> <span class="nx">MT_FooBar</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">)</span>
+</span><span class="line">			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">				<span class="nx">log</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;send bar error:%v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class="line">				<span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">			<span class="p">}</span>
+</span><span class="line">		<span class="k">default</span><span class="p">:</span>
+</span><span class="line">			<span class="nx">log</span><span class="p">.</span><span class="nx">Info</span><span class="p">(</span><span class="s">&quot;recv:&quot;</span><span class="p">,</span> <span class="nx">myMessage</span><span class="p">)</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-2">启动网络</h2>
+
+<p>这里我们启动3个节点,对于测试网络结构及运转已经足够了.</p>
+
+<p>首先编译二进制程序:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">cd</span> <span class="nx">ethereum</span><span class="o">-</span><span class="nx">from</span><span class="o">-</span><span class="nx">scratch</span><span class="o">/</span><span class="nx">p2p</span><span class="o">-</span><span class="nx">network</span> <span class="o">&amp;&amp;</span> <span class="k">go</span> <span class="nx">build</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>启动3个节点</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="err">#</span> <span class="err">启动节点</span><span class="mi">1</span>
+</span><span class="line"><span class="p">.</span><span class="o">/</span><span class="nx">start_node1</span><span class="p">.</span><span class="nx">sh</span>
+</span><span class="line">
+</span><span class="line"><span class="err">#</span> <span class="err">打开新终端窗口启动节点</span><span class="mi">2</span>
+</span><span class="line"><span class="p">.</span><span class="o">/</span><span class="nx">start_node2</span><span class="p">.</span><span class="nx">sh</span>
+</span><span class="line">
+</span><span class="line"><span class="err">#</span> <span class="err">打开新终端窗口启动节点</span><span class="mi">3</span>
+</span><span class="line"><span class="p">.</span><span class="o">/</span><span class="nx">start_node3</span><span class="p">.</span><span class="nx">sh</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar.png" alt="foo-bar" /></p>
+
+<h2 id="section-3">观察模块运行</h2>
+
+<p>从日志可以看出,ethereum的p2p模块功能非常完备，在由种子节点接入网络后,可以自动完成节点发现，并且不断刷新自身的连接表，对已经建立的节点链路发送心跳保持连接。协议数据包使用rlp格式打包,不管是消息发送还是分拆都对上层提供了极为简单的接口，所以基于次实现高级协议就非常方便了，比如以太坊whisper协议。这是向上的延展。</p>
+
+<p>如果要向下深入，那么就可以逐个了解，rlp拆包解包，子协议拓展规则,kad网络节点发现机制,内网穿透，等等</p>
+
+<h1 id="real-ethereum-p2p">real ethereum p2p</h1>
+
+<p>回到真实以太坊,geth节点启动最终执行启动p2p网络的地方位于<code>github.com/ethereum/go-ethereum/node/node.go</code>文件:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Start create a live P2P node and starts running it.</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">Node</span><span class="p">)</span> <span class="nx">Start</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nx">Lock</span><span class="p">()</span>
+</span><span class="line">	<span class="k">defer</span> <span class="nx">n</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nx">Unlock</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// Short circuit if the node&#39;s already running</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">n</span><span class="p">.</span><span class="nx">server</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">ErrNodeRunning</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">openDataDir</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">err</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// Initialize the p2p server. This creates the node key and</span>
+</span><span class="line">	<span class="c1">// discovery databases.</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">P2P</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">PrivateKey</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">NodeKey</span><span class="p">()</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">NodeName</span><span class="p">()</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">Logger</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">log</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">StaticNodes</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">StaticNodes</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">StaticNodes</span><span class="p">()</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">TrustedNodes</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">TrustedNodes</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">TrustedNodes</span><span class="p">()</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">NodeDatabase</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">NodeDatabase</span> <span class="p">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">NodeDB</span><span class="p">()</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="nx">running</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">p2p</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span><span class="nx">Config</span><span class="p">:</span> <span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">}</span>
+</span><span class="line">	<span class="nx">n</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">Info</span><span class="p">(</span><span class="s">&quot;Starting peer-to-peer node&quot;</span><span class="p">,</span> <span class="s">&quot;instance&quot;</span><span class="p">,</span> <span class="nx">n</span><span class="p">.</span><span class="nx">serverConfig</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// Otherwise copy and specialize the P2P configuration</span>
+</span><span class="line">    <span class="o">......</span><span class="p">..</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>是不是和我们的demo基本一模一样.</p>
+
+<p>具体的协议参考源码文件<code>github.com/ethereum/go-ethereum/eth/handler.go</code>子协议管理器<code>ProtocolManager</code></p>
+
+<h1 id="section-4">本文源码</h1>
+
+<p><a href="https://github.com/qjpcpu/ethereum-from-scratch/tree/master/p2p-network">本文源码</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-09-02T14:24:16+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2018
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>
