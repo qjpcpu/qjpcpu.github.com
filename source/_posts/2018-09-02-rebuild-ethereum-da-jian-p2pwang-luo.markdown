@@ -122,7 +122,11 @@ cd ethereum-from-scratch/p2p-network && go build
 ./start_node3.sh
 ```
 
-![foo-bar](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar.png)
+![foo-bar1](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node1.png)
+
+![foo-bar2](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node2.png)
+
+![foo-bar3](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/foo-bar-node3.png)
 
 ## 观察模块运行
 
