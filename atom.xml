@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-02T16:28:49+08:00</updated>
+  <updated>2018-09-10T17:53:19+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,211 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[区块基础结构]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/"/>
+    <updated>2018-09-10T14:24:59+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou</id>
+    <content type="html"><![CDATA[<p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">数据结构</a>    <ul>
+      <li><a href="#header">Header</a></li>
+      <li><a href="#transactions">Transactions</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-1">存储结构</a>    <ul>
+      <li><a href="#section-2">区块头</a></li>
+      <li><a href="#section-3">区块体</a></li>
+      <li><a href="#section-4">交易索引</a></li>
+      <li><a href="#section-5">其他</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-6">为什么是单向链表呢？</a>    <ul>
+      <li><a href="#section-7">简单</a></li>
+      <li><a href="#section-8">世界线</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">数据结构</h1>
+
+<p>首先，我们来看看以太坊区块的基本结构(省略了部分非核心成员变量)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Block represents an entire block in the Ethereum blockchain.</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Block</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">header</span>       <span class="o">*</span><span class="nx">Header</span>
+</span><span class="line">	<span class="nx">transactions</span> <span class="nx">Transactions</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// 省略其他辅助成员</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一个区块主要由两部分组成: <code>Header</code>和 <code>Transactions</code>列表。</p>
+
+<p><code>Transactions</code>列表就是区块的核心业务数据，无论是ETH的转账，还是某个合约调用，他们都是以一笔笔交易的形式打包到区块里,区块链被称之为分布式账本，那么这些交易就是构成账本的一笔笔流水,通过从账本第一页逐笔交易”翻阅”到最后一页,就可以还原成每个人所以的交易及账户余额。</p>
+
+<p><code>Header</code>是区块链的索引结构，也可以看做单向链表的指向”上一个链节点”的指针，我们所谓的”翻阅”这个行为，其实就是根据这个<code>Header</code>指针遍历单向链表的过程。</p>
+
+<p>看到这里，有数据结构基础的同学应该已经非常明白区块链的核心结构了。生产环境的区块链结果不外乎就是这条单向链表在易用性、安全性、传输、存储等多方便调和的产物。</p>
+
+<p>下面我们还是看看以太坊的具体实现。</p>
+
+<h2 id="header">Header</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Header represents a block header in the Ethereum blockchain.</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Header</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">ParentHash</span>  <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;parentHash&quot;       gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Number</span>      <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>       <span class="s">`json:&quot;number&quot;           gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// 省略其他非结构性成员</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>header</code>的结构成员有大概15个，这里我们省略了其他和链遍历无关的成员(其他成员也很重要，包含挖矿难度、交易、共识相关参数，只是与本文无关,详细介绍可以参考<a href="http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/">从区块头看共识挖矿</a>).</p>
+
+<p>结构体里面的<code>ParentHash</code>就是上一个区块的”地址”，而这里面还有一个参数<code>Number</code>就是我们常说的区块高度。单向链表的指针可以从当前最新区块回溯到创世区块，而<code>Number</code>就类似于数组序号，可以方便地直接按区块高度直接访问到某个区块。这个两个参数合起来，可以做到随机访问和顺序访问的双重满足。</p>
+
+<blockquote>
+  <p>P.S.某个区块的”地址”值由block.Hash()方法获得.</p>
+</blockquote>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct1.jpeg" alt="eth-core-struct1" /></p>
+
+<h2 id="transactions">Transactions</h2>
+
+<p>区块中的<code>Transactions</code>是交易列表,交易结构就是区块链真正的业务数据。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">Transaction</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">data</span> <span class="nx">txdata</span>
+</span><span class="line">	<span class="c1">// 省略cache成员</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">txdata</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">AccountNonce</span> <span class="kt">uint64</span>          <span class="s">`json:&quot;nonce&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Price</span>        <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;gasPrice&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">GasLimit</span>     <span class="kt">uint64</span>          <span class="s">`json:&quot;gas&quot;      gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Recipient</span>    <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="s">`json:&quot;to&quot;       rlp:&quot;nil&quot;`</span> <span class="c1">// nil means contract creation</span>
+</span><span class="line">	<span class="nx">Amount</span>       <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;value&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Payload</span>      <span class="p">[]</span><span class="kt">byte</span>          <span class="s">`json:&quot;input&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// Signature values</span>
+</span><span class="line">	<span class="nx">V</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;v&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">R</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;r&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">S</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;s&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// This is only used when marshaling to JSON.</span>
+</span><span class="line">	<span class="nx">Hash</span> <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span> <span class="s">`json:&quot;hash&quot; rlp:&quot;-&quot;`</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li><code>AccountNonce</code>是每个账户的交易自增序号,以太坊的个人交易其实是串行执行的，比如同一个账户发出<code>AccountNonce=10</code>和<code>AccountNonce=11</code>的两笔交易，即便是11先到区块链节点，最终还是需要等待10号交易打包入区块才有可能执行11号交易。</li>
+  <li><code>Price</code>就是矿工的快乐源泉用户的头痛症,gasPrice。</li>
+  <li><code>GasLimit</code>交易指令执行上限，这也是耳熟能详的参数了。</li>
+  <li><code>Recipient</code>交易收据</li>
+  <li><code>Amount</code>交易包含的eth</li>
+  <li><code>Payload</code>交易体数据包</li>
+  <li><code>V,R,S</code>签名数据</li>
+  <li><code>Hash</code>交易hash</li>
+</ul>
+
+<h1 id="section-1">存储结构</h1>
+
+<p>以太坊底层使用leveldb作为基础存储层，leveldb是一个高性能的k-v本地存储。那么我们主要看看它是怎么把区块数据组织起来便于CRUD的。</p>
+
+<h2 id="section-2">区块头</h2>
+
+<p>首先是区块头,以太坊中很多时候我们只需要获取区块头，比如轻钱包做区块查询时并不需要获取整个区块数据，仅需要header数据就足够了。</p>
+
+<p>以太坊的区块头是这样的k-v结构:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀h+区块高度大端编码+区块hash</li>
+  <li><code>value</code>: rlp编码的header头数据</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-header.jpeg" alt="eth-core-struct" /></p>
+
+<h2 id="section-3">区块体</h2>
+
+<p>区块体的存储和区块头非常相似:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀b+区块高度大端编码+区块hash</li>
+  <li><code>value</code>:rlp编码的交易列表和叔区块header体</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-block.jpeg" alt="eth-core-struct" /></p>
+
+<p>注意交易的数据是存在区块体中的,那么我们平时在使用以太坊浏览器的时候，可能大部分时候都是根据交易hash查询交易，如果每次都要读取区块体才知道交易性能就太低了，所以我们再看看交易存储</p>
+
+<h2 id="section-4">交易索引</h2>
+
+<p>为了便于查询，以太坊额外存储了交易的索引信息:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀l+交易hash</li>
+  <li><code>value</code>:区块hash,区块高度,交易在区块中的序号</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-tx.jpeg" alt="eth-core-struct" /></p>
+
+<h2 id="section-5">其他</h2>
+
+<p>区块其他存储结构(比如收据,难度td)都以类似的k-v结构存储在leveldb中，他们共同构成了以太坊的存储结构。详细代码比较简单,可以参考<code>github.com/ethereum/go-ethereum/core/rawdb</code>和<code>github.com/ethereum/go-ethereum/ethdb</code>这两个包。</p>
+
+<p>以太坊的基础数据结构非常简单，在看源码之前最好先熟悉一下。我之前就是忽略了这个基础，在阅读区块重组reorg的代码的时候看到<code>DeleteTxLookupEntry</code>以为是删除交易数据，导致对叔区块的理解障碍，后来补看了rawdb源码才知道，这只是删除了交易索引。</p>
+
+<h1 id="section-6">为什么是单向链表呢？</h1>
+
+<p>回到开头，那么为什么大多数区块链都选择了单向链表作为基础数据结构呢，我擅自揣摩可能有这样几点原因:</p>
+
+<h2 id="section-7">简单</h2>
+
+<p>简单既是技术抉择的原因，也是技术成型后的结果。毫无疑问，单向链表是简单的,上完第一节数据结构课的同学应该都能轻松实现一条简单链表。它简单才能易于拓展,才能在这上面方便地设计状态机，从而完成滚动记账。</p>
+
+<h2 id="section-8">世界线</h2>
+
+<p>这里借用一个二次元的概念,区块链的数据是有严格上下文关系的，不能摒弃历史凭空捏造数据，它天生就是交易流水串起来的一条连续的线,这和我们现实世界类似，现实世界的当前状态不过是一个一个事件串联起来的，连续演化出的结果,这就是世界线,它具有状态转移的连续性，唯一性。从这个概念的描述也能感受出，这个业务场景和单向链表也是非常匹配的,我们接触区块链很多时候都是从了解”历史不可篡改”开始，然而链表指向父节点的指针，天然承认了数据历史这一需求。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[rebuild ethereum](一) 搭建p2p网络]]></title>
@@ -6224,116 +6429,6 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
   <li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
   <li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[task tracer -- 实时任务追踪系统]]></title>
-    <link href="http://qjpcpu.github.io/blog/2016/02/18/task-tracer/"/>
-    <updated>2016-02-18T14:43:27+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2016/02/18/task-tracer</id>
-    <content type="html"><![CDATA[<h2 id="section">产生背景</h2>
-
-<p><strong>Task Tracer(以下简称tt)</strong>的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出，任务的发起者无法知道任务当前的执行状态,唯一能做的仅仅能够判断该任务是否在running,而不能实时获取其进程输出；其次，当该salt任务执行完成后，需要独立获取其任务标准输出和进程退出状态(exit code)，无法一次性获取其输出和退出状态。salt社区也意识到这个问题，在逐步开发VT模块以求解决，不过这个特性截止到目前仍在实验阶段。</p>
-
-<p>所以，为了消除salt任务执行阶段的黑洞焦虑，我决定开发tt。 虽然tt是为了解决salt的一个问题，但在开发时，我决定将其和salt分离开来，使得tt其实是能够解决这样一类问题: <strong>如果需要实时获取命令执行输出，就可以将命令包裹到tt中执行,从而利用tt Server实时获取其执行输出及结果</strong></p>
-
-<!-- more -->
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/tt-preview.png" alt="tt preview" /></p>
-
-<h2 id="section-1">工作原理</h2>
-
-<p>tt其实是一个shell命令包裹器，它将要执行的命令以子进程的方式执行起来，实时地将该子进程的输出发送到tt Server，这样用户(api client)就能够从tt Server实时读取到该进程的输出；使用到的技术其实也很简单，就是nodejs+socket.io。
-<img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/data-flow.png" alt="tt" /></p>
-
-<p>从这张原理图可以看到，tt的数据流是单向的，也就是说这里的任务发起需要第三方来做，比如salt-stack甚至手动的shell登录后发起。当任务发起后，tt client会吐出一个输出结果查看的url，使用你的浏览器访问该url就可以实时查看任务的输出，另外，相同任务名下执行的所有tt client都会将输出发布出来，均可以查看。</p>
-
-<p>另外，tt是一个实时输出查看跟踪系统，所以不会持久化任务的输出。</p>
-
-<h2 id="try-our-live-demo">Try our live demo</h2>
-
-<h3 id="section-2">1. 配置客户端</h3>
-
-<p>根据你的系统类型(osx/linux)下载客户端可执行文件tt</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line"># for osx
-</span><span class="line">wget https://raw.githubusercontent.com/qjpcpu/task-tracer-client/master/dist/tt.darwin -O tt
-</span><span class="line"># for linux
-</span><span class="line">wget https://raw.githubusercontent.com/qjpcpu/task-tracer-client/master/dist/tt.linux -O tt</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>客户端会读取配置文件<code>$HOME/.tt.conf</code>，将其内容配置为:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">id = natasha
-</span><span class="line">token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiY2xpZW50X3Rva2VuIiwibnMiOiJ0ZXN0IiwiaWF0IjoxNDU1NzgwNDU0LCJleHAiOjE0ODczMzgwNTR9.hk96PzocFTSGogl1evyWa4UGjDpQ4nAWppIMCl6lnlo
-</span><span class="line">url = http://tt.single-bit.org</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>同样的方法再配置一台客户端，注意其配置文件中id和另一台不同（可以根据需要配置任意多台客户端,注意其配置文件中id需要各不相同）。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">id = tanya
-</span><span class="line">token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiY2xpZW50X3Rva2VuIiwibnMiOiJ0ZXN0IiwiaWF0IjoxNDU1NzgwNDU0LCJleHAiOjE0ODczMzgwNTR9.hk96PzocFTSGogl1evyWa4UGjDpQ4nAWppIMCl6lnlo
-</span><span class="line">url = http://tt.single-bit.org</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="section-3">2. 访问任务追踪页面</h3>
-
-<p>打开浏览器访问<a href="http://tt.single-bit.org/?accessToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYnJvd3Nlcl90b2tlbiIsIm5zIjoidGVzdCIsImlhdCI6MTQ1NTc4MDQ1NCwiZXhwIjoxNDg3MzM4MDU0fQ.AuhXIVNxk5LYoamU2ziSBqvn0tEqyrszAvsCom3OmgI">tt Server live demo</a></p>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/live-demo-index.png" alt="live demo index page" /></p>
-
-<p>填入我们需要追踪的任务名称，如: <strong>demo</strong>并确定，进入到任务监听状态。</p>
-
-<h3 id="section-4">3. 执行任务</h3>
-
-<p>在配置好的两台客户端上同时执行命令:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">tt -n demo 'echo "from `head -1 ~/.tt.conf`";sleep 2;echo "sleep for a while";sleep 5;echo done'</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在浏览器上可以看到实时输出: 在<code>tanya</code>和<code>natasha</code>分别输出各自的id，然后等待一会儿后进程执行结束.</p>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/task-tracer-server/master/snapshots/live-demo-output.png" alt="live demo output page" /></p>
-
-<p>你也可以在执行过程中在某个客户端上执行<code>kill</code>命令或<code>Ctrl+C</code>终止进程，并查看浏览器实时反馈的结果。</p>
-
-<h2 id="as-a-sevice----tt-server">As a sevice – 搭建自己的tt Server</h2>
-
-<p>如果tt仅仅是作为一个web页面查看机器上的进程输出，那其实也没多大存在意义，关键是对于一个devops来说，它需要能够比较容易地嵌入你的系统工具里。</p>
-
-<h3 id="section-5">1. 系统接口</h3>
-
-<p>ttServer对外提供了若干<a href="http://socket.io/">socket.io</a>事件接口，基于你的需求，可以非常容易地接入到你自己的系统中，这样一来，怎样在UI上展示就完全取决于自己的实现。至于socket.io也有很多语言已经实现了该规范，所以使用起来应该也很简单。</p>
-
-<p>详细接口定义及实现方式请查看<a href="https://github.com/qjpcpu/task-tracer-server">tt Server github文档</a></p>
-
-<h3 id="section-6">2. 客户端安装配置</h3>
-
-<p>tt的客户端安装配置非常简单，仅仅包含一个可执行文件tt和一份简单的ini格式的配置文件,令人愉悦的是该客户端没有环境依赖，不需要安装node等执行环境。</p>
-
-<p>如果下载的二进制文件无法执行，请从源码编译。</p>
-
-<p>具体的客户端安装配置可以查看<a href="https://github.com/qjpcpu/task-tracer-client">tt Client github文档</a></p>
-
-<h2 id="logio">相关系统: log.io</h2>
-
-<p><a href="http://logio.org/">log.io</a>是一个实时日志监控系统，其系统架构和实现方式都和tt非常相似。不过其应用场景是实时的日志采集监控，另外，logio的客户端有node环境依赖，个人觉得有点部署不完美。</p>
-
-<p><img src="http://logio.org/screenshot3.png" alt="log.io" /></p>
-
-<h2 id="github">附录: github地址</h2>
-
-<p><a href="https://github.com/qjpcpu/task-tracer-server">tt Server</a></p>
-
-<p><a href="https://github.com/qjpcpu/task-tracer-client">tt Client</a></p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,375 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>区块基础结构 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。 数据结构 Header Transactions 存储结构 区块头 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">区块基础结构</h2>
+	<div class="entry-content"><p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">数据结构</a>    <ul>
+      <li><a href="#header">Header</a></li>
+      <li><a href="#transactions">Transactions</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-1">存储结构</a>    <ul>
+      <li><a href="#section-2">区块头</a></li>
+      <li><a href="#section-3">区块体</a></li>
+      <li><a href="#section-4">交易索引</a></li>
+      <li><a href="#section-5">其他</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-6">为什么是单向链表呢？</a>    <ul>
+      <li><a href="#section-7">简单</a></li>
+      <li><a href="#section-8">世界线</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section">数据结构</h1>
+
+<p>首先，我们来看看以太坊区块的基本结构(省略了部分非核心成员变量)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Block represents an entire block in the Ethereum blockchain.</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Block</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">header</span>       <span class="o">*</span><span class="nx">Header</span>
+</span><span class="line">	<span class="nx">transactions</span> <span class="nx">Transactions</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// 省略其他辅助成员</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一个区块主要由两部分组成: <code>Header</code>和 <code>Transactions</code>列表。</p>
+
+<p><code>Transactions</code>列表就是区块的核心业务数据，无论是ETH的转账，还是某个合约调用，他们都是以一笔笔交易的形式打包到区块里,区块链被称之为分布式账本，那么这些交易就是构成账本的一笔笔流水,通过从账本第一页逐笔交易”翻阅”到最后一页,就可以还原成每个人所以的交易及账户余额。</p>
+
+<p><code>Header</code>是区块链的索引结构，也可以看做单向链表的指向”上一个链节点”的指针，我们所谓的”翻阅”这个行为，其实就是根据这个<code>Header</code>指针遍历单向链表的过程。</p>
+
+<p>看到这里，有数据结构基础的同学应该已经非常明白区块链的核心结构了。生产环境的区块链结果不外乎就是这条单向链表在易用性、安全性、传输、存储等多方便调和的产物。</p>
+
+<p>下面我们还是看看以太坊的具体实现。</p>
+
+<h2 id="header">Header</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Header represents a block header in the Ethereum blockchain.</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Header</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">ParentHash</span>  <span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span>    <span class="s">`json:&quot;parentHash&quot;       gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Number</span>      <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>       <span class="s">`json:&quot;number&quot;           gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// 省略其他非结构性成员</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>header</code>的结构成员有大概15个，这里我们省略了其他和链遍历无关的成员(其他成员也很重要，包含挖矿难度、交易、共识相关参数，只是与本文无关,详细介绍可以参考<a href="http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/">从区块头看共识挖矿</a>).</p>
+
+<p>结构体里面的<code>ParentHash</code>就是上一个区块的”地址”，而这里面还有一个参数<code>Number</code>就是我们常说的区块高度。单向链表的指针可以从当前最新区块回溯到创世区块，而<code>Number</code>就类似于数组序号，可以方便地直接按区块高度直接访问到某个区块。这个两个参数合起来，可以做到随机访问和顺序访问的双重满足。</p>
+
+<blockquote>
+  <p>P.S.某个区块的”地址”值由block.Hash()方法获得.</p>
+</blockquote>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct1.jpeg" alt="eth-core-struct1" /></p>
+
+<h2 id="transactions">Transactions</h2>
+
+<p>区块中的<code>Transactions</code>是交易列表,交易结构就是区块链真正的业务数据。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">Transaction</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">data</span> <span class="nx">txdata</span>
+</span><span class="line">	<span class="c1">// 省略cache成员</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">txdata</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">AccountNonce</span> <span class="kt">uint64</span>          <span class="s">`json:&quot;nonce&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Price</span>        <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;gasPrice&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">GasLimit</span>     <span class="kt">uint64</span>          <span class="s">`json:&quot;gas&quot;      gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Recipient</span>    <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Address</span> <span class="s">`json:&quot;to&quot;       rlp:&quot;nil&quot;`</span> <span class="c1">// nil means contract creation</span>
+</span><span class="line">	<span class="nx">Amount</span>       <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span>        <span class="s">`json:&quot;value&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">Payload</span>      <span class="p">[]</span><span class="kt">byte</span>          <span class="s">`json:&quot;input&quot;    gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// Signature values</span>
+</span><span class="line">	<span class="nx">V</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;v&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">R</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;r&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">	<span class="nx">S</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="s">`json:&quot;s&quot; gencodec:&quot;required&quot;`</span>
+</span><span class="line">
+</span><span class="line">	<span class="c1">// This is only used when marshaling to JSON.</span>
+</span><span class="line">	<span class="nx">Hash</span> <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Hash</span> <span class="s">`json:&quot;hash&quot; rlp:&quot;-&quot;`</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li><code>AccountNonce</code>是每个账户的交易自增序号,以太坊的个人交易其实是串行执行的，比如同一个账户发出<code>AccountNonce=10</code>和<code>AccountNonce=11</code>的两笔交易，即便是11先到区块链节点，最终还是需要等待10号交易打包入区块才有可能执行11号交易。</li>
+  <li><code>Price</code>就是矿工的快乐源泉用户的头痛症,gasPrice。</li>
+  <li><code>GasLimit</code>交易指令执行上限，这也是耳熟能详的参数了。</li>
+  <li><code>Recipient</code>交易收据</li>
+  <li><code>Amount</code>交易包含的eth</li>
+  <li><code>Payload</code>交易体数据包</li>
+  <li><code>V,R,S</code>签名数据</li>
+  <li><code>Hash</code>交易hash</li>
+</ul>
+
+<h1 id="section-1">存储结构</h1>
+
+<p>以太坊底层使用leveldb作为基础存储层，leveldb是一个高性能的k-v本地存储。那么我们主要看看它是怎么把区块数据组织起来便于CRUD的。</p>
+
+<h2 id="section-2">区块头</h2>
+
+<p>首先是区块头,以太坊中很多时候我们只需要获取区块头，比如轻钱包做区块查询时并不需要获取整个区块数据，仅需要header数据就足够了。</p>
+
+<p>以太坊的区块头是这样的k-v结构:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀h+区块高度大端编码+区块hash</li>
+  <li><code>value</code>: rlp编码的header头数据</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-header.jpeg" alt="eth-core-struct" /></p>
+
+<h2 id="section-3">区块体</h2>
+
+<p>区块体的存储和区块头非常相似:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀b+区块高度大端编码+区块hash</li>
+  <li><code>value</code>:rlp编码的交易列表和叔区块header体</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-block.jpeg" alt="eth-core-struct" /></p>
+
+<p>注意交易的数据是存在区块体中的,那么我们平时在使用以太坊浏览器的时候，可能大部分时候都是根据交易hash查询交易，如果每次都要读取区块体才知道交易性能就太低了，所以我们再看看交易存储</p>
+
+<h2 id="section-4">交易索引</h2>
+
+<p>为了便于查询，以太坊额外存储了交易的索引信息:</p>
+
+<ul>
+  <li><code>key</code>:固定前缀l+交易hash</li>
+  <li><code>value</code>:区块hash,区块高度,交易在区块中的序号</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-core-struct-tx.jpeg" alt="eth-core-struct" /></p>
+
+<h2 id="section-5">其他</h2>
+
+<p>区块其他存储结构(比如收据,难度td)都以类似的k-v结构存储在leveldb中，他们共同构成了以太坊的存储结构。详细代码比较简单,可以参考<code>github.com/ethereum/go-ethereum/core/rawdb</code>和<code>github.com/ethereum/go-ethereum/ethdb</code>这两个包。</p>
+
+<p>以太坊的基础数据结构非常简单，在看源码之前最好先熟悉一下。我之前就是忽略了这个基础，在阅读区块重组reorg的代码的时候看到<code>DeleteTxLookupEntry</code>以为是删除交易数据，导致对叔区块的理解障碍，后来补看了rawdb源码才知道，这只是删除了交易索引。</p>
+
+<h1 id="section-6">为什么是单向链表呢？</h1>
+
+<p>回到开头，那么为什么大多数区块链都选择了单向链表作为基础数据结构呢，我擅自揣摩可能有这样几点原因:</p>
+
+<h2 id="section-7">简单</h2>
+
+<p>简单既是技术抉择的原因，也是技术成型后的结果。毫无疑问，单向链表是简单的,上完第一节数据结构课的同学应该都能轻松实现一条简单链表。它简单才能易于拓展,才能在这上面方便地设计状态机，从而完成滚动记账。</p>
+
+<h2 id="section-8">世界线</h2>
+
+<p>这里借用一个二次元的概念,区块链的数据是有严格上下文关系的，不能摒弃历史凭空捏造数据，它天生就是交易流水串起来的一条连续的线,这和我们现实世界类似，现实世界的当前状态不过是一个一个事件串联起来的，连续演化出的结果,这就是世界线,它具有状态转移的连续性，唯一性。从这个概念的描述也能感受出，这个业务场景和单向链表也是非常匹配的,我们接触区块链很多时候都是从了解”历史不可篡改”开始，然而链表指向父节点的指针，天然承认了数据历史这一需求。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-09-10T14:24:59+08:00" pubdate data-updated="true">Sep 10<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2018
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

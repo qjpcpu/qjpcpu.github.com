@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 一步步安装使用jquery-file-upload Read on &rarr; Feb 14th, 2014 rails Comments ">
+	<meta name="description" content=" Read on &rarr; Feb 14th, 2014 rails Comments ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +89,48 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/">
+		
+			Rails 填充数据库初始数据</a>
+	</h2>
+	<div class="entry-content">
+		
+		
+		<a href="/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T23:21:46+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -592,72 +634,6 @@ puts "main Thread:num=#{num} count=#{count} book=#{book.name}"
 </div>
 	
 	<div class="comments"><a href="/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/">
-		
-			Go学习笔记-go Routine</a>
-	</h2>
-	<div class="entry-content">
-		<h2 id="go-routine-indeed">Go routine indeed</h2>
-
-<blockquote>
-  <p>本段结论引用自：goroutine背后的系统知识，让我了解为什么goroutine这么轻量级，以及其优势劣势。</p>
-</blockquote>
-
-<p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
-
-<p>(1) goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
-
-<p>(2) goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
-
-<p>(3) 除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
-
-<p>(4) goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
-
-<p>(5) 和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS &gt; 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
-
-<p>(6) Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
-
-<p>(7) Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
-
-<p>(8) goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
-
-
-		
-		<a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T18:23:38+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/go/'>go</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/02/14/goxue-xi-bi-ji-go-routine/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>

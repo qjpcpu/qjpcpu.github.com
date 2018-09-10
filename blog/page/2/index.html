@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content=" 代币(token)是什么? Read on &rarr; Mar 6th, 2018 blockchain Comments ">
+	<meta name="description" content=" 关于以太坊solidity语言一些有趣或者有意义的tips. Read on &rarr; Mar 8th, 2018 blockchain Comments ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -89,6 +89,50 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2018/03/08/soliditybei-wang-lu/">
+		
+			Solidity备忘录</a>
+	</h2>
+	<div class="entry-content">
+		<p>关于以太坊solidity语言一些有趣或者有意义的tips.</p>
+
+
+		
+		<a href="/blog/2018/03/08/soliditybei-wang-lu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-03-08T09:38:45+08:00" pubdate data-updated="true">Mar 8<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/blockchain/'>blockchain</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2018/03/08/soliditybei-wang-lu/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -497,54 +541,6 @@
 </div>
 	
 	<div class="comments"><a href="/blog/2016/03/15/httpyuan-li/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2016/02/18/task-tracer/">
-		
-			Task Tracer &#8211; 实时任务追踪系统</a>
-	</h2>
-	<div class="entry-content">
-		<h2 id="section">产生背景</h2>
-
-<p><strong>Task Tracer(以下简称tt)</strong>的产生原因其实是为了解决一个用户体验的缺憾。由于在生产环境中，我们一直使用salt-stack作为任务的发布和执行机构，然而salt使用的Pub/Sub这种模式下有一个遗留缺陷: 就是任务一旦发出，直到它执行结束退出，任务的发起者无法知道任务当前的执行状态,唯一能做的仅仅能够判断该任务是否在running,而不能实时获取其进程输出；其次，当该salt任务执行完成后，需要独立获取其任务标准输出和进程退出状态(exit code)，无法一次性获取其输出和退出状态。salt社区也意识到这个问题，在逐步开发VT模块以求解决，不过这个特性截止到目前仍在实验阶段。</p>
-
-<p>所以，为了消除salt任务执行阶段的黑洞焦虑，我决定开发tt。 虽然tt是为了解决salt的一个问题，但在开发时，我决定将其和salt分离开来，使得tt其实是能够解决这样一类问题: <strong>如果需要实时获取命令执行输出，就可以将命令包裹到tt中执行,从而利用tt Server实时获取其执行输出及结果</strong></p>
-
-
-		
-		<a href="/blog/2016/02/18/task-tracer/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2016-02-18T14:43:27+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2016</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/linux/'>linux</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2016/02/18/task-tracer/#disqus_thread">Comments</a></div>
 	
 </div>
 </article>
