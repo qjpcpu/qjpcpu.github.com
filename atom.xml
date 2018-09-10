@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-10T17:56:52+08:00</updated>
+  <updated>2018-09-10T18:00:24+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[区块基础结构]]></title>
+    <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/"/>
     <updated>2018-09-10T14:24:59+08:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou</id>
@@ -40,6 +40,7 @@
       <li><a href="#section-8">世界线</a></li>
     </ul>
   </li>
+  <li><a href="#rebuild">关于rebuild</a></li>
 </ul>
 
 <h1 id="section">数据结构</h1>
@@ -215,6 +216,10 @@
 <h2 id="section-8">世界线</h2>
 
 <p>这里借用一个二次元的概念,区块链的数据是有严格上下文关系的，不能摒弃历史凭空捏造数据，它天生就是交易流水串起来的一条连续的线,这和我们现实世界类似，现实世界的当前状态不过是一个一个事件串联起来的，连续演化出的结果,这就是世界线,它具有状态转移的连续性，唯一性。从这个概念的描述也能感受出，这个业务场景和单向链表也是非常匹配的,我们接触区块链很多时候都是从了解”历史不可篡改”开始，然而链表指向父节点的指针，天然承认了数据历史这一需求。</p>
+
+<h1 id="rebuild">关于rebuild</h1>
+
+<p>所以呢，最后我还是偷了个懒，这块的基础结构比较简单,我就不手动写Demo了。</p>
 ]]></content>
   </entry>
   

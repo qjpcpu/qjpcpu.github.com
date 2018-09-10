@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>区块基础结构 - Jason's space</title>
+	<title>[Rebuild Ethereum](二)区块基础结构 - Jason's space</title>
 	<meta name="author" content="Jason">
 
 	
@@ -89,7 +89,7 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">区块基础结构</h2>
+	<h2 class="title">[Rebuild Ethereum](二)区块基础结构</h2>
 	<div class="entry-content"><p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
 
 <!-- more -->
@@ -112,6 +112,7 @@
       <li><a href="#section-8">世界线</a></li>
     </ul>
   </li>
+  <li><a href="#rebuild">关于rebuild</a></li>
 </ul>
 
 <h1 id="section">数据结构</h1>
@@ -287,6 +288,10 @@
 <h2 id="section-8">世界线</h2>
 
 <p>这里借用一个二次元的概念,区块链的数据是有严格上下文关系的，不能摒弃历史凭空捏造数据，它天生就是交易流水串起来的一条连续的线,这和我们现实世界类似，现实世界的当前状态不过是一个一个事件串联起来的，连续演化出的结果,这就是世界线,它具有状态转移的连续性，唯一性。从这个概念的描述也能感受出，这个业务场景和单向链表也是非常匹配的,我们接触区块链很多时候都是从了解”历史不可篡改”开始，然而链表指向父节点的指针，天然承认了数据历史这一需求。</p>
+
+<h1 id="rebuild">关于rebuild</h1>
+
+<p>所以呢，最后我还是偷了个懒，这块的基础结构比较简单,我就不手动写Demo了。</p>
 </div>
 
 
