@@ -4,7 +4,7 @@
   <title><![CDATA[Category: life | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-17T13:54:16+08:00</updated>
+  <updated>2018-09-17T15:45:09+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -61,7 +61,7 @@
     <p>详细联系方式: 打开<a href="https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959">以太坊浏览器</a>点击页面InputData文本框下面”Convert To Utf8”即可看到</p>
   </li>
   <li>
-    <p>代码能力: <a href="http://qjpcpu.github.io">点我直接进入博客首页</a>, 或者进入<a href="https://github.com/qjpcpu">我的github</a>查看我的代码风格及能力</p>
+    <p>代码能力: <a href="http://qjpcpu.github.io">点我直接进入博客首页</a>, 或者进入<a href="https://github.com/qjpcpu">我的github</a>查看我的作品及代码风格</p>
   </li>
 </ul>
 
@@ -75,7 +75,6 @@
       <th>时间</th>
       <th>学校</th>
       <th>学位</th>
-      <th>描述</th>
     </tr>
   </thead>
   <tbody>
@@ -83,13 +82,11 @@
       <td>2011.9~2014.3</td>
       <td>同济大学</td>
       <td>硕士研究生</td>
-      <td>-</td>
     </tr>
     <tr>
       <td>2007.9~2011.7</td>
       <td>同济大学</td>
       <td>本科学士学位</td>
-      <td>-</td>
     </tr>
   </tbody>
 </table>
