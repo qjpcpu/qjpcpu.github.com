@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-17T15:52:12+08:00</updated>
+  <updated>2018-09-19T15:29:16+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,257 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在这里,读懂区块链]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen/"/>
+    <updated>2018-09-18T15:08:00+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen</id>
+    <content type="html"><![CDATA[<p>读懂区块链——仅需这一篇。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">前言</a></li>
+  <li><a href="#section-1">入门篇</a>    <ul>
+      <li><a href="#section-2">什么是区块链?</a>        <ul>
+          <li><a href="#section-3">场景</a></li>
+          <li><a href="#section-4">先找到问题</a></li>
+          <li><a href="#section-5">分析问题</a>            <ul>
+              <li><a href="#section-6">1. 去除中心化机构</a></li>
+              <li><a href="#section-7">2. 信任问题</a></li>
+              <li><a href="#section-8">3. 记账权</a></li>
+            </ul>
+          </li>
+          <li><a href="#section-9">求解问题</a></li>
+          <li><a href="#section-10">什么是区块链</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-11">区块链能做什么?</a></li>
+      <li><a href="#section-12">区块链不能做什么?</a></li>
+      <li><a href="#section-13">区块链生态</a>        <ul>
+          <li><a href="#section-14">智能合约</a></li>
+          <li><a href="#sdk">SDK</a></li>
+          <li><a href="#section-15">钱包</a></li>
+          <li><a href="#section-16">交易所</a></li>
+          <li><a href="#section-17">矿工节点</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-18">几条著名公链</a>        <ul>
+          <li><a href="#btc">BTC</a></li>
+          <li><a href="#ethereum">Ethereum</a></li>
+          <li><a href="#ont">ONT</a></li>
+          <li><a href="#eos">EOS</a></li>
+          <li><a href="#bch">BCH</a></li>
+          <li><a href="#ipfs">IPFS</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#section-19">进阶篇</a>    <ul>
+      <li><a href="#utxobalance">UTXO/Balance两种模型</a></li>
+      <li><a href="#section-20">共识机制</a>        <ul>
+          <li><a href="#pow">POW</a></li>
+          <li><a href="#pos">POS</a></li>
+          <li><a href="#dpos">DPOS</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-21">51%与双花</a></li>
+      <li><a href="#p2p">P2P</a></li>
+      <li><a href="#section-22">联盟链</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-23">参考文献</a></li>
+</ul>
+
+<h1 id="section">前言</h1>
+
+<p>撰写这篇文章的原因，一是想向对不了解区块链的同学介绍下这项技术，二也是借机进行一次知识梳理,所以，有理解错误的地方，也希望读者不吝指正。</p>
+
+<p><strong>对于读者群</strong>:</p>
+
+<p>因为有的读者是非技术类的，所以我将内容拆分成入门和进阶两部分,在入门篇里我尽量不涉及计算机技术术语，其细节我会放到进阶篇；同时，我也不希望进阶篇变成学术论文，所以进阶篇里会从逻辑层面解释原理，不会涉及数学公式,我并不希望读者睡着了。</p>
+
+<p>所以,不想了解技术细节的同学，读完入门篇就够了;而对于有进一步探索欲望的同学，进阶篇也有足够指向作用了。</p>
+
+<p><strong>链种</strong>:</p>
+
+<p>目前区块链分为公链、联盟链、私链，本文主要介绍公链，并稍微提及联盟链，不会涉及私链。</p>
+
+<p>废话不多说, let’s start now.</p>
+
+<h1 id="section-1">入门篇</h1>
+
+<h2 id="section-2">什么是区块链?</h2>
+
+<p>我想每个人第一次听到区块链这三个字的时候，第一反应都是本能地问出:区块链是什么? <strong>What</strong>*永远是人类认识事物的第一步,那么怎么回答这个问题呢。其实无论是回答什么”去中心化的信任机制”还是”分布式账本”，我相信听众脸上懵比的问号只会更大。所以我们尝试还原区块链产生的场景，了解这项技术产生的背景，从而回答它是什么。</p>
+
+<h3 id="section-3">场景</h3>
+
+<p>Clark是居住在大都会一个普通小伙子，他在星球日报勤勤恳恳地工作，把他辛苦挣来的钱都存入大都会银行，这家银行由大银行家Luthor筹建，是大都会最大最安全的银行,大都会居住的人们都喜欢把他们的资金存入这家银行，他们都信任这家银行，祖祖辈辈都离不开这家银行,Luthor确实也将银行经营得很好。</p>
+
+<p>然而，不久后大都会发生了外星人入侵事件，所幸的是大都会人们还是挺过了这场灾难。不过大都会遭受了巨大的经济损失，经济发生萧条。这其中蒙受损失的，自然也包括大都会银行，Luthor为了维护自身的利益，不顾一切开始大量增发货币。这下Clark发现自己本就不多的存款变得一文不值，更为雪上加霜的是，灾后他去查自己的银行账户的时候，发现自己账户余额为零,而Luthor给Clark的解释是，入侵事件毁坏了银行部分数据，因而luthor无法恢复clark的财产，甚至也拒绝支付赔偿。</p>
+
+<p>Clark听到这一切，无助地瘫倒在地，口中喃喃:这可是我攒来娶Louis的老本啊…</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/clark-luthor.jpg" alt="clarkVSluthor" /></p>
+
+<h3 id="section-4">先找到问题</h3>
+
+<p>那么，Clark遇到的问题所在在哪儿呢？Clark找到好友Bruce,助他度过了当前难关，但是还是不知道怎么在同样情况下避免财务危机。这个时候，Bruce一针见血地指出了问题所在:</p>
+
+<p><strong>中心化信任危机</strong></p>
+
+<p>Luthor所代表的大都会银行，广义来讲就是中心化的权威机构。所有中心机构的用户，都是基于信任将资金托管给该机构，但是信任是不可靠的，一旦发生信任危机，中心化机构可以打破信任，对于银行来说可以不受限制地增发货币甚至直接侵吞私有财产。你可能会说有法律保护，但是这个时候其实是国家在为这个机构背书，国家机器充当了这个隐形的中心化信任载体。尽管国家违约成本比较高，但只要翻翻历史书，就会发现这样的案例也不在少数。</p>
+
+<h3 id="section-5">分析问题</h3>
+
+<p>既然找到问题所在，那么应该怎么设计新的解决方案呢？</p>
+
+<h4 id="section-6">1. 去除中心化机构</h4>
+
+<p>如果问题出在中心化机构，那么很自然的就需要在我们的解决方案里移除对中心化机构的信任依赖。</p>
+
+<p>那么我们就每个人都持有一个账本，并且每个账本初始数据都一模一样;比如是这样的一个账本:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">Bruce inital 1
+</span><span class="line">Clark inital 10000
+</span><span class="line">...</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一旦发生转账，比如Bruce要给Clark转账200，那么所有人都在账本上写上一句<code>Bruce transfer 200 to Clark</code>。 那么账本就变成了</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">Bruce inital 1
+</span><span class="line">Clark inital 10000
+</span><span class="line">...
+</span><span class="line">Bruce transfer 200 to Clark</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>此时，如果我们想知道Clark的账户余额，只需要把和Clark相关的记账账目汇总即可得到<code>Balance(Clark) = 1 + 200 = 201</code>,这个结果不容任何人抵赖，因为你问大街上任意一个人，只要他打开他的账本，按同样的方法计算都可以得出Clark账户余额是201这个结果。</p>
+
+<h4 id="section-7">2. 信任问题</h4>
+
+<p>去除中心化之后，似乎我们的问题解决了。因为就算再次发生入侵，只要不是所有人的账本都损坏了，那么我们就可以找账本完好的人把之前的账目抄下来恢复自己的账本，从而恢复所有人的资产记录。</p>
+
+<p>但是实际上没有那么简单，如果有人冒充Bruce要求转账给Clark,那么Bruce就在不知情的情况下被盗取了财产。所以，我们借鉴了现实生活中签名的办法，要求Bruce在转账的时候必须附加自己的签名，然后将这笔转账和签名一起广播出去。这样大家记账的时候就能验证，的确是Bruce本人要求的转账。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/bruce-sign.png" alt="bruce-sign" /></p>
+
+<h4 id="section-8">3. 记账权</h4>
+
+<p>在我们新的解决方案里，我们需要交易发起人广播给其他所有记账人，实际上，这个广播不可能一瞬间将交易发给所有人。这个广播系统可以这样理解，假设我们都使用蓝牙协议作为通信基础，这个系统里每个人都使用蓝牙和身边十来个人保持连接，同理这些人和各自身边的人保持连接，这样所有人构成一个互联的网状结构。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/bluetooth-p2p.png" alt="blockchain" /></p>
+
+<p>因为交易信息传播有时间延迟，所以，同一时刻，系统里每个人收到的记账请求是不一样的。那么，我们一开始设计的所有人一起记账就行不通了，因为这样写到账本里的账目就不同了。为了大家写入同样的数据，必须能一起协调出同一的账目，然后写入。因为现在是一个大民主的社群，必须有一种投票机制选出一个记账人，这个记账人复制整理这段时间内收到的记账请求，并把这些账目一起写入账本;我们称之为争夺记账权。</p>
+
+<p>那么，怎么设计这个记账权争夺机制呢？</p>
+
+<ul>
+  <li>首先必须要公平，不能因为某个记账人的社会地位高就能够拥有记账权；因为这样就会再次导致记账中心化，从而使得我们这个去中心化的解决方案失效</li>
+  <li>机制必须透明，机制的透明是对公平性的验证，我们的解决方案里必须能够让所有人能够验证这个公平性是否属实</li>
+  <li>筛选性，既然是记账权的争夺，这个机制必然具有强烈的优胜劣汰性质，否则达不到筛选出冠军的目的</li>
+  <li>冠军身份易于验证，就如同一场长跑，争夺冠军是非常艰难的，但是一旦夺得胜利，我们能一眼分辨出谁是冠军——谁戴着奖牌谁是冠军</li>
+</ul>
+
+<p>明确了这个设计需求，我们留到求解问题时再进行解答。</p>
+
+<p>但是基于我们这个设计，又带来了新的问题，如果记一次帐这么费劲，那肯定最后没人愿意记账了。中国有句老话说得好: 无利不起早，现实生活中大部分人的行为都是趋利的。所以，我们这个解决方案里，还差最后一环——经济激励。</p>
+
+<p>如果我们这个解决方案里，大家约定，一旦某个天选之子夺得了记账权并成功记账，那么就给予他额外现金奖励，这个奖励足够补偿他这次辛苦记账的付出,这样，整个流程似乎就理顺了。</p>
+
+<h3 id="section-9">求解问题</h3>
+
+<p>在开始执行求解前，我们先复盘一下我们的思路，看看是否有思路不通畅的地方，防止出现逻辑漏洞。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/thoughts-flow.jpeg" alt="blockchain" /></p>
+
+<p>这是一条由问题驱动的推导型思路，主要是为了解决我们发现的中心化问题，在提出新的解决方案并解决新的衍生问题，主体上看来没有大的疏漏。</p>
+
+<p>下面我们开始来求解遗留的记账争夺问题。</p>
+
+<p>因为大都会市民极其不擅长数学，所以，我们使用求余来作为这场争夺的题目。比如每次记账，要求大家求解<code>x % 7 = 3</code>满足这个等式的<code>x</code>,因为大家数学很差，所以大家不得不一个一个数去尝试，当某个幸运儿最先发现<code>10 % 7 = 3</code>时，他就获取了记账权，而其他人将<code>x=10</code>带进算式很容易验算出这是符合条件的一个求解，所以大家也就表示认同，同时也认可了他的记账。于是所有人复制他记下的账目，并开始收集新的交易流水，准备下一次记账。</p>
+
+<p>最后，我们将我们这个解决方案称之为”区块链”，这个解决方案里的很多做法其实就是真实区块链技术的简化版:</p>
+
+<ul>
+  <li>区块链; 我们的记账笔记薄就是一条区块链，这里面从前往后记录了所有人的所有账目流水，后面的账目对前面的账目有依赖关系</li>
+  <li>区块; 账本的每一页，可以称之为一个区块，页码可以认为是区块前后的索引关系</li>
+  <li>交易; 账本每一页的每一条都是一笔交易，这个交易可以是一笔简单转账，也可以是一次协定</li>
+  <li>数字签名; 还记得我们要求每笔交易发送时必须附加自己的签名吗？在数字世界里，我们必须附加自己的<a href="https://zh.wikipedia.org/wiki/%E6%95%B8%E4%BD%8D%E7%B0%BD%E7%AB%A0">数字签名</a>,这个签名甚至比真实世界的签名更可靠，它基于密码学，不可伪造且能唯一证明你的授权</li>
+  <li>挖矿; 我们的争夺记账权的过程，和矿工付出辛劳挖矿非常相似，所以也称之为挖矿了。不过真实的区块链挖矿使用的不是求余这么简单的运算，而是反解hash前缀0的暴力运算</li>
+  <li>矿工; 从事争夺记账权的节点(人)</li>
+  <li>虚拟货币; 不管是矿工挖矿得到的额外经济奖励，还是账本上记录的基本代数资产，都是这条区块链上的虚拟货币；比如比特币区块链上的虚拟货币就是BTC, 以太坊上的火币就是ETH</li>
+  <li>共识机制; 争夺记账权的机制就是共识机制，因为争夺机制的差异，目前有PoW,PoS等;目前久经考验的共识机制是PoW,我们大都会区块链的共识，也使得矿工付出大量脑力劳动，所以也可以称之为一种PoW</li>
+</ul>
+
+<h3 id="section-10">什么是区块链</h3>
+
+<p>回到最初的问题，什么是区块链: </p>
+
+<p><strong>区块链是在对等且不受信环境下, 保证群体协作达成共识的一种社群机制</strong></p>
+
+<h2 id="section-11">区块链能做什么?</h2>
+
+<p>tip: 金融、游戏</p>
+
+<h2 id="section-12">区块链不能做什么?</h2>
+
+<p>tip: 真瓶装假酒</p>
+
+<h2 id="section-13">区块链生态</h2>
+
+<h3 id="section-14">智能合约</h3>
+
+<h3 id="sdk">SDK</h3>
+
+<h3 id="section-15">钱包</h3>
+
+<h3 id="section-16">交易所</h3>
+
+<h3 id="section-17">矿工节点</h3>
+
+<h2 id="section-18">几条著名公链</h2>
+
+<h3 id="btc">BTC</h3>
+
+<h3 id="ethereum">Ethereum</h3>
+
+<h3 id="ont">ONT</h3>
+
+<h3 id="eos">EOS</h3>
+
+<h3 id="bch">BCH</h3>
+
+<h3 id="ipfs">IPFS</h3>
+
+<h1 id="section-19">进阶篇</h1>
+
+<h2 id="utxobalance">UTXO/Balance两种模型</h2>
+<p>刷银行卡、现实纸币</p>
+
+<h2 id="section-20">共识机制</h2>
+
+<h3 id="pow">POW</h3>
+
+<h3 id="pos">POS</h3>
+
+<h3 id="dpos">DPOS</h3>
+
+<h2 id="section-21">51%与双花</h2>
+
+<h2 id="p2p">P2P</h2>
+
+<h2 id="section-22">联盟链</h2>
+
+<h1 id="section-23">参考文献</h1>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
@@ -6074,366 +6325,6 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
 <p>弟子顿悟,乃成…</p>
 
 <p>P.S. 你真的不觉得人工智能的基础之一就是元编程吗? 机器学习总结规律,元编程再将这些规律内化,自身改变自身逻辑,这不就是AI进化的基础吗。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[http原理]]></title>
-    <link href="http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li/"/>
-    <updated>2016-03-15T14:10:51+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li</id>
-    <content type="html"><![CDATA[<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
-
-<p>ServeMux即http请求路由，将http请求分发到注册的对应路由处理方法中。http.Handler及http的路由处理接口，该接口实际上仅包含一个方法<strong>ServeHTTP</strong>:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">Handler</span> <span class="kd">interface</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<!-- more -->
-
-<h3 id="section">基本原理</h3>
-
-<p>下面我们创建一个简单的HTTP服务，该服务仅返回一个文本页面:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
-</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
-</span><span class="line">	<span class="s">&quot;net/http&quot;</span>
-</span><span class="line"><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">type</span> <span class="nx">TextHandler</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">word</span> <span class="kt">string</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">th</span> <span class="o">*</span><span class="nx">TextHandler</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">th</span><span class="p">.</span><span class="nx">word</span><span class="p">))</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
-</span><span class="line">	<span class="nx">th</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">TextHandler</span><span class="p">{</span><span class="nx">word</span><span class="p">:</span> <span class="s">&quot;cool&quot;</span><span class="p">}</span>
-</span><span class="line">	<span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">	<span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>访问<a href="http://localhost:3000">http://localhost:3000</a>，页面返回<code>I wanna say: cool</code>。</p>
-
-<p><code>http.NewServeMux</code>创建出新的路由容器，<code>http.NewServeMux#Handle</code>方法将路由及其处理函数注册到路由容器，ServeMux内部包含一个map结构，用来存取http URL对应的处理器。</p>
-
-<p>而<code>http.ListenAndServe</code>需要指定服务监听地址和一个Handler对象，及方法签名如下:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">ListenAndServe</span><span class="p">(</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="nx">Handler</span><span class="p">)</span> <span class="kt">error</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>而ServeMux对象其实也定义了一个ServeHTTP的对象方法，所以ServeMux is a Handler，能够传入ListenAndServe方法启动服务。</p>
-
-<p><strong>综上，使用ServeMux组装路由,再将它作为一个Handler交给http启动服务。当服务接收到一个http请求后，就根据路由中配置的规则选择对应的handler进行处理，实际的处理逻辑则由该handler的ServeHTTP方法实现。</strong></p>
-
-<blockquote>
-  <p>路由分发的逻辑具体实现可以查看<a href="https://golang.org/src/net/http/server.go">http包源码</a></p>
-</blockquote>
-
-<h3 id="section-1">标准用法</h3>
-
-<h4 id="section-2">1.简化代码</h4>
-
-<p>基本原理中的例子足以展示出golang的http处理原理，由于自定义的handler均必须实现http.Handler接口,这样会导致多余声明代码的产生。所以http包提供了一个帮助方法<code>http.HandlerFunc</code>将方法参数和<code>ServeHTTP</code>相同的方法转换为<code>http.Handler</code>。 </p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
-</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
-</span><span class="line">	<span class="s">&quot;net/http&quot;</span>
-</span><span class="line"><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">saySomething</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">word</span> <span class="o">:=</span> <span class="s">&quot;cool&quot;</span>
-</span><span class="line">	<span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">word</span><span class="p">))</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
-</span><span class="line">	<span class="nx">th</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">saySomething</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>实际上，<code>http.HandlerFunc</code>不是一个方法调用，仅仅是一个类型转换。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>源码src/net/http/server.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">HandlerFunc</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span>
-</span><span class="line"><span class="c1">// ServeHTTP calls f(w, r).</span>
-</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="nx">HandlerFunc</span><span class="p">)</span> <span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">f</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>所以，自定义的请求处理函数(<code>saySomething</code>)仅需要保持参数定义和<code>http.Handler</code>接口相同即可，将该自定义函数做类型转换为<code>HandlerFunc</code>即可。另外，由源码可以看出，函数类型<code>HandlerFunc</code>同时也实现了<code>http.Handler</code>，所以能够注册到<code>ServeMux</code>中。</p>
-
-<h4 id="section-3">2.保持封装</h4>
-
-<p>代码看起来缺失简单了一些，然而这样却破坏了逻辑的封装性：<code>saySomething</code>中包含了硬编码的参数<code>word</code>。这可以使用闭包来解决:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
-</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
-</span><span class="line">	<span class="s">&quot;net/http&quot;</span>
-</span><span class="line"><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">saySomething</span><span class="p">(</span><span class="nx">word</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
-</span><span class="line">    <span class="c1">// 闭包装入变量word</span>
-</span><span class="line">	<span class="nx">f</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">		<span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;I wanna say: &quot;</span> <span class="o">+</span> <span class="nx">word</span><span class="p">))</span>
-</span><span class="line">	<span class="p">}</span>
-</span><span class="line">	<span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">	<span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">NewServeMux</span><span class="p">()</span>
-</span><span class="line">	<span class="nx">th</span> <span class="o">:=</span> <span class="nx">saySomething</span><span class="p">(</span><span class="s">&quot;cool&quot;</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">mux</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">th</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Server started...&quot;</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><strong>http服务中出现了很多名称，命名比较相近，这里汇总解释下:</strong></p>
-
-<ul>
-  <li><strong>ServeMux</strong>，路由容器，http服务中的路由规则统一在这里定义，启动服务后路由的分发自然也由其处理</li>
-  <li><strong>http.Handler</strong>,请求处理器，每个处理http请求的处理器均需要实现该接口<code>ServeHTTP</code></li>
-  <li><strong>http.HandlerFunc</strong>,帮助”方法”(实际是一个函数类型声明),将参数和<code>ServeHTTP</code>相同的普通函数转换为一个<code>http.Handler</code></li>
-</ul>
-
-<h3 id="http">http中间件</h3>
-
-<p>golang中http处理流程是这样的:</p>
-
-<pre><code>ServeMux ==&gt;  Middleware Handler ==&gt; Application Handler
-</code></pre>
-
-<p><strong>中间件</strong>:</p>
-
-<ul>
-  <li>中间件也是一个http.Handler，所以必须实现<code>ServeHTTP</code></li>
-  <li>构建完整的中间件调用链，保证覆盖上图的中间件调用关系，并作为handler注册到<code>http.ServeMux</code></li>
-</ul>
-
-<p>一个中间件示例:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">exampleMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
-</span><span class="line">  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">    <span class="c1">// 中间件逻辑在这里实现</span>
-</span><span class="line">    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class="line">  <span class="p">})</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>由这个中间件定义可以看出中间件链的构建方式: 函数嵌套。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="nx">http</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">finalHandler</span><span class="p">)))</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>看一个实际的例子:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.go</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
-</span><span class="line">  <span class="s">&quot;log&quot;</span>
-</span><span class="line">  <span class="s">&quot;net/http&quot;</span>
-</span><span class="line"><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
-</span><span class="line">  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareOne&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class="line">    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareOne again&quot;</span><span class="p">)</span>
-</span><span class="line">  <span class="p">})</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
-</span><span class="line">  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareTwo&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span> <span class="o">!=</span> <span class="s">&quot;/&quot;</span> <span class="p">{</span>
-</span><span class="line">      <span class="k">return</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class="line">    <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing middlewareTwo again&quot;</span><span class="p">)</span>
-</span><span class="line">  <span class="p">})</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">final</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">  <span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Executing finalHandler&quot;</span><span class="p">)</span>
-</span><span class="line">  <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">))</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">  <span class="nx">finalHandler</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">final</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">  <span class="nx">http</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="nx">middlewareOne</span><span class="p">(</span><span class="nx">middlewareTwo</span><span class="p">(</span><span class="nx">finalHandler</span><span class="p">)))</span>
-</span><span class="line">  <span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="s">&quot;:3000&quot;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>访问<a href="http://localhost:3000">http://localhost:3000</a>可以从日志看出中间件调用顺序:</p>
-
-<pre><code>$ go run main.go
-2014/10/13 20:27:36 Executing middlewareOne
-2014/10/13 20:27:36 Executing middlewareTwo
-2014/10/13 20:27:36 Executing finalHandler
-2014/10/13 20:27:36 Executing middlewareTwo again
-2014/10/13 20:27:36 Executing middlewareOne again
-</code></pre>
-
-<h4 id="section-4">中间件链构造方式</h4>
-
-<p>上面例子的中间件链是比较常见的构造方式，然而多少有些可怕。而<a href="https://github.com/justinas/alice">Alice</a>将中间件链的构造简化了许多:</p>
-
-<pre><code>Middleware1(Middleware2(Middleware3(App)))
-</code></pre>
-
-<p>转化为</p>
-
-<pre><code>alice.New(Middleware1, Middleware2, Middleware3).Then(AppHandler)
-// or 
-alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
-</code></pre>
-
-<h3 id="section-5">参考文献</h3>
-
-<p>文中主要内容来自参考文献第一、二条</p>
-
-<ul>
-  <li><a href="http://www.alexedwards.net/blog/a-recap-of-request-handling">A Recap of Request Handling in Go</a></li>
-  <li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
-  <li><a href="https://golang.org/src/net/http/server.go">net/http</a></li>
-</ul>
 ]]></content>
   </entry>
   

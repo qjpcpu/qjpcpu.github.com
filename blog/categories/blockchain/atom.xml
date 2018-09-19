@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-17T15:52:12+08:00</updated>
+  <updated>2018-09-19T15:29:16+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,254 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在这里,读懂区块链]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen/"/>
+    <updated>2018-09-18T15:08:00+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen</id>
+    <content type="html"><![CDATA[<p>读懂区块链——仅需这一篇。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#section">前言</a></li>
+  <li><a href="#section-1">入门篇</a>    <ul>
+      <li><a href="#section-2">什么是区块链?</a>        <ul>
+          <li><a href="#section-3">场景</a></li>
+          <li><a href="#section-4">先找到问题</a></li>
+          <li><a href="#section-5">分析问题</a>            <ul>
+              <li><a href="#section-6">1. 去除中心化机构</a></li>
+              <li><a href="#section-7">2. 信任问题</a></li>
+              <li><a href="#section-8">3. 记账权</a></li>
+            </ul>
+          </li>
+          <li><a href="#section-9">求解问题</a></li>
+          <li><a href="#section-10">什么是区块链</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-11">区块链能做什么?</a></li>
+      <li><a href="#section-12">区块链不能做什么?</a></li>
+      <li><a href="#section-13">区块链生态</a>        <ul>
+          <li><a href="#section-14">智能合约</a></li>
+          <li><a href="#sdk">SDK</a></li>
+          <li><a href="#section-15">钱包</a></li>
+          <li><a href="#section-16">交易所</a></li>
+          <li><a href="#section-17">矿工节点</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-18">几条著名公链</a>        <ul>
+          <li><a href="#btc">BTC</a></li>
+          <li><a href="#ethereum">Ethereum</a></li>
+          <li><a href="#ont">ONT</a></li>
+          <li><a href="#eos">EOS</a></li>
+          <li><a href="#bch">BCH</a></li>
+          <li><a href="#ipfs">IPFS</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#section-19">进阶篇</a>    <ul>
+      <li><a href="#utxobalance">UTXO/Balance两种模型</a></li>
+      <li><a href="#section-20">共识机制</a>        <ul>
+          <li><a href="#pow">POW</a></li>
+          <li><a href="#pos">POS</a></li>
+          <li><a href="#dpos">DPOS</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-21">51%与双花</a></li>
+      <li><a href="#p2p">P2P</a></li>
+      <li><a href="#section-22">联盟链</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-23">参考文献</a></li>
+</ul>
+
+<h1 id="section">前言</h1>
+
+<p>撰写这篇文章的原因，一是想向对不了解区块链的同学介绍下这项技术，二也是借机进行一次知识梳理,所以，有理解错误的地方，也希望读者不吝指正。</p>
+
+<p><strong>对于读者群</strong>:</p>
+
+<p>因为有的读者是非技术类的，所以我将内容拆分成入门和进阶两部分,在入门篇里我尽量不涉及计算机技术术语，其细节我会放到进阶篇；同时，我也不希望进阶篇变成学术论文，所以进阶篇里会从逻辑层面解释原理，不会涉及数学公式,我并不希望读者睡着了。</p>
+
+<p>所以,不想了解技术细节的同学，读完入门篇就够了;而对于有进一步探索欲望的同学，进阶篇也有足够指向作用了。</p>
+
+<p><strong>链种</strong>:</p>
+
+<p>目前区块链分为公链、联盟链、私链，本文主要介绍公链，并稍微提及联盟链，不会涉及私链。</p>
+
+<p>废话不多说, let’s start now.</p>
+
+<h1 id="section-1">入门篇</h1>
+
+<h2 id="section-2">什么是区块链?</h2>
+
+<p>我想每个人第一次听到区块链这三个字的时候，第一反应都是本能地问出:区块链是什么? <strong>What</strong>*永远是人类认识事物的第一步,那么怎么回答这个问题呢。其实无论是回答什么”去中心化的信任机制”还是”分布式账本”，我相信听众脸上懵比的问号只会更大。所以我们尝试还原区块链产生的场景，了解这项技术产生的背景，从而回答它是什么。</p>
+
+<h3 id="section-3">场景</h3>
+
+<p>Clark是居住在大都会一个普通小伙子，他在星球日报勤勤恳恳地工作，把他辛苦挣来的钱都存入大都会银行，这家银行由大银行家Luthor筹建，是大都会最大最安全的银行,大都会居住的人们都喜欢把他们的资金存入这家银行，他们都信任这家银行，祖祖辈辈都离不开这家银行,Luthor确实也将银行经营得很好。</p>
+
+<p>然而，不久后大都会发生了外星人入侵事件，所幸的是大都会人们还是挺过了这场灾难。不过大都会遭受了巨大的经济损失，经济发生萧条。这其中蒙受损失的，自然也包括大都会银行，Luthor为了维护自身的利益，不顾一切开始大量增发货币。这下Clark发现自己本就不多的存款变得一文不值，更为雪上加霜的是，灾后他去查自己的银行账户的时候，发现自己账户余额为零,而Luthor给Clark的解释是，入侵事件毁坏了银行部分数据，因而luthor无法恢复clark的财产，甚至也拒绝支付赔偿。</p>
+
+<p>Clark听到这一切，无助地瘫倒在地，口中喃喃:这可是我攒来娶Louis的老本啊…</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/clark-luthor.jpg" alt="clarkVSluthor" /></p>
+
+<h3 id="section-4">先找到问题</h3>
+
+<p>那么，Clark遇到的问题所在在哪儿呢？Clark找到好友Bruce,助他度过了当前难关，但是还是不知道怎么在同样情况下避免财务危机。这个时候，Bruce一针见血地指出了问题所在:</p>
+
+<p><strong>中心化信任危机</strong></p>
+
+<p>Luthor所代表的大都会银行，广义来讲就是中心化的权威机构。所有中心机构的用户，都是基于信任将资金托管给该机构，但是信任是不可靠的，一旦发生信任危机，中心化机构可以打破信任，对于银行来说可以不受限制地增发货币甚至直接侵吞私有财产。你可能会说有法律保护，但是这个时候其实是国家在为这个机构背书，国家机器充当了这个隐形的中心化信任载体。尽管国家违约成本比较高，但只要翻翻历史书，就会发现这样的案例也不在少数。</p>
+
+<h3 id="section-5">分析问题</h3>
+
+<p>既然找到问题所在，那么应该怎么设计新的解决方案呢？</p>
+
+<h4 id="section-6">1. 去除中心化机构</h4>
+
+<p>如果问题出在中心化机构，那么很自然的就需要在我们的解决方案里移除对中心化机构的信任依赖。</p>
+
+<p>那么我们就每个人都持有一个账本，并且每个账本初始数据都一模一样;比如是这样的一个账本:</p>
+
+<p><code>
+Bruce inital 1
+Clark inital 10000
+...
+</code></p>
+
+<p>一旦发生转账，比如Bruce要给Clark转账200，那么所有人都在账本上写上一句<code>Bruce transfer 200 to Clark</code>。 那么账本就变成了</p>
+
+<p><code>
+Bruce inital 1
+Clark inital 10000
+...
+Bruce transfer 200 to Clark
+</code></p>
+
+<p>此时，如果我们想知道Clark的账户余额，只需要把和Clark相关的记账账目汇总即可得到<code>Balance(Clark) = 1 + 200 = 201</code>,这个结果不容任何人抵赖，因为你问大街上任意一个人，只要他打开他的账本，按同样的方法计算都可以得出Clark账户余额是201这个结果。</p>
+
+<h4 id="section-7">2. 信任问题</h4>
+
+<p>去除中心化之后，似乎我们的问题解决了。因为就算再次发生入侵，只要不是所有人的账本都损坏了，那么我们就可以找账本完好的人把之前的账目抄下来恢复自己的账本，从而恢复所有人的资产记录。</p>
+
+<p>但是实际上没有那么简单，如果有人冒充Bruce要求转账给Clark,那么Bruce就在不知情的情况下被盗取了财产。所以，我们借鉴了现实生活中签名的办法，要求Bruce在转账的时候必须附加自己的签名，然后将这笔转账和签名一起广播出去。这样大家记账的时候就能验证，的确是Bruce本人要求的转账。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/bruce-sign.png" alt="bruce-sign" /></p>
+
+<h4 id="section-8">3. 记账权</h4>
+
+<p>在我们新的解决方案里，我们需要交易发起人广播给其他所有记账人，实际上，这个广播不可能一瞬间将交易发给所有人。这个广播系统可以这样理解，假设我们都使用蓝牙协议作为通信基础，这个系统里每个人都使用蓝牙和身边十来个人保持连接，同理这些人和各自身边的人保持连接，这样所有人构成一个互联的网状结构。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/bluetooth-p2p.png" alt="blockchain" /></p>
+
+<p>因为交易信息传播有时间延迟，所以，同一时刻，系统里每个人收到的记账请求是不一样的。那么，我们一开始设计的所有人一起记账就行不通了，因为这样写到账本里的账目就不同了。为了大家写入同样的数据，必须能一起协调出同一的账目，然后写入。因为现在是一个大民主的社群，必须有一种投票机制选出一个记账人，这个记账人复制整理这段时间内收到的记账请求，并把这些账目一起写入账本;我们称之为争夺记账权。</p>
+
+<p>那么，怎么设计这个记账权争夺机制呢？</p>
+
+<ul>
+  <li>首先必须要公平，不能因为某个记账人的社会地位高就能够拥有记账权；因为这样就会再次导致记账中心化，从而使得我们这个去中心化的解决方案失效</li>
+  <li>机制必须透明，机制的透明是对公平性的验证，我们的解决方案里必须能够让所有人能够验证这个公平性是否属实</li>
+  <li>筛选性，既然是记账权的争夺，这个机制必然具有强烈的优胜劣汰性质，否则达不到筛选出冠军的目的</li>
+  <li>冠军身份易于验证，就如同一场长跑，争夺冠军是非常艰难的，但是一旦夺得胜利，我们能一眼分辨出谁是冠军——谁戴着奖牌谁是冠军</li>
+</ul>
+
+<p>明确了这个设计需求，我们留到求解问题时再进行解答。</p>
+
+<p>但是基于我们这个设计，又带来了新的问题，如果记一次帐这么费劲，那肯定最后没人愿意记账了。中国有句老话说得好: 无利不起早，现实生活中大部分人的行为都是趋利的。所以，我们这个解决方案里，还差最后一环——经济激励。</p>
+
+<p>如果我们这个解决方案里，大家约定，一旦某个天选之子夺得了记账权并成功记账，那么就给予他额外现金奖励，这个奖励足够补偿他这次辛苦记账的付出,这样，整个流程似乎就理顺了。</p>
+
+<h3 id="section-9">求解问题</h3>
+
+<p>在开始执行求解前，我们先复盘一下我们的思路，看看是否有思路不通畅的地方，防止出现逻辑漏洞。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/thoughts-flow.jpeg" alt="blockchain" /></p>
+
+<p>这是一条由问题驱动的推导型思路，主要是为了解决我们发现的中心化问题，在提出新的解决方案并解决新的衍生问题，主体上看来没有大的疏漏。</p>
+
+<p>下面我们开始来求解遗留的记账争夺问题。</p>
+
+<p>因为大都会市民极其不擅长数学，所以，我们使用求余来作为这场争夺的题目。比如每次记账，要求大家求解<code>x % 7 = 3</code>满足这个等式的<code>x</code>,因为大家数学很差，所以大家不得不一个一个数去尝试，当某个幸运儿最先发现<code>10 % 7 = 3</code>时，他就获取了记账权，而其他人将<code>x=10</code>带进算式很容易验算出这是符合条件的一个求解，所以大家也就表示认同，同时也认可了他的记账。于是所有人复制他记下的账目，并开始收集新的交易流水，准备下一次记账。</p>
+
+<p>最后，我们将我们这个解决方案称之为”区块链”，这个解决方案里的很多做法其实就是真实区块链技术的简化版:</p>
+
+<ul>
+  <li>区块链; 我们的记账笔记薄就是一条区块链，这里面从前往后记录了所有人的所有账目流水，后面的账目对前面的账目有依赖关系</li>
+  <li>区块; 账本的每一页，可以称之为一个区块，页码可以认为是区块前后的索引关系</li>
+  <li>交易; 账本每一页的每一条都是一笔交易，这个交易可以是一笔简单转账，也可以是一次协定</li>
+  <li>数字签名; 还记得我们要求每笔交易发送时必须附加自己的签名吗？在数字世界里，我们必须附加自己的<a href="https://zh.wikipedia.org/wiki/%E6%95%B8%E4%BD%8D%E7%B0%BD%E7%AB%A0">数字签名</a>,这个签名甚至比真实世界的签名更可靠，它基于密码学，不可伪造且能唯一证明你的授权</li>
+  <li>挖矿; 我们的争夺记账权的过程，和矿工付出辛劳挖矿非常相似，所以也称之为挖矿了。不过真实的区块链挖矿使用的不是求余这么简单的运算，而是反解hash前缀0的暴力运算</li>
+  <li>矿工; 从事争夺记账权的节点(人)</li>
+  <li>虚拟货币; 不管是矿工挖矿得到的额外经济奖励，还是账本上记录的基本代数资产，都是这条区块链上的虚拟货币；比如比特币区块链上的虚拟货币就是BTC, 以太坊上的火币就是ETH</li>
+  <li>共识机制; 争夺记账权的机制就是共识机制，因为争夺机制的差异，目前有PoW,PoS等;目前久经考验的共识机制是PoW,我们大都会区块链的共识，也使得矿工付出大量脑力劳动，所以也可以称之为一种PoW</li>
+</ul>
+
+<h3 id="section-10">什么是区块链</h3>
+
+<p>回到最初的问题，什么是区块链: </p>
+
+<p><strong>区块链是在对等且不受信环境下, 保证群体协作达成共识的一种社群机制</strong></p>
+
+<h2 id="section-11">区块链能做什么?</h2>
+
+<p>tip: 金融、游戏</p>
+
+<h2 id="section-12">区块链不能做什么?</h2>
+
+<p>tip: 真瓶装假酒</p>
+
+<h2 id="section-13">区块链生态</h2>
+
+<h3 id="section-14">智能合约</h3>
+
+<h3 id="sdk">SDK</h3>
+
+<h3 id="section-15">钱包</h3>
+
+<h3 id="section-16">交易所</h3>
+
+<h3 id="section-17">矿工节点</h3>
+
+<h2 id="section-18">几条著名公链</h2>
+
+<h3 id="btc">BTC</h3>
+
+<h3 id="ethereum">Ethereum</h3>
+
+<h3 id="ont">ONT</h3>
+
+<h3 id="eos">EOS</h3>
+
+<h3 id="bch">BCH</h3>
+
+<h3 id="ipfs">IPFS</h3>
+
+<h1 id="section-19">进阶篇</h1>
+
+<h2 id="utxobalance">UTXO/Balance两种模型</h2>
+<p>刷银行卡、现实纸币</p>
+
+<h2 id="section-20">共识机制</h2>
+
+<h3 id="pow">POW</h3>
+
+<h3 id="pos">POS</h3>
+
+<h3 id="dpos">DPOS</h3>
+
+<h2 id="section-21">51%与双花</h2>
+
+<h2 id="p2p">P2P</h2>
+
+<h2 id="section-22">联盟链</h2>
+
+<h1 id="section-23">参考文献</h1>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
@@ -1135,239 +1383,6 @@ scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
 <h1 id="section-5">后记</h1>
 
 <p>按这个步骤，应该是可以将这个分布式fabric搭建起来的，但是其他优化还需要自行完成，比如为了测试方便，我并没有将区块链数据挂载出来，所以docker重启后区块数据就没有了，生产环境得自己将数据卷挂载上去；还有，为了权限隔离，一般也不会将整个crypto-config文件夹分发给各个联盟节点，而是需要什么给什么，保持目录结构一致即可。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[利用call实现合约任意调用]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong/"/>
-    <updated>2018-07-02T13:50:25+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong</id>
-    <content type="html"><![CDATA[<p>call()是一个底层的接口，用来向一个合约发送消息，也就是说如果你想实现自己的消息传递，可以使用这个函数。</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#section">需求场景</a>    <ul>
-      <li><a href="#section-1">业务需求</a></li>
-      <li><a href="#section-2">明确需求</a></li>
-    </ul>
-  </li>
-  <li><a href="#section-3">实现关键点</a>    <ul>
-      <li><a href="#section-4">调用任意合约</a></li>
-      <li><a href="#section-5">权限控制</a></li>
-    </ul>
-  </li>
-  <li><a href="#section-6">实现参考</a>    <ul>
-      <li><a href="#section-7">热钱包工厂</a></li>
-      <li><a href="#section-8">热钱包合约</a></li>
-    </ul>
-  </li>
-  <li><a href="#section-9">后记</a></li>
-</ul>
-
-<h1 id="section">需求场景</h1>
-
-<p>“合约动态调用”的需求场景是什么呢,答案是”热钱包”。为什么是热钱包呢,我们可以从最终需求出发一步步来推导:</p>
-
-<h2 id="section-1">业务需求</h2>
-
-<p>首先,假设一个业务需求，我们现在要做一个ERC721的热钱包，用户可以托管他全部的数字资产给项目方，项目方代表用户对其资产进行任意操作，这样我们可以向用户屏蔽以太坊的细节，大大提升用户体验，只有当用户想要提现资产的时候，才把资产归还到用户的冷钱包地址中去。</p>
-
-<h2 id="section-2">明确需求</h2>
-
-<p>初看这个需求很简单，我们可以为每个用户生成一个私钥从而建立对应地址。每次需要对资产进行操作的时候，读取这个私钥进行链上交互就行了。</p>
-
-<p>好像很完美，但细想下来，在真正生产环境中实践却会有诸多问题: 首先带来的就是管理问题，众多的私钥不容许有一丝数据的丢失损坏，否则就需要承担用户资产的遗失风险; 其次是泄露的风险，私钥的众多更加大了泄露的风险系数，一旦有任何一个私钥泄露，项目方基本上是属于束手无策的，以太坊上可没有账户封禁这一说。</p>
-
-<p>那么，怎么解决这个问题呢？我这里提供的一个解决方案就是利用合约。</p>
-
-<p>我们为每个用户创建的热钱包并不是一个普通钱包地址，而是一个合约。所有的用户的热钱包都统一受控于项目方的管理账户地址,只有管理账户有权操作合约，如果有任何问题，我们只需要使用管理账户进行维护操作就行，不需要更改其他东西。 但利用合约来做热钱包又带来另一个问题，合约能调用的方法在上链之后就无法更改了或新增了，如果我们要对接的某个721藏品后续支持了某个新方法，那么我们的热钱包岂不是不能完成这个调用了？所以，如果使用合约做热钱包，还必须能够实现这个钱包合约能够动态调用其他合约。</p>
-
-<p>归纳一下，这个721热钱包细化下来的技术需求有这样几点需要满足:</p>
-
-<ol>
-  <li>管理收敛，所有热钱包管理最好收敛到一个管理账户下</li>
-  <li>管理账户能更改</li>
-  <li>如果是合约热钱包,这个钱包必须能适配各类标准非标准藏品合约的调用</li>
-</ol>
-
-<p>这里对第3点补充说明一下，可能有的读者会疑惑，既然erc721都是标准化的协议，为什么还需要适配各种非标接口呢？原因之一是我们业务需求里已经说了，要能对用户资产进行任意操作，不仅仅限制于基本721的几个API。此外，ERC721的藏品通常都不会只包含721协议里几个基础接口，各个项目方会根据自己的业务研发出诸如繁殖、战斗等等资产操作，一个好的721钱包最好是能适配这些功能。还有，即便是ERC721协议本身，也可能出现变动，比如日前刚确认的721协议的最终版和以CryptoKitty所代表的beta版，协议本身就差别不小。</p>
-
-<h1 id="section-3">实现关键点</h1>
-
-<h2 id="section-4">调用任意合约</h2>
-
-<p>这是本文要讲述的关键点。</p>
-
-<p>其实要实现这个功能,使用<code>call</code>方法就可以了。call调用失败会返回一个调用成功与否的布尔值，需要检查一下</p>
-
-<p><code>javascript
-contract DynamicCaller{
-    function dyn_call(address _constract, bytes _data) public payable{
-        if (!_constract.call.value(msg.value)(_data)){
-            revert();
-        }
-    }
-}
-</code></p>
-
-<p>如果<code>DynamicCaller</code>就是我们的热钱包合约，那么这个<code>dyn_call</code>方法就可以实现任意调用，注意这个动态方法最终调用的合约和对应方法都是由参数传递进来；</p>
-
-<p>在ropsten部署这个合约,合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>。现在我们有一份任意合约<code>AnyContract</code>(这里先不以ERC721合约举例，为了阐明任意调用这个点，使用了一个简单合约示例)</p>
-
-<p>```javascript
-contract AnyContract{
-    mapping(address =&gt; uint256) public numbers;
-    mapping(address =&gt; string) public texts;</p>
-
-<pre><code>function add(uint256 _a,uint256 _b) public{
-    numbers[msg.sender] =_a+_b;
-}
-
-function write(string _text) public{
-    texts[msg.sender] = _text;
-}
-
-function batchWrite(uint256 _a,uint256 _b,string _text) public payable{
-    numbers[msg.sender] =_a+_b;
-    texts[msg.sender] = _text;
-}
-function getBalance() public view returns(uint256){
-    return address(this).balance;
-} } ```
-</code></pre>
-
-<p>现在我们怎么进行调用呢？我们可以使用<code>github.com/qjpcpu/ethereum/contracts</code>提供的参数打包方法<code>PackArguments</code>生成<code>dyn_call</code>要的数据，比如我们要从<code>DynamicCaller</code>调用<code>AnyContract</code>的add方法:</p>
-
-<p><code>go
-anyABI, _ = contracts.ParseABI("[{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"texts\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getBalance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_a\",\"type\":\"uint256\"},{\"name\":\"_b\",\"type\":\"uint256\"}],\"name\":\"add\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_a\",\"type\":\"uint256\"},{\"name\":\"_b\",\"type\":\"uint256\"},{\"name\":\"_text\",\"type\":\"string\"}],\"name\":\"batchWrite\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"numbers\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_text\",\"type\":\"string\"}],\"name\":\"write\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]")
-data, err := contracts.PackArguments(anyABI, "add", big.NewInt(1), big.NewInt(2))
-if err != nil {
-	return err
-}
-builder := contracts.NewTxOptsBuilderFromPK(pk)
-dc, _ := NewDynamicCaller(common.HexToAddress(DynamicCallerAddres), conn)
-tx, err := dc.DynCall(builder.Get(), common.HexToAddress("0x2f44fc640F9708FD969620466F9eddD21859e8E9"), data)
-</code></p>
-
-<p>完整代码示例参考<a href="https://github.com/qjpcpu/dynamic-caller">dynamic-caller</a></p>
-
-<h2 id="section-5">权限控制</h2>
-
-<p>对于热钱包创建合约,需要能更改管理账户,并且<code>dyn_call</code>这个函数只有管理账户能够调用,这个继承<code>Ownable</code>合约就可能办到了。</p>
-
-<p>对于热钱包合约本身,除了提现操作，所有方法调用必须来自管理合约的管理员。</p>
-
-<h1 id="section-6">实现参考</h1>
-
-<h2 id="section-7">热钱包工厂</h2>
-
-<p>热钱包工厂唯一作用就是创建热并记录用户的热钱包，唯一需要注意的就是控制权的管理</p>
-
-<p>```javascript
-contract Ownable {
-    address public owner;</p>
-
-<pre><code>constructor() public {
-    owner = msg.sender;
-}
-
-modifier onlyOwner() {
-    require(msg.sender == owner);
-    _;
-}
-
-function transferOwnership(address newOwner) public onlyOwner {
-    if (newOwner != address(0)) {
-        owner = newOwner;
-    }
-}
-
-function getOwner() public view returns(address) {
-    return owner;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>contract WalletFactory is Ownable {
-    // 记录用户热钱包地址
-    mapping(address =&gt; address) public hotwallets;</p>
-
-<pre><code>// 仅管理员owner可以创建热钱包
-function createWallet(address _owner) public onlyOwner {
-    // 每个用户仅有一个热钱包
-    require(hotwallets[_owner] == address(0));
-    HotWallet w = new HotWallet(address(this), _owner);
-    hotwallets[_owner] = address(w);
-}
-
-function isWalletFactory() external pure returns(bool){
-    return true;
-} } ```
-</code></pre>
-
-<p>其实，在实际应用中,这里还潜藏了一个问题: 比如通常的产品逻辑会在用户注册完成时就生成热钱包备用,但这个以太坊交易被打包最快可能也要15秒左右，如果我们要在用户注册完成就显示用户热钱包地址好像是不可能的。实际上呢？交易打包确认确实要很长时间,但是我们却可以提前获知热钱包的地址:</p>
-
-<p>以太坊中合约地址的生成规则是这样的:根据<code>(msg.sender + nonce)</code>二元组的hash来生成合约地址的,这个生成算法很简单,有兴趣可以查阅源码<code>crypto</code>包。</p>
-
-<p>举个例子,加入<code>WalletFactory</code>这个合约地址是<code>0x5ec567cf2137da526945f4820d0c0621ddcd02ce</code>,那么第一次调用<code>createWallet</code>时nonce肯定是1，则对应生成的<code>HotWallet</code>地址可以这样算出: <code>addr := crypto.CreateAddress(common.HexToAddress("0x5ec567cf2137da526945f4820d0c0621ddcd02ce"), 1) // 热钱包地址是:0xE139cd3E5FcC127A54B0fF8687c703265E282842</code></p>
-
-<h2 id="section-8">热钱包合约</h2>
-
-<p>```javascript
-contract HotWallet {
-    address public owner;
-    WalletFactory public factory;
-    // 这里的owner是热钱包所属用户
-    modifier onlyOwner() {
-        require(msg.sender == owner);
-        _;
-    }
-    // 保证动态方法的调用者一定是管理员
-    modifier onlyAdmin() {
-        require(msg.sender == factory.getOwner());
-        _;
-    }</p>
-
-<pre><code>constructor(address _admin, address _owner) public {
-    require(_admin != address(0) &amp;&amp; _owner != address(0));
-    factory = WalletFactory(_admin);
-    require(factory.isWalletFactory());
-    owner = _owner;
-}
-
-function isHotWallet() external pure returns(bool){
-    return true;
-}
-
-// the msg.sender must be factory.owner
-function dyn_call(address _constract, bytes _data) public payable onlyAdmin {
-    if (!_constract.call.value(msg.value)(_data)){
-        revert();
-    }
-}
-
-// 能提现eth
-function withdraw() external onlyOwner{
-    require(owner != address(0));
-    owner.transfer(address(this).balance);
-}
-
-// 很多场景下都需要能接受eth转账
-function() public payable{}
-
-// other functions } ```
-</code></pre>
-
-<p><a href="https://github.com/qjpcpu/dynamic-caller/blob/master/wallets.sol">完整合约代码</a></p>
-
-<h1 id="section-9">后记</h1>
-
-<p>要完成个业务特定热钱包,可以在这个基础上修改HotWallet代码即可,比如数字资产的提现等等,但要特别注意: <code>call</code>方法是一个非常底层方法，为了合约安全，该方法不应该接受直接来自用户的数据。</p>
-
-<p>此外,我观察到一些交易所给用户分配的以太热钱包地址也是一份用户独立的合约而不是普通地址,所以我猜想他们可能也是为了业务灵活性和管理性才这样做的，不过是不是使用call来实现，就不得而知了。</p>
 ]]></content>
   </entry>
   
