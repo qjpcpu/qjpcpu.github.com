@@ -298,11 +298,13 @@ Bruce transfer 100 to Clark if it rains tomorrow
 
 现有的区块链基本都是基于UTXO/Balance两种模型之一构建而来，比特币采用了UTXO模型。
 
-UTXO(Unspent Transaction Output)未消费交易输出，这是类似物理世界的纸币消费模型。在比特币系统中，每个交易输出就是一张比特币，这张比特币面值不一，并且无法拆分，就如同不能把100块人名币撕成两边当做两张50用一样。所以，如果用比特币买一杯2.7BTC的咖啡，你发现自己钱包里只有一张1btc和一张2btc，那么只能把这两张BTC作为交易输入，这笔交易会产生两个输出，2.7btc付给商家，并且你会获得0.3btc的找零。
+UTXO(Unspent Transaction Output)未消费交易输出，这是类似物理世界的纸币消费模型。在比特币系统中，每个交易输出就是一张比特币，这些比特币面值不一，并且无法拆分，就如同不能把100块人名币撕成两半当做两张50用一样。所以，如果用比特币买一杯2.7BTC的咖啡，你发现自己钱包里只有一张1btc和一张2btc比特币，那么只能把这两张BTC作为交易输入，这笔交易会产生两个输出，2.7btc付给商家，并且你会获得0.3btc的找零。
 
 ![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/utxo.png)
 
 而Balance余额模型就是以太坊为代表的账户模型，它和刷银行卡消费是一样的，以太坊系统里有个字段专门记录用户的账户余额，交易时只要对这个余额字段做加减就行了。比如你还是买一杯2.7ETH的咖啡，购买时商家会直接收到你支付的2.7eth，整个消费过程不产生找零操作。
+
+![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/balance-model.jpg)
 
 >P.S. 为了容易理解，举例都省略的交易手续费的描述。
 
