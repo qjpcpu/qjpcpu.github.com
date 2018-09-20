@@ -6,7 +6,7 @@ comments: true
 categories: blockchain 
 ---
 
-读懂区块链——仅需这一篇。
+读懂区块链——仅需这一篇。(草稿，内容整理中...)
 
 <!-- more -->
 
