@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-25T15:05:50+08:00</updated>
+  <updated>2018-09-25T15:08:36+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -510,8 +510,8 @@
 <p><a href="https://www.hyperledger.org/projects/fabric">Fabric</a>是由大名鼎鼎的linux基金会负责推进的项目，技术实力有保证，可以说是目前比较靠前的联盟链项目，然而项目目前还是处于非常早期状态，我感觉用起来还是很膈应。由于fabric目前文档比较齐全，我就不做复制粘贴了，仅聊下自己的使用感受。</p>
 
 <ul>
-  <li>运维性较差，尤其是chaincode部署得一个一个节点来，太麻烦</li>
-  <li>生产环境共识排序依赖于kafka,在管理问题交易时对kafka的处理得单独处理，感觉不是一个整体</li>
+  <li>运维性较差，尤其是chaincode部署得一个一个节点来，整套节点管理灵活性差</li>
+  <li>生产环境共识排序依赖于kafka,BFT共识还在开发中，目前感觉kafka也是一个临时解决方案，实际使用问题不少</li>
   <li>整个体系庞杂臃肿，学习曲线陡峭,属于入门易，拔高难</li>
 </ul>
 
