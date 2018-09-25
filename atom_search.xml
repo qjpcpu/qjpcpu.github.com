@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-25T15:13:13+08:00</updated>
+  <updated>2018-09-25T15:15:00+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -83,6 +83,7 @@
           <li><a href="#pow">POW</a></li>
           <li><a href="#pos">POS</a></li>
           <li><a href="#dpos">DPOS</a></li>
+          <li><a href="#pbft">PBFT</a></li>
         </ul>
       </li>
       <li><a href="#section-32">51%与双花</a></li>
@@ -434,6 +435,10 @@
 <h3 id="dpos">DPOS</h3>
 
 <p>比特股的DPoS机制，中文名叫做股份授权证明机制（又称受托人机制），它的原理是让每一个持有比特股的人进行投票，由此产生101位代表 , 我们可以将其理解为101个超级节点或者矿池，而这101个超级节点彼此的权利是完全相等的。从某种角度来看，DPOS有点像是议会制度或人民代表大会制度。如果代表不能履行他们的职责（当轮到他们时，没能生成区块），他们会被除名，网络会选出新的超级节点来取代他们。DPOS的出现最主要还是因为矿机的产生，大量的算力在不了解也不关心比特币的人身上，类似演唱会的黄牛，大量囤票而丝毫不关心演唱会的内容。</p>
+
+<h3 id="pbft">PBFT</h3>
+
+<p>PBFT是一种状态机副本复制算法，即服务作为状态机进行建模，状态机在分布式系统的不同节点进行副本复制。每个状态机的副本都保存了服务的状态，同时也实现了服务的操作。将所有的副本组成的集合使用大写字母R表示，使用0到<code>|R|-1</code>的整数表示每一个副本。为了描述方便，假设<code>|R|=3f+1</code>，这里f是有可能失效的副本的最大个数。尽管可以存在多于3f+1个副本，但是额外的副本除了降低性能之外不能提高可靠性。</p>
 
 <h2 id="section-32">51%与双花</h2>
 
