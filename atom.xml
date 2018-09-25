@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-09-20T18:31:32+08:00</updated>
+  <updated>2018-09-25T15:05:50+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -73,19 +73,28 @@
   </li>
   <li><a href="#section-27">进阶篇</a>    <ul>
       <li><a href="#utxobalance">UTXO/Balance两种模型</a></li>
-      <li><a href="#section-28">分叉</a></li>
-      <li><a href="#section-29">共识机制</a>        <ul>
+      <li><a href="#section-28">分叉</a>        <ul>
+          <li><a href="#section-29">软分叉</a></li>
+          <li><a href="#section-30">硬分叉</a></li>
+        </ul>
+      </li>
+      <li><a href="#section-31">共识机制</a>        <ul>
           <li><a href="#pow">POW</a></li>
           <li><a href="#pos">POS</a></li>
           <li><a href="#dpos">DPOS</a></li>
+          <li><a href="#pbft">PBFT</a></li>
         </ul>
       </li>
-      <li><a href="#section-30">51%与双花</a></li>
+      <li><a href="#section-32">51%与双花</a></li>
       <li><a href="#p2p">P2P</a></li>
-      <li><a href="#section-31">联盟链</a></li>
+      <li><a href="#section-33">联盟链</a>        <ul>
+          <li><a href="#quorum">quorum</a></li>
+          <li><a href="#hyperledger-fabric">Hyperledger Fabric</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
-  <li><a href="#section-32">参考文献</a></li>
+  <li><a href="#section-34">参考文献</a></li>
 </ul>
 
 <h1 id="section">前言</h1>
@@ -397,24 +406,122 @@
 
 <h2 id="section-28">分叉</h2>
 
-<h2 id="section-29">共识机制</h2>
+<p>比特币中的软分叉和硬分叉主要指因比特币协议的突发改变而导致的兼容性的问题。比特币协议发生改变，会有两个不同版本的比特币协议在同时使，他们对其他区块的接受规则不同会导致区块链长期分叉，这两个不同的链都会被不同的网络认为是有效的。链分叉也导致网络分叉。</p>
+
+<h3 id="section-29">软分叉</h3>
+
+<p>软分叉的新的规则是以前旧规则的子集，所有被新版本认为是合法的区块也会被以前旧版本认为是合法的。旧版本会接受新版本创建的区块。新版本和旧版本是兼容的。</p>
+
+<p>如果有至少51%的矿工的算力转向的新版本，那么网络自动完成软分叉：一开始旧版本创建的区块在新协议下被认为是不合法的，这时会出现一个短暂的分叉，但最终新版本的分叉会赶超旧版本的分叉成为最长链。因为在旧版本上的算力是小于新版本的。</p>
+
+<p>但是如果小于51%的矿工算力转向新版本，那么软分叉将不会出现，因为旧版本比新版本有更多的算力支持，同时旧版本不兼容新版本。</p>
+
+<h3 id="section-30">硬分叉</h3>
+
+<p>旧版本不会接受新版本创建的合法区块，认为新版本的合法区块是不合法的。所以很明显硬分叉是不向前兼容。要实现硬分叉所有的用户（矿工，交易所，普通用户）都要切换的新的协议版本上。</p>
+
+<h2 id="section-31">共识机制</h2>
 
 <h3 id="pow">POW</h3>
 
+<p>比特币在Block的生成过程中使用了POW机制，一个符合要求的Block Hash由N个前导零构成，零的个数取决于网络的难度值。要得到合理的Block Hash需要经过大量尝试计算，计算时间取决于机器的哈希运算速度。当某个节点提供出一个合理的Block Hash值，说明该节点确实经过了大量的尝试计算，当然，并不能得出计算次数的绝对值，因为寻找合理hash是一个概率事件。当节点拥有占全网n%的算力时，该节点即有n/100的概率找到Block Hash。</p>
+
 <h3 id="pos">POS</h3>
+
+<p>POS：也称股权证明，类似于财产储存在银行，这种模式会根据你持有数字货币的量和时间，分配给你相应的利息。 
+简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(假定利息可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息</p>
 
 <h3 id="dpos">DPOS</h3>
 
-<h2 id="section-30">51%与双花</h2>
+<p>比特股的DPoS机制，中文名叫做股份授权证明机制（又称受托人机制），它的原理是让每一个持有比特股的人进行投票，由此产生101位代表 , 我们可以将其理解为101个超级节点或者矿池，而这101个超级节点彼此的权利是完全相等的。从某种角度来看，DPOS有点像是议会制度或人民代表大会制度。如果代表不能履行他们的职责（当轮到他们时，没能生成区块），他们会被除名，网络会选出新的超级节点来取代他们。DPOS的出现最主要还是因为矿机的产生，大量的算力在不了解也不关心比特币的人身上，类似演唱会的黄牛，大量囤票而丝毫不关心演唱会的内容。</p>
+
+<h3 id="pbft">PBFT</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>PBFT是一种状态机副本复制算法，即服务作为状态机进行建模，状态机在分布式系统的不同节点进行副本复制。每个状态机的副本都保存了服务的状态，同时也实现了服务的操作。将所有的副本组成的集合使用大写字母R表示，使用0到</td>
+      <td>R</td>
+      <td>-1的整数表示每一个副本。为了描述方便，假设</td>
+      <td>R</td>
+      <td>=3f+1，这里f是有可能失效的副本的最大个数。尽管可以存在多于3f+1个副本，但是额外的副本除了降低性能之外不能提高可靠性。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="section-32">51%与双花</h2>
+
+<p>51%攻击是一种攻击手段，而双花是一种攻击目的。很多文章将二者混为一谈，实际上是手段和目的混淆。</p>
+
+<p>因为区块链(以比特币为例)，实际上使用的是一种类似”多数人认可即真理”的世俗逻辑，比特币网络中一般以上矿工达成共识，那么区块就是合法的，交易就能正常被认可。试想，如果某个组织或个人拥有比特币网络51%以上的算力，那么当他发现一笔自己”不喜欢”的交易，他就可以发动手里全部算力，强制在另一个区块开始挖矿，这就在实质上造成了网络分叉，并且因为他拥有网络大部分算力，导致最终整个网络都会放弃正常的主链，在他挖掘的分叉上继续挖矿，从而整个网络都抛弃这笔交易,分叉变成主链;这就是51%攻击，攻击者通过操纵算力篡改区块链达到自己的个人目的。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/btc-51.jpg" alt="blockchain" /></p>
+
+<p>而双花(Double spend)是指同一笔钱被双重支付。还是以上面的例子来说明，如果这个控制51%算力的人提交一笔10BTC的交易到交易所，然后他在交易所立即将比特币提现成美元到自己的银行卡上，然后他立即将10BTC转账给自己另一个账户，并且同时操纵算力抛弃第一笔交易:即在第一笔交易的父区块上执行分叉挖矿，最终，他只是将10BTC从一个账户转移到自己另一个账户，但是交易所已经损失了10BTC等值的现金，该攻击者达到了双花的目的。</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/double-spend.jpg" alt="blockchain" /></p>
+
+<p>51%攻击的防范是一个大可提，各种共识算法也在致力于尽量降低被攻击的可能性；除了共识漏洞，更为难于预料的其实是现实算力集中，比如比特币矿池导致的事实上算力集中。</p>
+
+<p>双花则比较好防范，目前双花都是由于低确认次数导致的，所以增大确认次数，就能极大概率保证规避双花问题。</p>
 
 <h2 id="p2p">P2P</h2>
 
-<h2 id="section-31">联盟链</h2>
+<p>P2P就参考我自己两篇文章吧</p>
 
-<h1 id="section-32">参考文献</h1>
+<p><a href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/">p2p之UDP打洞</a></p>
+
+<p><a href="http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/">p2p模块节点发现机制</a></p>
+
+<h2 id="section-33">联盟链</h2>
+
+<p>联盟链，只针对特定某个群体的成员和有限的第三方，内部指定多个预选的节点为记账人，每个块的生成由所有的预选节点共同决定，其他接入节点可以参与交易，但不过问记账过程，其他第三方可以通过该区块链开放的API进行限定查询。为了获得更好的性能，联盟链对于共识或验证节点的配置和网络环境有一定要求。有了准入机制，可以使得交易性能更容易提高，避免由参次不齐的参与者产生的一些问题。</p>
+
+<p>联盟链对比公链，它的准入要求高，只有授权的节点可以接入，记账节点也是严格受权限策略控制，并且由于其工作环境可信度高，并不需要使用PoW这种强证明共识算法，而且联盟链是不需要经济激励，所以大部分联盟链也不需要代币驱动矿工。所以综合起来看，我个人觉得虽然联盟链的产生是基于区块链，但它其实更应该被称为一种分布式数据库。联盟链的工作场景使用传统中心化的解决方案也许性能更优异，但存在即合理，为什么区块链以前并没有提出这种分布式解决方案? 因为区块链，它将这种一体式的解决方案打包起来，以联盟链的形式封装，所以它在企业联盟里形成了标准化的范本，这才促使它的兴起。</p>
+
+<p>因为联盟链的这些属性，要求解决方案提供者在使用前要更加深思熟虑，是不是我真的需要一条联盟链？</p>
+
+<p>联盟链笔者使用得不多，就简单说说我用过的.</p>
+
+<h3 id="quorum">quorum</h3>
+
+<p><a href="https://www.jpmorgan.co.jp/country/JP/ja/Quorum">quorum</a>是基于以太坊的联盟链解决方案。它在金融银行业相对用的多一点,在以太坊的基础上添加了许多联盟场景的功能:</p>
+
+<ul>
+  <li>取消耗能低效的PoW共识，使用了Raft/BFT协议共识算法</li>
+  <li>P2P通信层修改为仅接受授权节点</li>
+  <li>区块产生/验证逻辑修改,状态Patricia树修改</li>
+  <li>支持私有交易</li>
+  <li>去除GasPrice策略</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/quorum.jpg" alt="blockchain" /></p>
+
+<p>我的感受是，如果对以太坊比较熟悉，迁移到quorum是比较顺畅的，但是quorum使用起来还不够舒心</p>
+
+<ul>
+  <li>对私有交易的支持比较生硬，交易权限控制无法动态变更</li>
+  <li>公共合约和私有合约间相互调用，可能存在一些坑</li>
+</ul>
+
+<h3 id="hyperledger-fabric">Hyperledger Fabric</h3>
+
+<p><a href="https://www.hyperledger.org/projects/fabric">Fabric</a>是由大名鼎鼎的linux基金会负责推进的项目，技术实力有保证，可以说是目前比较靠前的联盟链项目，然而项目目前还是处于非常早期状态，我感觉用起来还是很膈应。由于fabric目前文档比较齐全，我就不做复制粘贴了，仅聊下自己的使用感受。</p>
+
+<ul>
+  <li>运维性较差，尤其是chaincode部署得一个一个节点来，太麻烦</li>
+  <li>生产环境共识排序依赖于kafka,在管理问题交易时对kafka的处理得单独处理，感觉不是一个整体</li>
+  <li>整个体系庞杂臃肿，学习曲线陡峭,属于入门易，拔高难</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/fabric.webp" alt="blockchain" /></p>
+
+<h1 id="section-34">参考文献</h1>
 
 <ul>
   <li>精通比特币</li>
+  <li><a href="https://blog.csdn.net/lsttoy/article/details/61624287">共识算法（POW,POS,DPOS,PBFT）介绍和心得</a></li>
+  <li><a href="https://github.com/jpmorganchase/quorum/wiki/Quorum-Overview">Quorum</a></li>
 </ul>
 ]]></content>
   </entry>
