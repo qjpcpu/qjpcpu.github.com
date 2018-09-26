@@ -413,3 +413,4 @@ P2P就参考我自己两篇文章吧
 * 精通比特币
 * [共识算法（POW,POS,DPOS,PBFT）介绍和心得](https://blog.csdn.net/lsttoy/article/details/61624287)
 * [Quorum](https://github.com/jpmorganchase/quorum/wiki/Quorum-Overview)
+* [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric)
