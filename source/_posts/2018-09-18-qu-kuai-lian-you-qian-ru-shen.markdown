@@ -391,6 +391,8 @@ PBFT是一种状态机副本复制算法，即服务作为状态机进行建模�
 
 ## 零知识证明与zcash
 
+![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/zcash.jpeg)
+
 零知识证明指的是证明者能够在不向验证者提供任何有用的信息的情况下，使验证者相信某个论断是正确的。比如证明者向验证者证明并使其相信自己知道或拥有某一消息，但证明过程不能向验证者泄漏任何关于被证明消息的信息。
 
 比如阿里巴巴怎么向四十大盗证明自己知道打开宝藏大门的咒语，并且不能直接告诉他们咒语，如童话里一样，他只需要独自念动咒语进入宝藏拿一块宝石出来给强盗看就行了。
@@ -400,8 +402,6 @@ PBFT是一种状态机副本复制算法，即服务作为状态机进行建模�
 > 如果读过《三体》的读者，很快能联想到，"宇宙安全声明"其实也是一种零知识证明。
 
 零知识证明的代表货币是zcash,使用zcash转账是完全匿名且不可追踪的. 具体原理这篇文章讲得很好,[不是程序员也能看懂的ZCash零知识证明](https://zhuanlan.zhihu.com/p/24440530)
-
-![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/zcash.jpeg)
 
 ## 环形签名与门罗币
 
