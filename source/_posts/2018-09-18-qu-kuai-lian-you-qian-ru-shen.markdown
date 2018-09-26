@@ -401,7 +401,11 @@ PBFT是一种状态机副本复制算法，即服务作为状态机进行建模�
 
 零知识证明的代表货币是zcash,使用zcash转账是完全匿名且不可追踪的. 具体原理这篇文章讲得很好,[不是程序员也能看懂的ZCash零知识证明](https://zhuanlan.zhihu.com/p/24440530)
 
+![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/zcash.jpeg)
+
 ## 环形签名与门罗币
+
+![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/monero.png)
 
 门罗币的匿名性主要是由其环形签名技术实现的。在十七世纪的时候，法国群臣向国王进谏时，为了不让国王追查到是由谁带头签名上书的，于是他们发明出了一种环形签名的方式，所有人的姓名按环形排列，自然的隐藏了签名顺序，从而做到无法追查源头。
 
