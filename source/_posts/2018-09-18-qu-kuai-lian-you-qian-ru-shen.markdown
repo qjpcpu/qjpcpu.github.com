@@ -275,6 +275,8 @@ Bruce transfer 100 to Clark if it rains tomorrow
 * 货币名称: BTC(比特币)
 * 共识机制: PoW
 * 创新点: 开山鼻祖，都是创新
+* 区块确认时间: 10min
+* 智能合约: 无,只有简单的加锁解锁脚本,合约语言图灵不完备
 
 ### Ethereum
 
@@ -283,6 +285,8 @@ Bruce transfer 100 to Clark if it rains tomorrow
 * 货币名称: ETH(以太币)
 * 共识机制: PoW -> PoA -> PoS,以太坊在逐渐从耗能污染的PoW切换到绿色环保的PoS
 * 创新点: 第一条支持智能合约的公链
+* 区块确认时间: 15s
+* 智能合约: 有,合约语言solidity图灵完备,语法类似javascript,成熟度较高
 
 ### EOS
 
@@ -291,6 +295,28 @@ Bruce transfer 100 to Clark if it rains tomorrow
 * 货币名称: EOS
 * 共识机制: DPoS
 * 创新点: 成功忽悠粉丝认可其独裁式治理，并冠之以民主立宪式社区治理; 另外TPS提升，我认为算不得是创新
+* 区块确认时间: 3s
+* 智能合约: 有,合约语言C++图灵完备,对开发人员要求较高
+
+### ONT
+
+国内知名度比较高的公链
+
+* 货币名称: ONT,ONG
+* 共识机制: DBFT
+* 创新点: 尝试将实体信任机制引入区块链
+* 区块确认时间: 10s
+* 智能合约: 有,合约语言python,C#,golang等,图灵完备,持续进化中
+
+### BCH
+
+比特币现金是比特币在478599的硬分叉产物,BCH是比特币项目作为点对点数字现金的延续,它是比特币区块链帐本 (ledger) 的分叉，并具有升级版的共识规则，即允许增长和扩容。
+
+* 货币名称: BCH
+* 共识机制: 比特币共识升级支持扩容
+* 创新点: 扩容算不算
+* 区块确认时间: 10s-2h
+* 智能合约: wormhole cash Wormhole虫洞协议,可以实现代币颁发,转移等等,类似于以太坊ERC20
 
 # 进阶篇
 
@@ -363,6 +389,28 @@ PBFT是一种状态机副本复制算法，即服务作为状态机进行建模�
 
 双花则比较好防范，目前双花都是由于低确认次数导致的，所以增大确认次数，就能极大概率保证规避双花问题。
 
+## 零知识证明与zcash
+
+零知识证明指的是证明者能够在不向验证者提供任何有用的信息的情况下，使验证者相信某个论断是正确的。比如证明者向验证者证明并使其相信自己知道或拥有某一消息，但证明过程不能向验证者泄漏任何关于被证明消息的信息。
+
+比如阿里巴巴怎么向四十大盗证明自己知道打开宝藏大门的咒语，并且不能直接告诉他们咒语，如童话里一样，他只需要独自念动咒语进入宝藏拿一块宝石出来给强盗看就行了。
+
+零知识证明是一个同时与技术和哲学相关的话题，生活中可能以脑筋急转弯的形式在你身边出现过，比如[怎么向色盲证明你能看出两个球颜色是不同的](https://zhuanlan.zhihu.com/p/29909734)。
+
+> 如果读过《三体》的读者，很快能联想到，"宇宙安全声明"其实也是一种零知识证明。
+
+零知识证明的代表货币是zcash,使用zcash转账是完全匿名且不可追踪的. 具体原理这篇文章讲得很好,[不是程序员也能看懂的ZCash零知识证明](https://zhuanlan.zhihu.com/p/24440530)
+
+## 环形签名与门罗币
+
+门罗币的匿名性主要是由其环形签名技术实现的。在十七世纪的时候，法国群臣向国王进谏时，为了不让国王追查到是由谁带头签名上书的，于是他们发明出了一种环形签名的方式，所有人的姓名按环形排列，自然的隐藏了签名顺序，从而做到无法追查源头。
+
+2015 年，在这种签名方式的概念基础之上，数学博士 Shen Noether 发表了一篇名为《环形加密交易》的文章，为正在改进技术的门罗币奠定了环形签名算法的基础。环形签名算法与比特币一样也是使用基于哈希值的公钥+私钥模式，不同的是环形签名技术将交易发送方的公钥和另外一个公钥进行混合，然后对信息进行签署，最后再由接收者的私钥解密验证，这样一来外界就无法判断交易发起者的公钥是哪一个，从而使门罗币实现了隐藏交易发送方地址信息的功能，使外部攻击者无法看出地址之间的关联性。
+
+![blockchain](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/circle-sign.jpeg)
+
+详细的技术原理参考文献[环形签名](http://blog.51cto.com/huihua/2170409)
+
 ## P2P
 
 P2P就参考我自己两篇文章吧
@@ -414,3 +462,14 @@ P2P就参考我自己两篇文章吧
 * [共识算法（POW,POS,DPOS,PBFT）介绍和心得](https://blog.csdn.net/lsttoy/article/details/61624287)
 * [Quorum](https://github.com/jpmorganchase/quorum/wiki/Quorum-Overview)
 * [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric)
+* [ONT技术白皮书](https://ont.io/wp/Ontology-technology-white-paper-ZH.pdf)
+* [EOS-park](https://eospark.com/)
+* [BCH](https://www.bitcoincash.org/zh-CN/)
+* [大话币圈丨BCH：“矿霸”吴忌寒一手操纵，币圈史上惊天背叛案](https://zhuanlan.zhihu.com/p/42300572)
+* [三分钟让你了解什么是Segwit隔离见证](https://zhuanlan.zhihu.com/p/32613487)
+* [一种基于Bitcoin Cash的智能合约实现方案](https://mp.weixin.qq.com/s/-PfxSe9WPUOXMd8yrYUeZA)
+* [不是程序员也能看懂的ZCash零知识证明](https://zhuanlan.zhihu.com/p/24440530)
+* [Zcash核心：零知识证明](https://zhuanlan.zhihu.com/p/29909734)
+* [z.cash](https://z.cash/)
+* [门罗币的环形签名技术如何提高区块链的隐私性](http://www.17aiot.com/blockchain/49947.html)
+* [环形签名](http://blog.51cto.com/huihua/2170409)
