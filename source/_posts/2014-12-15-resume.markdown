@@ -6,6 +6,13 @@ comments: true
 categories: life
 ---
 
+
+### 自我评价
+
+* 好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向
+* 自我激励，一旦认定目标，会投入100%精力完成
+* 崇拜Google
+
 #### 联系方式
 
 * 姓名: JasonQu
@@ -15,6 +22,8 @@ categories: life
 ![qrcode](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg)
 
 * 详细联系方式: 打开[以太坊浏览器](https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959)点击页面InputData文本框下面"Convert To Utf8"即可看到
+
+![resume](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-resume.png)
 
 * 作品展示: [点我直接进入博客首页](http://qjpcpu.github.io), 或者进入[我的github](https://github.com/qjpcpu)查看我的作品及代码风格
 
@@ -185,10 +194,3 @@ categories: life
 #### 服务器开发
 
 * 熟练利用ruby/golang进行服务端开发
-
-### 自我评价
-
-* 好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向
-* 自我激励，一旦认定目标，会投入100%精力完成
-* 崇拜Google
-
