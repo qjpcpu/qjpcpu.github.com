@@ -15,8 +15,6 @@ categories: life
 
 #### 联系方式
 
-* 姓名: BlackSaber
-
 * 微信: 
 
 ![qrcode](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat-saber.png)
