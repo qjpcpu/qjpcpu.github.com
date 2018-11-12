@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-10-26T16:53:49+08:00</updated>
+  <updated>2018-11-12T16:52:54+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -8362,23 +8362,22 @@ list[ 1 ][ 1 ] = d;
 
 <ul>
   <li>
-    <p>姓名: JasonQu</p>
+    <p>姓名: BlackSaber</p>
   </li>
   <li>
     <p>微信: </p>
   </li>
 </ul>
 
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat-saber.png" alt="qrcode" /></p>
 
 <ul>
-  <li>详细联系方式: 打开<a href="https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959">以太坊浏览器</a>点击页面InputData文本框下面”Convert To Utf8”即可看到</li>
-</ul>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/eth-resume.png" alt="resume" /></p>
-
-<ul>
-  <li>作品展示: <a href="http://qjpcpu.github.io">点我直接进入博客首页</a>, 或者进入<a href="https://github.com/qjpcpu">我的github</a>查看我的作品及代码风格</li>
+  <li>
+    <p>详细联系方式: 打开<a href="https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959">以太坊浏览器</a>点击页面InputData文本框下面”Convert To Utf8”即可看到</p>
+  </li>
+  <li>
+    <p>作品展示: <a href="http://qjpcpu.github.io">点我直接进入博客首页</a>, 或者进入<a href="https://github.com/qjpcpu">我的github</a>查看我的作品及代码风格</p>
+  </li>
 </ul>
 
 <!-- more -->
