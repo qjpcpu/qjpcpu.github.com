@@ -3,7 +3,7 @@ layout: post
 title: "ethereum挖矿流程"
 date: 2018-11-15 17:50:36 +0800
 comments: true
-categories: 
+categories: blockchain
 ---
 
 本文主要梳理eth挖矿的代码流程结构。
