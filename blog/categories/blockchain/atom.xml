@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2018-11-15T17:51:50+08:00</updated>
+  <updated>2018-11-15T17:53:40+08:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,116 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ethereum挖矿流程]]></title>
+    <link href="http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/"/>
+    <updated>2018-11-15T17:50:36+08:00</updated>
+    <id>http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng</id>
+    <content type="html"><![CDATA[<p>本文主要梳理eth挖矿的代码流程结构。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#newworkloop">协程1. newWorkLoop</a></li>
+  <li><a href="#mainloop">协程2. mainLoop</a></li>
+  <li><a href="#taskloop">协程3. taskLoop</a></li>
+  <li><a href="#resultloop">协程4. resultLoop</a></li>
+  <li><a href="#update">协程5. update</a></li>
+</ul>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-15681166031820cd.gif?imageMogr2/auto-orient/strip" alt="miners" /></p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-43aa117385c9baea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="global.png" /></p>
+
+<p>geth的挖矿逻辑都由<code>miner.Miner</code>结构管理，在程序启动时，miner主要启动了5个核心协程并行处理挖矿逻辑，其中挖矿worker负责维护4个最关键协程。</p>
+
+<h2 id="newworkloop">协程1. newWorkLoop</h2>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-9d834bbc88ede0cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="work ch.png" /></p>
+
+<p>该协程负责周期性地提交新的挖矿任务。当程序启动或者区块同步完成，或者新区块挖掘完毕，<code>miner.start()</code>方法会被调用，则<code>startCh</code>通道激活，此时协程清理过期的挖矿任务，构建新的挖矿任务并投递到新任务通道<code>newWorkCh</code>，等待挖矿执行。</p>
+
+<h2 id="mainloop">协程2. mainLoop</h2>
+
+<p>挖矿的主要逻辑都位于该协程。</p>
+
+<p>该协程监听<code>newWorkCh</code>通道，接收到新挖矿请求后，开始挖矿。挖矿的逻辑位于<code>commitNewWork</code>函数内，如下图所示，首先准备区块头，调用共识引擎<code>engine.Prepare</code>准备共识信息，目前的共识使用了PoW共识算法，主要是为区块头计算出本次需要满足的区块PoW难度并写入到区块头；然后再讲收集到达叔区块引入，注意，以太坊最多只能引用2个叔区块，此外，优先引用本地叔区块再引入远端叔区块；然后开始执行收集到pending队列里的交易，也是本地优先远端执行；最后，进行交易后处理，这里也是调用共识引擎<code>engine.Finalize</code>实现，主要功能是计算矿工奖励；最后把封装好的区块投递到<code>taskCh</code>通道等待挖矿计算验证。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-a1898acd67116a44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="commitNewWork.png" /></p>
+
+<p>同时还监听<code>chainSideCh</code>通道，再检测到叔区块后，如果当前正在挖矿就提交新的叔区块并重新挖矿。</p>
+
+<p>在监听<code>txsCh</code>通道时，收到新交易后，如果当前正在挖矿，则执行新交易并重新挖矿，否则直接触发一次新挖矿。</p>
+
+<p>该协程主要都是收集不同信息(交易，叔区块)并封装区块，投递到任务通道准备共识计算。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-85f3a82dfefc6ffe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="task ch.png" /></p>
+
+<p>另外，这里有个问题，如果前面一个共识计算正在进行中，此时收到新交易或新uncle则立刻进行新的区块，而这两次计算都是针对同一区块(高度)，这样岂不是必然有一次计算浪费？</p>
+
+<h2 id="taskloop">协程3. taskLoop</h2>
+
+<p>这一步是挖矿的核心，然而从流程上却是最简单的，就是从<code>taskCh</code>获取封装好的区块，进行共识计算，并将成功的结果投递到<code>resultCh</code>。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-0413b576462ff621.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="result ch.png" /></p>
+
+<h2 id="resultloop">协程4. resultLoop</h2>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-ec254a1543e30cf9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="区块挖出来之后.png" /></p>
+
+<p>该协程将达成共识的区块(即成功挖出的区块)写入DB,并且向周边p2p节点广播<code>NewMinedBlockEvent</code>，然后触发链变更事件(<code>ChainEvent</code>+<code>ChainHeadEvent</code>或<code>ChainSideEvent</code>)，最后将区块插入待确认区块集合。</p>
+
+<ol>
+  <li>为什么<code>resultLoop</code>变更链事件触发有两种情况(<code>ChainEvent</code>+<code>ChainHeadEvent</code>)或(<code>ChainSideEvent</code>) ?</li>
+</ol>
+
+<p>这是因为写入DB时，会进行链分叉判断，如果当前写入的链难度低，说明需要进行链重组，则次数会导致触发<code>ChainSideEvent</code>事件。</p>
+
+<p>另外，注意如果发生链重组，则会从删除旧链的交易:</p>
+
+<p><code>go
+// reorgs takes two blocks, an old chain and a new chain and will reconstruct the blocks and inserts them
+// to be part of the new canonical chain and accumulates potential missing transactions and post an
+// event about them
+func (bc *BlockChain) reorg(oldBlock, newBlock *types.Block) error {
+    // .......
+	for _, tx := range diff {
+		rawdb.DeleteTxLookupEntry(batch, tx.Hash())
+	}
+    // ......
+}
+</code></p>
+
+<p>那么删除的交易再什么时候被重新打包的呢？答案是，<code>txpool</code>监听了<code>ChainHeadEvent</code>事件，当接收到新区块时，会进行分叉判断，再此时会将之前<code>删除的交易</code>重新放入交易池等待打包</p>
+
+<p>```go</p>
+
+<p>// reset retrieves the current state of the blockchain and ensures the content
+// of the transaction pool is valid with regard to the chain state.
+func (pool *TxPool) reset(oldHead, newHead *types.Header) {
+	// If we’re reorging an old state, reinject all dropped transactions
+	var reinject types.Transactions
+    // ….
+	// Inject any transactions discarded due to reorgs
+	log.Debug(“Reinjecting stale transactions”, “count”, len(reinject))
+	senderCacher.recover(pool.signer, reinject)
+	pool.addTxsLocked(reinject, false)
+    // …
+}
+```</p>
+
+<ol>
+  <li>区块什么时候从<code>unconfirmed</code>集合移除?</li>
+</ol>
+
+<p>答案是插入即确认，这个队列时环形的，并且矿工在创建<code>unconfirmed</code>队列会指定长度，这个长度即确认高度，当超过这个高度的区块被插入，自然就有最早的区块被移除，达到天然确认的目的。</p>
+
+<h2 id="update">协程5. update</h2>
+
+<p>该协程主要保证区块同步和挖矿互斥进行，即同步区块时暂停挖矿，同步完毕启动挖矿。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[在这里,读懂区块链]]></title>
@@ -1465,260 +1575,6 @@ fmt.Println("b", string(queryCC(client, "b"))) }
   <li><a href="https://github.com/hyperledger/fabric-sdk-go/tree/master/test/integration/e2e/pkcs11/e2e_test.go">E2E PKCS11 Test</a>: E2E Test using a PKCS11 crypto suite and configuration</li>
   <li><a href="https://github.com/securekey/fabric-examples/tree/master/fabric-cli/">CLI</a>: An example CLI for Fabric built with the Go SDK.</li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[hyperledger-fabric分布式部署]]></title>
-    <link href="http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu/"/>
-    <updated>2018-07-23T10:48:30+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu</id>
-    <content type="html"><![CDATA[<p>fabric官方文档给出了怎样搭建第一个联盟网络(<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a>),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.</p>
-
-<!-- more -->
-
-<ul id="markdown-toc">
-  <li><a href="#section">基本思路</a></li>
-  <li><a href="#section-1">搭建流程</a>    <ul>
-      <li><a href="#section-2">创建必要配置文件</a></li>
-      <li><a href="#swarm">创建swarm集群</a></li>
-      <li><a href="#section-3">创建集群网络</a></li>
-      <li><a href="#fabric">创建fabric控制脚本</a></li>
-    </ul>
-  </li>
-  <li><a href="#startpeer-0-1-means-start-peer-0-of-org-1">startPeer 0 1 means start peer 0 of org 1</a></li>
-  <li><a href="#scriptsscriptsh-channelname-clidelay-language-clitimeout">scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT</a>    <ul>
-      <li><a href="#section-4">启动网络</a>        <ul>
-          <li><a href="#orderer">启动orderer</a></li>
-          <li><a href="#peer">启动peer</a></li>
-          <li><a href="#fabric-1">配置fabric网络</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#section-5">后记</a></li>
-</ul>
-
-<h1 id="section">基本思路</h1>
-
-<blockquote>
-  <p>题外话:老实说，fabric这个部署文档写得并不漂亮。因为他引入了过多的先决知识，譬如docker,docker-compose等多个docker组件，虽然使用docker大大提高了部署成功率，然而这样做对于fabric入门来说却走偏了，容易让初学者产生一种疑惑: 好似很容易就”得到”了一个完整的fabric网络，然而实际上，好像对于fabric是怎么运行起来的仍然一无所知。如果想要了解怎么样一步步将fabric搭建起来的话，可以仔细看看<code>fabric-samples/first-network</code>文件夹的脚本及compose配置文件，或者参考<code>[区块链原理、设计、与应用] 作者:杨保华,陈昌</code>这本书第9章,相信这样的搭建教程才能让人有直观的了解。所以，本文也不必一步步拆分搭建步骤，本文的目的是为了想读者展示如果利用现有的BYFN文档及脚本搭建真正分布式网络。</p>
-</blockquote>
-
-<p>所有的宿主机环境以及fabric二进制程序的安装还是按照Build Your First Network文档所说进行，在完成后，用docker swarm将各个宿主机上的docker实例连接起来。</p>
-
-<h1 id="section-1">搭建流程</h1>
-
-<p>假设我们有5台宿主机</p>
-
-<ul>
-  <li>orderer(cli) 我们将在orderer宿主机上启动客户端cli配置网络，实际上这个cli可以在任意机器上启动</li>
-  <li>peer0.org1</li>
-  <li>peer1.org1</li>
-  <li>peer0.org2</li>
-  <li>peer1.org2</li>
-</ul>
-
-<p>在5台宿主机上同构部署fabric环境，具体操作参考<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a></p>
-
-<h2 id="section-2">创建必要配置文件</h2>
-
-<p>在任意一台机器上生成配置文件:</p>
-
-<p><code>
-cd ./fabric-samples/first-network
-./byfn.sh generate
-</code></p>
-
-<p>然后将生成的配置同步到所有其他几台宿主机的相同目录,同步的文件包含</p>
-
-<ul>
-  <li>channel-artifacts</li>
-  <li>crypto-config</li>
-</ul>
-
-<h2 id="swarm">创建swarm集群</h2>
-
-<p>假设我们将cli作为集群manager，则在cli上创建swarm集群:</p>
-
-<p><code>
-docker swarm init
-</code></p>
-
-<p>查看集群join token:</p>
-
-<p><code>
-docker swarm join-token manager
-</code></p>
-
-<p>输出可能类似这样:</p>
-
-<p><code>
-docker swarm join — token SWMTKN-1–3as8cvf3yxk8e7zj98954jhjza3w75mngmxh543llgpo0c8k7z-61zyibtaqjjimkqj8p6t9lwgu 172.16.0.153:2377
-</code></p>
-
-<p>在其他所有机器上执行这条输出的命令，完成后说明所以机器处于同一集群.</p>
-
-<h2 id="section-3">创建集群网络</h2>
-
-<p>在cli宿主机执行</p>
-
-<p><code>
-docker network create --attachable --driver overlay byfn
-</code></p>
-
-<h2 id="fabric">创建fabric控制脚本</h2>
-
-<p>现在，所有宿主均处于swarm集群，然而docker-compose并不直接使用swarm,所以我这里不再使用docker-compose，原因有两个: 1.docker-compose主要用于多个服务打包部署，然而我们在每个宿主机仅部署单个docker，不必非要使用compose 2.docker-compose还需要单独配置才能运行在swarm模式下。 所以，我将docker启动命令独立出来，写入一个shell脚本，将这个shell脚本放入所有宿主机<code>./fabric-samples/first-network/</code>下命令为<code>control</code>文件.</p>
-
-<p>```bash
-#!/bin/bash
-NETWORK=byfn    # 网络名称必须和创建的集群网络名称一致
-IMAGETAG=latest</p>
-
-<p>function startOrderer()
-{
-    docker run –rm -d –network=${NETWORK} –name orderer.example.com -p 7050:7050 \
-    -e ORDERER_GENERAL_LOGLEVEL=INFO \
-    -e ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 \
-    -e ORDERER_GENERAL_GENESISMETHOD=file \
-    -e ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block \
-    -e ORDERER_GENERAL_LOCALMSPID=OrdererMSP \
-    -e ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp \
-    -e ORDERER_GENERAL_TLS_ENABLED=true \
-    -e ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key \
-    -e ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt \
-    -e ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt] \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/channel-artifacts/genesis.block,target=/var/hyperledger/orderer/orderer.genesis.block    \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp,target=/var/hyperledger/orderer/msp    \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/,target=/var/hyperledger/orderer/tls    \
-    hyperledger/fabric-orderer:${IMAGETAG} orderer
-}</p>
-
-<h1 id="startpeer-0-1-means-start-peer-0-of-org-1">startPeer 0 1 means start peer 0 of org 1</h1>
-<p>function startPeer()
-{
-	PEER=$1
-	ORG=$2
-	PEER2=1
-	[ $PEER -eq 1 ] &amp;&amp; PEER2=0
-	BOOT=peer${PEER2}.org${ORG}.example.com:7051
-    docker run –rm -d  –network=${NETWORK} –name peer${PEER}.org${ORG}.example.com -p 7051:7051 -p 7053:7053 \
-    -e CORE_PEER_ID=peer${PEER}.org${ORG}.example.com \
-    -e CORE_PEER_ADDRESS=peer${PEER}.org${ORG}.example.com:7051 \
-    -e CORE_PEER_GOSSIP_BOOTSTRAP=${BOOT} \
-    -e CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer${PEER}.org${ORG}.example.com:7051 \
-    -e CORE_PEER_LOCALMSPID=Org${ORG}MSP \
-    -e CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock \
-    -e CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${NETWORK} \
-    -e CORE_LOGGING_LEVEL=INFO \
-    -e CORE_PEER_TLS_ENABLED=true \
-    -e CORE_PEER_GOSSIP_USELEADERELECTION=true \
-    -e CORE_PEER_GOSSIP_ORGLEADER=false \
-    -e CORE_PEER_PROFILE_ENABLED=true \
-    -e CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt \
-    -e CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key \
-    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt \
-    –mount type=bind,source=/var/run/,target=/host/var/run/ \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org${ORG}.example.com/peers/peer${PEER}.org${ORG}.example.com/msp,target=/etc/hyperledger/fabric/msp \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org${ORG}.example.com/peers/peer${PEER}.org${ORG}.example.com/tls,target=/etc/hyperledger/fabric/tls \
-    hyperledger/fabric-peer:${IMAGETAG}  peer node start
-}</p>
-
-<h1 id="scriptsscriptsh-channelname-clidelay-language-clitimeout">scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT</h1>
-<p>function startCli()
-{
-    docker run –rm -it –network=${NETWORK} –name cli \
-    -e  CHANNEL_NAME=”mychannel” \
-    -e  CLI_DELAY=3 \
-    -e  LANGUAGE=golang \
-    -e  CLI_TIMEOUT=10 \
-    -e  GOPATH=/opt/gopath \
-    -e  CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock \
-    -e  CORE_LOGGING_LEVEL=INFO \
-    -e  CORE_PEER_ID=cli \
-    -e  CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
-    -e  CORE_PEER_LOCALMSPID=Org1MSP \
-    -e  CORE_PEER_TLS_ENABLED=true \
-    -e  CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt \
-    -e  CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key \
-    -e  CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
-    -e  CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp \
-    –mount type=bind,source=/var/run/,target=/host/var/run/ \
-    –mount type=bind,source=/root/fabric/fabric-samples/chaincode/,target=/opt/gopath/src/github.com/chaincode \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/crypto-config,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/scripts,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/ \
-    –mount type=bind,source=/root/fabric/fabric-samples/first-network/channel-artifacts,target=/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts \
-    –workdir /opt/gopath/src/github.com/hyperledger/fabric/peer \
-    hyperledger/fabric-tools:${IMAGETAG} /bin/bash
-}</p>
-
-<p>case X$1 in
-    Xorderer)
-        startOrderer
-        ;;
-    Xpeer)
-        startPeer $2 $3
-        ;;
-    Xcli)
-        startCli
-        ;;      <br />
-    X*)
-        echo “Usage: $0 orderer|peer|cli”
-        exit -1
-        ;;
-esac
-```</p>
-
-<h2 id="section-4">启动网络</h2>
-
-<h3 id="orderer">启动orderer</h3>
-
-<p>在orderer宿主机执行</p>
-
-<p><code>
-cd ./fabric-samples/first-network
-./contrl orderer
-</code></p>
-
-<h3 id="peer">启动peer</h3>
-
-<p>在peer0.org1宿主机执行</p>
-
-<p><code>
-cd ./fabric-samples/first-network
-./contrl peer 0 1
-</code></p>
-
-<p>在peer1.org1宿主机执行</p>
-
-<p><code>
-cd ./fabric-samples/first-network
-./contrl peer 1 1
-</code></p>
-
-<p>同理启动org2的peer</p>
-
-<h3 id="fabric-1">配置fabric网络</h3>
-
-<p>在任意宿主机,这里我们就用orderer宿主机:</p>
-
-<p><code>
-cd ./fabric-samples/first-network
-./control cli
-</code></p>
-
-<p>执行这个命令后进入客户端配置实例,直接运行配置脚本即可:</p>
-
-<p><code>
-scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
-</code></p>
-
-<p>出现的配置及测试输出应该和单机部署一样,至此部署完成。</p>
-
-<h1 id="section-5">后记</h1>
-
-<p>按这个步骤，应该是可以将这个分布式fabric搭建起来的，但是其他优化还需要自行完成，比如为了测试方便，我并没有将区块链数据挂载出来，所以docker重启后区块数据就没有了，生产环境得自己将数据卷挂载上去；还有，为了权限隔离，一般也不会将整个crypto-config文件夹分发给各个联盟节点，而是需要什么给什么，保持目录结构一致即可。</p>
 ]]></content>
   </entry>
   
