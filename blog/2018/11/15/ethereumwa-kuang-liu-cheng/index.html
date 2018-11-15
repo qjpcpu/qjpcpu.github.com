@@ -1,0 +1,295 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ethereum挖矿流程 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="本文主要梳理eth挖矿的代码流程结构。 协程1. newWorkLoop 协程2. mainLoop 协程3. taskLoop 协程4. resultLoop 协程5. update geth的挖矿逻辑都由miner.Miner结构管理，在程序启动时， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Ethereum挖矿流程</h2>
+	<div class="entry-content"><p>本文主要梳理eth挖矿的代码流程结构。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
+  <li><a href="#newworkloop">协程1. newWorkLoop</a></li>
+  <li><a href="#mainloop">协程2. mainLoop</a></li>
+  <li><a href="#taskloop">协程3. taskLoop</a></li>
+  <li><a href="#resultloop">协程4. resultLoop</a></li>
+  <li><a href="#update">协程5. update</a></li>
+</ul>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-15681166031820cd.gif?imageMogr2/auto-orient/strip" alt="miners" /></p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-43aa117385c9baea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="global.png" /></p>
+
+<p>geth的挖矿逻辑都由<code>miner.Miner</code>结构管理，在程序启动时，miner主要启动了5个核心协程并行处理挖矿逻辑，其中挖矿worker负责维护4个最关键协程。</p>
+
+<h2 id="newworkloop">协程1. newWorkLoop</h2>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-9d834bbc88ede0cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="work ch.png" /></p>
+
+<p>该协程负责周期性地提交新的挖矿任务。当程序启动或者区块同步完成，或者新区块挖掘完毕，<code>miner.start()</code>方法会被调用，则<code>startCh</code>通道激活，此时协程清理过期的挖矿任务，构建新的挖矿任务并投递到新任务通道<code>newWorkCh</code>，等待挖矿执行。</p>
+
+<h2 id="mainloop">协程2. mainLoop</h2>
+
+<p>挖矿的主要逻辑都位于该协程。</p>
+
+<p>该协程监听<code>newWorkCh</code>通道，接收到新挖矿请求后，开始挖矿。挖矿的逻辑位于<code>commitNewWork</code>函数内，如下图所示，首先准备区块头，调用共识引擎<code>engine.Prepare</code>准备共识信息，目前的共识使用了PoW共识算法，主要是为区块头计算出本次需要满足的区块PoW难度并写入到区块头；然后再讲收集到达叔区块引入，注意，以太坊最多只能引用2个叔区块，此外，优先引用本地叔区块再引入远端叔区块；然后开始执行收集到pending队列里的交易，也是本地优先远端执行；最后，进行交易后处理，这里也是调用共识引擎<code>engine.Finalize</code>实现，主要功能是计算矿工奖励；最后把封装好的区块投递到<code>taskCh</code>通道等待挖矿计算验证。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-a1898acd67116a44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="commitNewWork.png" /></p>
+
+<p>同时还监听<code>chainSideCh</code>通道，再检测到叔区块后，如果当前正在挖矿就提交新的叔区块并重新挖矿。</p>
+
+<p>在监听<code>txsCh</code>通道时，收到新交易后，如果当前正在挖矿，则执行新交易并重新挖矿，否则直接触发一次新挖矿。</p>
+
+<p>该协程主要都是收集不同信息(交易，叔区块)并封装区块，投递到任务通道准备共识计算。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-85f3a82dfefc6ffe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="task ch.png" /></p>
+
+<p>另外，这里有个问题，如果前面一个共识计算正在进行中，此时收到新交易或新uncle则立刻进行新的区块，而这两次计算都是针对同一区块(高度)，这样岂不是必然有一次计算浪费？</p>
+
+<h2 id="taskloop">协程3. taskLoop</h2>
+
+<p>这一步是挖矿的核心，然而从流程上却是最简单的，就是从<code>taskCh</code>获取封装好的区块，进行共识计算，并将成功的结果投递到<code>resultCh</code>。</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-0413b576462ff621.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="result ch.png" /></p>
+
+<h2 id="resultloop">协程4. resultLoop</h2>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/14928134-ec254a1543e30cf9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="区块挖出来之后.png" /></p>
+
+<p>该协程将达成共识的区块(即成功挖出的区块)写入DB,并且向周边p2p节点广播<code>NewMinedBlockEvent</code>，然后触发链变更事件(<code>ChainEvent</code>+<code>ChainHeadEvent</code>或<code>ChainSideEvent</code>)，最后将区块插入待确认区块集合。</p>
+
+<ol>
+  <li>为什么<code>resultLoop</code>变更链事件触发有两种情况(<code>ChainEvent</code>+<code>ChainHeadEvent</code>)或(<code>ChainSideEvent</code>) ?</li>
+</ol>
+
+<p>这是因为写入DB时，会进行链分叉判断，如果当前写入的链难度低，说明需要进行链重组，则次数会导致触发<code>ChainSideEvent</code>事件。</p>
+
+<p>另外，注意如果发生链重组，则会从删除旧链的交易:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// reorgs takes two blocks, an old chain and a new chain and will reconstruct the blocks and inserts them</span>
+</span><span class="line"><span class="c1">// to be part of the new canonical chain and accumulates potential missing transactions and post an</span>
+</span><span class="line"><span class="c1">// event about them</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">bc</span> <span class="o">*</span><span class="nx">BlockChain</span><span class="p">)</span> <span class="nx">reorg</span><span class="p">(</span><span class="nx">oldBlock</span><span class="p">,</span> <span class="nx">newBlock</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Block</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// .......</span>
+</span><span class="line">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tx</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">diff</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">rawdb</span><span class="p">.</span><span class="nx">DeleteTxLookupEntry</span><span class="p">(</span><span class="nx">batch</span><span class="p">,</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">Hash</span><span class="p">())</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">    <span class="c1">// ......</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>那么删除的交易再什么时候被重新打包的呢？答案是，<code>txpool</code>监听了<code>ChainHeadEvent</code>事件，当接收到新区块时，会进行分叉判断，再此时会将之前<code>删除的交易</code>重新放入交易池等待打包</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// reset retrieves the current state of the blockchain and ensures the content</span>
+</span><span class="line"><span class="c1">// of the transaction pool is valid with regard to the chain state.</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">pool</span> <span class="o">*</span><span class="nx">TxPool</span><span class="p">)</span> <span class="nx">reset</span><span class="p">(</span><span class="nx">oldHead</span><span class="p">,</span> <span class="nx">newHead</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Header</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="c1">// If we&#39;re reorging an old state, reinject all dropped transactions</span>
+</span><span class="line">	<span class="kd">var</span> <span class="nx">reinject</span> <span class="nx">types</span><span class="p">.</span><span class="nx">Transactions</span>
+</span><span class="line">    <span class="c1">// ....</span>
+</span><span class="line">	<span class="c1">// Inject any transactions discarded due to reorgs</span>
+</span><span class="line">	<span class="nx">log</span><span class="p">.</span><span class="nx">Debug</span><span class="p">(</span><span class="s">&quot;Reinjecting stale transactions&quot;</span><span class="p">,</span> <span class="s">&quot;count&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">reinject</span><span class="p">))</span>
+</span><span class="line">	<span class="nx">senderCacher</span><span class="p">.</span><span class="nb">recover</span><span class="p">(</span><span class="nx">pool</span><span class="p">.</span><span class="nx">signer</span><span class="p">,</span> <span class="nx">reinject</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">pool</span><span class="p">.</span><span class="nx">addTxsLocked</span><span class="p">(</span><span class="nx">reinject</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+</span><span class="line">    <span class="c1">// ...</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ol>
+  <li>区块什么时候从<code>unconfirmed</code>集合移除?</li>
+</ol>
+
+<p>答案是插入即确认，这个队列时环形的，并且矿工在创建<code>unconfirmed</code>队列会指定长度，这个长度即确认高度，当超过这个高度的区块被插入，自然就有最早的区块被移除，达到天然确认的目的。</p>
+
+<h2 id="update">协程5. update</h2>
+
+<p>该协程主要保证区块同步和挖矿互斥进行，即同步区块时暂停挖矿，同步完毕启动挖矿。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-11-15T17:50:36+08:00" pubdate data-updated="true">Nov 15<span>th</span>, 2018</time></div>
+	<div class="tags">
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2018
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>
