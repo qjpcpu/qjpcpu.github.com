@@ -7,25 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="结构体标签 在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-package main import ( &quot;fmt&quot &hellip;">
+	<meta name="description" content=" Read on &rarr; Jun 23rd, 2014 go Comments ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -107,98 +89,6 @@ package main import ( &quot;fmt&quot &hellip;">
 		
 	
 	<div id="content" class="inner">
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/07/12/struct-tags/">
-		
-			Struct Tags</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">结构体标签</h3>
-
-<p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
-</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
-</span><span class="line">	<span class="s">&quot;reflect&quot;</span>
-</span><span class="line"><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">	<span class="kd">type</span> <span class="nx">S</span> <span class="kd">struct</span> <span class="p">{</span>
-</span><span class="line">		<span class="nx">F</span> <span class="kt">string</span> <span class="s">`species:&quot;gopher&quot; color:&quot;blue&quot;`</span>
-</span><span class="line">	<span class="p">}</span>
-</span><span class="line">
-</span><span class="line">	<span class="nx">s</span> <span class="o">:=</span> <span class="nx">S</span><span class="p">{}</span>
-</span><span class="line">	<span class="nx">st</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">field</span> <span class="o">:=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">Field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;species&quot;</span><span class="p">))</span>
-</span><span class="line">
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">blue gopher
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>结构体<code>S</code>的<code>F</code>成员具有两个属性<code>species</code>和<code>color</code>，其属性的值分别为<code>blue</code>和<code>gopher</code>。如果不使用反射去取这个属性，在定义时写不写属性都是无所谓的。</p>
-
-
-		
-		<a href="/blog/2014/07/12/struct-tags/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-12T00:07:11+08:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/go/'>go</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/07/12/struct-tags/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
 
 
     <article class="post">
@@ -711,6 +601,72 @@ done
 </div>
 </article>
 
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/">
+		
+			Stat命令与文件时间</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="stat">stat命令</h3>
+
+<p>stat命令常用来获取文件三个时间<code>access time</code>,<code>modify time</code>和<code>change time</code></p>
+
+<pre><code>$ stat access.log
+  File: `access.log'
+  Size: 1559877779	Blocks: 3049624    IO Block: 4096   regular file
+Device: ca20h/51744d	Inode: 16269326    Links: 1
+Access: (0644/-rw-r--r--)  Uid: (  500/    work)   Gid: (  500/    work)
+Access: 2014-03-09 21:58:33.000000000 +0800
+Modify: 2014-03-07 08:17:36.000000000 +0800
+Change: 2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+<p>通常可以使用<code>-c</code>参数直接获取三个时间</p>
+
+<pre><code>$ stat -c %x access.log   #获取access time
+2014-03-09 21:58:33.000000000 +0800
+$ stat -c %y access.log  #获取modify time
+2014-03-07 08:17:36.000000000 +0800
+$ stat -c %z access.log #获取change time
+2014-03-07 08:17:36.000000000 +0800
+</code></pre>
+
+
+		
+		<a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-12T15:04:54+08:00" pubdate data-updated="true">Mar 12<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
 <nav id="pagenavi">
     
         <a href="/blog/page/4/" class="prev">Prev</a>
@@ -720,7 +676,7 @@ done
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2018
+	<footer id="footer" class="inner">Copyright &copy; 2019
 
     Jason
 

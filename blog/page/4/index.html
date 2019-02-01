@@ -251,74 +251,6 @@ menuItems = [ { &quot;label&quot;: &quot; &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/12/15/resume/">
-		
-			我的简历</a>
-	</h2>
-	<div class="entry-content">
-		<h3 id="section">自我评价</h3>
-
-<ul>
-  <li>好奇心，对新技术有极强的热情和好奇心，热爱拥抱新的技术动向</li>
-  <li>喜欢做工具,要是能得到用户认可就更cool了</li>
-  <li>自我激励，一旦认定目标，会投入100%精力完成</li>
-  <li>崇拜Google</li>
-</ul>
-
-<h4 id="section-1">联系方式</h4>
-
-<ul>
-  <li>微信: </li>
-</ul>
-
-<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/wechat.jpg" alt="qrcode" /></p>
-
-<ul>
-  <li>
-    <p>详细联系方式: 打开<a href="https://etherscan.io/tx/0x28f313b388b2d9eeb292fe9560409a39c4caa486f72055aab53391d2e471a959">以太坊浏览器</a>点击页面InputData文本框下面”View Input As Utf8”即可看到</p>
-  </li>
-  <li>
-    <p>作品展示: <a href="http://qjpcpu.github.io">点我直接进入博客首页</a>, 或者进入<a href="https://github.com/qjpcpu">我的github</a>查看我的作品及代码风格</p>
-  </li>
-</ul>
-
-
-		
-		<a href="/blog/2014/12/15/resume/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-15T20:20:58+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/life/'>life</a>
-
-
-</div>
-	
-	<div class="comments"><a href="/blog/2014/12/15/resume/#disqus_thread">Comments</a></div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
 		<a href="/blog/2014/11/25/xin-jian-angularxiang-mu/">
 		
 			新建angular项目</a>
@@ -708,6 +640,98 @@ menuItems = [ { &quot;label&quot;: &quot; &hellip;">
 </div>
 </article>
 
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/07/12/struct-tags/">
+		
+			Struct Tags</a>
+	</h2>
+	<div class="entry-content">
+		<h3 id="section">结构体标签</h3>
+
+<p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kn">package</span> <span class="nx">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="p">(</span>
+</span><span class="line">	<span class="s">&quot;fmt&quot;</span>
+</span><span class="line">	<span class="s">&quot;reflect&quot;</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="kd">type</span> <span class="nx">S</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">F</span> <span class="kt">string</span> <span class="s">`species:&quot;gopher&quot; color:&quot;blue&quot;`</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">
+</span><span class="line">	<span class="nx">s</span> <span class="o">:=</span> <span class="nx">S</span><span class="p">{}</span>
+</span><span class="line">	<span class="nx">st</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">field</span> <span class="o">:=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">Field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">),</span> <span class="nx">field</span><span class="p">.</span><span class="nx">Tag</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;species&quot;</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>输出结果</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">blue gopher
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>结构体<code>S</code>的<code>F</code>成员具有两个属性<code>species</code>和<code>color</code>，其属性的值分别为<code>blue</code>和<code>gopher</code>。如果不使用反射去取这个属性，在定义时写不写属性都是无所谓的。</p>
+
+
+		
+		<a href="/blog/2014/07/12/struct-tags/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-12T00:07:11+08:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+	<div class="comments"><a href="/blog/2014/07/12/struct-tags/#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -717,7 +741,7 @@ menuItems = [ { &quot;label&quot;: &quot; &hellip;">
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2018
+	<footer id="footer" class="inner">Copyright &copy; 2019
 
     Jason
 
