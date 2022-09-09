@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[浅谈元编程]]></title>
     <link href="http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng/"/>
-    <updated>2017-08-02T17:54:41+08:00</updated>
+    <updated>2017-08-02T09:54:41+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng</id>
     <content type="html"><![CDATA[<p>为什么会突然想到写这篇文章呢？其实是因为我曾经向一位朋友推荐学习一下ruby/lisp这类支持元编程的语言,尽管可能永远不会在生产环境中用到,但是可以让人学习用另一种思路思考问题,然后友人就要求我解释我学了之后思考问题的角度有何不同,当时确实把我难住了,因为这个问题的确不好描述。</p>
 
@@ -141,7 +141,7 @@ Talk to jason
   <entry>
     <title type="html"><![CDATA[关于后台任务]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu/"/>
-    <updated>2015-05-27T17:16:34+08:00</updated>
+    <updated>2015-05-27T09:16:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu</id>
     <content type="html"><![CDATA[<h3 id="sidekiq">关于sidekiq</h3>
 <p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
@@ -194,7 +194,7 @@ end
   <entry>
     <title type="html"><![CDATA[高效读取excel]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel/"/>
-    <updated>2015-05-25T11:11:02+08:00</updated>
+    <updated>2015-05-25T03:11:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel</id>
     <content type="html"><![CDATA[<p>前面介绍ruby写excel文件的一个很cool的gem包<code>axlsx</code>,这里介绍另一个高效读取excel的包<code>creek</code>。</p>
 
@@ -246,7 +246,7 @@ sheet.rid     # =&gt; ‘rId2’
   <entry>
     <title type="html"><![CDATA[rvm和rbenv环境变量冲突导致无法安装gem包]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/"/>
-    <updated>2015-01-05T18:11:47+08:00</updated>
+    <updated>2015-01-05T10:11:47+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao</id>
     <content type="html"><![CDATA[<h2 id="section">背景</h2>
 <p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
@@ -296,7 +296,7 @@ unset GEM_HOME
   <entry>
     <title type="html"><![CDATA[compile ruby from source]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source/"/>
-    <updated>2014-03-07T15:35:02+08:00</updated>
+    <updated>2014-03-07T07:35:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source</id>
     <content type="html"><![CDATA[<h3 id="section">下载需要的软件包</h3>
 

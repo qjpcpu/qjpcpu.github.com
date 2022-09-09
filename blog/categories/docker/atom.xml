@@ -4,7 +4,7 @@
   <title><![CDATA[Category: docker | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/docker/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[命令行参数]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu/"/>
-    <updated>2014-05-02T01:14:33+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu</id>
+    <link href="http://qjpcpu.github.io/blog/2014/05/01/ming-ling-xing-can-shu/"/>
+    <updated>2014-05-01T17:14:33+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/05/01/ming-ling-xing-can-shu</id>
     <content type="html"><![CDATA[<p>阅读docker源码第一个文件<code>DOCKER/docker/docker.go</code>，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。</p>
 
 <!-- more -->

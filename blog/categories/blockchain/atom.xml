@@ -4,7 +4,7 @@
   <title><![CDATA[Category: blockchain | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/blockchain/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[ethereum挖矿流程]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/"/>
-    <updated>2018-11-15T17:50:36+08:00</updated>
+    <updated>2018-11-15T09:50:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng</id>
     <content type="html"><![CDATA[<p>本文主要梳理eth挖矿的代码流程结构。</p>
 
@@ -126,7 +126,7 @@ func (pool *TxPool) reset(oldHead, newHead *types.Header) {
   <entry>
     <title type="html"><![CDATA[在这里,读懂区块链]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen/"/>
-    <updated>2018-09-18T15:08:00+08:00</updated>
+    <updated>2018-09-18T07:08:00+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen</id>
     <content type="html"><![CDATA[<p>读懂区块链——仅需这一篇。(草稿，内容整理中…)</p>
 
@@ -710,7 +710,7 @@ Bruce transfer 100 to Clark if it rains tomorrow
   <entry>
     <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-09-10T14:24:59+08:00</updated>
+    <updated>2018-09-10T06:24:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou</id>
     <content type="html"><![CDATA[<p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
 
@@ -886,7 +886,7 @@ Hash *common.Hash `json:"hash" rlp:"-"` } ```
   <entry>
     <title type="html"><![CDATA[[rebuild ethereum](一) 搭建p2p网络]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/"/>
-    <updated>2018-09-02T14:24:16+08:00</updated>
+    <updated>2018-09-02T06:24:16+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo</id>
     <content type="html"><![CDATA[<p>接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。</p>
 
@@ -1083,7 +1083,7 @@ n.log.Info("Starting peer-to-peer node", "instance", n.serverConfig.Name)
   <entry>
     <title type="html"><![CDATA[hyperledger-fabric服务端开发]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa/"/>
-    <updated>2018-07-25T14:23:59+08:00</updated>
+    <updated>2018-07-25T06:23:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa</id>
     <content type="html"><![CDATA[<p>这篇文章并不是介绍fabric智能合约怎么编写的,因为这类的文章随便在google上一搜一大把. 但反而是fabric服务端开发应该怎么做需要有人稍稍点拨一下。本文就以golang服务端为例，介绍一下fabric服务端基本做法。</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -17,7 +17,7 @@
     <title type="html"><![CDATA[ethereum挖矿流程]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/"/>
-    <updated>2018-11-15T17:50:36+08:00</updated>
+    <updated>2018-11-15T09:50:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng</id>
     <content type="html"><![CDATA[<p>本文主要梳理eth挖矿的代码流程结构。</p>
 
@@ -147,7 +147,7 @@
     <title type="html"><![CDATA[在这里,读懂区块链]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen/"/>
-    <updated>2018-09-18T15:08:00+08:00</updated>
+    <updated>2018-09-18T07:08:00+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen</id>
     <content type="html"><![CDATA[<p>读懂区块链——仅需这一篇。(草稿，内容整理中…)</p>
 
@@ -734,7 +734,7 @@
     <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-09-10T14:24:59+08:00</updated>
+    <updated>2018-09-10T06:24:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou</id>
     <content type="html"><![CDATA[<p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
 
@@ -945,7 +945,7 @@
     <title type="html"><![CDATA[[rebuild ethereum](一) 搭建p2p网络]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/"/>
-    <updated>2018-09-02T14:24:16+08:00</updated>
+    <updated>2018-09-02T06:24:16+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo</id>
     <content type="html"><![CDATA[<p>接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。</p>
 
@@ -1230,7 +1230,7 @@
     <title type="html"><![CDATA[hyperledger-fabric服务端开发]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa/"/>
-    <updated>2018-07-25T14:23:59+08:00</updated>
+    <updated>2018-07-25T06:23:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa</id>
     <content type="html"><![CDATA[<p>这篇文章并不是介绍fabric智能合约怎么编写的,因为这类的文章随便在google上一搜一大把. 但反而是fabric服务端开发应该怎么做需要有人稍稍点拨一下。本文就以golang服务端为例，介绍一下fabric服务端基本做法。</p>
 
@@ -2129,7 +2129,7 @@
     <title type="html"><![CDATA[hyperledger-fabric分布式部署]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu/"/>
-    <updated>2018-07-23T10:48:30+08:00</updated>
+    <updated>2018-07-23T02:48:30+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu</id>
     <content type="html"><![CDATA[<p>fabric官方文档给出了怎样搭建第一个联盟网络(<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a>),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.</p>
 
@@ -2481,7 +2481,7 @@
     <title type="html"><![CDATA[利用call实现合约任意调用]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong/"/>
-    <updated>2018-07-02T13:50:25+08:00</updated>
+    <updated>2018-07-02T05:50:25+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong</id>
     <content type="html"><![CDATA[<p>call()是一个底层的接口，用来向一个合约发送消息，也就是说如果你想实现自己的消息传递，可以使用这个函数。</p>
 
@@ -2830,7 +2830,7 @@
     <title type="html"><![CDATA[怎样实现以太坊交易可靠提交]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/"/>
-    <updated>2018-06-14T14:54:01+08:00</updated>
+    <updated>2018-06-14T06:54:01+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao</id>
     <content type="html"><![CDATA[<p>在真实环境下的以太坊Dapp开发,是一定涉及到链上链下逻辑的交互的。那么开发者可能会遇到这样一种场景,当用户使用metamask签名交易并提交后,Dapp的中心服务端需要拿到这个交易ID,并跟踪这个交易的执行,甚至会根据这笔交易去触发后端逻辑(当然使用event可以一定程度避开这个问题,但这种回避式的解决方案不在此讨论)，但现实情况往往是令人痛苦的，因为很可能会因为种种原因，我们无法取到metamask的回调，导致开发者因此”丢失”掉这笔交易。</p>
 
@@ -2995,7 +2995,7 @@
     <title type="html"><![CDATA[那些以太坊DApp服务端开发期望已久的轮子]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi/"/>
-    <updated>2018-05-16T17:20:33+08:00</updated>
+    <updated>2018-05-16T09:20:33+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi</id>
     <content type="html"><![CDATA[<p>以太坊虽说是一个去中心化的东西,但DApp却并非是完全去中心化的应用,其主要原因不外乎是以太坊的处理能力和资源有限,无法承载一个完整应用全部的逻辑。所以，目前市面上所有的DApp应用都是需要中心化服务解释的。那么，本文就是列举一些可能会用到的轮子,帮助快速构建应用。</p>
 
@@ -3336,7 +3336,7 @@
     <title type="html"><![CDATA[ethereum-solidity的坑]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng/"/>
-    <updated>2018-04-02T10:54:43+08:00</updated>
+    <updated>2018-04-02T02:54:43+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng</id>
     <content type="html"><![CDATA[<p>以太坊合约的坑.</p>
 
@@ -3394,7 +3394,7 @@
     <title type="html"><![CDATA[以太坊合约开发中那些危险的坑]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng/"/>
-    <updated>2018-03-18T16:29:02+08:00</updated>
+    <updated>2018-03-18T08:29:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng</id>
     <content type="html"><![CDATA[<p>列举合约开发中那些危险的操作.</p>
 
@@ -3416,7 +3416,7 @@
     <title type="html"><![CDATA[以太坊实战-交易爬虫]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong/"/>
-    <updated>2018-03-13T19:46:40+08:00</updated>
+    <updated>2018-03-13T11:46:40+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong</id>
     <content type="html"><![CDATA[<p>本文从一个区块链跑路项目说起,怎么通过大家可见的区块数据进行自己的业务分析,目的主要是讲述中间涉及到的技术,如果你能从中获益,并因此构建自己更加强大的分析工具,我深感荣幸.</p>
 
@@ -3723,7 +3723,7 @@
     <title type="html"><![CDATA[solidity备忘录]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu/"/>
-    <updated>2018-03-08T09:38:45+08:00</updated>
+    <updated>2018-03-08T01:38:45+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu</id>
     <content type="html"><![CDATA[<p>关于以太坊solidity语言一些有趣或者有意义的tips.</p>
 
@@ -4043,7 +4043,7 @@
     <title type="html"><![CDATA[基于以太坊的数字资产]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan/"/>
-    <updated>2018-03-06T18:24:35+08:00</updated>
+    <updated>2018-03-06T10:24:35+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan</id>
     <content type="html"><![CDATA[<p>代币(token)是什么?</p>
 
@@ -4283,7 +4283,7 @@
     <title type="html"><![CDATA[以太坊交易]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi/"/>
-    <updated>2018-03-05T14:26:24+08:00</updated>
+    <updated>2018-03-05T06:26:24+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi</id>
     <content type="html"><![CDATA[<p>交易是区块链和重中之重,不论是简单的转账还是复杂的智能合约的执行,都是依托于交易来完成。但是我回头仔细研究了一把以太坊的交易,并梳理这篇文章的原因,仅仅是因为在面试的时候没有回答上来,羞愧……</p>
 
@@ -4738,7 +4738,7 @@
     <title type="html"><![CDATA[深入ethereum源码-从区块头看共识挖矿]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/"/>
-    <updated>2018-02-24T16:09:11+08:00</updated>
+    <updated>2018-02-24T08:09:11+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang</id>
     <content type="html"><![CDATA[<p>区块是区块链的基本组成单位,而区块头又是区块的核心数据,本文希望从区块头延展开来,看看区块链的挖矿机制。</p>
 
@@ -5165,7 +5165,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[深入ethereum源码-whisper协议解读]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/"/>
-    <updated>2018-02-07T16:13:02+08:00</updated>
+    <updated>2018-02-07T08:13:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du</id>
     <content type="html"><![CDATA[<p>whisper协议是以太坊DApps之间的通信协议。</p>
 
@@ -5352,7 +5352,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块节点发现机制]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/"/>
-    <updated>2018-01-30T11:40:37+08:00</updated>
+    <updated>2018-01-30T03:40:37+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi</id>
     <content type="html"><![CDATA[<p>ethereum是基于kademlia协议实现其节点自动发现机制,完整整个网络拓扑关系的构建刷新。
 <!-- more --></p>
@@ -5754,7 +5754,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块基础结构]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-01-29T11:19:23+08:00</updated>
+    <updated>2018-01-29T03:19:23+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou</id>
     <content type="html"><![CDATA[<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
 
@@ -6321,7 +6321,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[p2p之UDP打洞]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/"/>
-    <updated>2018-01-26T22:03:15+08:00</updated>
+    <updated>2018-01-26T14:03:15+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong</id>
     <content type="html"><![CDATA[<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
 
@@ -6659,7 +6659,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[浅谈元编程]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng/"/>
-    <updated>2017-08-02T17:54:41+08:00</updated>
+    <updated>2017-08-02T09:54:41+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2017/08/02/qian-tan-yuan-bian-cheng</id>
     <content type="html"><![CDATA[<p>为什么会突然想到写这篇文章呢？其实是因为我曾经向一位朋友推荐学习一下ruby/lisp这类支持元编程的语言,尽管可能永远不会在生产环境中用到,但是可以让人学习用另一种思路思考问题,然后友人就要求我解释我学了之后思考问题的角度有何不同,当时确实把我难住了,因为这个问题的确不好描述。</p>
 
@@ -6817,7 +6817,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
     <title type="html"><![CDATA[http原理]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li/"/>
-    <updated>2016-03-15T14:10:51+08:00</updated>
+    <updated>2016-03-15T06:10:51+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li</id>
     <content type="html"><![CDATA[<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
 
@@ -7178,7 +7178,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[task tracer -- 实时任务追踪系统]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2016/02/18/task-tracer/"/>
-    <updated>2016-02-18T14:43:27+08:00</updated>
+    <updated>2016-02-18T06:43:27+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2016/02/18/task-tracer</id>
     <content type="html"><![CDATA[<h2 id="section">产生背景</h2>
 
@@ -7289,7 +7289,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[gulp js的构建工具]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile/"/>
-    <updated>2015-09-16T21:56:17+08:00</updated>
+    <updated>2015-09-16T13:56:17+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile</id>
     <content type="html"><![CDATA[<h3 id="section">0. 简介</h3>
 <p>gulp是javascript世界的构建工具，它并不是js世界第一个构建工具，但由于它小而快的特点，一出现就快速赶超它的前辈grunt，在npm的下载榜上一直高居前列。</p>
@@ -7540,7 +7540,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[分享你的Angular指令]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling/"/>
-    <updated>2015-05-27T17:47:56+08:00</updated>
+    <updated>2015-05-27T09:47:56+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling</id>
     <content type="html"><![CDATA[<h3 id="angular-directive-on-bower">Angular directive on bower</h3>
 <p>用Angular做web开发不但听起来是非常炫酷的事情，而且从我实际的开发体验来看，它确实是极大减轻了开发者的痛苦。我可以把精力都花在组织业务逻辑，创建更为流畅和漂亮的UI上，而完全不用去反复沦陷在事件绑定数据更新这些无趣的事情上。此外，angular框架本身依照设计模式上定义出了一套MVC漂亮的实现,了解其controller,server,directive后，写出大型web app已经不是难事了。</p>
@@ -7711,7 +7711,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[关于后台任务]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu/"/>
-    <updated>2015-05-27T17:16:34+08:00</updated>
+    <updated>2015-05-27T09:16:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/27/guan-yu-hou-tai-ren-wu</id>
     <content type="html"><![CDATA[<h3 id="sidekiq">关于sidekiq</h3>
 <p>在做ruby开发时，通常会遇到耗时操作的处理，sidekiq由于其使用简单，性能强劲，所以常被用来作为Ruby应用的后台任务的执行引擎。不过sidekiq有个令人头疼的问题，就是任务提交到后台异步执行后，对于其状态的监测和管理就成为很大的问题。</p>
@@ -7781,7 +7781,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope/"/>
-    <updated>2015-05-25T14:12:42+08:00</updated>
+    <updated>2015-05-25T06:12:42+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope</id>
     <content type="html"><![CDATA[<h3 id="scopeisolated-scope">分离式scope（Isolated Scope）</h3>
 <p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
@@ -7909,7 +7909,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[高效读取excel]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel/"/>
-    <updated>2015-05-25T11:11:02+08:00</updated>
+    <updated>2015-05-25T03:11:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/25/gao-xiao-du-qu-excel</id>
     <content type="html"><![CDATA[<p>前面介绍ruby写excel文件的一个很cool的gem包<code>axlsx</code>,这里介绍另一个高效读取excel的包<code>creek</code>。</p>
 
@@ -7981,7 +7981,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[脚下的路]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu/"/>
-    <updated>2015-02-16T09:22:38+08:00</updated>
+    <updated>2015-02-16T01:22:38+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/02/16/jiao-xia-de-lu</id>
     <content type="html"><![CDATA[<p>本来之前就想写写关于2014年的经历，但一直心里都是满满的负能量，所以一直没有下笔。今天其实也是，和家人闹得不开心，然后愤懑地来公司上班，没想到在路上反而突然想明白了，所以就回顾一下过去的2014，还有现在心里的想法吧。</p>
 
@@ -8007,7 +8007,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
     <title type="html"><![CDATA[rvm和rbenv环境变量冲突导致无法安装gem包]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao/"/>
-    <updated>2015-01-05T18:11:47+08:00</updated>
+    <updated>2015-01-05T10:11:47+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/01/05/rvmhe-rbenvhuan-jing-bian-liang-chong-tu-dao-zhi-wu-fa-an-zhuang-gembao</id>
     <content type="html"><![CDATA[<h2 id="section">背景</h2>
 <p>root环境用rvm安装了ruby，但我需要在用户环境重装ruby，而且个人喜欢用rbenv，这就导致了我安装了rbenv的gem后，没有权限安装gem包。</p>
@@ -8058,7 +8058,7 @@ unset GEM_HOME
     <title type="html"><![CDATA[创建递归菜单]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/"/>
-    <updated>2015-01-02T12:44:07+08:00</updated>
+    <updated>2015-01-02T04:44:07+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan</id>
     <content type="html"><![CDATA[<p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
 
@@ -8217,7 +8217,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
-    <updated>2014-12-29T17:32:53+08:00</updated>
+    <updated>2014-12-29T09:32:53+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
     <content type="html"><![CDATA[<h1 id="section">简介</h1>
 <p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
@@ -8478,7 +8478,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[新建angular项目]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu/"/>
-    <updated>2014-11-25T10:54:31+08:00</updated>
+    <updated>2014-11-25T02:54:31+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu</id>
     <content type="html"><![CDATA[<h2 id="section">需要的工具</h2>
 
@@ -8674,9 +8674,9 @@ list[ 1 ][ 1 ] = d;
   <entry>
     <title type="html"><![CDATA[tmux]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/09/08/tmux/"/>
-    <updated>2014-09-08T00:37:23+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/09/08/tmux</id>
+    <link href="http://qjpcpu.github.io/blog/2014/09/07/tmux/"/>
+    <updated>2014-09-07T16:37:23+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/09/07/tmux</id>
     <content type="html"><![CDATA[<h3 id="section">基本操作</h3>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
@@ -8896,7 +8896,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[初识hadoop及map-reduce]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce/"/>
-    <updated>2014-09-03T20:40:36+08:00</updated>
+    <updated>2014-09-03T12:40:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce</id>
     <content type="html"><![CDATA[<h2 id="hadoop">搭建hadoop环境</h2>
 
@@ -9284,7 +9284,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[使用octopress搭建github pages]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
-    <updated>2014-08-31T17:36:06+08:00</updated>
+    <updated>2014-08-31T09:36:06+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
     <content type="html"><![CDATA[<h2 id="gitruby">安装git,ruby</h2>
 <p>略</p>
@@ -9366,7 +9366,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[mysql常用命令]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling/"/>
-    <updated>2014-08-21T11:05:13+08:00</updated>
+    <updated>2014-08-21T03:05:13+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling</id>
     <content type="html"><![CDATA[<h3 id="mysql">1.远程链接mysql</h3>
 
@@ -9545,7 +9545,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[golang远程调用]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong/"/>
-    <updated>2014-08-15T20:22:34+08:00</updated>
+    <updated>2014-08-15T12:22:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong</id>
     <content type="html"><![CDATA[<p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
 
@@ -9766,9 +9766,9 @@ list[ 1 ][ 1 ] = d;
   <entry>
     <title type="html"><![CDATA[js异步回调与闭包]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao/"/>
-    <updated>2014-08-14T00:20:20+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
+    <link href="http://qjpcpu.github.io/blog/2014/08/13/jsyi-bu-hui-diao-yu-bi-bao/"/>
+    <updated>2014-08-13T16:20:20+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/08/13/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>example.coffee  异步回调中的陷阱</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
@@ -9860,9 +9860,9 @@ list[ 1 ][ 1 ] = d;
   <entry>
     <title type="html"><![CDATA[struct tags]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/07/12/struct-tags/"/>
-    <updated>2014-07-12T00:07:11+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/07/12/struct-tags</id>
+    <link href="http://qjpcpu.github.io/blog/2014/07/11/struct-tags/"/>
+    <updated>2014-07-11T16:07:11+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/07/11/struct-tags</id>
     <content type="html"><![CDATA[<h3 id="section">结构体标签</h3>
 
 <p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
@@ -9931,7 +9931,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[你不知道的Go]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
-    <updated>2014-06-23T14:37:47+08:00</updated>
+    <updated>2014-06-23T06:37:47+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
     <content type="html"><![CDATA[<!-- more -->
 
@@ -9997,7 +9997,7 @@ list[ 1 ][ 1 ] = d;
     <title type="html"><![CDATA[信任关系建立]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
-    <updated>2014-05-21T14:58:28+08:00</updated>
+    <updated>2014-05-21T06:58:28+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
     <content type="html"><![CDATA[<h3 id="host1host2">建立host1到host2的信任关系</h3>
 
@@ -10059,9 +10059,9 @@ list[ 1 ][ 1 ] = d;
   <entry>
     <title type="html"><![CDATA[命令行参数]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu/"/>
-    <updated>2014-05-02T01:14:33+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/05/02/ming-ling-xing-can-shu</id>
+    <link href="http://qjpcpu.github.io/blog/2014/05/01/ming-ling-xing-can-shu/"/>
+    <updated>2014-05-01T17:14:33+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/05/01/ming-ling-xing-can-shu</id>
     <content type="html"><![CDATA[<p>阅读docker源码第一个文件<code>DOCKER/docker/docker.go</code>，这是docker的主函数所在的地方。简单来说，这个文件的代码就做了一件事：解析命令行参数，然后根据命令行参数再分流到各种子过程的调用。</p>
 
 <!-- more -->
@@ -10182,7 +10182,7 @@ flag.String(&amp;de,"b","","argument")
     <title type="html"><![CDATA[sort]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
-    <updated>2014-04-15T20:57:34+08:00</updated>
+    <updated>2014-04-15T12:57:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
     <content type="html"><![CDATA[<h3 id="sort">sort排序常用参数</h3>
 
@@ -10222,7 +10222,7 @@ flag.String(&amp;de,"b","","argument")
     <title type="html"><![CDATA[server load]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/27/server-load/"/>
-    <updated>2014-03-27T09:39:14+08:00</updated>
+    <updated>2014-03-27T01:39:14+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/27/server-load</id>
     <content type="html"><![CDATA[<h3 id="section">先看几个处理器</h3>
 
@@ -10293,7 +10293,7 @@ work      0.0  23    - -         -      - 11760 00:03:36
     <title type="html"><![CDATA[linux下查看线程数]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/"/>
-    <updated>2014-03-25T08:53:55+08:00</updated>
+    <updated>2014-03-25T00:53:55+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu</id>
     <content type="html"><![CDATA[<h3 id="cat-procpidstatus">1. cat /proc/${pid}/status</h3>
 <p>### 2. ps -mp &lt;PID&gt;</p>
@@ -10303,9 +10303,9 @@ work      0.0  23    - -         -      - 11760 00:03:36
   <entry>
     <title type="html"><![CDATA[route]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/03/14/route/"/>
-    <updated>2014-03-14T00:03:30+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/14/route</id>
+    <link href="http://qjpcpu.github.io/blog/2014/03/13/route/"/>
+    <updated>2014-03-13T16:03:30+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/13/route</id>
     <content type="html"><![CDATA[<p>算是记录一个教训吧。</p>
 
 <p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(<code>route -n</code>)，外网ip没得路由规则走，添加默认网关后ok：</p>
@@ -10324,7 +10324,7 @@ work      0.0  23    - -         -      - 11760 00:03:36
     <title type="html"><![CDATA[ls遍历空目录处理]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/"/>
-    <updated>2014-03-12T23:18:02+08:00</updated>
+    <updated>2014-03-12T15:18:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li</id>
     <content type="html"><![CDATA[<p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
 
@@ -10362,7 +10362,7 @@ done
     <title type="html"><![CDATA[date命令]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/12/dateming-ling/"/>
-    <updated>2014-03-12T23:03:56+08:00</updated>
+    <updated>2014-03-12T15:03:56+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/12/dateming-ling</id>
     <content type="html"><![CDATA[<p>首先看看常用的格式字符串</p>
 
@@ -10411,7 +10411,7 @@ date -d @1392954893 "+%Y-%m-%d %H:%M:%S"  #将时间戳转换为时间
     <title type="html"><![CDATA[stat命令与文件时间]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian/"/>
-    <updated>2014-03-12T15:04:54+08:00</updated>
+    <updated>2014-03-12T07:04:54+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/12/statming-ling-yu-wen-jian-shi-jian</id>
     <content type="html"><![CDATA[<h3 id="stat">stat命令</h3>
 
@@ -10454,9 +10454,9 @@ $ stat -c %z access.log #获取change time
   <entry>
     <title type="html"><![CDATA[shell数组]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu/"/>
-    <updated>2014-03-10T00:22:25+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/10/shellshu-zu</id>
+    <link href="http://qjpcpu.github.io/blog/2014/03/09/shellshu-zu/"/>
+    <updated>2014-03-09T16:22:25+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/09/shellshu-zu</id>
     <content type="html"><![CDATA[<h3 id="section">数组定义</h3>
 
 <p>定义数组需要用括号把元素包裹起来。</p>
@@ -10538,7 +10538,7 @@ echo ${arr[*]}  # a b c d e
     <title type="html"><![CDATA[compile ruby from source]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source/"/>
-    <updated>2014-03-07T15:35:02+08:00</updated>
+    <updated>2014-03-07T07:35:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/07/compile-ruby-from-source</id>
     <content type="html"><![CDATA[<h3 id="section">下载需要的软件包</h3>
 
@@ -10627,7 +10627,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[curl]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/03/05/curl/"/>
-    <updated>2014-03-05T23:29:56+08:00</updated>
+    <updated>2014-03-05T15:29:56+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/05/curl</id>
     <content type="html"><![CDATA[<h3 id="section">基本用法</h3>
 
@@ -10719,7 +10719,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[列出目录结构]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou/"/>
-    <updated>2014-02-27T20:52:50+08:00</updated>
+    <updated>2014-02-27T12:52:50+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/27/lie-chu-mu-lu-jie-gou</id>
     <content type="html"><![CDATA[<h3 id="tree">最简单美观的方法tree</h3>
 
@@ -11050,7 +11050,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[find命令]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/27/findming-ling/"/>
-    <updated>2014-02-27T20:10:37+08:00</updated>
+    <updated>2014-02-27T12:10:37+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/27/findming-ling</id>
     <content type="html"><![CDATA[<h3 id="find">find的基本语法</h3>
 
@@ -11111,7 +11111,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[使用expect实现自动登录]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu/"/>
-    <updated>2014-02-25T20:13:57+08:00</updated>
+    <updated>2014-02-25T12:13:57+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/25/shi-yong-expectshi-xian-zi-dong-deng-lu</id>
     <content type="html"><![CDATA[<p>网上有很多类似的文章，但很多都是先写expect脚本再从bash里调用expect脚本，
 我希望直接在bash脚本里使用expect命令来实现自动登录。</p>
@@ -11264,7 +11264,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[linux日常维护]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu/"/>
-    <updated>2014-02-21T22:58:13+08:00</updated>
+    <updated>2014-02-21T14:58:13+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/21/linuxri-chang-wei-hu</id>
     <content type="html"><![CDATA[<h3 id="cron">某些用户cron任务失败</h3>
 
@@ -11288,7 +11288,7 @@ export PATH=$PATH:$RUBY_DEST/bin
     <title type="html"><![CDATA[sendmail发邮件中文乱码]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma/"/>
-    <updated>2014-02-19T23:23:15+08:00</updated>
+    <updated>2014-02-19T15:23:15+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/19/sendmailfa-you-jian-zhong-wen-luan-ma</id>
     <content type="html"><![CDATA[<p>如果这是要使用sendmail命令发送的邮件file内容：</p>
 
@@ -11332,9 +11332,9 @@ Content-Type:text/html
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(四)——条件格式化]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/"/>
-    <updated>2014-02-15T00:47:04+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua/"/>
+    <updated>2014-02-14T16:47:04+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-si-tiao-jian-ge-shi-hua</id>
     <content type="html"><![CDATA[<h3 id="section">定义格式化操作</h3>
 
 <p>条件格式化风格定义也是使用格式化定义语句add_style，不同的是必须将type指定为:dxf。</p>
@@ -11494,9 +11494,9 @@ Content-Type:text/html
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(三)创建图表]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/"/>
-    <updated>2014-02-15T00:42:48+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao/"/>
+    <updated>2014-02-14T16:42:48+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-san-chuang-jian-tu-biao</id>
     <content type="html"><![CDATA[<h3 id="section">饼图</h3>
 
 <p>axlsx创建饼状图非常简单，上图：</p>
@@ -11629,9 +11629,9 @@ Content-Type:text/html
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(二)格式化为美观的表格]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
-    <updated>2014-02-15T00:38:10+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge/"/>
+    <updated>2014-02-14T16:38:10+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-er-ge-shi-hua-wei-mei-guan-de-biao-ge</id>
     <content type="html"><![CDATA[<h3 id="section">基础知识</h3>
 
 <p>axlsx的格式化使用Aslsx::Styles类来处理，通常使用Axlsx::Styles#add_style 帮助方法来添加格式，该方法定义：</p>
@@ -11829,9 +11829,9 @@ sheet.add_row ["a', "b"], :style =&gt; header
   <entry>
     <title type="html"><![CDATA[axlsx报表工具(一)安装及入门]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
-    <updated>2014-02-15T00:34:19+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men/"/>
+    <updated>2014-02-14T16:34:19+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/axlsxbao-biao-gong-ju-yi-an-zhuang-ji-ru-men</id>
     <content type="html"><![CDATA[<h3 id="section">安装</h3>
 
 <p>axlsx是一个基于ruby的Office Open XML Spreadsheet报表生成工具，下图是它生成的一个报表截图</p>
@@ -11890,9 +11890,9 @@ sheet.add_row ["a', "b"], :style =&gt; header
   <entry>
     <title type="html"><![CDATA[一步一步搭建mysql主从同步]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
-    <updated>2014-02-15T00:24:49+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/"/>
+    <updated>2014-02-14T16:24:49+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu</id>
     <content type="html"><![CDATA[<h3 id="mysql">下载mysql数据库</h3>
 
 <pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
@@ -12039,9 +12039,9 @@ mysql&gt; show slave status\G;
   <entry>
     <title type="html"><![CDATA[在rails外单独使用ActiveRecord]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord/"/>
-    <updated>2014-02-15T00:20:50+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/zai-railswai-dan-du-shi-yong-activerecord</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-railswai-dan-du-shi-yong-activerecord/"/>
+    <updated>2014-02-14T16:20:50+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/zai-railswai-dan-du-shi-yong-activerecord</id>
     <content type="html"><![CDATA[<!-- more -->
 
 <h3 id="activerecord">单独使用ActiveRecord</h3>
@@ -12170,9 +12170,9 @@ end
   <entry>
     <title type="html"><![CDATA[rspec]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/rspec/"/>
-    <updated>2014-02-15T00:14:29+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/rspec</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/rspec/"/>
+    <updated>2014-02-14T16:14:29+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/rspec</id>
     <content type="html"><![CDATA[<h2 id="rspec">RSpec断言规则</h2>
 
 <p>RSpec有一些常见的断言规则。Ruby的断言方法是以问号结尾并且返回true或false的方法，常见的如： empty?   nil?    instance_of? 等。在spec中的断言很简单，就是should be_去掉问号的断言方法。如：</p>
@@ -12205,9 +12205,9 @@ end
   <entry>
     <title type="html"><![CDATA[rack based application]]></title>
     <summary><![CDATA[]]></summary>
-    <link href="http://qjpcpu.github.io/blog/2014/02/15/rack-based-application/"/>
-    <updated>2014-02-15T00:04:13+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/02/15/rack-based-application</id>
+    <link href="http://qjpcpu.github.io/blog/2014/02/14/rack-based-application/"/>
+    <updated>2014-02-14T16:04:13+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/02/14/rack-based-application</id>
     <content type="html"><![CDATA[<h3 id="rack">1.什么是rack</h3>
 
 <p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
@@ -12405,7 +12405,7 @@ run Demo::Application.routes
     <title type="html"><![CDATA[初识jruby之在tomcat上部署jruby-on-rails]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/"/>
-    <updated>2014-02-14T23:58:44+08:00</updated>
+    <updated>2014-02-14T15:58:44+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails</id>
     <content type="html"><![CDATA[<h3 id="prerequesite">1. prerequesite</h3>
 
@@ -12480,7 +12480,7 @@ run Demo::Application.routes
     <title type="html"><![CDATA[初识jruby之安装配置jrubyonrails]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/"/>
-    <updated>2014-02-14T23:49:23+08:00</updated>
+    <updated>2014-02-14T15:49:23+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails</id>
     <content type="html"><![CDATA[<h3 id="prerequesite">1. prerequesite</h3>
 
@@ -12603,7 +12603,7 @@ Demo::Application.initialize!
     <title type="html"><![CDATA[在一组方法中共享变量]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang/"/>
-    <updated>2014-02-14T23:46:19+08:00</updated>
+    <updated>2014-02-14T15:46:19+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zai-yi-zu-fang-fa-zhong-gong-xiang-bian-liang</id>
     <content type="html"><![CDATA[<pre><code>lambda{
 	shared=10
@@ -12628,7 +12628,7 @@ show #=&gt;13
     <title type="html"><![CDATA[rails 在javascript中使用ruby对象]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang/"/>
-    <updated>2014-02-14T23:40:15+08:00</updated>
+    <updated>2014-02-14T15:40:15+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-zai-javascriptzhong-shi-yong-rubydui-xiang</id>
     <content type="html"><![CDATA[<h3 id="javascriptruby">1.在javascript中使用ruby简单对象</h3>
 
@@ -12717,7 +12717,7 @@ end
     <title type="html"><![CDATA[rails URL路由]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you/"/>
-    <updated>2014-02-14T23:26:35+08:00</updated>
+    <updated>2014-02-14T15:26:35+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-urllu-you</id>
     <content type="html"><![CDATA[<p>rails URL路由的最权威文档当然是其官方站点Rails routing from the outside in，我这里只提几个文档中常用的要点。</p>
 
@@ -12994,7 +12994,7 @@ resources :photos, :only=&gt;:none
     <title type="html"><![CDATA[rails 填充数据库初始数据]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju/"/>
-    <updated>2014-02-14T23:21:46+08:00</updated>
+    <updated>2014-02-14T15:21:46+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-tian-chong-shu-ju-ku-chu-shi-shu-ju</id>
     <content type="html"><![CDATA[<!-- more -->
 
@@ -13024,7 +13024,7 @@ resources :photos, :only=&gt;:none
     <title type="html"><![CDATA[rails 配置使用jquery-file-upload  step by step]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step/"/>
-    <updated>2014-02-14T23:11:06+08:00</updated>
+    <updated>2014-02-14T15:11:06+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-pei-zhi-shi-yong-jquery-file-upload-step-by-step</id>
     <content type="html"><![CDATA[<p>一步步安装使用jquery-file-upload</p>
 
@@ -13149,7 +13149,7 @@ end
     <title type="html"><![CDATA[rails Eagerloading]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading/"/>
-    <updated>2014-02-14T23:05:33+08:00</updated>
+    <updated>2014-02-14T15:05:33+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-eagerloading</id>
     <content type="html"><![CDATA[<p>若存在如下Post model：</p>
 
@@ -13199,7 +13199,7 @@ Address.includes(:addressable)
     <title type="html"><![CDATA[rails 创建数据库索引]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin/"/>
-    <updated>2014-02-14T23:01:32+08:00</updated>
+    <updated>2014-02-14T15:01:32+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-chuang-jian-shu-ju-ku-suo-yin</id>
     <content type="html"><![CDATA[<p>以经典的customer-order为例</p>
 
@@ -13299,7 +13299,7 @@ Address.includes(:addressable)
     <title type="html"><![CDATA[rails使用devise验证用户]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu/"/>
-    <updated>2014-02-14T22:46:34+08:00</updated>
+    <updated>2014-02-14T14:46:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-deviseyan-zheng-yong-hu</id>
     <content type="html"><![CDATA[<h3 id="devise">安装配置devise</h3>
 
@@ -13424,7 +13424,7 @@ rake db:migrate
     <title type="html"><![CDATA[ruby线程]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng/"/>
-    <updated>2014-02-14T22:35:53+08:00</updated>
+    <updated>2014-02-14T14:35:53+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubyxian-cheng</id>
     <content type="html"><![CDATA[<h3 id="section">1. 创建线程</h3>
 
@@ -13582,7 +13582,7 @@ end
     <title type="html"><![CDATA[rails ActiveRecord数据库关系1:n]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n/"/>
-    <updated>2014-02-14T22:05:20+08:00</updated>
+    <updated>2014-02-14T14:05:20+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-n</id>
     <content type="html"><![CDATA[<p>如图所示，在demo数据库中有customers和orders两张表。一个customer有多个order，一个order属于一个customer，是一个1:n关系。</p>
 
@@ -13754,7 +13754,7 @@ p2.owner.class.name # =&gt; 'Product'
     <title type="html"><![CDATA[rails ActiveRecord数据库关系n:n]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n/"/>
-    <updated>2014-02-14T21:50:54+08:00</updated>
+    <updated>2014-02-14T13:50:54+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-n-n</id>
     <content type="html"><![CDATA[<p>如图所示，在demo数据库中有assemblies和parts两张表。一个assembly有多个part，一个part也拥有多个assembly，是一个n:n关系。</p>
 
@@ -13919,7 +13919,7 @@ $ rails g model product
     <title type="html"><![CDATA[rails ActiveRecord数据库关系1:1]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1/"/>
-    <updated>2014-02-14T21:25:17+08:00</updated>
+    <updated>2014-02-14T13:25:17+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rails-activerecordshu-ju-ku-guan-xi-1-1</id>
     <content type="html"><![CDATA[<p>如图所示，在demo数据库中有suppliers和accounts两张表。一个supplier有一个account，一个account属于一个supplier，是一个1:1关系。</p>
 
@@ -14039,7 +14039,7 @@ acc = s.create_account(account_number:"4589")
     <title type="html"><![CDATA[Go学习笔记-类型与接口]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/"/>
-    <updated>2014-02-14T18:27:36+08:00</updated>
+    <updated>2014-02-14T10:27:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou</id>
     <content type="html"><![CDATA[<p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
 
@@ -14213,7 +14213,7 @@ v := reflect.ValueOf(i) //得到实际的值,通过v我们获取存储在里面�
     <title type="html"><![CDATA[Go学习笔记-go routine]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine/"/>
-    <updated>2014-02-14T18:23:38+08:00</updated>
+    <updated>2014-02-14T10:23:38+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-go-routine</id>
     <content type="html"><![CDATA[<h2 id="go-routine-indeed">Go routine indeed</h2>
 
@@ -14341,7 +14341,7 @@ default:
     <title type="html"><![CDATA[Go学习笔记-函数和包]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao/"/>
-    <updated>2014-02-14T18:15:26+08:00</updated>
+    <updated>2014-02-14T10:15:26+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-han-shu-he-bao</id>
     <content type="html"><![CDATA[<h3 id="section">函数定义</h3>
 
@@ -14532,7 +14532,7 @@ func main() {
     <title type="html"><![CDATA[shell字符串处理]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li/"/>
-    <updated>2014-02-14T18:10:30+08:00</updated>
+    <updated>2014-02-14T10:10:30+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/shellzi-fu-chuan-chu-li</id>
     <content type="html"><![CDATA[<h3 id="section">1.获取字符串长度</h3>
 
@@ -14793,7 +14793,7 @@ good|bad
     <title type="html"><![CDATA[code snippets]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/code-snippets/"/>
-    <updated>2014-02-14T18:08:28+08:00</updated>
+    <updated>2014-02-14T10:08:28+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/code-snippets</id>
     <content type="html"><![CDATA[<h3 id="rubyutf-8">ruby文件utf-8编码</h3>
 
@@ -14816,7 +14816,7 @@ good|bad
     <title type="html"><![CDATA[rake-ruby's make]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rake-rubys-make/"/>
-    <updated>2014-02-14T17:49:14+08:00</updated>
+    <updated>2014-02-14T09:49:14+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rake-rubys-make</id>
     <content type="html"><![CDATA[<p>Rake，顾名思义，就是Ruby的Make工具。</p>
 
@@ -15180,7 +15180,7 @@ end
     <title type="html"><![CDATA[天道酬勤-在追逐梦想的路上]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang/"/>
-    <updated>2014-02-14T17:43:24+08:00</updated>
+    <updated>2014-02-14T09:43:24+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/tian-dao-chou-qin-zai-zhui-zhu-meng-xiang-de-lu-shang</id>
     <content type="html"><![CDATA[<p>还记得大概一年前，也是在CSDN博客上读过一篇文章，拜读某个大牛描述了他为心仪的公司准备的过程，当时觉得很受触动，于是在博客下留言自勉，还记得他回复的话说：跨专业，更要提早准备。而现在，作为一个机械专业的学生，一路过关斩将拿到百度offer，除了激动之余，我能清晰的感觉到，自己的梦想画卷才刚刚展开。</p>
 
@@ -15210,7 +15210,7 @@ end
     <title type="html"><![CDATA[ruby之周期性任务]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu/"/>
-    <updated>2014-02-14T17:38:41+08:00</updated>
+    <updated>2014-02-14T09:38:41+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubyzhi-zhou-qi-xing-ren-wu</id>
     <content type="html"><![CDATA[<h3 id="section">1.前言</h3>
 
@@ -15355,7 +15355,7 @@ require './config/environment'
     <title type="html"><![CDATA[学算法并非和语言无关]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan/"/>
-    <updated>2014-02-14T17:35:43+08:00</updated>
+    <updated>2014-02-14T09:35:43+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/xue-suan-fa-bing-fei-he-yu-yan-wu-guan</id>
     <content type="html"><![CDATA[<h3 id="section">1. 写在前面</h3>
 
@@ -15449,7 +15449,7 @@ end
     <title type="html"><![CDATA[状态转移]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zhuang-tai-zhuan-yi/"/>
-    <updated>2014-02-14T17:30:39+08:00</updated>
+    <updated>2014-02-14T09:30:39+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zhuang-tai-zhuan-yi</id>
     <content type="html"><![CDATA[<h3 id="section">0. 引言</h3>
 
@@ -15692,7 +15692,7 @@ end
     <title type="html"><![CDATA[初识jruby之入门]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/"/>
-    <updated>2014-02-14T17:24:21+08:00</updated>
+    <updated>2014-02-14T09:24:21+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men</id>
     <content type="html"><![CDATA[<p>首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby，java这个词本身先产生了50%的安全感，所以这可能是比较贴近现实的选择。不过我今天想去倒腾倒腾这个东西，则完全是为了了解ruby的方方面面。</p>
 
@@ -15841,7 +15841,7 @@ Name:Jason Sex:Male Age:10
     <title type="html"><![CDATA[ruby常用的迭代操作]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubychang-yong-de-die-dai-cao-zuo/"/>
-    <updated>2014-02-14T17:18:15+08:00</updated>
+    <updated>2014-02-14T09:18:15+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubychang-yong-de-die-dai-cao-zuo</id>
     <content type="html"><![CDATA[<p>ruby是一门可以用sexy来形容的语言，下面就列举几个sexy的迭代操作。</p>
 
@@ -16009,7 +16009,7 @@ a.rotate(-3)     #=&gt; ["b", "c", "d", "a"]
     <title type="html"><![CDATA[ruby webdriver]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/ruby-webdriver/"/>
-    <updated>2014-02-14T17:13:12+08:00</updated>
+    <updated>2014-02-14T09:13:12+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/ruby-webdriver</id>
     <content type="html"><![CDATA[<h3 id="section">前言</h3>
 
@@ -16067,7 +16067,7 @@ b.element.click(:shift, :control)
     <title type="html"><![CDATA[rails为paperclip上传文件添加访问控制]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi/"/>
-    <updated>2014-02-14T15:21:11+08:00</updated>
+    <updated>2014-02-14T07:21:11+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/railswei-paperclipshang-chuan-wen-jian-tian-jia-fang-wen-kong-zhi</id>
     <content type="html"><![CDATA[<h3 id="section">0 前言</h3>
 
@@ -16119,7 +16119,7 @@ end
     <title type="html"><![CDATA[rails使用bootstrap及bootswatch]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-bootstrapji-bootswatch/"/>
-    <updated>2014-02-14T15:14:34+08:00</updated>
+    <updated>2014-02-14T07:14:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/railsshi-yong-bootstrapji-bootswatch</id>
     <content type="html"><![CDATA[<h3 id="section">1.简介</h3>
 
@@ -16195,7 +16195,7 @@ body { padding-top: 60px; }
     <title type="html"><![CDATA[在CentOS上搭建git服务器]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/"/>
-    <updated>2014-02-14T15:01:55+08:00</updated>
+    <updated>2014-02-14T07:01:55+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi</id>
     <content type="html"><![CDATA[<h3 id="section">0.定义</h3>
 
@@ -16366,7 +16366,7 @@ our @git_base_url_list = qw(git://git.the_git_host
     <title type="html"><![CDATA[ruby类和模块的关系]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/rubylei-he-mo-kuai-de-guan-xi/"/>
-    <updated>2014-02-14T14:47:25+08:00</updated>
+    <updated>2014-02-14T06:47:25+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/rubylei-he-mo-kuai-de-guan-xi</id>
     <content type="html"><![CDATA[<p>学习ruby入门的时候，很容易被其类和模块的小trick给迷惑住了，这里为了整理自己的理解，就写出来看看吧。</p>
 
@@ -16530,7 +16530,7 @@ son talk
     <title type="html"><![CDATA[Install and deploy rails on CentOS]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/install-and-deploy-rails-on-centos/"/>
-    <updated>2014-02-14T14:30:55+08:00</updated>
+    <updated>2014-02-14T06:30:55+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/install-and-deploy-rails-on-centos</id>
     <content type="html"><![CDATA[<h3 id="prerequisites">prerequisites:</h3>
 
@@ -16729,7 +16729,7 @@ grep httpd  /var/log/audit/audit.log | audit2allow -M passenger
     <title type="html"><![CDATA[git常用操作]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo/"/>
-    <updated>2014-02-14T14:26:31+08:00</updated>
+    <updated>2014-02-14T06:26:31+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo</id>
     <content type="html"><![CDATA[<!-- more -->
 <p>### 创建远程版本库</p>
@@ -16796,7 +16796,7 @@ git push origin master
     <title type="html"><![CDATA[在Linq中使用委托作为相等比较]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/"/>
-    <updated>2014-02-14T14:13:30+08:00</updated>
+    <updated>2014-02-14T06:13:30+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao</id>
     <content type="html"><![CDATA[<p>Linq中的操作符的相等比较都使用IEqualityComparer<t>作为判断依据，常见的使用该接口的操作符有：</t></p>
 
@@ -16945,7 +16945,7 @@ git push origin master
     <title type="html"><![CDATA[创建自己的gem]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem/"/>
-    <updated>2014-02-14T09:45:52+08:00</updated>
+    <updated>2014-02-14T01:45:52+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chuang-jian-zi-ji-de-gem</id>
     <content type="html"><![CDATA[<p>如果在开发过程中遇到比较通用化的场景，并且估计这种情况其他开发者也可能遇到，就可以把解决方案做成ruby gem，放到<a href="https://rubygems.org">rubygems.org</a>上供所有人使用，并且将源码托管到github上使得解决方案逐步成熟。</p>
 
@@ -17071,7 +17071,7 @@ git push origin master
     <title type="html"><![CDATA[First Post!]]></title>
     <summary><![CDATA[]]></summary>
     <link href="http://qjpcpu.github.io/blog/2014/02/13/first-post/"/>
-    <updated>2014-02-13T22:12:38+08:00</updated>
+    <updated>2014-02-13T14:12:38+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/13/first-post</id>
     <content type="html"><![CDATA[<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">puts</span> <span class="s1">&#39;Hello world!&#39;</span>	

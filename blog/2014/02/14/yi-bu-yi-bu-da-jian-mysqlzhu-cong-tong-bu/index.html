@@ -1,0 +1,319 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>一步一步搭建mysql主从同步 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="下载mysql数据库 $ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
+tar vzxf mysql-5.1.73.tar.gz 编译安装 最好专门创建一个用户mysql来安装数据库。 MYSQL_BASEDIR &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">一步一步搭建mysql主从同步</h2>
+	<div class="entry-content"><h3 id="mysql">下载mysql数据库</h3>
+
+<pre><code>$ wget http://cdn.mysql.com/Downloads/MySQL-5.1/mysql-5.1.73.tar.gz
+tar vzxf mysql-5.1.73.tar.gz
+</code></pre>
+
+<!-- more -->
+
+<h3 id="section">编译安装</h3>
+
+<p>最好专门创建一个用户mysql来安装数据库。</p>
+
+<pre><code>MYSQL_BASEDIR=$HOME/mysql
+cd mysql-5.1.73
+./configure 
+--prefix=${MYSQL_BASEDIR} 
+--with-charset=utf8 
+--with-extra-charsets=gbk,utf8,ascii,big5,latin1,binary 
+--with-unix-socket-path=${MYSQL_BASEDIR}/tmp/mysql.sock 
+--with-mysqld-user=mysql     #以哪个用户执行mysqld进程
+make
+make install
+</code></pre>
+
+<h3 id="section-1">初始化数据库</h3>
+
+<p>复制必要的配置文件和启停脚本</p>
+
+<pre><code>cd ${MYSQL_BASEDIR}
+mkdir etc log tmp var
+cp share/mysql/my-medium.cnf  etc/my.cnf
+cp share/mysql/mysql.server  bin/
+</code></pre>
+
+<h3 id="section-2">修改配置文件</h3>
+
+<pre><code>vim etc/my.cnf
+</code></pre>
+
+<p>在[mysqld]下添加配置项：</p>
+
+<pre><code>basedir= ${MYSQL_BASEDIR}   # ${MYSQL_BASEDIR}是你的mysql安装目录
+datadir = ${MYSQL_BASEDIR}/var   # mysql数据路径
+tmpdir = ${MYSQL_BASEDIR}/tmp   # 临时文件路径
+slave-load-tmpdir = ${MYSQL_BASEDIR}/tmp   # 从服务器同步LOAD DATA INFILE语句时创建临时文件的目录名
+port = 3306   # 如果修改port，[mysqld] 和 [client]下的port都要修改
+pid-file = ${MYSQL_BASEDIR}/var/mysql.pid  # mysqld PID文件位置
+#以下为可选
+socket = ${MYSQL_BASEDIR}/tmp/mysql.sock  # 用于指定本地连接的Unix套接字文件位置，[mysqld] 和 [client]下的port都要修改
+#skip-name-resolve   # 是否仅使用ip验证客户端
+#skip-symbolic-links  #忽略MyISAM表的数据及索引文件连接到另一个目录下
+max_connect_errors = 10000
+max_connections = 500
+wait-timeout = 30
+</code></pre>
+
+<p>启动数据库</p>
+
+<pre><code>$ ./bin/mysql_install_db  #安装数据库文件
+$ ./bin/mysql.server start    #出现下面这行说数据库启动ok了
+Starting MySQL.                                            [  OK  ]
+</code></pre>
+
+<h3 id="mysql-1">配置mysql用户</h3>
+
+<p>使用./bin目录下的mysql命令可以登录到数据库，登录后删除匿名用户并且为root设置密码：</p>
+
+<pre><code>$ mysql -u root
+&gt; delete from mysql.user where user='';
+&gt; UPDATE mysql.user SET Password = PASSWORD('password') WHERE user='root';
+</code></pre>
+
+<p>按照以上同样的步骤再搭建一个mysql，注意，如果在同一主机搭建多个mysql实例，那么就需要将端口改成不同才行。</p>
+
+<p>下面开始配置主从同步。</p>
+
+<p>首先在主库新建专门用于同步的数据库账号mysqlsync</p>
+
+<pre><code>&gt; GRANT REPLICATION SLAVE ON *.* TO 'mysqlsync'@'%' IDENTIFIED BY 'password';
+</code></pre>
+
+<h3 id="section-3">主库配置</h3>
+
+<p>所有的配置项还是在my.cnf中的[mysqld]下添加。</p>
+
+<p>首先server-id作为MySQL服务器的标识，具有相关联上下游同步系统需具有全局唯一性。主库我们将server-id配置为1。其他主库需要添加的配置有：</p>
+
+<pre><code>server-id=1
+# 同步过程中需要忽略的表，支持正则表达式。全库同步时，必须屏蔽mysql系统库和test测试库。
+replicate-wild-ignore-table = mysql.%
+replicate-wild-ignore-table = test.%
+# 需要同步的表，多个表需多次指定，这里我们使用全库同步,方便点
+# replicate-do-table = database.table
+log-bin = mysql-bin  #二进制日志，强制开启
+log-bin-index = mysql-bin.index  # 记录二进制日志索引文件
+relay-log-index = relay-log.index # 记录中继日志索引文件
+</code></pre>
+
+<h3 id="section-4">从库配置</h3>
+
+<pre><code>server-id=2
+read-only # 在从库开启该选项，避免在从库上进行写操作，导致主从数据不一致（不过对super权限无效哦）
+skip-slave-start # 在从库开启该选项，启动数据库后，需手动开启同步进程
+relay-log = mysql-relay #中继日志，从库开启
+relay-log-index = relay-log.index
+log-bin = mysql-bin
+log-bin-index = mysql-bin.index
+replicate-wild-ignore-table = mysql.%
+replicate-wild-ignore-table = test.%
+</code></pre>
+
+<h3 id="section-5">同步设置</h3>
+
+<p>启动主数据库，并查看主库状态：</p>
+
+<pre><code>$ ./bin/mysql.server start
+$ mysql -u root -p
+mysql&gt; show master status;
+</code></pre>
+
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=21e536be79899e517c8e3a11729ca80e/e7cd7b899e510fb31b3b92d4db33c895d1430c56.jpg?referer=a44e286a8418367af49e4aed6c4d&amp;x=.jpg" alt="image" /></p>
+
+<p>记下来log文件名和位置，这里是“mysql-bin.000005”和”106“。</p>
+
+<p>然后启动从库，</p>
+
+<pre><code>$ ./bin/mysql.server start
+$ mysql -u root -p
+mysql&gt; change master to master_host='your_host',master_port=3307,master_user='mysqlsync',master_password='pasword',master_log_file='mysql-bin.000005',master_log_pos=106;
+mysql&gt; startslave;  #启动从库
+mysql&gt; show slave status\G;
+</code></pre>
+
+<p>最后一条sql命令得到如图结果：</p>
+
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=a307b4b80846f21fcd345e56c61f1a5d/7acb0a46f21fbe091fae395769600c338644ad85.jpg?referer=781a5e5095dda144831e58820b9b&amp;x=.jpg" alt="image" /></p>
+
+<p>其中Slave_IO_Running和Slave_SQL_Running是yes就对了。</p>
+
+<p>最后，可以验证一下，在主库修改记录，从库可以看到同步过来的变化。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T16:24:49+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/linux/'>linux</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2022
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/yi-bu-yi-bu-da-jian-mysqlzhu-cong-tong-bu/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

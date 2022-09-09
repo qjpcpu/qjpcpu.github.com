@@ -4,7 +4,7 @@
   <title><![CDATA[Category: shell | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/shell/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[信任关系建立]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li/"/>
-    <updated>2014-05-21T14:58:28+08:00</updated>
+    <updated>2014-05-21T06:58:28+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/05/21/xin-ren-guan-xi-jian-li</id>
     <content type="html"><![CDATA[<h3 id="host1host2">建立host1到host2的信任关系</h3>
 
@@ -69,7 +69,7 @@ relation_a2b host1 host2
   <entry>
     <title type="html"><![CDATA[sort]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/04/15/sort/"/>
-    <updated>2014-04-15T20:57:34+08:00</updated>
+    <updated>2014-04-15T12:57:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/04/15/sort</id>
     <content type="html"><![CDATA[<h3 id="sort">sort排序常用参数</h3>
 
@@ -108,7 +108,7 @@ export LC_ALL=C
   <entry>
     <title type="html"><![CDATA[linux下查看线程数]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu/"/>
-    <updated>2014-03-25T08:53:55+08:00</updated>
+    <updated>2014-03-25T00:53:55+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/25/linuxxia-cha-kan-xian-cheng-shu</id>
     <content type="html"><![CDATA[<h3 id="cat-procpidstatus">1. cat /proc/${pid}/status</h3>
 <p>### 2. ps -mp &lt;PID&gt;</p>
@@ -117,9 +117,9 @@ export LC_ALL=C
   
   <entry>
     <title type="html"><![CDATA[route]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/03/14/route/"/>
-    <updated>2014-03-14T00:03:30+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/03/14/route</id>
+    <link href="http://qjpcpu.github.io/blog/2014/03/13/route/"/>
+    <updated>2014-03-13T16:03:30+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/03/13/route</id>
     <content type="html"><![CDATA[<p>算是记录一个教训吧。</p>
 
 <p>下午我的机器突然不能上外网，尝试内网和别的机器互访都没有问题，就是访问外网显示<code>connect: Network is unreachable</code>，<code>nslookup</code>查看DNS解析也没有问题，就是没想到网络不能到达很有可能是没有路由信息，最后朋友指点发现没有默认网关(<code>route -n</code>)，外网ip没得路由规则走，添加默认网关后ok：</p>
@@ -137,7 +137,7 @@ route add default gw 10.46.148.1
   <entry>
     <title type="html"><![CDATA[ls遍历空目录处理]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li/"/>
-    <updated>2014-03-12T23:18:02+08:00</updated>
+    <updated>2014-03-12T15:18:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/03/12/lsbian-li-kong-mu-lu-chu-li</id>
     <content type="html"><![CDATA[<p>先说说原因：<code>for</code>循环是利用空格做分隔符，所以可以这样打印句子中的单词：</p>
 

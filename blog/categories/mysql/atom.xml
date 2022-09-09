@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[mysql常用命令]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling/"/>
-    <updated>2014-08-21T11:05:13+08:00</updated>
+    <updated>2014-08-21T03:05:13+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/21/mysqlchang-yong-ming-ling</id>
     <content type="html"><![CDATA[<h3 id="mysql">1.远程链接mysql</h3>
 

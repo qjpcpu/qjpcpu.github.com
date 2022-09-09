@@ -4,7 +4,7 @@
   <title><![CDATA[Category: coffeescript | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/coffeescript/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[js异步回调与闭包]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao/"/>
-    <updated>2014-08-14T00:20:20+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/08/14/jsyi-bu-hui-diao-yu-bi-bao</id>
+    <link href="http://qjpcpu.github.io/blog/2014/08/13/jsyi-bu-hui-diao-yu-bi-bao/"/>
+    <updated>2014-08-13T16:20:20+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/08/13/jsyi-bu-hui-diao-yu-bi-bao</id>
     <content type="html"><![CDATA[<p>很多地方讲解<code>CoffeeScript/JavaScript</code>都用了这么一个例子：</p>
 
 <p><code>coffee-script  example.coffee  异步回调中的陷阱

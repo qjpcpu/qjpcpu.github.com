@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nodejs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/nodejs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[gulp js的构建工具]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile/"/>
-    <updated>2015-09-16T21:56:17+08:00</updated>
+    <updated>2015-09-16T13:56:17+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/09/16/gulp-nodejs-cool-makefile</id>
     <content type="html"><![CDATA[<h3 id="section">0. 简介</h3>
 <p>gulp是javascript世界的构建工具，它并不是js世界第一个构建工具，但由于它小而快的特点，一出现就快速赶超它的前辈grunt，在npm的下载榜上一直高居前列。</p>

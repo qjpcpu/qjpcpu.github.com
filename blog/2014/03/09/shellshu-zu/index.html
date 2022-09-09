@@ -1,0 +1,255 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>shell数组 - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="数组定义 定义数组需要用括号把元素包裹起来。 colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]} # red green blue black white
+echo ${colors[@]} # red green blue &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Shell数组</h2>
+	<div class="entry-content"><h3 id="section">数组定义</h3>
+
+<p>定义数组需要用括号把元素包裹起来。</p>
+
+<pre><code>colors=(red green blue black white)
+# 打印整个数组
+echo ${colors[*]}  # red green blue black white
+echo ${colors[@]}  # red green blue black white
+</code></pre>
+
+<!--more-->
+
+<h3 id="section-1">基本操作</h3>
+
+<pre><code># 有两种方法获取数组长度
+echo ${#colors[@]}    # 5
+echo ${#colors[*]}    # 5
+</code></pre>
+
+<p>遍历数组</p>
+
+<pre><code>for e in ${colors[*]};do
+	echo $e
+done
+</code></pre>
+
+<p>或</p>
+
+<pre><code>for((i=0;i&lt;${#colors[*]};i++));do
+	echo ${colors[i]}
+done
+</code></pre>
+
+<p>读写数组</p>
+
+<pre><code>echo ${colors[0]}    # red
+colors[0]=RED
+echo ${colors[0]}    # RED
+</code></pre>
+
+<p>移除元素</p>
+
+<pre><code>unset colors[1]
+echo ${colors[*]}    # red blue black white
+echo ${#colors[*]}   # 4
+</code></pre>
+
+<h3 id="section-2">切片</h3>
+
+<p>切片不影响原数组</p>
+
+<pre><code>echo ${colors[*]:1:3}    # green blue black
+# 获取切片得到的新数组
+c=(${colors[*]:1:3})
+echo ${c[*]}             # green blue black
+</code></pre>
+
+<h3 id="section-3">替换</h3>
+
+<p>替换也不影响原数组</p>
+
+<pre><code>echo ${colors[*]/e/E}    # rEd grEen bluE black whitE
+</code></pre>
+
+<h3 id="section-4">字符串转换为数组</h3>
+
+<p>使用<code>()</code>操作符和<code>IFS</code>指定分隔符</p>
+
+<pre><code>IFS=";"
+str="a;b;c;d;e"
+arr=($str)
+echo ${arr[*]}  # a b c d e
+</code></pre>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-09T16:22:25+00:00" pubdate data-updated="true">Mar 9<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shell/'>shell</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2022
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/03/09/shellshu-zu/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/03/09/shellshu-zu/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[分享你的Angular指令]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling/"/>
-    <updated>2015-05-27T17:47:56+08:00</updated>
+    <updated>2015-05-27T09:47:56+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/27/fen-xiang-ni-de-angularzhi-ling</id>
     <content type="html"><![CDATA[<h3 id="angular-directive-on-bower">Angular directive on bower</h3>
 <p>用Angular做web开发不但听起来是非常炫酷的事情，而且从我实际的开发体验来看，它确实是极大减轻了开发者的痛苦。我可以把精力都花在组织业务逻辑，创建更为流畅和漂亮的UI上，而完全不用去反复沦陷在事件绑定数据更新这些无趣的事情上。此外，angular框架本身依照设计模式上定义出了一套MVC漂亮的实现,了解其controller,server,directive后，写出大型web app已经不是难事了。</p>
@@ -138,7 +138,7 @@ app = angular.module("my-app", [
   <entry>
     <title type="html"><![CDATA[AngularJs之Isolated Scope]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope/"/>
-    <updated>2015-05-25T14:12:42+08:00</updated>
+    <updated>2015-05-25T06:12:42+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/05/25/angularjszhi-isolated-scope</id>
     <content type="html"><![CDATA[<h3 id="scopeisolated-scope">分离式scope（Isolated Scope）</h3>
 <p>在angularjs指令中问什么需要使用分离式的scope,主要是为了分离指令和执行所在的”环境”,这个环境其实就是指controller的scope和指令自身的scope,使用分离式scope达到隔离各自scope变量，避免变量污染，从而最大程度上达到指令的重用。</p>
@@ -243,7 +243,7 @@ directive 'myCustomer', -&gt;
   <entry>
     <title type="html"><![CDATA[创建递归菜单]]></title>
     <link href="http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan/"/>
-    <updated>2015-01-02T12:44:07+08:00</updated>
+    <updated>2015-01-02T04:44:07+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2015/01/02/chuang-jian-di-gui-cai-dan</id>
     <content type="html"><![CDATA[<p>如果菜单的数据模型是这样的,在angularjs中怎样比较漂亮地递归渲染出所有菜单项呢？</p>
 
@@ -346,7 +346,7 @@ list[ 1 ][ 1 ] = d;
   <entry>
     <title type="html"><![CDATA[angularJS路由框架ui-router]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router/"/>
-    <updated>2014-12-29T17:32:53+08:00</updated>
+    <updated>2014-12-29T09:32:53+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/12/29/angularjslu-you-kuang-jia-ui-router</id>
     <content type="html"><![CDATA[<h1 id="section">简介</h1>
 <p><a href="https://github.com/angular-ui/ui-router">AngularUI Router</a>是AngularJS的路由框架，和默认的<code>$route</code>不同，它将所有路由包装成可划分层级的状态机状态,路由路径在ui-router中不是必须的。由于ui-router的路由状态机是分层级的，所以使用ui-router可以非常方便地创建包含多个嵌入的子模板。</p>
@@ -516,7 +516,7 @@ myApp.config ($stateProvider) -&gt;
   <entry>
     <title type="html"><![CDATA[新建angular项目]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu/"/>
-    <updated>2014-11-25T10:54:31+08:00</updated>
+    <updated>2014-11-25T02:54:31+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/11/25/xin-jian-angularxiang-mu</id>
     <content type="html"><![CDATA[<h2 id="section">需要的工具</h2>
 

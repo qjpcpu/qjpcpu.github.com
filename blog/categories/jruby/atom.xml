@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jruby | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/jruby/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[初识jruby之在tomcat上部署jruby-on-rails]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails/"/>
-    <updated>2014-02-14T23:58:44+08:00</updated>
+    <updated>2014-02-14T15:58:44+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-zai-tomcatshang-bu-shu-jruby-on-rails</id>
     <content type="html"><![CDATA[<h3 id="prerequesite">1. prerequesite</h3>
 
@@ -90,7 +90,7 @@
   <entry>
     <title type="html"><![CDATA[初识jruby之安装配置jrubyonrails]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails/"/>
-    <updated>2014-02-14T23:49:23+08:00</updated>
+    <updated>2014-02-14T15:49:23+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-an-zhuang-pei-zhi-jrubyonrails</id>
     <content type="html"><![CDATA[<h3 id="prerequesite">1. prerequesite</h3>
 
@@ -212,7 +212,7 @@ Demo::Application.initialize!
   <entry>
     <title type="html"><![CDATA[初识jruby之入门]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men/"/>
-    <updated>2014-02-14T17:24:21+08:00</updated>
+    <updated>2014-02-14T09:24:21+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/chu-shi-jrubyzhi-ru-men</id>
     <content type="html"><![CDATA[<p>首先，Jruby的官方站点是http://jruby.org/ ，最详尽的资料都在那里。至于为什么选择JRuby，官方站点上列举了诸如jvm的普及以及性能等等优点，但我想最简单的回答就是，我喜欢用ruby编程，而大多数不再充电的老板还固守着java，对他们来说，相对于ruby，java这个词本身先产生了50%的安全感，所以这可能是比较贴近现实的选择。不过我今天想去倒腾倒腾这个东西，则完全是为了了解ruby的方方面面。</p>
 

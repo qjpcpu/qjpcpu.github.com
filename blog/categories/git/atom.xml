@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[在CentOS上搭建git服务器]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi/"/>
-    <updated>2014-02-14T15:01:55+08:00</updated>
+    <updated>2014-02-14T07:01:55+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zai-centosshang-da-jian-gitfu-wu-qi</id>
     <content type="html"><![CDATA[<h3 id="section">0.定义</h3>
 
@@ -186,7 +186,7 @@ our @git_base_url_list = qw(git://git.the_git_host
   <entry>
     <title type="html"><![CDATA[git常用操作]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo/"/>
-    <updated>2014-02-14T14:26:31+08:00</updated>
+    <updated>2014-02-14T06:26:31+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/gitchang-yong-cao-zuo</id>
     <content type="html"><![CDATA[<!-- more -->
 <p>### 创建远程版本库</p>

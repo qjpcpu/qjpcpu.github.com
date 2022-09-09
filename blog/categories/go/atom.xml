@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[http原理]]></title>
     <link href="http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li/"/>
-    <updated>2016-03-15T14:10:51+08:00</updated>
+    <updated>2016-03-15T06:10:51+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2016/03/15/httpyuan-li</id>
     <content type="html"><![CDATA[<p>Go语言中处理http请求主要涉及两个对象: <a href="https://golang.org/pkg/net/http/#ServeMux">ServeMux</a>和<a href="https://golang.org/pkg/net/http/#Handler">http.Handler接口</a>。</p>
 
@@ -267,7 +267,7 @@ alice.New(Middleware1, Middleware2, Middleware3).ThenFunc(AppFunc)
   <entry>
     <title type="html"><![CDATA[golang远程调用]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong/"/>
-    <updated>2014-08-15T20:22:34+08:00</updated>
+    <updated>2014-08-15T12:22:34+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/15/golangyuan-cheng-diao-yong</id>
     <content type="html"><![CDATA[<p>go语言的远程调用包<code>net/rpc</code>非常简单，而且由于go不支持动态链接，如果想要获得程序的动态性，那么就只好依赖于远程调用。</p>
 
@@ -402,9 +402,9 @@ get async result: jack is 23 years old.
   
   <entry>
     <title type="html"><![CDATA[struct tags]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/07/12/struct-tags/"/>
-    <updated>2014-07-12T00:07:11+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/07/12/struct-tags</id>
+    <link href="http://qjpcpu.github.io/blog/2014/07/11/struct-tags/"/>
+    <updated>2014-07-11T16:07:11+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/07/11/struct-tags</id>
     <content type="html"><![CDATA[<h3 id="section">结构体标签</h3>
 
 <p>在定义结构时，可以为struct定义一个标签，这个标签是作为结构体字段的一个附加属性，主要是反射包会使用到这个属性。</p>
@@ -456,7 +456,7 @@ blue gopher
   <entry>
     <title type="html"><![CDATA[你不知道的Go]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go/"/>
-    <updated>2014-06-23T14:37:47+08:00</updated>
+    <updated>2014-06-23T06:37:47+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/06/23/ni-bu-zhi-dao-de-go</id>
     <content type="html"><![CDATA[<!-- more -->
 
@@ -507,7 +507,7 @@ fmt.Println(a[:2])  // [A,B]
   <entry>
     <title type="html"><![CDATA[Go学习笔记-类型与接口]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou/"/>
-    <updated>2014-02-14T18:27:36+08:00</updated>
+    <updated>2014-02-14T10:27:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/goxue-xi-bi-ji-lei-xing-yu-jie-kou</id>
     <content type="html"><![CDATA[<p>如果说go语言的其他内容看起来和c/c++语言没什么太大的区别，那么它的接口设计一定会让人大吃一惊，是的，有时它真的让我产生我使用的是一种动态语言的幻觉。</p>
 

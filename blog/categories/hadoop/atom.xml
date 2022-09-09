@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hadoop | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/hadoop/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[初识hadoop及map-reduce]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce/"/>
-    <updated>2014-09-03T20:40:36+08:00</updated>
+    <updated>2014-09-03T12:40:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/09/03/chu-shi-hadoopji-map-reduce</id>
     <content type="html"><![CDATA[<h2 id="hadoop">搭建hadoop环境</h2>
 

@@ -1,0 +1,368 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>rack based application - Jason's space</title>
+	<meta name="author" content="Jason">
+
+	
+	<meta name="description" content="1.什么是rack rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用： app = lambda do |env| &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113796486-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113796486-1');
+</script>
+
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Jason's space</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+<!--
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/blog/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/blog/categories">Categories</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:qjpcpu.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="/search.html" method="get">
+		<input class="search" type="text" name="query" x-webkit-speech/>
+	</form>
+</nav>
+-->
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Rack Based Application</h2>
+	<div class="entry-content"><h3 id="rack">1.什么是rack</h3>
+
+<p>rack是基于ruby的web服务器接口，它将http协议以非常简单的方式包裹起来，为web服务器和应用提供一致性的接口。rack被用于几乎所有的ruby web应用开发框架中。这是维基百科上给出的一个基于rack的ruby应用：</p>
+
+<pre><code>app = lambda do |env|
+  body = "Hello, World!"
+  [200, {"Content-Type" =&gt; "text/plain", "Content-Length" =&gt; body.length.to_s}, [body]]
+end
+ 
+run app
+</code></pre>
+
+<p>重点是第三行，一个基于rack的ruby应用只需要一个包含call方法的对象，在调用call方法后该对象会返回形如第三行的一个列表，该列表包含三个元素：第一个元素是这次http请求的返回状态码200，第二个元素是一个返回的http响应headers的hash表，第三个元素是http响应体的列表，所以该列表的形式为：</p>
+
+<pre><code>[ status_code, headers, body ]
+</code></pre>
+
+<!-- more -->
+
+<h3 id="rack-based-application">2.一个简单的rack-based-application</h3>
+
+<p>编写一个最简单的rack based application，ok，需要一个能响应call方法的对象，在该对象上调用call方法能返回[ status_code, headers, body ]列表。在文件夹rack_based下新建simple.ru文件，*.ru被称为rakcup文件，rack使用该文件来启动rack应用。该文件内容为：</p>
+
+<pre><code>run lambda { |env| [200,{'Content-Type'=&gt;'text/plain'},['OK']]}
+</code></pre>
+
+<p>That’s all.这个基于rack的应用已经编写完成了，在terminal中键入下面命令即可启动这个应用了：</p>
+
+<pre><code>rackup rack_based/simple.ru
+</code></pre>
+
+<blockquote>
+  <p>注：rack默认的rackup文件名是<code>config.ru</code>，使用该文件名在同级目录启动应用直接执行<code>rackup</code>即可启动应用。</p>
+</blockquote>
+
+<p>rack使用默认的内置WEBrick服务器，用rackup命令在端口9292启动该应用：</p>
+
+<pre><code>JasondeMacBook-Pro:Projects jason$ rackup rack_based/simple.ru 
+Thin web server (v1.6.1 codename Death Proof)
+Maximum connections set to 1024
+Listening on 0.0.0.0:9292, CTRL+C to stop
+</code></pre>
+
+<p>在浏览器中访问http://localhost:9292 即可看到页面显示“OK”，说明应用正常工作了。</p>
+
+<p>Rails也是基于rack的框架，rails的rackup配置文件是位于应用根目录下的config.ru：</p>
+
+<pre><code># This file is used by Rack-based servers to start the application.
+
+require ::File.expand_path('../config/environment',  __FILE__)
+run Rails.application
+</code></pre>
+
+<p>另外，call方法还带有一个env参数，该参数是一个hash表，包含了请求所有的环境信息，rack应用可以根据env信息给予不同的响应，如下面将simple.ru略作修改，使得它可以返回所有的请求信息：</p>
+
+<pre><code>module Simple
+	class Application
+		def self.call(env)
+			[200,{'Content-Type'=&gt;'text/plain'},[env.to_s]]
+		end
+	end
+end
+run Simple::Application
+</code></pre>
+
+<p>启动该应用，则可以看到结果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{
+</span><span class="line">"GATEWAY_INTERFACE"=&gt;"CGI/1.1",
+</span><span class="line">"PATH_INFO"=&gt;"/",
+</span><span class="line">"QUERY_STRING"=&gt;"",
+</span><span class="line">"REMOTE_ADDR"=&gt;"127.0.0.1",
+</span><span class="line">"REMOTE_HOST"=&gt;"localhost",
+</span><span class="line">"REQUEST_METHOD"=&gt;"GET",
+</span><span class="line">"REQUEST_URI"=&gt;"http://localhost:9292/",
+</span><span class="line">"SCRIPT_NAME"=&gt;"",
+</span><span class="line">"SERVER_NAME"=&gt;"localhost",
+</span><span class="line">"SERVER_PORT"=&gt;"9292",
+</span><span class="line">"SERVER_PROTOCOL"=&gt;"HTTP/1.1",
+</span><span class="line">...........
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="middleware">3.middleware</h3>
+
+<p>这是一个rack应用的请求栈：</p>
+
+<p><img src="http://e.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=70915c2796eef01f491418c0d0c5e818/8d5494eef01f3a29e9eb308d9b25bc315c607c56.jpg?referer=639819647d3e6709e71770cfbc4c&amp;x=.jpg" alt="image" /></p>
+
+<p>浏览器发出http请求到web Server，web server 再将请求转交给rack，rack负责将请求转交给应用程序栈。在应用栈中，请求经过一层层的中间层middleware后，最好才传达给rack应用，譬如rails的应用的controller最后来处理请求，当rack应用处理完请求后，又逐层返回，最后由rack上交给web server完成响应。注意，并非每次请求都需要完成从上到下的全部栈层次，比如请求一个存在的静态文件，就可能直接由处理静态文件的middleware发送文件，而根本不会将请求传递到rack应用controller中去。</p>
+
+<p>由这张图可以看出来，rack是web server和应用之间的桥梁，或者说适配器。另外，rack应用处在请求栈的最后一层，web请求经过了无数的middleware后才真正到达应用这里。middleware所起的作用和java struts中的拦截器概念非常相似，它们都负责将请求逐层包裹最后递交给应用的是一个非常友好的请求包，使得应用可以更方便地处理逻辑。</p>
+
+<p>下面就来创建一个自定义的middleware，该middleware可以将请求网页内所有&lt;h1&gt;标记内的内容的e改写成大写的X。</p>
+
+<p>首先新建一个rails app，在新建完成后，实用下面命令可以查看rails已经使用的middleware：</p>
+
+<pre><code>rake middleware
+
+use Rack::Sendfile
+use ActionDispatch::Static
+......
+use Rack::Head
+use Rack::ConditionalGet
+use Rack::ETag
+run Demo::Application.routes
+</code></pre>
+
+<p>现在在应用的lib目录下新建文件link_jumbler.rb，文件app/lib/link_jumbler.rb的内容：</p>
+
+<pre><code>require 'nokogiri'
+
+class LinkJumbler
+	def initialize(app,letters)
+		@app=app
+		@letters=letters
+	end
+
+	def call(env)
+		status, headers, response = @app.call(env)
+		body=Nokogiri::HTML(response.body)
+		body.css("h1").each do |a|
+			@letters.each do |f,r|
+				a.content=a.content.gsub f.to_s,r.to_s
+			end
+		end
+
+		[status,headers,[body.to_s]]
+	end
+end
+</code></pre>
+
+<p>首先，在initialize方法中，接受了两个参数，一个是app参数，它会在各个middleware中传递，需要对它调用call方法。另一个参数letters是我们这个middleware需要的参数，这个参数来源是挂载middleware时产生的。不同middleware的传递的这个参数不同，也可能根本没有这个额外的参数。在call方法中，先对@app调用了call方法获得了一个rack风格的响应结果，这里利用nokogiri解析结果，并做出修改，最后返回结果。在java struts中有个前拦截器和后拦截器，从这里也可以看出middleware也可以有相同的功能，比如这里就是对结果作处理，属于一个后处理的middleware。</p>
+
+<p>然后将这个middleware添加到该应用的middleware栈中（看到letters哪儿来的了吧），在app/config/application.rb中添加
+<code>config.middleware.use LinkJumbler,{"e"=&gt;"X"}</code>
+添加完成后app/config/application.rb文件内容为：</p>
+
+<pre><code>require File.expand_path('../boot', __FILE__)
+
+require 'rails/all'
+require File.expand_path('../../lib/link_jumbler', __FILE__)
+
+Bundler.require(:default, Rails.env)
+
+module Demo
+  class Application &lt; Rails::Application
+    config.middleware.use LinkJumbler,{"e"=&gt;"X"}
+  end
+end
+</code></pre>
+
+<p>再次执行rake middleware命令，可以看到LinkJumbler被添加到最后一层middleware：</p>
+
+<pre><code>use Rack::Sendfile
+use ActionDispatch::Static
+......
+use Rack::Head
+use Rack::ConditionalGet
+use Rack::ETag
+use LinkJumbler
+run Demo::Application.routes
+</code></pre>
+
+<blockquote>
+  <p>实际上，rails只是利用自己的一套tricky的把戏自动添加了这个middleware，在其他rack based application中，比如sinatra，在config.ru文件里的<code>run xxx</code>方法前加上<code>use LinkJumbler</code>语句即完成添加middleware.</p>
+</blockquote>
+
+<p>启动该rails应用，可以看到和标准rails欢迎界面的区别了吗？</p>
+
+<p><img src="http://b.hiphotos.bdimg.com/album/s%3D550%3Bq%3D90%3Bc%3Dxiangce%2C100%2C100/sign=513d3845adc379317968862cdbffc678/f636afc379310a559ad424b7b54543a983261084.jpg?referer=65c5a1751f950a7b2c227af4509b&amp;x=.jpg" alt="image" /></p>
+
+<h3 id="section">4. 其他</h3>
+
+<ul>
+  <li>rack based application(比如sinatra)可能会依赖于一个环境变量<code>RACK_ENV</code>，取值<code>production,development,test</code></li>
+</ul>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T16:04:13+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+	<div class="comments"><a href="#disqus_thread">Comments</a></div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2022
+
+    Jason
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'qjpcpugithubio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://qjpcpu.github.io/blog/2014/02/14/rack-based-application/';
+        var disqus_url = 'http://qjpcpu.github.io/blog/2014/02/14/rack-based-application/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//go.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>

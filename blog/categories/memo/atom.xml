@@ -4,7 +4,7 @@
   <title><![CDATA[Category: memo | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/memo/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[tmux]]></title>
-    <link href="http://qjpcpu.github.io/blog/2014/09/08/tmux/"/>
-    <updated>2014-09-08T00:37:23+08:00</updated>
-    <id>http://qjpcpu.github.io/blog/2014/09/08/tmux</id>
+    <link href="http://qjpcpu.github.io/blog/2014/09/07/tmux/"/>
+    <updated>2014-09-07T16:37:23+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2014/09/07/tmux</id>
     <content type="html"><![CDATA[<h3 id="section">基本操作</h3>
 
 <p><code>bash
@@ -211,7 +211,7 @@ tmux send -t “$session:dev” ‘cd /Users/jason/repository/frontend’ Enter
   <entry>
     <title type="html"><![CDATA[使用octopress搭建github pages]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages/"/>
-    <updated>2014-08-31T17:36:06+08:00</updated>
+    <updated>2014-08-31T09:36:06+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/08/31/shi-yong-octopressda-jian-github-pages</id>
     <content type="html"><![CDATA[<h2 id="gitruby">安装git,ruby</h2>
 <p>略</p>

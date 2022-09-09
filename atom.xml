@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[ethereum挖矿流程]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng/"/>
-    <updated>2018-11-15T17:50:36+08:00</updated>
+    <updated>2018-11-15T09:50:36+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/11/15/ethereumwa-kuang-liu-cheng</id>
     <content type="html"><![CDATA[<p>本文主要梳理eth挖矿的代码流程结构。</p>
 
@@ -145,7 +145,7 @@
   <entry>
     <title type="html"><![CDATA[在这里,读懂区块链]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen/"/>
-    <updated>2018-09-18T15:08:00+08:00</updated>
+    <updated>2018-09-18T07:08:00+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/18/qu-kuai-lian-you-qian-ru-shen</id>
     <content type="html"><![CDATA[<p>读懂区块链——仅需这一篇。(草稿，内容整理中…)</p>
 
@@ -731,7 +731,7 @@
   <entry>
     <title type="html"><![CDATA[[Rebuild Ethereum](二)区块基础结构]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-09-10T14:24:59+08:00</updated>
+    <updated>2018-09-10T06:24:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/10/qu-kuai-ji-chu-jie-gou</id>
     <content type="html"><![CDATA[<p>区块链是融合了密码学、分布式技术等等多个计算机领域的产物，虽然这些技术听起来都很高大上，并且不同区块链的源码看起来也都是很庞杂，令人望而生畏，但是我们回归到区块链最本身，她的基础数据结构——“链”，却是很简单的，就是一条单向链表。</p>
 
@@ -941,7 +941,7 @@
   <entry>
     <title type="html"><![CDATA[[rebuild ethereum](一) 搭建p2p网络]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo/"/>
-    <updated>2018-09-02T14:24:16+08:00</updated>
+    <updated>2018-09-02T06:24:16+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/09/02/rebuild-ethereum-da-jian-p2pwang-luo</id>
     <content type="html"><![CDATA[<p>接触使用ethereum已经有大半年时间，一直觉得对以太坊了解无法更进一步。结合自己以前的经验, the most efficient way of learn something is to build one. 想要深入学习一样东西，最有效的方式就是自己弄脏手，从头搭建一个。</p>
 
@@ -1225,7 +1225,7 @@
   <entry>
     <title type="html"><![CDATA[hyperledger-fabric服务端开发]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa/"/>
-    <updated>2018-07-25T14:23:59+08:00</updated>
+    <updated>2018-07-25T06:23:59+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/25/hyperledger-fabricfu-wu-duan-kai-fa</id>
     <content type="html"><![CDATA[<p>这篇文章并不是介绍fabric智能合约怎么编写的,因为这类的文章随便在google上一搜一大把. 但反而是fabric服务端开发应该怎么做需要有人稍稍点拨一下。本文就以golang服务端为例，介绍一下fabric服务端基本做法。</p>
 
@@ -2123,7 +2123,7 @@
   <entry>
     <title type="html"><![CDATA[hyperledger-fabric分布式部署]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu/"/>
-    <updated>2018-07-23T10:48:30+08:00</updated>
+    <updated>2018-07-23T02:48:30+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/23/hyperledger-fabricfen-bu-shi-bu-shu</id>
     <content type="html"><![CDATA[<p>fabric官方文档给出了怎样搭建第一个联盟网络(<a href="https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html">Build your first network</a>),然而这个文档实际只给出了单机部署多个docker实例的例子,如果要在真实分布式环境部署，还是得费不少力气.</p>
 
@@ -2474,7 +2474,7 @@
   <entry>
     <title type="html"><![CDATA[利用call实现合约任意调用]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong/"/>
-    <updated>2018-07-02T13:50:25+08:00</updated>
+    <updated>2018-07-02T05:50:25+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/07/02/li-yong-callshi-xian-he-yue-ren-yi-diao-yong</id>
     <content type="html"><![CDATA[<p>call()是一个底层的接口，用来向一个合约发送消息，也就是说如果你想实现自己的消息传递，可以使用这个函数。</p>
 
@@ -2822,7 +2822,7 @@
   <entry>
     <title type="html"><![CDATA[怎样实现以太坊交易可靠提交]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao/"/>
-    <updated>2018-06-14T14:54:01+08:00</updated>
+    <updated>2018-06-14T06:54:01+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/06/14/zen-yang-shi-xian-yi-tai-fang-jiao-yi-ke-kao-ti-jiao</id>
     <content type="html"><![CDATA[<p>在真实环境下的以太坊Dapp开发,是一定涉及到链上链下逻辑的交互的。那么开发者可能会遇到这样一种场景,当用户使用metamask签名交易并提交后,Dapp的中心服务端需要拿到这个交易ID,并跟踪这个交易的执行,甚至会根据这笔交易去触发后端逻辑(当然使用event可以一定程度避开这个问题,但这种回避式的解决方案不在此讨论)，但现实情况往往是令人痛苦的，因为很可能会因为种种原因，我们无法取到metamask的回调，导致开发者因此”丢失”掉这笔交易。</p>
 
@@ -2986,7 +2986,7 @@
   <entry>
     <title type="html"><![CDATA[那些以太坊DApp服务端开发期望已久的轮子]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi/"/>
-    <updated>2018-05-16T17:20:33+08:00</updated>
+    <updated>2018-05-16T09:20:33+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/05/16/na-xie-yi-tai-fang-dappfu-wu-duan-kai-fa-qi-wang-yi-jiu-de-lun-zi</id>
     <content type="html"><![CDATA[<p>以太坊虽说是一个去中心化的东西,但DApp却并非是完全去中心化的应用,其主要原因不外乎是以太坊的处理能力和资源有限,无法承载一个完整应用全部的逻辑。所以，目前市面上所有的DApp应用都是需要中心化服务解释的。那么，本文就是列举一些可能会用到的轮子,帮助快速构建应用。</p>
 
@@ -3326,7 +3326,7 @@
   <entry>
     <title type="html"><![CDATA[ethereum-solidity的坑]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng/"/>
-    <updated>2018-04-02T10:54:43+08:00</updated>
+    <updated>2018-04-02T02:54:43+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/04/02/ethereum-solidityde-keng</id>
     <content type="html"><![CDATA[<p>以太坊合约的坑.</p>
 
@@ -3383,7 +3383,7 @@
   <entry>
     <title type="html"><![CDATA[以太坊合约开发中那些危险的坑]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng/"/>
-    <updated>2018-03-18T16:29:02+08:00</updated>
+    <updated>2018-03-18T08:29:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/18/yi-tai-fang-he-yue-kai-fa-zhong-na-xie-wei-xian-de-keng</id>
     <content type="html"><![CDATA[<p>列举合约开发中那些危险的操作.</p>
 
@@ -3404,7 +3404,7 @@
   <entry>
     <title type="html"><![CDATA[以太坊实战-交易爬虫]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong/"/>
-    <updated>2018-03-13T19:46:40+08:00</updated>
+    <updated>2018-03-13T11:46:40+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/13/yi-tai-fang-shi-zhan-jiao-yi-pa-chong</id>
     <content type="html"><![CDATA[<p>本文从一个区块链跑路项目说起,怎么通过大家可见的区块数据进行自己的业务分析,目的主要是讲述中间涉及到的技术,如果你能从中获益,并因此构建自己更加强大的分析工具,我深感荣幸.</p>
 
@@ -3710,7 +3710,7 @@
   <entry>
     <title type="html"><![CDATA[solidity备忘录]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu/"/>
-    <updated>2018-03-08T09:38:45+08:00</updated>
+    <updated>2018-03-08T01:38:45+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/08/soliditybei-wang-lu</id>
     <content type="html"><![CDATA[<p>关于以太坊solidity语言一些有趣或者有意义的tips.</p>
 
@@ -4029,7 +4029,7 @@
   <entry>
     <title type="html"><![CDATA[基于以太坊的数字资产]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan/"/>
-    <updated>2018-03-06T18:24:35+08:00</updated>
+    <updated>2018-03-06T10:24:35+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/06/ji-yu-yi-tai-fang-de-shu-zi-zi-chan</id>
     <content type="html"><![CDATA[<p>代币(token)是什么?</p>
 
@@ -4268,7 +4268,7 @@
   <entry>
     <title type="html"><![CDATA[以太坊交易]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi/"/>
-    <updated>2018-03-05T14:26:24+08:00</updated>
+    <updated>2018-03-05T06:26:24+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/03/05/yi-tai-fang-jiao-yi</id>
     <content type="html"><![CDATA[<p>交易是区块链和重中之重,不论是简单的转账还是复杂的智能合约的执行,都是依托于交易来完成。但是我回头仔细研究了一把以太坊的交易,并梳理这篇文章的原因,仅仅是因为在面试的时候没有回答上来,羞愧……</p>
 
@@ -4722,7 +4722,7 @@
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-从区块头看共识挖矿]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang/"/>
-    <updated>2018-02-24T16:09:11+08:00</updated>
+    <updated>2018-02-24T08:09:11+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/02/24/shen-ru-ethereumyuan-ma-cong-qu-kuai-tou-kan-gong-shi-wa-kuang</id>
     <content type="html"><![CDATA[<p>区块是区块链的基本组成单位,而区块头又是区块的核心数据,本文希望从区块头延展开来,看看区块链的挖矿机制。</p>
 
@@ -5148,7 +5148,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-whisper协议解读]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du/"/>
-    <updated>2018-02-07T16:13:02+08:00</updated>
+    <updated>2018-02-07T08:13:02+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/02/07/shen-ru-ethereumyuan-ma-whisperxie-yi-jie-du</id>
     <content type="html"><![CDATA[<p>whisper协议是以太坊DApps之间的通信协议。</p>
 
@@ -5334,7 +5334,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块节点发现机制]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi/"/>
-    <updated>2018-01-30T11:40:37+08:00</updated>
+    <updated>2018-01-30T03:40:37+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/30/shen-ru-ethereumyuan-ma-p2pmo-kuai-jie-dian-fa-xian-ji-zhi</id>
     <content type="html"><![CDATA[<p>ethereum是基于kademlia协议实现其节点自动发现机制,完整整个网络拓扑关系的构建刷新。
 <!-- more --></p>
@@ -5735,7 +5735,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
   <entry>
     <title type="html"><![CDATA[深入ethereum源码-p2p模块基础结构]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou/"/>
-    <updated>2018-01-29T11:19:23+08:00</updated>
+    <updated>2018-01-29T03:19:23+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/29/shen-ru-ethereumyuan-ma-p2pmo-kuai-ji-chu-jie-gou</id>
     <content type="html"><![CDATA[<p>(go-ethereum/p2p)包允许您快速方便地将对等网络添加到任何类型的应用程序。p2p包采用模块化结构,包含p2p网络节点通信维护及新节点发现,将网络结构的基础细节封装并向上层屏蔽,并且暴露了简单接口让上层实现子协议,上层应用使用自己的附加子协议扩展p2p非常简单直接.</p>
 
@@ -6301,7 +6301,7 @@ b.<code>hashimotoFull/hashimotoLight</code>的具体实现</p>
   <entry>
     <title type="html"><![CDATA[p2p之UDP打洞]]></title>
     <link href="http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong/"/>
-    <updated>2018-01-26T22:03:15+08:00</updated>
+    <updated>2018-01-26T14:03:15+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2018/01/26/p2pzhi-udpda-dong</id>
     <content type="html"><![CDATA[<p>当今互联网到处存在着一些中间件(MIddleBoxes)，如NAT和防火墙，导致两个(不在同一内网)中的客户端无法直接通信。 这些问题即便是到了IPV6时代也会存在，因为即使不需要NAT，但还有其他中间件如防火墙阻挡了链接的建立。 目前部署的中间件多都是在C/S架构上设计的，其中相对隐匿的客户机主动向周知的服务端(拥有静态IP地址和DNS名称)发起链接请求。 大多数中间件实现了一种非对称的通讯模型，即内网中的主机可以初始化对外的链接，而外网的主机却不能初始化对内网的链接， 除非经过中间件管理员特殊配置。</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c-sharp | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/c-sharp/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2019-02-01T09:48:43+08:00</updated>
+  <updated>2022-09-09T10:48:38+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[在Linq中使用委托作为相等比较]]></title>
     <link href="http://qjpcpu.github.io/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao/"/>
-    <updated>2014-02-14T14:13:30+08:00</updated>
+    <updated>2014-02-14T06:13:30+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2014/02/14/zai-linqzhong-shi-yong-wei-tuo-zuo-wei-xiang-deng-bi-jiao</id>
     <content type="html"><![CDATA[<p>Linq中的操作符的相等比较都使用IEqualityComparer<t>作为判断依据，常见的使用该接口的操作符有：</t></p>
 
