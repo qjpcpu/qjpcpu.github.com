@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2022-09-09T11:05:58+00:00</updated>
+  <updated>2022-09-10T08:17:57+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -12,6 +12,582 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[怎样写一个解释器]]></title>
+    <summary><![CDATA[]]></summary>
+    <link href="http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter/"/>
+    <updated>2022-09-09T11:57:00+00:00</updated>
+    <id>http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter</id>
+    <content type="html"><![CDATA[<ul id="markdown-toc">
+  <li><a href="#section">写在前面</a></li>
+  <li><a href="#lisp-">Lisp 语法</a></li>
+  <li><a href="#lisgo-">lis.go 计算器</a></li>
+  <li><a href="#section-1">解释器工作流程</a></li>
+  <li><a href="#get-started">Get started</a>    <ul>
+      <li><a href="#section-2">类型定义</a></li>
+      <li><a href="#parsing-parse-tokenize-and-readfromtokens">Parsing: parse, tokenize and read_from_tokens</a></li>
+      <li><a href="#section-3">基础环境</a></li>
+      <li><a href="#evaluation-eval">Evaluation: eval</a></li>
+      <li><a href="#interaction-a-repl">Interaction: A REPL</a></li>
+    </ul>
+  </li>
+  <li><a href="#section-4">完整代码</a></li>
+  <li><a href="#section-5">应用到生产环境?</a></li>
+</ul>
+
+<h1 id="section">写在前面</h1>
+
+<p>写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
+
+<p>要完整实现一个编译器/解释器，需要语法设计到编译前后端的完整实现，这涉及到巨大的工作量。但通常我们只需要能够实现 DSL，使得 DSL 能够依托于我们主语言环境运行即可，不需要考虑编译后端的问题。所以本文的解释器仅涉及到编译前端流程，后端执行细节交给宿主语言运行时。</p>
+
+<p>此外，如果一开始就选择非常复杂的语言如 Python、Ruby或Haskell, 会让我们掉入词法/语法解析的深坑，但对学习书写解释器没什么帮助，所以我们选择了语法规则简单的 lisp 来实现一个解释器。</p>
+
+<p>另外，主语言使用 Golang, 除了语言本身比较简单，也为了读者对照实验没有环境部署的焦虑。</p>
+
+<blockquote>
+  <p>If you don’t know how compilers work, then you don’t know how computers work.</p>
+
+  <p>http://norvig.com/lispy.html 
+Steve Yegge.</p>
+</blockquote>
+
+<h1 id="lisp-">Lisp 语法</h1>
+
+<p>考虑到很多国内的同学可能没有接触过 lisp，这里首先简单介绍下其语法。</p>
+
+<ul>
+  <li>golang</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">if</span> <span class="nx">x</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class="line">  <span class="k">return</span> <span class="nx">fn</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="nx">i</span><span class="p">,</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">})</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>lisp</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="clojure"><span class="line"><span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">&gt; </span><span class="nv">x</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class="line">  <span class="p">(</span><span class="k">fn </span><span class="p">(</span><span class="nb">+ </span><span class="p">(</span><span class="nf">array_get</span> <span class="nv">arr</span> <span class="nv">i</span><span class="p">)</span> <span class="p">(</span><span class="nb">* </span><span class="mi">3</span> <span class="nv">i</span><span class="p">))</span>
+</span><span class="line">      <span class="p">(</span><span class="nb">list </span><span class="s">&quot;a&quot;</span> <span class="s">&quot;b&quot;</span><span class="p">)))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如上例所示，尽管golang 相较于其他语言，其语法已经非常简单，但是它仍然有数十个关键字，几个中置操作符, 操作优先级、逗号、各种括号等等，其语法规范仍然是比较多的；而相对来说，lisp 的语法规范就简单很多： </p>
+
+<ul>
+  <li>lisp 代码仅包含表达式，不包含语句，即，每一句lisp 必定都会返回值；</li>
+  <li>数字、字符串、符号均称为「原子」，原子不可分解；</li>
+  <li>除了原子外所有东西都是「列表」，列表以 <code>(</code>开头,<code>)</code>结尾；列表的第一个元素要么是一个关键字，要么是一个函数调用；</li>
+</ul>
+
+<p>lisp 的这种设计导致代码可读性略有下降，但是却带来易解析、表意性强、代码和数据统一等诸多优点，因此长期是国外CS教学的首选语言。</p>
+
+<h1 id="lisgo-">lis.go 计算器</h1>
+
+<p>我们本次的目标是基于 lisp 在 golang 是实现一个计算器。该计算器支持以下一些表达式:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Expression</th>
+      <th>Syntax</th>
+      <th>Semantics and Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>符号</td>
+      <td>symbol</td>
+      <td>一个符号通常引用了一个值，如 (define r 10) 表示符号 r 引用了值 10</td>
+    </tr>
+    <tr>
+      <td>字面量</td>
+      <td>number</td>
+      <td>比如数字 12</td>
+    </tr>
+    <tr>
+      <td>条件分支</td>
+      <td>(if test conseq alt)</td>
+      <td>如果 test 为 true，则返回 conseq，否则返回 alt</td>
+    </tr>
+    <tr>
+      <td>变量绑定</td>
+      <td>(define symbol expr)</td>
+      <td>定义一个符号 symbol,且将其值绑定为 expr</td>
+    </tr>
+    <tr>
+      <td>函数调用</td>
+      <td>(proc arg …)</td>
+      <td>如果 proc 是关键字，如 if，则执行分支逻辑，否则寻找对应函数进行调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="section-1">解释器工作流程</h1>
+
+<p>解释器执行通常包含两步：</p>
+
+<ul>
+  <li>Parsing</li>
+</ul>
+
+<p>解析代码生成抽象语法树,这一步通常叫 <code>parse</code>。</p>
+
+<ul>
+  <li>Execution</li>
+</ul>
+
+<p>对 AST 求值，返回我们想要的结果,这一步通常叫 <code>eval</code>。</p>
+
+<p>下图是解释器工作的简单示例:</p>
+
+<p><img src="https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/parsing-and-execution.jpg" alt="parsing-execution" /></p>
+
+<p>如下代码是是<code>parse</code>和<code>eval</code>工作的代码示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="o">&gt;&gt;</span> <span class="nx">program</span> <span class="o">:=</span> <span class="s">&quot;(begin (define r 10) (* pi (* r r)))&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">&gt;&gt;</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">program</span><span class="p">)</span>
+</span><span class="line"><span class="p">[</span><span class="err">&#39;</span><span class="nx">begin</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="err">&#39;</span><span class="nx">define</span><span class="err">&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="sc">&#39;*&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">pi</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="sc">&#39;*&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">]]]</span>
+</span><span class="line">
+</span><span class="line"><span class="o">&gt;&gt;</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">parse</span><span class="p">(</span><span class="nx">program</span><span class="p">))</span>
+</span><span class="line"><span class="mf">314.1592653589793</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="get-started">Get started</h1>
+
+<h2 id="section-2">类型定义</h2>
+
+<p>首先，我们定义好 lis.go 需要的基本类型:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// 所有的表达式都需要实现 Expression 接口,该接口仅仅是一个标记接口</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Expression</span> <span class="kd">interface</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">Sexpr</span><span class="p">()</span> <span class="kt">string</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 符号类型</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Symbol</span> <span class="kt">string</span>
+</span><span class="line"><span class="c1">// 列表类型,其实是一个单向链表,每个节点存储当前表达式和下一个节点指针</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">List</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">Val</span>  <span class="nx">Expression</span>
+</span><span class="line">	<span class="nx">Rest</span> <span class="o">*</span><span class="nx">List</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="c1">// 函数类型</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Function</span> <span class="kd">func</span><span class="p">(</span><span class="o">*</span><span class="nx">Env</span><span class="p">,</span> <span class="p">[]</span><span class="nx">Expression</span><span class="p">)</span> <span class="nx">Expression</span>
+</span><span class="line"><span class="c1">// 布尔类型</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Bool</span> <span class="kt">bool</span>
+</span><span class="line"><span class="c1">// 整数</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Integer</span> <span class="kt">int64</span>
+</span><span class="line"><span class="c1">// 浮点数</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Float</span> <span class="kt">float64</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 环境,包含父环境的引用及当前环境的符号表</span>
+</span><span class="line"><span class="kd">type</span> <span class="nx">Env</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">parent</span> <span class="o">*</span><span class="nx">Env</span>
+</span><span class="line">	<span class="nx">scope</span>  <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">Expression</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>我们定义的基本接口<code>Expression</code>，所有lis.go的类型都需要实现该接口，包括了：</p>
+
+<ul>
+  <li>Symbol 符号</li>
+  <li>Integer 整数</li>
+  <li>Float 浮点数</li>
+  <li>Bool 布尔值</li>
+  <li>List 列表</li>
+  <li>Function 函数</li>
+</ul>
+
+<p>此外，我们还定义了环境 <code>Env</code>。或者叫作用域，程序运行时的符号查找都需要依赖于所处的环境，比如同一个符号 <code>a</code>，在不同的环境中，很可能引用了不同的值。</p>
+
+<p>每个符号的解释，都需要优先查找当前环境，如果找不到则向上到父环境查找，直至根环境。这也很好理解，其实就是一个变量是局部变量还是全局变量的区别。</p>
+
+<h2 id="parsing-parse-tokenize-and-readfromtokens">Parsing: parse, tokenize and read_from_tokens</h2>
+
+<p>解析的过程通常分为两步：</p>
+
+<ul>
+  <li>词法解析，逐个字符读取代码文件，将字符串流解析为「词」的流，也叫 tokenize</li>
+  <li>语法解析，对 token 流进行语义分析，生成 AST</li>
+</ul>
+
+<p>词法分析有很多现成的工具，这里我们使用最简单的一种: golang的 <code>strings.Split</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">tokenize</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">TokenStream</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">s</span> <span class="p">=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">ReplaceAll</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="s">&quot;(&quot;</span><span class="p">,</span> <span class="s">&quot; ( &quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">s</span> <span class="p">=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">ReplaceAll</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="s">&quot;)&quot;</span><span class="p">,</span> <span class="s">&quot; ) &quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">TokenStream</span><span class="p">{</span><span class="nx">tokens</span><span class="p">:</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Split</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">)}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>parse</code> 函数接受代码字符串作为输入,调用<code>tokenize</code> 得到 token 流, 然后调用 <code>read_from_tokens</code> 将词流组织成抽象语法树。</p>
+
+<p><code>read_from_tokens</code> 遇到 <code>(</code> 则开始一个列表的解析,直至遇到列表结束符<code>)</code>;如果其他 case 则作为原子解析。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="c1">// Read an expression from a sequence of tokens.</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">read_from_tokens</span><span class="p">(</span><span class="nx">tokens</span> <span class="o">*</span><span class="nx">TokenStream</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">tokens</span><span class="p">.</span><span class="nx">Empty</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">		<span class="nb">panic</span><span class="p">(</span><span class="s">&quot;unexpected EOF while reading&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="nx">token</span> <span class="o">:=</span> <span class="nx">tokens</span><span class="p">.</span><span class="nx">Pop</span><span class="p">()</span>
+</span><span class="line">	<span class="k">if</span> <span class="s">&quot;(&quot;</span> <span class="o">==</span> <span class="nx">token</span> <span class="p">{</span>
+</span><span class="line">		<span class="nx">l</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">List</span><span class="p">{}</span>
+</span><span class="line">		<span class="k">for</span> <span class="nx">tokens</span><span class="p">.</span><span class="nx">Peek</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;)&quot;</span> <span class="p">{</span>
+</span><span class="line">			<span class="nx">l</span><span class="p">.</span><span class="nx">Append</span><span class="p">(</span><span class="nx">read_from_tokens</span><span class="p">(</span><span class="nx">tokens</span><span class="p">))</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">		<span class="nx">tokens</span><span class="p">.</span><span class="nx">Pop</span><span class="p">()</span> <span class="c1">// drop &#39;)&#39;</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">l</span>
+</span><span class="line">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="s">&quot;)&quot;</span> <span class="o">==</span> <span class="nx">token</span> <span class="p">{</span>
+</span><span class="line">		<span class="nb">panic</span><span class="p">(</span><span class="s">&quot;unexpected )&quot;</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">atom</span><span class="p">(</span><span class="nx">token</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// Numbers become numbers; Booleans become booleans; any other token is a symbol.</span>
+</span><span class="line"><span class="kd">func</span> <span class="nx">atom</span><span class="p">(</span><span class="nx">token</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">val</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nx">ParseInt</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">strings</span><span class="p">.</span><span class="nx">Contains</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span> <span class="s">&quot;.&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">Integer</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">fval</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nx">ParseFloat</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span> <span class="mi">64</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">Float</span><span class="p">(</span><span class="nx">fval</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">token</span> <span class="o">==</span> <span class="s">`true`</span> <span class="o">||</span> <span class="nx">token</span> <span class="o">==</span> <span class="s">`false`</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">Bool</span><span class="p">(</span><span class="nx">token</span> <span class="o">==</span> <span class="s">`true`</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">Symbol</span><span class="p">(</span><span class="nx">token</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>OK, 我们的 <code>parse</code> 函数已经可以运行了:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="o">&gt;&gt;</span><span class="p">&gt;</span> <span class="nx">program</span> <span class="p">=</span> <span class="s">&quot;(define r 10) (* pi (* r r))&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">&gt;&gt;</span><span class="p">&gt;</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">program</span><span class="p">)</span>
+</span><span class="line"><span class="p">[</span><span class="err">&#39;</span><span class="nx">define</span><span class="err">&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="sc">&#39;*&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">pi</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="sc">&#39;*&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">,</span> <span class="sc">&#39;r&#39;</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-3">基础环境</h2>
+
+<p>在进入下一步之前，我们需要为代码准备好执行环境。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">baseEnv</span><span class="p">()</span> <span class="o">*</span><span class="nx">Env</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">env</span> <span class="o">:=</span> <span class="nx">NewEnv</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;+&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">plus</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;-&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">minus</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;*&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">multiple</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;/&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">divide</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;&gt;&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">gt</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;&lt;&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">lt</span><span class="p">)</span>
+</span><span class="line">	<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="s">&quot;==&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">Function</span><span class="p">(</span><span class="nx">eq</span><span class="p">)</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">env</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如前文所述，环境是符号解释的核心组件。在我们的基础环境里，已经定义好了加减乘除等几个基本操作函数，当然，你也可以提前定义好一些全局变量，任何 lis.go 支持的表达式都可以根据需求预置到环境中。</p>
+
+<p>函数的实现也非常简单，以加法为例，其实就是调用了 golang 自己的加法操作符进行计算而已。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">plus</span><span class="p">(</span><span class="nx">env</span> <span class="o">*</span><span class="nx">Env</span><span class="p">,</span> <span class="nx">exprs</span> <span class="p">[]</span><span class="nx">Expression</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">if</span> <span class="nx">isFloat</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">||</span> <span class="nx">isFloat</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">Float</span><span class="p">(</span><span class="nx">toFloat</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nx">toFloat</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="k">return</span> <span class="nx">Integer</span><span class="p">(</span><span class="nx">toInt</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nx">toInt</span><span class="p">(</span><span class="nx">exprs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="evaluation-eval">Evaluation: eval</h2>
+
+<p>我们将根据之前的需求，实现该表中的能力:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Expression</th>
+      <th>Syntax</th>
+      <th>Semantics and Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>符号</td>
+      <td>symbol</td>
+      <td>一个符号通常引用了一个值，如 (define r 10) 表示符号 r 引用了值 10</td>
+    </tr>
+    <tr>
+      <td>字面量</td>
+      <td>number</td>
+      <td>比如数字 12</td>
+    </tr>
+    <tr>
+      <td>条件分支</td>
+      <td>(if test conseq alt)</td>
+      <td>如果 test 为 true，则返回 conseq，否则返回 alt</td>
+    </tr>
+    <tr>
+      <td>变量绑定</td>
+      <td>(define symbol expr)</td>
+      <td>定义一个符号 symbol,且将其值绑定为 expr</td>
+    </tr>
+    <tr>
+      <td>函数调用</td>
+      <td>(proc arg …)</td>
+      <td>如果 proc 是关键字，如 if，则执行分支逻辑，否则寻找对应函数进行调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>下面的代码即 <code>eval</code> 的实现:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">x</span> <span class="nx">Expression</span><span class="p">,</span> <span class="nx">env</span> <span class="o">*</span><span class="nx">Env</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">switch</span> <span class="nx">val</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.(</span><span class="kd">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">case</span> <span class="nx">Symbol</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// variable reference</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">env</span><span class="p">.</span><span class="nx">Find</span><span class="p">(</span><span class="nx">val</span><span class="p">)[</span><span class="nx">val</span><span class="p">.</span><span class="nx">Sexpr</span><span class="p">()]</span>
+</span><span class="line">	<span class="k">case</span> <span class="o">*</span><span class="nx">List</span><span class="p">:</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">evalList</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">	<span class="k">default</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// constant literal</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">x</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果是符号，则从环境中查找其引用的值，如果是列表则调用<code>evalList</code>对列表求值，如果是其他字面量，则直接返回字面量本身。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">evalList</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span><span class="nx">List</span><span class="p">,</span> <span class="nx">env</span> <span class="o">*</span><span class="nx">Env</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">name</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">Val</span><span class="p">.(</span><span class="nx">Symbol</span><span class="p">))</span>
+</span><span class="line">	<span class="k">switch</span> <span class="nx">name</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">case</span> <span class="s">&quot;if&quot;</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// (if test conseq alt)</span>
+</span><span class="line">		<span class="nx">test</span><span class="p">,</span> <span class="nx">conseq</span><span class="p">,</span> <span class="nx">alt</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span>
+</span><span class="line">		<span class="k">if</span> <span class="nx">res</span> <span class="o">:=</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">test</span><span class="p">,</span> <span class="nx">env</span><span class="p">);</span> <span class="nx">res</span><span class="p">.(</span><span class="nx">Bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">			<span class="k">return</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">conseq</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">			<span class="k">return</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">alt</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">	<span class="k">case</span> <span class="s">&quot;define&quot;</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// (define var exp)</span>
+</span><span class="line">		<span class="nx">vvar</span><span class="p">,</span> <span class="nx">expr</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span>
+</span><span class="line">		<span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="nx">vvar</span><span class="p">.</span><span class="nx">Sexpr</span><span class="p">()]</span> <span class="p">=</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="nx">vvar</span><span class="p">.</span><span class="nx">Sexpr</span><span class="p">()]</span>
+</span><span class="line">	<span class="k">case</span> <span class="s">&quot;set!&quot;</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// (set! var exp)</span>
+</span><span class="line">		<span class="nx">vvar</span><span class="p">,</span> <span class="nx">expr</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span>
+</span><span class="line">		<span class="nx">env</span><span class="p">.</span><span class="nx">Find</span><span class="p">(</span><span class="nx">vvar</span><span class="p">.(</span><span class="nx">Symbol</span><span class="p">))[</span><span class="nx">vvar</span><span class="p">.</span><span class="nx">Sexpr</span><span class="p">()]</span> <span class="p">=</span> <span class="nx">expr</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">expr</span>
+</span><span class="line">	<span class="k">default</span><span class="p">:</span>
+</span><span class="line">		<span class="c1">// (function arg...)</span>
+</span><span class="line">		<span class="nx">proc</span> <span class="o">:=</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">		<span class="kd">var</span> <span class="nx">args</span> <span class="p">[]</span><span class="nx">Expression</span>
+</span><span class="line">		<span class="k">for</span> <span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">;</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">Val</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">;</span> <span class="p">{</span>
+</span><span class="line">			<span class="nx">args</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">ptr</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">env</span><span class="p">))</span>
+</span><span class="line">			<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">Rest</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">		<span class="k">return</span> <span class="nx">proc</span><span class="p">.(</span><span class="nx">Function</span><span class="p">)(</span><span class="nx">NewEnv</span><span class="p">(</span><span class="nx">env</span><span class="p">),</span> <span class="nx">args</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>evalList</code> 如果发现第一个符号是 <code>if</code> 等关键字，则执行对应逻辑，如果是函数调用，则调用对应的函数即可。</p>
+
+<h2 id="interaction-a-repl">Interaction: A REPL</h2>
+
+<p>为了使用我们的计算器，我们实现了一个简单的 REPL.</p>
+
+<blockquote>
+  <p>REPL: Read Eval Print Loop</p>
+</blockquote>
+
+<p>逐行读入代码字符串，然后计算结果并打印到标准输出。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">repl</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="nx">line</span> <span class="o">:=</span> <span class="nx">liner</span><span class="p">.</span><span class="nx">NewLiner</span><span class="p">()</span>
+</span><span class="line">	<span class="k">defer</span> <span class="nx">line</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">	<span class="nx">line</span><span class="p">.</span><span class="nx">SetCtrlCAborts</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">	<span class="nx">env</span> <span class="o">:=</span> <span class="nx">baseEnv</span><span class="p">()</span>
+</span><span class="line">	<span class="k">for</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">if</span> <span class="nx">sentence</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">line</span><span class="p">.</span><span class="nx">Prompt</span><span class="p">(</span><span class="s">&quot;lis.go&gt; &quot;</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">			<span class="nx">val</span> <span class="o">:=</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">parse</span><span class="p">(</span><span class="nx">sentence</span><span class="p">),</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">			<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">val</span><span class="p">.</span><span class="nx">Sexpr</span><span class="p">())</span>
+</span><span class="line">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">			<span class="k">return</span>
+</span><span class="line">		<span class="p">}</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-4">完整代码</h1>
+
+<p>完整的代码可以参考: <a href="https://github.com/qjpcpu/lis.go">lis.go</a></p>
+
+<h1 id="section-5">应用到生产环境?</h1>
+
+<p><code>lis.go</code> 只是帮助学习实现解释器的简单玩具，如果想要应用于生产环境，可以使用 <a href="https://github.com/qjpcpu/glisp">glisp</a>，其完整文档参考 <a href="https://github.com/qjpcpu/glisp/wiki">glisp-wiki</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ethereum挖矿流程]]></title>
