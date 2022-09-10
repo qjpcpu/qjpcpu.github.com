@@ -6,6 +6,10 @@ comments: true
 categories: programming
 ---
 
+写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。
+
+<!-- more -->
+
 * 目录
 {:toc}
 
@@ -80,7 +84,7 @@ lisp 的这种设计导致代码可读性略有下降，但是却带来易解析
 
 下图是解释器工作的简单示例:
 
-![parsing-execution](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/parsing-and-execution.jpg)
+![parsing-execution](https://raw.githubusercontent.com/qjpcpu/qjpcpu.github.com/master/images/parsing-and-execution.png)
 
 如下代码是是`parse`和`eval`工作的代码示例：
 
