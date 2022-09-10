@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2022-09-10T08:17:57+00:00</updated>
+  <updated>2022-09-10T08:26:25+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -19,7 +19,11 @@
     <link href="http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter/"/>
     <updated>2022-09-09T11:57:00+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter</id>
-    <content type="html"><![CDATA[<ul id="markdown-toc">
+    <content type="html"><![CDATA[<p>写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
   <li><a href="#section">写在前面</a></li>
   <li><a href="#lisp-">Lisp 语法</a></li>
   <li><a href="#lisgo-">lis.go 计算器</a></li>

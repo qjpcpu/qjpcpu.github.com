@@ -7,7 +7,7 @@
 	<meta name="author" content="Jason">
 
 	
-	<meta name="description" content="写在前面 Lisp 语法 lis.go 计算器 解释器工作流程 Get started 类型定义 Parsing: parse, tokenize and read_from_tokens 基础环境 Evaluation: eval Interaction: A REPL 完整代码 &hellip;">
+	<meta name="description" content="写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。 写在前面 Lisp 语法 lis.go 计算器 解释器工作流程 Get started &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -90,7 +90,11 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">怎样写一个解释器</h2>
-	<div class="entry-content"><ul id="markdown-toc">
+	<div class="entry-content"><p>写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
+
+<!-- more -->
+
+<ul id="markdown-toc">
   <li><a href="#section">写在前面</a></li>
   <li><a href="#lisp-">Lisp 语法</a></li>
   <li><a href="#lisgo-">lis.go 计算器</a></li>
