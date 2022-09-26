@@ -339,10 +339,109 @@ func repl() {
 ```
 
 
+## 自定义函数
+
+到目前为止，我们的计算器已经能使用内置函数进行基本的四则运算；但是，其能力也就仅此而已，如果现在需要一个计算一个数的平方的函数，就只能在每个计算的地方写上：
+
+```clojure
+(* a a)
+```
+
+所以，我们需要自定义函数的能力。
+
+我们希望使用关键字 `define-func` 来定义函数，比如平方函数可以这样定义。
+
+```clojure
+(define-func ** (a) 
+    (* a a))
+```
+
+定义自定义函数类型:
+
+```go
+type UserFunction struct {
+       Name string
+       Args []string
+       Body []Expression
+}
+func (s UserFunction) Sexpr() string { return "user-function:" + s.Name }
+```
+
+在 `evalList` 中添加对函数定义的解释：
+
+```go
+func evalList(x *List, env *Env) Expression {
+.......
+       case "define-func":
+               var userf UserFunction
+               // (define-func name (arg1 arg2) body)
+			   // 解析参数列表
+               var args []string
+               argsExpr := x.Rest.Rest.Val.(*List)
+               for argsExpr.Val != nil {
+                       args = append(args, string(argsExpr.Val.(Symbol)))
+                       argsExpr = argsExpr.Rest
+               }
+			   // 解析函数名
+               name := string(x.Rest.Val.(Symbol))
+               userf.Name = name
+               userf.Args = args
+			   // 解析函数体
+               expr := x.Rest.Rest.Rest
+               for expr.Val != nil {
+                       userf.Body = append(userf.Body, expr.Val)
+                       expr = expr.Rest
+               }
+			   // 安装函数
+               env.scope[name] = userf
+               return userf
+.......
+```
+
+实现对定义函数的调用:
+
+```go
+func callUserFunction(env *Env, f UserFunction, args []Expression) Expression {
+       env = NewEnv(env)
+       for i, arg := range f.Args {
+               env.scope[arg] = args[i]
+       }
+       var ret Expression
+       for _, expr := range f.Body {
+               ret = eval(expr, env)
+       }
+       return ret
+}
+```
+
+这其中有两点要注意:
+
+* 创建新的执行环境
+* 并将入参依次绑定到环境中
+
+重新编译启动 REPL，可以定义并试用新的求平方函数了:
+
+```clojure
+(define a 100)
+(define-func ** (a) (* a a))
+(** 2) ;; 返回 4
+```
+
+这里特意定义同名的全局变量 `a` 和函数入参局部变量 `a`，由于平方函数在独立的环境中绑定求值，所以二者互不影响。
+
+
 # 完整代码
 
 完整的代码可以参考: [lis.go](https://github.com/qjpcpu/lis.go)
 
 # 应用到生产环境?
 
-`lis.go` 只是帮助学习实现解释器的简单玩具，如果想要应用于生产环境，可以使用 [glisp](https://github.com/qjpcpu/glisp)，其完整文档参考 [glisp-wiki](https://github.com/qjpcpu/glisp/wiki).
+`lis.go` 只是帮助学习实现解释器的简单玩具，要作为生成环境的嵌入式语言，还缺乏很多关键性质:
+
+* Tail Call Optimization, 对于不支持循环的函数式语言，没有 TCO 支撑的递归很可能栈溢出;
+* VM, 目前 `lis.go` 其实是依赖 go 语言默认的调用栈来实现函数调用，没有自己设计虚拟机，性能有待提高；同时，无法通过编译提前感知指令流，就难以控制程序运行时状态，更无法做指令优化；
+* 调用环境没有隔离完全，下层函数可以"看到"上层环境;
+* 常用语法feature 如闭包、宏等能力缺失，无法提供足够生产力；
+* 文档，注释 etc.
+
+如果想要应用于生产环境，可以使用 [glisp](https://github.com/qjpcpu/glisp)，其完整文档参考 [glisp-wiki](https://github.com/qjpcpu/glisp/wiki).
