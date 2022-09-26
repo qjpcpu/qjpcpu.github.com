@@ -398,7 +398,7 @@ func evalList(x *List, env *Env) Expression {
 .......
 ```
 
-实现对定义函数的调用:
+实现对自定义函数的调用:
 
 ```go
 func callUserFunction(env *Env, f UserFunction, args []Expression) Expression {
@@ -441,7 +441,7 @@ func callUserFunction(env *Env, f UserFunction, args []Expression) Expression {
 * Tail Call Optimization, 对于不支持循环的函数式语言，没有 TCO 支撑的递归很可能栈溢出;
 * VM, 目前 `lis.go` 其实是依赖 go 语言默认的调用栈来实现函数调用，没有自己设计虚拟机，性能有待提高；同时，无法通过编译提前感知指令流，就难以控制程序运行时状态，更无法做指令优化；
 * 调用环境没有隔离完全，下层函数可以"看到"上层环境;
-* 常用语法feature 如闭包、宏等能力缺失，无法提供足够生产力；
+* 常用语法  feature 如闭包、宏等能力缺失，无法提供足够生产力；
 * 文档，注释 etc.
 
 如果想要应用于生产环境，可以使用 [glisp](https://github.com/qjpcpu/glisp)，其完整文档参考 [glisp-wiki](https://github.com/qjpcpu/glisp/wiki).
