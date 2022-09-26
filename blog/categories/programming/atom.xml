@@ -4,7 +4,7 @@
   <title><![CDATA[Category: programming | Jason's space]]></title>
   <link href="http://qjpcpu.github.io/blog/categories/programming/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2022-09-26T13:17:34+00:00</updated>
+  <updated>2022-09-26T13:23:37+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -510,7 +510,7 @@ func evalList(x *List, env *Env) Expression {
 .......
 </code></p>
 
-<p>实现对定义函数的调用:</p>
+<p>实现对自定义函数的调用:</p>
 
 <p><code>go
 func callUserFunction(env *Env, f UserFunction, args []Expression) Expression {
@@ -555,7 +555,7 @@ func callUserFunction(env *Env, f UserFunction, args []Expression) Expression {
   <li>Tail Call Optimization, 对于不支持循环的函数式语言，没有 TCO 支撑的递归很可能栈溢出;</li>
   <li>VM, 目前 <code>lis.go</code> 其实是依赖 go 语言默认的调用栈来实现函数调用，没有自己设计虚拟机，性能有待提高；同时，无法通过编译提前感知指令流，就难以控制程序运行时状态，更无法做指令优化；</li>
   <li>调用环境没有隔离完全，下层函数可以”看到”上层环境;</li>
-  <li>常用语法feature 如闭包、宏等能力缺失，无法提供足够生产力；</li>
+  <li>常用语法  feature 如闭包、宏等能力缺失，无法提供足够生产力；</li>
   <li>文档，注释 etc.</li>
 </ul>
 
