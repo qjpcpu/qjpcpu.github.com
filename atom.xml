@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2022-09-10T08:30:34+00:00</updated>
+  <updated>2022-09-26T13:17:34+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -33,10 +33,11 @@
       <li><a href="#section-3">基础环境</a></li>
       <li><a href="#evaluation-eval">Evaluation: eval</a></li>
       <li><a href="#interaction-a-repl">Interaction: A REPL</a></li>
+      <li><a href="#section-4">自定义函数</a></li>
     </ul>
   </li>
-  <li><a href="#section-4">完整代码</a></li>
-  <li><a href="#section-5">应用到生产环境?</a></li>
+  <li><a href="#section-5">完整代码</a></li>
+  <li><a href="#section-6">应用到生产环境?</a></li>
 </ul>
 
 <h1 id="section">写在前面</h1>
@@ -582,13 +583,158 @@ Steve Yegge.</p>
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h1 id="section-4">完整代码</h1>
+<h2 id="section-4">自定义函数</h2>
+
+<p>到目前为止，我们的计算器已经能使用内置函数进行基本的四则运算；但是，其能力也就仅此而已，如果现在需要一个计算一个数的平方的函数，就只能在每个计算的地方写上：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="clojure"><span class="line"><span class="p">(</span><span class="nb">* </span><span class="nv">a</span> <span class="nv">a</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以，我们需要自定义函数的能力。</p>
+
+<p>我们希望使用关键字 <code>define-func</code> 来定义函数，比如平方函数可以这样定义。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="clojure"><span class="line"><span class="p">(</span><span class="nf">define-func</span> <span class="nv">**</span> <span class="p">(</span><span class="nf">a</span><span class="p">)</span>
+</span><span class="line">    <span class="p">(</span><span class="nb">* </span><span class="nv">a</span> <span class="nv">a</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>定义自定义函数类型:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">type</span> <span class="nx">UserFunction</span> <span class="kd">struct</span> <span class="p">{</span>
+</span><span class="line">       <span class="nx">Name</span> <span class="kt">string</span>
+</span><span class="line">       <span class="nx">Args</span> <span class="p">[]</span><span class="kt">string</span>
+</span><span class="line">       <span class="nx">Body</span> <span class="p">[]</span><span class="nx">Expression</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="nx">UserFunction</span><span class="p">)</span> <span class="nx">Sexpr</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span> <span class="k">return</span> <span class="s">&quot;user-function:&quot;</span> <span class="o">+</span> <span class="nx">s</span><span class="p">.</span><span class="nx">Name</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在 <code>evalList</code> 中添加对函数定义的解释：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">evalList</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span><span class="nx">List</span><span class="p">,</span> <span class="nx">env</span> <span class="o">*</span><span class="nx">Env</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line"><span class="o">......</span><span class="p">.</span>
+</span><span class="line">       <span class="k">case</span> <span class="s">&quot;define-func&quot;</span><span class="p">:</span>
+</span><span class="line">               <span class="kd">var</span> <span class="nx">userf</span> <span class="nx">UserFunction</span>
+</span><span class="line">               <span class="c1">// (define-func name (arg1 arg2) body)</span>
+</span><span class="line">			   <span class="c1">// 解析参数列表</span>
+</span><span class="line">               <span class="kd">var</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span>
+</span><span class="line">               <span class="nx">argsExpr</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">.(</span><span class="o">*</span><span class="nx">List</span><span class="p">)</span>
+</span><span class="line">               <span class="k">for</span> <span class="nx">argsExpr</span><span class="p">.</span><span class="nx">Val</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">                       <span class="nx">args</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">argsExpr</span><span class="p">.</span><span class="nx">Val</span><span class="p">.(</span><span class="nx">Symbol</span><span class="p">)))</span>
+</span><span class="line">                       <span class="nx">argsExpr</span> <span class="p">=</span> <span class="nx">argsExpr</span><span class="p">.</span><span class="nx">Rest</span>
+</span><span class="line">               <span class="p">}</span>
+</span><span class="line">			   <span class="c1">// 解析函数名</span>
+</span><span class="line">               <span class="nx">name</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Val</span><span class="p">.(</span><span class="nx">Symbol</span><span class="p">))</span>
+</span><span class="line">               <span class="nx">userf</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="nx">name</span>
+</span><span class="line">               <span class="nx">userf</span><span class="p">.</span><span class="nx">Args</span> <span class="p">=</span> <span class="nx">args</span>
+</span><span class="line">			   <span class="c1">// 解析函数体</span>
+</span><span class="line">               <span class="nx">expr</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span><span class="p">.</span><span class="nx">Rest</span>
+</span><span class="line">               <span class="k">for</span> <span class="nx">expr</span><span class="p">.</span><span class="nx">Val</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class="line">                       <span class="nx">userf</span><span class="p">.</span><span class="nx">Body</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">userf</span><span class="p">.</span><span class="nx">Body</span><span class="p">,</span> <span class="nx">expr</span><span class="p">.</span><span class="nx">Val</span><span class="p">)</span>
+</span><span class="line">                       <span class="nx">expr</span> <span class="p">=</span> <span class="nx">expr</span><span class="p">.</span><span class="nx">Rest</span>
+</span><span class="line">               <span class="p">}</span>
+</span><span class="line">			   <span class="c1">// 安装函数</span>
+</span><span class="line">               <span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">userf</span>
+</span><span class="line">               <span class="k">return</span> <span class="nx">userf</span>
+</span><span class="line"><span class="o">......</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>实现对定义函数的调用:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="kd">func</span> <span class="nx">callUserFunction</span><span class="p">(</span><span class="nx">env</span> <span class="o">*</span><span class="nx">Env</span><span class="p">,</span> <span class="nx">f</span> <span class="nx">UserFunction</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="nx">Expression</span><span class="p">)</span> <span class="nx">Expression</span> <span class="p">{</span>
+</span><span class="line">       <span class="nx">env</span> <span class="p">=</span> <span class="nx">NewEnv</span><span class="p">(</span><span class="nx">env</span><span class="p">)</span>
+</span><span class="line">       <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">arg</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">f</span><span class="p">.</span><span class="nx">Args</span> <span class="p">{</span>
+</span><span class="line">               <span class="nx">env</span><span class="p">.</span><span class="nx">scope</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="p">=</span> <span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span><span class="line">       <span class="p">}</span>
+</span><span class="line">       <span class="kd">var</span> <span class="nx">ret</span> <span class="nx">Expression</span>
+</span><span class="line">       <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">expr</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">f</span><span class="p">.</span><span class="nx">Body</span> <span class="p">{</span>
+</span><span class="line">               <span class="nx">ret</span> <span class="p">=</span> <span class="nx">eval</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">env</span><span class="p">)</span>
+</span><span class="line">       <span class="p">}</span>
+</span><span class="line">       <span class="k">return</span> <span class="nx">ret</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这其中有两点要注意:</p>
+
+<ul>
+  <li>创建新的执行环境</li>
+  <li>并将入参依次绑定到环境中</li>
+</ul>
+
+<p>重新编译启动 REPL，可以定义并试用新的求平方函数了:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="clojure"><span class="line"><span class="p">(</span><span class="nf">define</span> <span class="nv">a</span> <span class="mi">100</span><span class="p">)</span>
+</span><span class="line"><span class="p">(</span><span class="nf">define-func</span> <span class="nv">**</span> <span class="p">(</span><span class="nf">a</span><span class="p">)</span> <span class="p">(</span><span class="nb">* </span><span class="nv">a</span> <span class="nv">a</span><span class="p">))</span>
+</span><span class="line"><span class="p">(</span><span class="nf">**</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">;; 返回 4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里特意定义同名的全局变量 <code>a</code> 和函数入参局部变量 <code>a</code>，由于平方函数在独立的环境中绑定求值，所以二者互不影响。</p>
+
+<h1 id="section-5">完整代码</h1>
 
 <p>完整的代码可以参考: <a href="https://github.com/qjpcpu/lis.go">lis.go</a></p>
 
-<h1 id="section-5">应用到生产环境?</h1>
+<h1 id="section-6">应用到生产环境?</h1>
 
-<p><code>lis.go</code> 只是帮助学习实现解释器的简单玩具，如果想要应用于生产环境，可以使用 <a href="https://github.com/qjpcpu/glisp">glisp</a>，其完整文档参考 <a href="https://github.com/qjpcpu/glisp/wiki">glisp-wiki</a>.</p>
+<p><code>lis.go</code> 只是帮助学习实现解释器的简单玩具，要作为生成环境的嵌入式语言，还缺乏很多关键性质:</p>
+
+<ul>
+  <li>Tail Call Optimization, 对于不支持循环的函数式语言，没有 TCO 支撑的递归很可能栈溢出;</li>
+  <li>VM, 目前 <code>lis.go</code> 其实是依赖 go 语言默认的调用栈来实现函数调用，没有自己设计虚拟机，性能有待提高；同时，无法通过编译提前感知指令流，就难以控制程序运行时状态，更无法做指令优化；</li>
+  <li>调用环境没有隔离完全，下层函数可以”看到”上层环境;</li>
+  <li>常用语法feature 如闭包、宏等能力缺失，无法提供足够生产力；</li>
+  <li>文档，注释 etc.</li>
+</ul>
+
+<p>如果想要应用于生产环境，可以使用 <a href="https://github.com/qjpcpu/glisp">glisp</a>，其完整文档参考 <a href="https://github.com/qjpcpu/glisp/wiki">glisp-wiki</a>.</p>
 ]]></content>
   </entry>
   
