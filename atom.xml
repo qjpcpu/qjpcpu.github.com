@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's space]]></title>
   <link href="http://qjpcpu.github.io/atom.xml" rel="self"/>
   <link href="http://qjpcpu.github.io/"/>
-  <updated>2022-09-26T13:27:25+00:00</updated>
+  <updated>2022-09-27T01:35:02+00:00</updated>
   <id>http://qjpcpu.github.io/</id>
   <author>
     <name><![CDATA[Jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter/"/>
     <updated>2022-09-09T11:57:00+00:00</updated>
     <id>http://qjpcpu.github.io/blog/2022/09/09/how-to-write-your-interpreter</id>
-    <content type="html"><![CDATA[<p>写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
+    <content type="html"><![CDATA[<p>写一个解释器，通常是设计和实现一个编程语言的第一步；亦或者我们想要一种自定义程度较高的 DSL ，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
 
 <!-- more -->
 
@@ -42,7 +42,7 @@
 
 <h1 id="section">写在前面</h1>
 
-<p>写一个解释器，通常是设计和实现一个编程语言的第一步,或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
+<p>写一个解释器，通常是设计和实现一个编程语言的第一步；亦或者如果我们想要一种自定义程度较高的 DSL，通常也不得不自行去实现解释器。而如何实现一个解释器，网络上的资料其实也并不算多，所以我这里简单做个分享。</p>
 
 <p>要完整实现一个编译器/解释器，需要语法设计到编译前后端的完整实现，这涉及到巨大的工作量。但通常我们只需要能够实现 DSL，使得 DSL 能够依托于我们主语言环境运行即可，不需要考虑编译后端的问题。所以本文的解释器仅涉及到编译前端流程，后端执行细节交给宿主语言运行时。</p>
 
@@ -85,19 +85,19 @@ Steve Yegge.</p>
 </span><span class="line">      <span class="p">(</span><span class="nb">list </span><span class="s">&quot;a&quot;</span> <span class="s">&quot;b&quot;</span><span class="p">)))</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>如上例所示，尽管golang 相较于其他语言，其语法已经非常简单，但是它仍然有数十个关键字，几个中置操作符, 操作优先级、逗号、各种括号等等，其语法规范仍然是比较多的；而相对来说，lisp 的语法规范就简单很多： </p>
+<p>如上例所示，尽管golang 相较于其他语言，其语法已经非常简单，但是它仍然有数十个关键字，若干中置操作符, 隐式操作优先级、逗号、各种括号等等，其语法规范仍然是比较多的；而相对来说，lisp 的语法规范就简单很多： </p>
 
 <ul>
   <li>lisp 代码仅包含表达式，不包含语句，即，每一句lisp 必定都会返回值；</li>
   <li>数字、字符串、符号均称为「原子」，原子不可分解；</li>
-  <li>除了原子外所有东西都是「列表」，列表以 <code>(</code>开头,<code>)</code>结尾；列表的第一个元素要么是一个关键字，要么是一个函数调用；</li>
+  <li>除了原子外所有东西都是「列表」，列表以 <code>(</code>开头<code>)</code>结尾；列表的第一个元素要么是一个关键字，要么是一个函数调用；</li>
 </ul>
 
-<p>lisp 的这种设计导致代码可读性略有下降，但是却带来易解析、表意性强、代码和数据统一等诸多优点，因此长期是国外CS教学的首选语言。</p>
+<p>lisp 的这种设计导致代码可读性略有下降，但是却带来易解析、表意性强、代码和数据统一等诸多优点，因此长期是国外 CS 教学的首选语言。</p>
 
 <h1 id="lisgo-">lis.go 计算器</h1>
 
-<p>我们本次的目标是基于 lisp 在 golang 是实现一个计算器。该计算器支持以下一些表达式:</p>
+<p>我们本次的目标是基于 lisp 语法在 golang 是实现一个计算器。该计算器支持以下一些表达式:</p>
 
 <table>
   <thead>
@@ -129,7 +129,7 @@ Steve Yegge.</p>
       <td>定义一个符号 symbol,且将其值绑定为 expr</td>
     </tr>
     <tr>
-      <td>函数调用</td>
+      <td>函数定义及调用</td>
       <td>(proc arg …)</td>
       <td>如果 proc 是关键字，如 if，则执行分支逻辑，否则寻找对应函数进行调用</td>
     </tr>
@@ -234,7 +234,7 @@ Steve Yegge.</p>
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>我们定义的基本接口<code>Expression</code>，所有lis.go的类型都需要实现该接口，包括了：</p>
+<p>我们定义了基本接口<code>Expression</code>，所有lis.go的类型都需要实现该接口，包括了：</p>
 
 <ul>
   <li>Symbol 符号</li>
@@ -247,7 +247,7 @@ Steve Yegge.</p>
 
 <p>此外，我们还定义了环境 <code>Env</code>。或者叫作用域，程序运行时的符号查找都需要依赖于所处的环境，比如同一个符号 <code>a</code>，在不同的环境中，很可能引用了不同的值。</p>
 
-<p>每个符号的解释，都需要优先查找当前环境，如果找不到则向上到父环境查找，直至根环境。这也很好理解，其实就是一个变量是局部变量还是全局变量的区别。</p>
+<p>每个符号的解释，都需要优先查找当前环境，如果找不到则向上到父环境查找，直至根环境。</p>
 
 <h2 id="parsing-parse-tokenize-and-readfromtokens">Parsing: parse, tokenize and read_from_tokens</h2>
 
@@ -274,7 +274,7 @@ Steve Yegge.</p>
 
 <p><code>parse</code> 函数接受代码字符串作为输入,调用<code>tokenize</code> 得到 token 流, 然后调用 <code>read_from_tokens</code> 将词流组织成抽象语法树。</p>
 
-<p><code>read_from_tokens</code> 遇到 <code>(</code> 则开始一个列表的解析,直至遇到列表结束符<code>)</code>;如果其他 case 则作为原子解析。</p>
+<p><code>read_from_tokens</code> 遇到 <code>(</code> 则开始一个列表的解析,直至遇到列表结束符<code>)</code>; 如果其他 case 则作为原子解析。</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -434,7 +434,7 @@ Steve Yegge.</p>
       <td>定义一个符号 symbol,且将其值绑定为 expr</td>
     </tr>
     <tr>
-      <td>函数调用</td>
+      <td>函数定义及调用</td>
       <td>(proc arg …)</td>
       <td>如果 proc 是关键字，如 if，则执行分支逻辑，否则寻找对应函数进行调用</td>
     </tr>
@@ -699,11 +699,11 @@ Steve Yegge.</p>
 </span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>这其中有两点要注意:</p>
+<p><code>callUserFunction</code>主要完成两件事:</p>
 
 <ul>
-  <li>创建新的执行环境</li>
-  <li>并将入参依次绑定到环境中</li>
+  <li>创建新的执行环境，并将参数绑定到当前环境；</li>
+  <li>在当前环境对函数体表达式求值；</li>
 </ul>
 
 <p>重新编译启动 REPL，可以定义并试用新的求平方函数了:</p>
